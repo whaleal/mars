@@ -9,7 +9,7 @@ import com.mongodb.client.MongoClients;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import org.bson.BsonType;
 import org.bson.codecs.Codec;
-import org.bson.codecs.RepresentationConfigurable;
+
 import org.bson.codecs.configuration.CodecRegistry;
 import org.junit.Assert;
 import org.junit.Before;
