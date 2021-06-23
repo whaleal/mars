@@ -95,7 +95,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     private MongoDatabase database;
     private final GridFSBucket defaultGridFSBucket;
 
-
     //缓存 collectionName
     private Map<String, String> collectionNameCache = new HashMap<String, String>();
 

@@ -87,6 +87,7 @@ public class Mars extends DatastoreImpl {
         this.readPreference = readPreference;
     }
 
+    @Override
     public void setReadConcern(@Nullable ReadConcern readConcern) {
         super.setReadConcern(readConcern);
         this.readConcern = readConcern;
