@@ -18,18 +18,7 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>${mongo.driver.version}</version>
         </dependency>
-
-
-
-        <!-- reactive -->
-
-      <!--  <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-reactivestreams</artifactId>
-            <version>${mongo.driver.version}</version>
-        </dependency>-->
-
-
+        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
