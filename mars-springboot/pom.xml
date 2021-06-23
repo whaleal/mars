@@ -18,11 +18,11 @@
             <version>${mars.version}</version>
         </dependency>
 
-        <!-- Compile dependencies -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${spring.boot.version}</version>
+            <artifactId>spring-boot</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
     </dependencies>
