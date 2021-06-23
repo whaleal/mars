@@ -21,11 +21,11 @@
 
         <!-- reactive -->
 
-        <dependency>
+      <!--  <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-reactivestreams</artifactId>
             <version>${mongo.driver.version}</version>
-        </dependency>
+        </dependency>-->
 
 
         <dependency>
