@@ -1,7 +1,7 @@
                      Server Side Public License
-                     VERSION 1, OCTOBER 16, 2018
+                     VERSION 1, OCTOBER 16, 2020
 
-                    Copyright © 2018 Shanghai Jinmu Information Technology Co., Ltd.
+                    Copyright © 2020 Shanghai Jinmu Information Technology Co., Ltd.
 
   Everyone is permitted to copy and distribute verbatim copies of this
   license document, but changing it is not allowed.
