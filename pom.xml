@@ -7,7 +7,12 @@
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
+    <name>Mars</name>
+    <description>MongoDB driver framework</description>
+    <!--我们项目的git地址-->
+    <url>https://github.com/whaleal/mars</url>
+
     <modules>
         <module>mars-core</module>
         <module>mars-test</module>
@@ -16,11 +21,147 @@
 
     <properties>
         <mongo.driver.version>4.2.3</mongo.driver.version>
-        <mars.version>0.1.0</mars.version>
+        <mars.version>0.1.1</mars.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring.version>2.5.1</spring.version>
-
     </properties>
+
+    <!--发布的标准，这个是按照mongodb的标准来做的-->
+    <licenses>
+        <license>
+            <name>The Server Side Public License, Version 1</name>
+            <url>https://docs.whaleal.com/marsdocs/licensing/server-side-public-license</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!--这个和我们创建的issue相对应，
+        需要打包的项目一定要放到我们所说的地址上面，也就是说这个地址一定要是我们的，否则我们没有权限
+        tag：这个项目的分支，这里我放到了master分支里面
+        url：项目的git地址，
+        connection 和 developerConnection这两个我们也不太清楚，就按照这个格式去写吧
+    -->
+    <scm>
+        <tag>master</tag>
+        <url>git@github.com:whaleal/mars.git</url>
+        <connection>scm:git:git@github.com:whaleal/mars.git</connection>
+        <developerConnection>scm:git:git@github.com:whaleal/mars.git</developerConnection>
+    </scm>
+
+    <!--开发者：这里我们注册的时候写的名字和邮箱准确填写 ，id尽量和上面的id对应-->
+    <developers>
+        <developer>
+            <name>caoshuai</name>
+            <id>mars</id>
+            <email>shuai.cao@jinmuinfo.com</email>
+        </developer>
+    </developers>
+
+    <!--打包所需要的插件-->
+    <build>
+        <plugins>
+            <!-- 源码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <doclint>none</doclint>
+                    <tags>
+                        <tag>
+                            <!-- 处理@date标签 -->
+                            <name>date</name>
+                            <placement>a</placement>
+                        </tag>
+                    </tags>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--部署-->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- GPG 打包插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--将组件部署到OSSRH并将其发布到Central Repository-->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <!--这里和我们此前在maven的server中配置的id一致-->
+                    <serverId>mars</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--这里有两个仓库，releases和snapshots，url路径也差不多，
+        选择放在什么地方主要是看我们的项目的名称是什么，
+        好不我们这个项目的version是 <version>1.0-SNAPSHOT</version>
+        那么就会放到snapshots这个仓库里面，如果是以RELEASES的话就会发布到另外一个仓库
+    -->
+    <distributionManagement>
+        <repository>
+            <id>mars</id><!--与settings.xml的server.id保持一致-->
+            <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>mars</id><!--与settings.xml的server.id保持一致-->
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

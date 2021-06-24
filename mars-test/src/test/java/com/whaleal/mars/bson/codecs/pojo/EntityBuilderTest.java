@@ -7,6 +7,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.bson.codecs.RepresentationConfigurable;
 import org.bson.BsonType;
 import org.bson.codecs.Codec;
 
