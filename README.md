@@ -1,5 +1,6 @@
 # Mars Object Relational Mapping Framework for MongoDB
-![avatar](https://www.jinmuinfo.com/community/MongoDB/docs/images/logo/jinmu.png)
+<img src="https://www.jinmuinfo.com/community/MongoDB/docs/images/logo/jinmu.png" width="310px" alt="Jinmu Logo">
+
 ## Essentials
 
 * [See the docs](https://docs.whaleal.com/marsdocs/)
