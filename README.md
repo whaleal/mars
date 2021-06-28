@@ -6,11 +6,11 @@
  
 It uses similar query method as spring, and has higher performance than spring. In the preliminary comparative test, it is improved more than 25% than spring.
 
-If you have any problems or suggestions, welcome to contact us!
+If you have any problems or suggestions, welcome to contact us!  
  
-Hotline：021-58870038 / 021-66696778
-Email：support@jinmuinfo.com
-Office address: building 10, 1228 Jiangchang Rd, Jiangan District, Shanghai, P.R.C
+Hotline：021-58870038 / 021-66696778  
+Email：support@jinmuinfo.com  
+Office address: building 10, 1228 Jiangchang Rd, Jiangan District, Shanghai, P.R.C  
 
 ## Essentials
 
