@@ -40,12 +40,12 @@ import com.whaleal.mars.session.option.CountOptions;
  */
 public interface Statistic {
 
-    default <T> long count(T entity) {
-        return count(entity, new CountOptions());
+    default <T> long count(Class<T> clazz) {
+        return count(clazz, new CountOptions());
     }
 
 
-    <T> long count(T entity, CountOptions countOptions);
+    <T> long count(Class<T> clazz, CountOptions countOptions);
 
 
     default <T> long count(String collName) {
@@ -56,11 +56,11 @@ public interface Statistic {
     <T> long count(String collName, CountOptions countOptions);
 
 
-    default <T> long countById(Query query, T entity) {
-        return countById(query, entity, new CountOptions());
+    default <T> long countById(Query query, Class<T> clazz) {
+        return countById(query, clazz, new CountOptions());
     }
 
-    <T> long countById(Query query, T entity, CountOptions countOptions);
+    <T> long countById(Query query, Class<T> clazz, CountOptions countOptions);
 
 
     default <T> long countById(Query query, String collName) {

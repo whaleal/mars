@@ -42,6 +42,8 @@ import com.mongodb.lang.Nullable;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import com.whaleal.mars.bson.codecs.pojo.EntityModel;
 import com.whaleal.mars.bson.codecs.pojo.PropertyModel;
+import com.whaleal.mars.bson.codecs.pojo.annotations.CappedAt;
+import com.whaleal.mars.bson.codecs.pojo.annotations.Concern;
 import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.bson.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.index.Index;
@@ -71,6 +73,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
 
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -605,9 +608,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         MongoCollection<T> collection = this.database.getCollection(collectionName, type);
 
-        Entity annotation = (Entity) entityModel.getAnnotation(Entity.class);
-        if (annotation != null && WriteConcern.valueOf(annotation.concern()) != null) {
-            collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.concern()));
+        Concern annotation = (Concern) entityModel.getAnnotation(Concern.class);
+        if (annotation != null ) {
+
+
+
+
+
+
         }
         return collection;
     }
@@ -619,39 +627,37 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
      * @return the collection mapped for this class
      */
     public <T> MongoCollection<T> getCollection(Class<T> type, String collectionName) {
+
         EntityModel entityModel = this.mapper.getEntityModel(type);
         String collName = this.mapper.determineCollectionName(entityModel, collectionName);
         MongoCollection<T> collection = this.database.getCollection(collName, type);
 
 
-        Entity annotation = (Entity) entityModel.getAnnotation(Entity.class);
-        if (annotation != null && WriteConcern.valueOf(annotation.concern()) != null) {
-            collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.concern()));
-        }
+        return  this.withConcern(collection , type);
 
-        return collection;
+
 
 
     }
 
 
     @Override
-    public <T> long count(T entity, CountOptions countOptions) {
+    public <T> long count(Class<T> clazz, CountOptions countOptions) {
         log.info("{}execute", getClass() + ".count()");
 
         com.mongodb.client.model.EstimatedDocumentCountOptions escountOptions = new com.mongodb.client.model.EstimatedDocumentCountOptions();
 
         escountOptions.maxTime(countOptions.getMaxTime(TimeUnit.SECONDS), TimeUnit.SECONDS);
 
-        String collectionName = this.mapper.determineCollectionName(entity.getClass(), null);
-        long count = this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
-        return count;
+        String collectionName = this.mapper.determineCollectionName(clazz, null);
+        return this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
+
     }
 
     @Override
-    public <T> long countById(Query query, T entity, CountOptions countOptions) {
+    public <T> long countById(Query query, Class<T> clazz, CountOptions countOptions) {
         log.info("{} execute", getClass() + ".countById()");
-        String collectionName = this.mapper.determineCollectionName(entity.getClass(), null);
+        String collectionName = this.mapper.determineCollectionName(clazz, null);
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
 
@@ -694,21 +700,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         CollectionOptions options = collectionOptions != null ? collectionOptions : CollectionOptions.empty();
 
         //TODO it may contains some bug，so please use it carefully.
-        Entity annotation = (Entity) this.mapper.getEntityModel(entityClass).getAnnotation(Entity.class);
+        CappedAt annotation = (CappedAt) this.mapper.getEntityModel(entityClass).getAnnotation(CappedAt.class);
         Document document = convertToDocument(options);
-        if (!ObjectUtils.isEmpty(annotation.cap().value())) {
+        if (!ObjectUtils.isEmpty(annotation.value())) {
             document.put("capped", true);
-            document.put("size", annotation.cap().value());
-            document.put("max", annotation.cap().count());
+            document.put("size", annotation.value());
+            document.put("max", annotation.count());
         }
-        if (StringUtils.hasText(annotation.collation())) {
+        /*if (StringUtils.hasText(annotation.collation())) {
             document.put("collation", annotation.collation());
         }
         document.put("concern", annotation.concern());
         document.put("useDiscriminator", annotation.useDiscriminator());
         document.put("discriminatorKey", annotation.discriminatorKey());
         document.put("discriminator", annotation.useDiscriminator());
-        document.put("language", annotation.language());
+        document.put("language", annotation.language());*/
 
         return doCreateCollection(this.mapper.getEntityModel(entityClass).getCollectionName(), document);
     }
@@ -813,6 +819,32 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         } finally {
             lock.unlock();
         }
+    }
+
+
+    public <T> MongoCollection<T>  withConcern(MongoCollection<T> collection ,Class<T>  clazz){
+
+        EntityModel entityModel = this.mapper.getEntityModel(clazz);
+
+        Concern annotation = (Concern)entityModel.getAnnotation(Concern.class);
+
+        if(annotation!=null){
+
+            if( WriteConcern.valueOf(annotation.writeConcern()) != null){
+                collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.writeConcern()));
+            }
+
+            if(ReadPreference.valueOf(annotation.readPreference())!=null){
+                collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.writeConcern()));
+
+            }
+
+            //todo  ReadConcern
+
+        }
+        
+        return collection ;
+        
     }
 
 }
