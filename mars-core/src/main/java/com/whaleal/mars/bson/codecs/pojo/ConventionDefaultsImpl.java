@@ -211,7 +211,7 @@ final class ConventionDefaultsImpl implements Convention {
                 }
 
 
-                BsonType bsonRep = mongoProperty.mgoType().getJavaClass();
+                BsonType bsonRep = mongoProperty.storageType().getJavaClass();
                 propertyModelBuilder.bsonRepresentation(bsonRep);
             } else if (annotation instanceof MongoId) {
                 MongoId mongoId = (MongoId) annotation;

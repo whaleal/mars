@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs.pojo.annotations;
 
-import com.whaleal.mars.bson.codecs.pojo.MgoType;
+import com.whaleal.mars.bson.codecs.pojo.StorageType;
 
 import java.lang.annotation.*;
 
@@ -39,5 +39,5 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 public @interface MongoId {
 
-    MgoType value() default MgoType.OBJECT_ID;
+    StorageType value() default StorageType.OBJECT_ID;
 }

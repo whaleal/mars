@@ -27,28 +27,60 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.bson.codecs.pojo.annotations;
+package com.whaleal.mars.bson.codecs.pojo;
 
-import com.whaleal.mars.bson.codecs.pojo.StorageType;
 
-import java.lang.annotation.*;
+import org.bson.BsonType;
 
 /**
- * 蒙戈财产
- * An annotation that configures a property.
- *
- * <p>Note: Requires the {@link org.bson.codecs.pojo.Conventions#ANNOTATION_CONVENTION}</p>
+ * 主要为对象字段映射到MongoDB的类型
+ * 如果 是默认值 IMPLICIT  就自动转换
+ * 如果不是默认值 就用其值类型
  */
-@Documented
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MongoProperty {
+public enum StorageType {
 
-    String value() default "";
+    /**
+     * Implicit type that is derived from the property value.
+     */
+    IMPLICIT(-1, null), //
+    DOUBLE(1, BsonType.DOUBLE), //
+    STRING(2, BsonType.STRING), //
+    ARRAY(4, BsonType.ARRAY), //
+    BINARY(5, BsonType.BINARY), //
+    OBJECT_ID(7, BsonType.OBJECT_ID), //
+    BOOLEAN(8, BsonType.BOOLEAN), //
+    DATE_TIME(9, BsonType.DATE_TIME), //
+    //PATTERN(11, Pattern.class), //
+    /**
+     * 在MongoDB 4.4  已经删除该 类型
+     * Deprecated in MongoDB 4.4
+     */
+    @Deprecated()
+    SCRIPT(13, BsonType.JAVASCRIPT), //
+    INT32(15, BsonType.INT32), //
+    /**
+     * {@link org.bson.BsonTimestamp;}
+     * 使用该格式的主要目的 ，1  其增长量也会算入 时间 当中 相关 源码 如下  value = ((long) seconds << 32) | (increment & 0xFFFFFFFFL)
+     */
+    TIMESTAMP(16, BsonType.TIMESTAMP),
+    INT64(17, BsonType.INT64), //
+    DECIMAL128(18, BsonType.DECIMAL128);
 
+    //  与 bsontype  对应的 类型 int
+    private final int bsonType;
+    private final BsonType type;
 
-    boolean useDiscriminator() default false;
+    StorageType(int bsonType, BsonType type) {
 
+        this.bsonType = bsonType;
+        this.type = type;
+    }
 
-    StorageType storageType() default StorageType.IMPLICIT;
+    public int getBsonType() {
+        return bsonType;
+    }
+
+    public BsonType getJavaClass() {
+        return type;
+    }
 }

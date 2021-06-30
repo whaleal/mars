@@ -40,6 +40,7 @@ import com.mongodb.client.model.geojson.codecs.GeoJsonCodecProvider;
 import com.mongodb.lang.Nullable;
 import com.whaleal.mars.bson.codecs.internal.JsonObjectCodecProvider;
 import com.whaleal.mars.bson.codecs.pojo.*;
+import com.whaleal.mars.bson.codecs.pojo.annotations.Concern;
 import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.bson.codecs.reader.DocumentReader;
 import com.whaleal.mars.bson.codecs.writer.DocumentWriter;
@@ -253,10 +254,10 @@ public class MongoMappingContext {
         WriteConcern wc = null;
         EntityModel entityModel = getEntityModel(clazz);
         if (entityModel != null) {
-            final Entity entityAnn = (Entity) entityModel.getAnnotation(Entity.class);
-            if (entityAnn != null && !entityAnn.concern().isEmpty()) {
+            final Concern entityAnn = (Concern) entityModel.getAnnotation(Concern.class);
+            if (entityAnn != null && !entityAnn.writeConcern().isEmpty()) {
                 try {
-                    wc = WriteConcern.valueOf(entityAnn.concern());
+                    wc = WriteConcern.valueOf(entityAnn.writeConcern());
                 } catch (Exception e) {
 
                 }
