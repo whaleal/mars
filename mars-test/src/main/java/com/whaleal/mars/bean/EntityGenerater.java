@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.bean;
 
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -43,6 +44,7 @@ public class EntityGenerater {
             p.setAddress(getAddress());
             p.setFirstName("f"+random.nextInt(max));
             p.setLastName("L"+random.nextInt(max));
+            p.setBirthDate(LocalDate.now());
 
             return p ;
     }
@@ -75,34 +77,6 @@ public class EntityGenerater {
         return city ;
     }
 
-    public static <T> T getCorporation(boolean multi) {
-        Corporation corporation = null;
-        if (!multi) {
-
-            corporation = new Corporation();
-
-            corporation.setName("JinMu");
-            //corporation.setDepartment(getDepartment());
-
-            return (T) corporation;
-        }
-
-        List list = new ArrayList();
-        for (int i = 0; i < 1000000; i++) {
-            corporation = new Corporation();
-
-            corporation.setName("JinMu-Many" + (i + 1));
-            //corporation.setDepartment(getDepartment());
-
-            list.add(corporation);
-        }
-
-        return (T) list;
-
-    }
-
-
-
 
 
 
@@ -129,42 +103,6 @@ public class EntityGenerater {
     }
 
 
-    public static List getEmployee() {
-
-
-        List list = new ArrayList();
-
-        Employee employee = null;
-
-        for (int i = 0; i < 4; i++) {
-
-            employee = new Employee();
-
-            employee.setName("蜡笔小心" + i);
-            employee.setAge(18);
-            employee.setSex("男");
-            employee.setCommunication(getCommunication());
-            employee.setAddress(getAddress());
-
-            list.add(employee);
-
-        }
-
-        return list;
-
-
-    }
-
-
-    public static Department getDepartment() {
-
-        Department department = new Department();
-        department.setName("销售部");
-        department.setEmployees(getEmployee());
-
-        return department;
-
-    }
 
 
 

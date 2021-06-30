@@ -1,7 +1,6 @@
 
 package com.whaleal.mars.core.crud;
 
-import com.whaleal.mars.bean.Cstest;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.EntityGenerater;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +38,7 @@ public class LocalCrudTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server100);
+        mars = new Mars(Constant.server101);
 
         Assert.assertNotNull(mars);
 
@@ -48,27 +47,18 @@ public class LocalCrudTest {
         }
     }
 
-    @Test
-    public void testSimpleInsert(){
-        Cstest cstest = new Cstest();
-        cstest.setName("xx");
-        cstest.setAge(12);
-        mars.insert(cstest);
-    }
+
 
     @Test
     public void findAll() {
 
         Query query = new Query();
-
-
         QueryCursor<Person> result = mars.findAll(query, Person.class);
-
 
         while (result.hasNext()) {
             Person person = result.next();
-            Assert.assertNotNull(person);
-            Assert.assertNotNull(person.getId());
+
+            System.out.println(person);
 
         }
 

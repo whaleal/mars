@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.bean.Corporation;
-import com.whaleal.mars.bean.Department;
 import com.whaleal.mars.core.Mars;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,7 +64,7 @@ public class MessgeListenerTest {
     }
 
     //@Autowired
-    //private MongoTemplate template;
+    //private MongoTemplate personDocument;
     //这个是可以运行的，使用的基本上就是最原生的
     @Test
     public void testWatch() {
@@ -169,7 +167,7 @@ public class MessgeListenerTest {
         }
     }
 */
-    @Test
+    /*@Test
     public void testInsert() {
         //Mars mars = new Mars(MongoClients.create("mongodb://192.168.3.106:37017,192.168.3.106:37018,192.168.3.106:37019/"), "myrepo");
         Corporation corporation = new Corporation();
@@ -179,5 +177,5 @@ public class MessgeListenerTest {
         department.setEmployees(Arrays.asList("employee"));
         //corporation.setDepartment(department);
         mars.insert(corporation);
-    }
+    }*/
 }

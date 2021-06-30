@@ -1,16 +1,14 @@
 package com.whaleal.mars.core.aggreation;
 
-import com.whaleal.mars.bean.Counter;
-import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.aggregation.Aggregation;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import com.whaleal.mars.session.MarsCursor;
 import com.whaleal.mars.session.QueryCursor;
+import org.bson.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +59,7 @@ public class MarsAggregationTest {
         AggregationPipeline  pipeline = new AggregationPipeline();
         pipeline.group(Group.of(id("stuName"))
                 .field("counter", sum(field("age"))));
-        QueryCursor<Counter> aggregate = mars.aggregate(pipeline, Counter.class);
+        QueryCursor<Document> aggregate = mars.aggregate(pipeline, Document.class);
 
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());

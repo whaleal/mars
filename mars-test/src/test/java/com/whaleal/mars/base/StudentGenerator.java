@@ -1,6 +1,6 @@
 package com.whaleal.mars.base;
 
-import com.whaleal.mars.bean.Sex;
+import com.whaleal.mars.bean.Gender;
 import com.whaleal.mars.bean.Student;
 
 public class StudentGenerator {
@@ -13,7 +13,7 @@ public class StudentGenerator {
         Student student = new Student();
         student.setStuNo(String.valueOf(stuNo));
         student.setStuHeight(172.35);
-        student.setStuSex(stuNo % 2 == 0 ? Sex.F : Sex.M);
+        student.setStuSex(stuNo % 2 == 0 ? Gender.male: Gender.female);
         student.setStuName(String.valueOf((stuNo - 1000)));
         student.setStuAge(18);
         student.setClassNo(String.valueOf(classNo));

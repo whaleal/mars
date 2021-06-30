@@ -1,8 +1,8 @@
 package com.whaleal.mars.core.aggreation;
 
-import com.whaleal.mars.bean.Counter;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
+import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +73,7 @@ public class AggreationCodecTest {
         AggregationPipeline  pipeline = new AggregationPipeline();
         pipeline.group(Group.of(id("address.city.name"))
                 .field("counter", sum(field("age"))));
-        QueryCursor<Counter> aggregate = mars.aggregate(pipeline, Counter.class);
+        QueryCursor<Document> aggregate = mars.aggregate(pipeline, Document.class);
 
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());

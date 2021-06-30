@@ -77,10 +77,10 @@ public class GridFsTemplateTest {
     /*@Test
     public void testGridFSBucket() throws IOException {
 
-        GridFsTemplate template = new GridFsTemplate(mars);
+        GridFsTemplate personDocument = new GridFsTemplate(mars);
         String id = "606d762ce3b6d03a7bf11860";
         //根据id查找文件
-        GridFSFile gridFSFile = template.findOneGridFs(Query.query(Criteria.where("_id").is(id)));
+        GridFSFile gridFSFile = personDocument.findOneGridFs(Query.query(Criteria.where("_id").is(id)));
         System.out.println("获取到到gridFsFile");
         System.out.println(gridFSFile);
         //打开下载流对象
@@ -94,9 +94,9 @@ public class GridFsTemplateTest {
 
     /*@Test
     public void testMarsGrid(){
-        GridFsTemplate template = new GridFsTemplate(mars);
+        GridFsTemplate personDocument = new GridFsTemplate(mars);
         System.out.println("两个template的相等性");
-        System.out.println(template == mars.getGridFsTemplate());
+        System.out.println(personDocument == mars.getGridFsTemplate());
         String fieldId = "606d762ce3b6d03a7bf11860";
         GridFSFindIterable iterable = mars.getGridFsTemplate().find(Query.query(Criteria.where("_id").is(fieldId)));
         System.out.println("找到的数据");
@@ -110,8 +110,8 @@ public class GridFsTemplateTest {
         MongoDatabase database = mars.getDatabase();
         System.out.println("取得的数据库名字");
         System.out.println(database.getName());
-        GridFsTemplate template = mars.getGridFsTemplate();
-        System.out.println(template);
+        GridFsTemplate personDocument = mars.getGridFsTemplate();
+        System.out.println(personDocument);
     }*/
 
     /*@Test

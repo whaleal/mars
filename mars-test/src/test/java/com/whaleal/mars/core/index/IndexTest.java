@@ -1,7 +1,7 @@
 package com.whaleal.mars.core.index;
 
 
-import com.whaleal.mars.bean.IndexSome;
+import com.whaleal.mars.bean.Student;
 import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
@@ -78,7 +78,7 @@ public class IndexTest {
     public void testEnsurseIndexes(){
 
         mars.dropIndexes(coll);
-        mars.ensureIndexes(IndexSome.class ,coll);
+        mars.ensureIndexes(Student.class ,coll);
         List<Index> indexes = mars.getIndexes(coll);
         Assert.assertEquals(indexes.size() ,4);
 

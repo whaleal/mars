@@ -29,12 +29,11 @@
  */
 package com.whaleal.mars.bean;
 
-import com.whaleal.mars.bson.codecs.pojo.MgoType;
+import com.whaleal.mars.bson.codecs.pojo.StorageType;
 import com.whaleal.mars.bson.codecs.pojo.annotations.MongoProperty;
 import com.whaleal.mars.bson.codecs.pojo.annotations.MongoId;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 public class Person
         implements Comparable<Person> {
@@ -49,7 +48,15 @@ public class Person
     @MongoId
     private String id;
 
-    LocalDate birthDate;
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    private LocalDate birthDate;
 
     public Car[] getCars() {
         return cars;
@@ -59,9 +66,9 @@ public class Person
         this.cars = cars;
     }
 
-    Car[] cars = new Car[]{new Car(),new Car()};
+    private Car[] cars = new Car[]{new Car(),new Car()};
 
-    Set<Address> addresses;
+
     @MongoProperty("fName")
     private String firstName;
     private String lastName;
@@ -87,7 +94,7 @@ public class Person
         this.height = height;
     }
 
-    @MongoProperty(value = "tall",mgoType = MgoType.STRING)
+    @MongoProperty(value = "tall",storageType = StorageType.STRING)
     private Double  height = 1.8D ;
 
 
@@ -96,9 +103,6 @@ public class Person
     }
 
 
-    public Person(Set<Address> addresses) {
-        this.addresses = addresses;
-    }
 
     /**
      * @return the firstName
@@ -185,7 +189,6 @@ public class Person
         return "Person{" +
                 "id='" + id + '\'' +
                 ", birthDate=" + birthDate +
-                ", addresses=" + addresses +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", address=" + address +

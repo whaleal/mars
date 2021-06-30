@@ -21,7 +21,7 @@ public class SortTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server100_test);
+        mars = new Mars(Constant.server101);
         //准备数据准备一次就足够了，不能准备多次
         /*LinkedList<Student> list = new LinkedList<>();
         for (int i = 1001; i < 1010; i++) {

@@ -12,7 +12,7 @@ public class EntityTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server100_test);
+        mars = new Mars(Constant.server101);
     }
 
     @Test
@@ -23,7 +23,7 @@ public class EntityTest {
     @Test
     public void testCreateCollection() {
         CollectionOptions options = CollectionOptions.empty().capped().size(2000L).maxDocuments(2000L);
-        //mars.createCollection("cs", options);
+
         mars.createCollection(Student.class);
     }
 

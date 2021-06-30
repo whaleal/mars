@@ -6,7 +6,6 @@ import org.junit.Test;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.EntityGenerater;
 import com.whaleal.mars.bean.Person;
-import com.whaleal.mars.bean.PersonEx;
 import com.whaleal.mars.core.Mars;
 
 import java.util.ArrayList;
@@ -34,23 +33,6 @@ public class CrudWithExtend {
 
 
 
-    }
-
-
-    @Test
-    public  void tryInsert(){
-
-        PersonEx personEx = new PersonEx();
-        Person person = people.get(0);
-
-        personEx.setAddress(person.getAddress());
-        personEx.setAge(person.getAge());
-        personEx.setId(person.getId());
-        personEx.setFirstName(person.getFirstName());
-        personEx.setLastName(person.getLastName());
-
-
-        mars.insert(personEx);
     }
 
 

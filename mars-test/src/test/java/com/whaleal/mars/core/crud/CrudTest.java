@@ -1,9 +1,8 @@
 
 package com.whaleal.mars.core.crud;
 
-import com.whaleal.mars.bean.Corporation;
-import com.whaleal.mars.bean.Depart;
-import com.whaleal.mars.bean.EntityGenerater;
+import com.whaleal.mars.base.StudentGenerator;
+import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.bean.Person;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -44,32 +43,27 @@ public class CrudTest {
     @Autowired
     Mars mars;
 
-    List<Corporation> corporations;
+    Student student;
+    
+    
+    Integer  stuNo = 10000 ; 
 
     @Before
     public void isNull() {
         Assert.assertNotNull(mars);
 
         System.out.println(mars);
-        corporations =EntityGenerater.getCorporation(true);
+        student = StudentGenerator.getInstance(10000);
     }
 
-    @Test
-    public void insertTest(){
-        Depart depart = new Depart();
-        //depart.setDepartName("12");
-        Integer[] age = {12,12};
-        //depart.setAge(13);
-        mars.insert(depart);
-
-    }
+    
 
     @Test
     public void findAll() {
 
         Query query = new Query();
 
-        QueryCursor<Corporation> result = mars.findAll(query, Corporation.class);
+        QueryCursor<Student> result = mars.findAll(query, Student.class);
 
         while (result.hasNext()) {
             System.out.println(result.next());
@@ -81,7 +75,7 @@ public class CrudTest {
     public void findOne() {
 
         Query query = Query.query(Criteria.where("_id").is(new ObjectId("6034c9c9e73be70704731635")));
-        Optional<Corporation> one = mars.findOne(query, Corporation.class, null);
+        Optional<Student> one = mars.findOne(query, Student.class, null);
 
         System.out.println(one);
     }
@@ -89,23 +83,23 @@ public class CrudTest {
     @Test
     public void insertOne() {
 
-       Corporation corporation = EntityGenerater.getCorporation(false);
+       Student student = StudentGenerator.getInstance(stuNo);
 
-        mars.insert(corporation);
+        mars.insert(student);
 
     }
 
     @Test
     public void insertMany() {
         System.out.println("getTime: " +System.currentTimeMillis());
-        mars.insert(corporations);
+        mars.insert(student);
         System.out.println("endTime: " +System.currentTimeMillis());
     }
 
     @Test
     public void update() {
-        Corporation corporation = EntityGenerater.getCorporation(false);
-        corporation.setName("cName");
+        Student student = StudentGenerator.getInstance(stuNo);
+        student.setStuName("cName");
 
         //Query query = Query.query(Criteria.where("_id").is("JinMu"));
 
@@ -115,8 +109,8 @@ public class CrudTest {
         options.upsert(true);
         options.multi(true);
 
-        UpdateResult result = mars.update(query, corporation, options, null);
-        mars.update(query,corporation);
+        UpdateResult result = mars.update(query, student, options, null);
+        mars.update(query,student);
 
         System.out.println(result);
 
@@ -166,7 +160,7 @@ public class CrudTest {
         UpdateOptions options = new UpdateOptions();
         options.multi(true);
 
-        UpdateResult result = mars.update(query, entity, Corporation.class, options, null);
+        UpdateResult result = mars.update(query, entity, Student.class, options, null);
 
         System.out.println(result);
 
@@ -180,7 +174,7 @@ public class CrudTest {
         options.multi(true);
 
 
-        DeleteResult result = mars.delete(query, Corporation.class, options, null);
+        DeleteResult result = mars.delete(query, Student.class, options, null);
 
         System.out.println(result);
 
@@ -189,13 +183,13 @@ public class CrudTest {
     @Test
     public void replace() {
 
-        Corporation corporation =  EntityGenerater.getCorporation(false);
-        corporation.setName("cName");
+        Student student =  StudentGenerator.getInstance(stuNo);
+        student.setStuName("cName");
 
         ReplaceOptions replaceOptions = new ReplaceOptions();
 
         Query query = Query.query(Criteria.where("name").is("JinMu"));
-        mars.replace(query, corporation, replaceOptions);
+        mars.replace(query, student, replaceOptions);
     }
 
 

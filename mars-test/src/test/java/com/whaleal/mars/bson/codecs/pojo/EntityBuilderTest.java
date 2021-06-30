@@ -1,11 +1,11 @@
 package com.whaleal.mars.bson.codecs.pojo;
 
 import com.whaleal.mars.bean.Car;
-import com.whaleal.mars.bean.Corporation;
 import com.whaleal.mars.bean.Person;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import com.whaleal.mars.bson.codecs.RepresentationConfigurable;
 import org.bson.BsonType;
@@ -53,7 +53,7 @@ public class EntityBuilderTest {
             System.out.println("isOk");
         }
 
-        Codec<Corporation> corporationCodec = codecRegistry.get(Corporation.class);
+        Codec<Student> corporationCodec = codecRegistry.get(Student.class);
 
         System.out.println(corporationCodec);
     }
