@@ -41,14 +41,6 @@ public @interface Entity {
 
     String value() default "";
 
-    String language() default "";
-
-    String collation() default "";
-
-    CappedAt cap() default @CappedAt(value = -1, count = -1);
-
-    String concern() default "";
-
     boolean useDiscriminator() default false;
 
     String discriminatorKey() default "";
