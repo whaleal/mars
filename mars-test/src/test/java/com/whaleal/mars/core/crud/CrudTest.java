@@ -69,7 +69,7 @@ public class CrudTest {
 
         Query query = new Query();
 
-        QueryCursor<Corporation> result = mars.findAll(query, Corporation.class, null);
+        QueryCursor<Corporation> result = mars.findAll(query, Corporation.class);
 
         while (result.hasNext()) {
             System.out.println(result.next());

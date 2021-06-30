@@ -16,7 +16,7 @@ public class MarsURITest {
     @Before
     public void init() {
 
-        mars = new Mars(Constant.server100);
+        Assert.assertNotNull(mars);
     }
 
 
