@@ -698,23 +698,23 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         Assert.notNull(entityClass, "EntityClass must not be null!");
 
         CollectionOptions options = collectionOptions != null ? collectionOptions : CollectionOptions.empty();
+        Document document = convertToDocument(options);
 
         //TODO it may contains some bug，so please use it carefully.
-        CappedAt annotation = (CappedAt) this.mapper.getEntityModel(entityClass).getAnnotation(CappedAt.class);
-        Document document = convertToDocument(options);
-        if (!ObjectUtils.isEmpty(annotation.value())) {
+        CappedAt capped = (CappedAt) this.mapper.getEntityModel(entityClass).getAnnotation(CappedAt.class);
+
+         if(!ObjectUtils.isEmpty(capped)) {
             document.put("capped", true);
-            document.put("size", annotation.value());
-            document.put("max", annotation.count());
+            document.put("size", capped.value());
+            document.put("max", capped.count());
         }
-        /*if (StringUtils.hasText(annotation.collation())) {
-            document.put("collation", annotation.collation());
+
+        /*
+        if (!ObjectUtils.isEmpty(capped)) {
+            document.put("collation", collation.value());
         }
-        document.put("concern", annotation.concern());
-        document.put("useDiscriminator", annotation.useDiscriminator());
-        document.put("discriminatorKey", annotation.discriminatorKey());
-        document.put("discriminator", annotation.useDiscriminator());
-        document.put("language", annotation.language());*/
+        document.put("concern", annotation.concern());*/
+
 
         return doCreateCollection(this.mapper.getEntityModel(entityClass).getCollectionName(), document);
     }
