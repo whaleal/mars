@@ -1,8 +1,16 @@
 package com.whaleal.mars.core.crud;
 
+import com.whaleal.mars.base.SerializationUtil;
 import com.whaleal.mars.bean.*;
+import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.core.index.Index;
+import com.whaleal.mars.core.query.Update;
+import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
+import com.whaleal.mars.session.result.UpdateResult;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,8 +42,9 @@ public class PersonCrudTest {
     }
 
 
+    // InsertOne
     @Test
-    public void test01InsertOne(){
+    public void test01(){
         Person person = EntityGenerater.getPerson();
         person.setAge("19");
         person.setHeight(2.12);
@@ -86,8 +95,9 @@ public class PersonCrudTest {
 
 
 
+    //InsertMany
     @Test
-    public void test02InsertMany(){
+    public void test02(){
 
         int number = 999999 ;
         List<Person> personList = new ArrayList<>();
@@ -108,84 +118,392 @@ public class PersonCrudTest {
     }
 
 
+    //CountEntity
     @Test
-    public void test03Count(){
+    public void test03(){
+        int number = 999 ;
+        List<Person> personList = new ArrayList<>();
+        for (int i = 1; i <=number; i++) {
+            personList.add(EntityGenerater.getPerson());
+        }
+
+        mars.insert(personList);
         long count = mars.count(Person.class);
-        System.out.println(count);
+
+        Assert.assertEquals(count ,number);
+
+    }
+
+    // CountEntityById
+    @Test
+    public void test04(){
+        int number = 999 ;
+        List<Person> personList = new ArrayList<>();
+        for (int i = 1; i <=number; i++) {
+            personList.add(EntityGenerater.getPerson());
+        }
+
+        mars.insert(personList);
+        long count = mars.countById(new Query(),Person.class);
+
+        Assert.assertEquals(count ,number);
+
     }
 
 
+
+
+
+    // deleteOne
     @Test
-    public void delete() {
+    public void test05() {
+
+        mars.createCollection(Person.class);
+
+        long count = mars.count(Person.class);
+
+        Assert.assertEquals(count ,0);
+
+        Person person = EntityGenerater.getPerson();
+
+        InsertOneResult insert = mars.insert(person);
+
+        Assert.assertTrue(insert.wasAcknowledged());
+
+        Assert.assertNotNull(insert.getInsertedId().asObjectId().getValue().toHexString());
+
+        String  id = insert.getInsertedId().asObjectId().getValue().toHexString() ;
+
+        long count1 = mars.count(Person.class);
+        Assert.assertEquals(count1 ,1);
+
+        Query query = new Query().addCriteria(Criteria.where("_id").is(new ObjectId(id)));
+        DeleteResult deleteResult = mars.delete(query, Person.class);
+
+        Assert.assertEquals(deleteResult.getDeletedCount(),1);
+
+
+    }
+
+
+
+    //deleteManay
+    @Test
+    public void test06(){
+
+
+        List<Document> documents = SerializationUtil.getDocuments();
+
+        com.mongodb.client.result.InsertManyResult insertManyResult = mars.getCollection(Document.class,"person").insertMany(documents);
+
+
+        Assert.assertTrue(insertManyResult.wasAcknowledged());
+
+        int  number = insertManyResult.getInsertedIds().size() ;
+
         Query query = new Query();
 
         DeleteOptions options = new DeleteOptions();
         options.multi(true);
 
+        DeleteResult result = mars.delete(query,Person.class,options);
 
-        DeleteResult result = mars.delete(query, Person.class, options);
+        long deletedCount = result.getDeletedCount();
 
-        System.out.println(result);
+        Assert.assertEquals(number ,deletedCount);
 
-    }
-
-
-    @Test
-    public void delete1() {
-        Query query = new Query();
-
-        DeleteResult result = mars.delete(query,"person");
-
-        System.out.println(result);
 
     }
 
-    @Test
-    public void delete2(){
 
-        Query query = new Query();
+
+
+    // delete with  "address" : { "city" : { "id" : "102101021"}}
+    @Test
+    public void test07(){
+
+
+        Person person = EntityGenerater.getPerson();
+        mars.insert(person);
+
+        String value = person.getAddress().getCity().getId();
+
+        Query query = new Query(Criteria.where("address.city.id").is(value));
 
         DeleteOptions options = new DeleteOptions();
-        options.multi(true);
-
-
-        DeleteResult result = mars.delete(query,"person",options);
-
-        System.out.println(result);
-
-    }
-
-    @Test
-    public void delete3(){
-
-        Query query = new Query();
-
-        DeleteOptions options = new DeleteOptions();
-        options.multi(true);
-
 
         DeleteResult result = mars.delete(query, Car.class,options,"person");
 
-        System.out.println(result);
+        long deletedCount = result.getDeletedCount();
+
+        Assert.assertEquals(deletedCount , 1);
+
+        long count = mars.count(Person.class);
+
+        Assert.assertEquals(count,0);
+
+    }
+
+
+    //  upsertWithEntity
+    @Test
+    public void test08(){
+        Person person = EntityGenerater.getPerson();
+
+        Query query = Query.query(Criteria.where("a").is(9999));
+
+        UpdateOptions options = new UpdateOptions();
+        options.upsert(true);
+        options.multi(true);
+
+        UpdateResult result = mars.update(query, person, options);
+
+
+       Assert.assertTrue(result.wasAcknowledged()) ;
+       Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
+
+
+    }
+
+
+    //upsertWithUpdateDefinition
+    @Test
+    public void test09(){
+        List zipCodes = new ArrayList();
+        zipCodes.add("11111");
+        zipCodes.add("2222");
+        zipCodes.add("333");
+        zipCodes.add("4444");
+
+        Document city = new Document();
+        city.put("id", "1231321");
+        city.put("name", "湖南");
+        city.put("lat", 123);
+        city.put("lon", 31);
+        city.put("zipCodes", zipCodes);
+
+
+        Document address = new Document();
+        address.put("streetName", "南京路");
+        address.put("streetNumber", 1233);
+        address.put("city", city);
+
+        Document employee = new Document();
+        employee.put("name", "尾田荣一郎");
+        employee.put("age", 21);
+        employee.put("sex", "男");
+        employee.put("address", address);
+
+        List employees = new ArrayList();
+        employees.add(employee);
+
+        Document document = new Document();
+        document.put("name", "111111");
+        document.put("Employees", employees);
+
+
+        Update entity = Update.update("name", "updateDefinition后的id").set("department", document);
+
+        Query query = Query.query(Criteria.where("a").is(101));
+
+        UpdateOptions options = new UpdateOptions();
+        options.upsert(true);
+        options.multi(true);
+
+        UpdateResult result = mars.update(query, entity, Person.class, options);
+
+
+        Assert.assertNotNull(result.getUpsertedId());
+    }
+
+
+    //update
+    @Test
+    public void test10() {
+
+        Person person = EntityGenerater.getPerson();
+
+        Query query = Query.query(Criteria.where("a").is(100));
+
+        UpdateOptions options = new UpdateOptions();
+        options.upsert(true);
+        options.multi(true);
+
+        UpdateResult result = mars.update(query, person, options);
+
+
+        Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
+
+    }
+
+
+    //updateByUpdateDefinition
+    @Test
+    public void test11() {
+
+
+        List zipCodes = new ArrayList();
+        zipCodes.add("11111");
+        zipCodes.add("2222");
+        zipCodes.add("333");
+        zipCodes.add("4444");
+
+        Document city = new Document();
+        city.put("id", "1231321");
+        city.put("name", "湖南");
+        city.put("lat", 123);
+        city.put("lon", 31);
+        city.put("zipCodes", zipCodes);
+
+
+        Document address = new Document();
+        address.put("streetName", "南京路");
+        address.put("streetNumber", 1233);
+        address.put("city", city);
+
+        Document employee = new Document();
+        employee.put("name", "尾田荣一郎");
+        employee.put("age", 21);
+        employee.put("sex", "男");
+        employee.put("address", address);
+
+        List employees = new ArrayList();
+        employees.add(employee);
+
+        Document document = new Document();
+        document.put("name", "111111");
+        document.put("Employees", employees);
+
+
+        Update entity = Update.update("name", "updateDefinition后的id").set("department", document);
+
+        Query query = Query.query(Criteria.where("name").is("cName"));
+
+        UpdateOptions options = new UpdateOptions();
+        options.multi(true);
+        options.upsert(true);
+
+        UpdateResult result = mars.update(query, entity, Person.class, options);
+
+        Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
+
+    }
+
+
+    //testUpdateUpdateDefinition1
+    @Test
+    public void test12(){
+
+        Update update = Update.update("name", "updateDefinition后的id").set("department", 10086);
+
+        Query query = Query.query(Criteria.where("name").is("cName"));
+
+        UpdateResult result = mars.update(query,update,"person");
+
+
+        Assert.assertEquals(result.getMatchedCount(),0);
+
+    }
+
+    //testUpdateUpdateDefinition2
+
+    @Test
+    public void test13(){
+
+        Update update = Update.update("name", "updateDefinition后的id").set("department", 10087);
+
+        Query query = Query.query(Criteria.where("name").is("cName"));
+
+
+        UpdateResult result = mars.update(query,update,"person",new UpdateOptions().upsert(true));
+
+
+        Assert.assertEquals(result.getMatchedCount(),0);
+
+        Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
+    }
+
+
+
+    // test findAll()
+    @Test
+    public void test14(){
+
+        initWithStanderData();
+
+
+        QueryCursor<Person> all = mars.findAll(new Query(), Person.class);
+
+
+        List<Person> personList = all.toList();
+
+
+
+        Assert.assertEquals(personList.size() , 1000);
+
+
+    }
+
+    @Test
+    public void test30(){
+
+        mars.ensureIndexes(Student.class ,"person");
 
     }
 
 
     @Test
-    public void delete4(){
+    public void test31(){
 
-        Query query = new Query(Criteria.where("_id").is(new ObjectId("60a363180de7e47bd42bb51c")));
+        mars.ensureIndexes(Student.class ,"person");
+        List<Index> person = mars.getIndexes("person");
 
-        DeleteOptions options = new DeleteOptions();
-        options.multi(true);
-
-
-        DeleteResult result = mars.delete(query, Car.class,options,"person");
-
-        System.out.println(result);
+        Assert.assertEquals(person.size(),4);
 
     }
 
+
+    @Test
+    public void test32(){
+        mars.createCollection(Person.class);
+
+        mars.dropCollection("person");
+    }
+
+    @Test
+    public void test33(){
+        mars.createCollection(Person.class);
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void initWithStanderData(){
+
+        List<Document> documents = SerializationUtil.getDocuments();
+
+        com.mongodb.client.result.InsertManyResult insertManyResult = mars.getCollection(Document.class,"person").insertMany(documents);
+
+
+        Assert.assertTrue(insertManyResult.wasAcknowledged());
+
+    }
 
 
 }

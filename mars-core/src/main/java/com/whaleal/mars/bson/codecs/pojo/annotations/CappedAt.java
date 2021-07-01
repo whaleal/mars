@@ -36,8 +36,12 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CappedAt {
 
+    //  count mean  max  ，    number of documents.
+    //  count mean  max  ，即为条数上线即为条数上线
     long count() default 0;
 
 
+    // The size argument is always required. even when you specify max number of documents
+    // value  mean size  ,
     long value() default 1024 * 1024;
 }
