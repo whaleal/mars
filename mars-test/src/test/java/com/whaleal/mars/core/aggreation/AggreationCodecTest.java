@@ -57,7 +57,9 @@ public class AggreationCodecTest {
     public void testAggPtoject(){
 
         AggregationPipeline  pipeline = new AggregationPipeline();
-        Aggregation age = pipeline.project(Projection.of().exclude("age"));
+
+
+        pipeline.project(Projection.of().exclude("age"));
 
         QueryCursor<Person> aggregate = mars.aggregate(pipeline, Person.class);
 
