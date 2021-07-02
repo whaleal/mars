@@ -7,7 +7,7 @@
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
     <name>Mars</name>
     <description>MongoDB driver framework</description>
     <!--我们项目的git地址-->
@@ -21,7 +21,7 @@
 
     <properties>
         <mongo.driver.version>4.2.3</mongo.driver.version>
-        <mars.version>0.1.2</mars.version>
+        <mars.version>0.1.3</mars.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring.version>2.5.1</spring.version>
@@ -38,12 +38,12 @@
 
     <!--这个和我们创建的issue相对应，
         需要打包的项目一定要放到我们所说的地址上面，也就是说这个地址一定要是我们的，否则我们没有权限
-        tag：这个项目的分支，这里我放到了master分支里面
+        tag：这个项目的分支，这里我放到了main分支里面
         url：项目的git地址，
         connection 和 developerConnection这两个我们也不太清楚，就按照这个格式去写吧
     -->
     <scm>
-        <tag>master</tag>
+        <tag>main</tag>
         <url>git@github.com:whaleal/mars.git</url>
         <connection>scm:git:git@github.com:whaleal/mars.git</connection>
         <developerConnection>scm:git:git@github.com:whaleal/mars.git</developerConnection>
