@@ -51,7 +51,6 @@ public class Filter {
     private boolean not;
     private boolean validate;
     private Class<?> entityClass;
-    //private PathTarget pathTarget;
     private boolean mapped;
 
     protected Filter(String name) {
