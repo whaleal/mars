@@ -183,6 +183,13 @@ public class Query {
         return this.fieldSpec;
     }
 
+    public Query withProjection(Field field) {
+
+        Assert.notNull(field, "projection must not be empty or null!");
+        this.fieldSpec = field ;
+        return this;
+    }
+
     /**
      * Set number of documents to skip before returning results.
      *
