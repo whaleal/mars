@@ -61,6 +61,7 @@ public class MarsAggregationTest {
                 .field("counter", sum(field("age"))));
         QueryCursor<Document> aggregate = mars.aggregate(pipeline, Document.class);
 
+
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());
         }
