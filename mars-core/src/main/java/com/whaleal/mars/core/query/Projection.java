@@ -39,9 +39,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Field projection.
+ * Projection projection.
+ *
+ * 其实就是一个projection
  */
-public class Field {
+public class Projection {
 
     private final Map<String, Integer> criteria = new HashMap<>();
     private final Map<String, Object> slices = new HashMap<>();
@@ -56,7 +58,7 @@ public class Field {
      * @param field the document field name to be included.
      * @return {@code this} field projection instance.
      */
-    public Field include(String field) {
+    public Projection include(String field) {
 
         Assert.notNull(field, "Key must not be null!");
 
@@ -71,7 +73,7 @@ public class Field {
      * @param fields the document field names to be included.
      * @return {@code this} field projection instance.
      */
-    public Field include(String... fields) {
+    public Projection include(String... fields) {
 
         Assert.notNull(fields, "Keys must not be null!");
 
@@ -88,7 +90,7 @@ public class Field {
      * @param field the document field name to be included.
      * @return {@code this} field projection instance.
      */
-    public Field exclude(String field) {
+    public Projection exclude(String field) {
 
         Assert.notNull(field, "Key must not be null!");
 
@@ -103,7 +105,7 @@ public class Field {
      * @param fields the document field names to be included.
      * @return {@code this} field projection instance.
      */
-    public Field exclude(String... fields) {
+    public Projection exclude(String... fields) {
 
         Assert.notNull(fields, "Keys must not be null!");
 
@@ -121,7 +123,7 @@ public class Field {
      * @param size  the number of elements to include.
      * @return {@code this} field projection instance.
      */
-    public Field slice(String field, int size) {
+    public Projection slice(String field, int size) {
 
         Assert.notNull(field, "Key must not be null!");
 
@@ -139,13 +141,13 @@ public class Field {
      * @param size   the number of elements to include.
      * @return {@code this} field projection instance.
      */
-    public Field slice(String field, int offset, int size) {
+    public Projection slice(String field, int offset, int size) {
 
         slices.put(field, new Integer[]{offset, size});
         return this;
     }
 
-    public Field elemMatch(String field, Criteria elemMatchCriteria) {
+    public Projection elemMatch(String field, Criteria elemMatchCriteria) {
 
         elemMatchs.put(field, elemMatchCriteria);
         return this;
@@ -159,7 +161,7 @@ public class Field {
      * @param value
      * @return {@code this} field projection instance.
      */
-    public Field position(String field, int value) {
+    public Projection position(String field, int value) {
 
         Assert.hasText(field, "DocumentField must not be null or empty!");
 
@@ -197,21 +199,21 @@ public class Field {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        Field field = (Field) o;
+        Projection projection = (Projection) o;
 
-        if (positionValue != field.positionValue) {
+        if (positionValue != projection.positionValue) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(criteria, field.criteria)) {
+        if (!ObjectUtils.nullSafeEquals(criteria, projection.criteria)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(slices, field.slices)) {
+        if (!ObjectUtils.nullSafeEquals(slices, projection.slices)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(elemMatchs, field.elemMatchs)) {
+        if (!ObjectUtils.nullSafeEquals(elemMatchs, projection.elemMatchs)) {
             return false;
         }
-        return ObjectUtils.nullSafeEquals(positionKey, field.positionKey);
+        return ObjectUtils.nullSafeEquals(positionKey, projection.positionKey);
     }
 
     @Override

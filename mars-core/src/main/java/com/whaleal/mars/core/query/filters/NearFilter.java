@@ -27,43 +27,92 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.filters;
 
+import com.mongodb.client.model.geojson.CoordinateReferenceSystem;
 import com.mongodb.client.model.geojson.Point;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-class Box extends Filter {
+import java.util.Map;
 
-    private final Point bottomLeft;
-    private final Point upperRight;
+/**
+ * Defines a filter for $near and $nearSphere queries
+ */
+public class NearFilter extends Filter {
+    private Double maxDistance;
+    private Double minDistance;
+    private CoordinateReferenceSystem crs;
 
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+    NearFilter(String filterName, String field, Point point) {
+        super(filterName, field, point);
     }
 
     @Override
     public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
         writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
-
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
+        if (isNot()) {
+            writer.writeStartDocument("$not");
         }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
+        writer.writeStartDocument(getName());
+        writer.writeName("$geometry");
+        writeUnnamedValue(getValue(mapper), mapper, writer, context);
+        if (maxDistance != null) {
+            writeNamedValue("$maxDistance", maxDistance, mapper, writer, context);
         }
-        writer.writeEndArray();
-        writer.writeEndArray();
-
+        if (minDistance != null) {
+            writeNamedValue("$minDistance", minDistance, mapper, writer, context);
+        }
+        if (crs != null) {
+            writeNamedValue("crs", crs, mapper, writer, context);
+        }
         writer.writeEndDocument();
+        if (isNot()) {
+            writer.writeEndDocument();
+        }
         writer.writeEndDocument();
     }
+
+    /**
+     * Sets the max distance to consider
+     *
+     * @param maxDistance the max
+     * @return this
+     */
+    public NearFilter maxDistance(Double maxDistance) {
+        this.maxDistance = maxDistance;
+        return this;
+    }
+
+    /**
+     * Sets the min distance to consider
+     *
+     * @param minDistance the min
+     * @return this
+     */
+    public NearFilter minDistance(Double minDistance) {
+        this.minDistance = minDistance;
+        return this;
+    }
+
+    /**
+     * Sets the coordinate reference system to use
+     *
+     * @param crs the crs
+     * @return this
+     */
+    public NearFilter crs(CoordinateReferenceSystem crs) {
+        this.crs = crs;
+        return this;
+    }
+
+    /**
+     * @param opts the options to apply
+     */
+    public void applyOpts(Map opts) {
+        maxDistance = (Double) opts.get("$maxDistance");
+        minDistance = (Double) opts.get("$minDistance");
+    }
+
 }

@@ -268,6 +268,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
 
     /**
      * Enumeration for sort directions.
+     *
      */
     public static enum Direction {
 
@@ -277,7 +278,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * Returns whether the direction is ascending.
          *
          * @return
-         * @since 1.13
+         * 
          */
         public boolean isAscending() {
             return this.equals(ASC);
@@ -287,7 +288,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * Returns whether the direction is descending.
          *
          * @return
-         * @since 1.13
+         * 
          */
         public boolean isDescending() {
             return this.equals(DESC);
@@ -390,7 +391,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * {@link Sort#DEFAULT_DIRECTION}.
          *
          * @param property must not be {@literal null} or empty.
-         * @since 2.0
+         * 
          */
         public static Order by(String property) {
             return new Order(DEFAULT_DIRECTION, property);
@@ -401,7 +402,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * NullHandling {@link NullHandling#NATIVE}.
          *
          * @param property must not be {@literal null} or empty.
-         * @since 2.0
+         * 
          */
         public static Order asc(String property) {
             return new Order(Direction.ASC, property, DEFAULT_NULL_HANDLING);
@@ -412,7 +413,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * NullHandling {@link NullHandling#NATIVE}.
          *
          * @param property must not be {@literal null} or empty.
-         * @since 2.0
+         * 
          */
         public static Order desc(String property) {
             return new Order(Direction.DESC, property, DEFAULT_NULL_HANDLING);
@@ -426,7 +427,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * @param property     must not be {@literal null} or empty.
          * @param ignoreCase   true if sorting should be case insensitive. false if sorting should be case sensitive.
          * @param nullHandling must not be {@literal null}.
-         * @since 1.7
+         * 
          */
         private Order(@Nullable Direction direction, String property, boolean ignoreCase, NullHandling nullHandling) {
 
@@ -471,7 +472,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * Returns whether sorting for this property shall be descending.
          *
          * @return
-         * @since 1.13
+         * 
          */
         public boolean isDescending() {
             return this.direction.isDescending();
@@ -501,7 +502,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          *
          * @param property must not be {@literal null} or empty.
          * @return
-         * @since 1.13
+         * 
          */
         public Order withProperty(String property) {
             return new Order(this.direction, property, this.ignoreCase, this.nullHandling);
@@ -531,7 +532,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          *
          * @param nullHandling can be {@literal null}.
          * @return
-         * @since 1.8
+         * 
          */
         public Order with(NullHandling nullHandling) {
             return new Order(direction, this.property, ignoreCase, nullHandling);
@@ -541,7 +542,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * Returns a {@link Order} with {@link NullHandling#NULLS_FIRST} as null handling hint.
          *
          * @return
-         * @since 1.8
+         * 
          */
         public Order nullsFirst() {
             return with(NullHandling.NULLS_FIRST);
@@ -551,7 +552,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * Returns a {@link Order} with {@link NullHandling#NULLS_LAST} as null handling hint.
          *
          * @return
-         * @since 1.7
+         * 
          */
         public Order nullsLast() {
             return with(NullHandling.NULLS_LAST);
@@ -561,7 +562,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * Returns a {@link Order} with {@link NullHandling#NATIVE} as null handling hint.
          *
          * @return
-         * @since 1.7
+         * 
          */
         public Order nullsNative() {
             return with(NullHandling.NATIVE);
@@ -571,7 +572,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * Returns the used {@link NullHandling} hint, which can but may not be respected by the used datastore.
          *
          * @return
-         * @since 1.7
+         * 
          */
         public NullHandling getNullHandling() {
             return nullHandling;

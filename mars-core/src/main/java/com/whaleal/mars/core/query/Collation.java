@@ -330,7 +330,7 @@ public class Collation {
     }
 
     /**
-     * Set the Field that determines whether collation should consider whitespace and punctuation as base characters for
+     * Set the Projection that determines whether collation should consider whitespace and punctuation as base characters for
      * purposes of comparison.
      *
      * @param alternate must not be {@literal null}.
@@ -343,7 +343,7 @@ public class Collation {
     }
 
     /**
-     * Set the Field that determines whether collation should consider whitespace and punctuation as base characters for
+     * Set the Projection that determines whether collation should consider whitespace and punctuation as base characters for
      * purposes of comparison.
      *
      * @param alternate must not be {@literal null}.

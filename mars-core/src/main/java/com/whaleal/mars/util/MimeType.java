@@ -436,7 +436,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
      *
      * @param other the other mime type to compare to
      * @return whether the two mime types have the same type and subtype
-     * @since 5.1.4
+     *
      */
     public boolean equalsTypeAndSubtype(@Nullable MimeType other) {
         if (other == null) {

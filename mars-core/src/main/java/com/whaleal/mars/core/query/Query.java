@@ -52,7 +52,7 @@ public class Query {
     private final Set<Class<?>> restrictedTypes = new HashSet<>();
     private final Map<String, CriteriaDefinition> criteria = new LinkedHashMap<>();
     private @Nullable
-    Field fieldSpec = null;
+    Projection projectionSpec = null;
     private Sort sort = Sort.unsorted();
     private long skip;
     private int limit;
@@ -174,19 +174,19 @@ public class Query {
         return this;
     }
 
-    public Field fields() {
+    public Projection fields() {
 
-        if (this.fieldSpec == null) {
-            this.fieldSpec = new Field();
+        if (this.projectionSpec == null) {
+            this.projectionSpec = new Projection();
         }
 
-        return this.fieldSpec;
+        return this.projectionSpec;
     }
 
-    public Query withProjection(Field field) {
+    public Query withProjection(Projection projection) {
 
-        Assert.notNull(field, "projection must not be empty or null!");
-        this.fieldSpec = field ;
+        Assert.notNull(projection, "projection must not be empty or null!");
+        this.projectionSpec = projection;
         return this;
     }
 
@@ -313,7 +313,7 @@ public class Query {
      * @return the field {@link Document}.
      */
     public Document getFieldsObject() {
-        return this.fieldSpec == null ? new Document() : fieldSpec.getFieldsObject();
+        return this.projectionSpec == null ? new Document() : projectionSpec.getFieldsObject();
     }
 
     /**
@@ -568,7 +568,7 @@ public class Query {
     protected boolean querySettingsEquals(Query that) {
 
         boolean criteriaEqual = this.criteria.equals(that.criteria);
-        boolean fieldsEqual = nullSafeEquals(this.fieldSpec, that.fieldSpec);
+        boolean fieldsEqual = nullSafeEquals(this.projectionSpec, that.projectionSpec);
         boolean sortEqual = this.sort.equals(that.sort);
         boolean hintEqual = nullSafeEquals(this.hint, that.hint);
         boolean skipEqual = this.skip == that.skip;
@@ -590,7 +590,7 @@ public class Query {
         int result = 17;
 
         result += 31 * criteria.hashCode();
-        result += 31 * nullSafeHashCode(fieldSpec);
+        result += 31 * nullSafeHashCode(projectionSpec);
         result += 31 * nullSafeHashCode(sort);
         result += 31 * nullSafeHashCode(hint);
         result += 31 * skip;

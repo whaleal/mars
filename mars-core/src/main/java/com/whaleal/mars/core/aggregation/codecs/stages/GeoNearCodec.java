@@ -32,7 +32,7 @@ package com.whaleal.mars.core.aggregation.codecs.stages;
 
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.stages.GeoNear;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+import com.whaleal.mars.core.query.filters.Filter;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 

@@ -376,7 +376,7 @@ public class StopWatch {
          *
          * @see #getTimeMillis()
          * @see #getTimeSeconds()
-         * @since 5.2
+         *  5.2
          */
         public long getTimeNanos() {
             return this.timeNanos;

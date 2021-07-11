@@ -27,33 +27,49 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.index.annotation;
+package com.whaleal.mars.core.query.filters;
 
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.lang.NonNull;
+import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import org.bson.BsonWriter;
+import org.bson.codecs.EncoderContext;
 
-import com.whaleal.mars.core.index.IndexDirection;
+class CenterFilter extends Filter {
+    private final double radius;
 
-import java.lang.annotation.*;
+    protected CenterFilter(String filterName, String field, Point value, double radius) {
+        super(filterName, field, value);
+        this.radius = radius;
+    }
 
-/**
- * Define a field to be used in an index;
- */
-@Documented
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
-public @interface Field {
-    /**
-     * @return "Direction" of the indexing.  Defaults to {@link IndexDirection#ASC}.
-     */
-    IndexDirection type() default IndexDirection.ASC;
+    @Override
+    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+        writer.writeStartDocument(path(mapper));
+        writer.writeStartDocument("$geoWithin");
 
-    /**
-     * @return Projection name to index
-     */
-    String value();
+        writer.writeStartArray(getName());
+        Point center = getValue();
+        writer.writeStartArray();
+        for (Double value : center.getPosition().getValues()) {
+            writer.writeDouble(value);
+        }
+        writer.writeEndArray();
+        writer.writeDouble(radius);
+        writer.writeEndArray();
 
-    /**
-     * @return The weight to use when creating a text index.  This value only makes sense when direction is {@link IndexDirection#TEXT}
-     */
-    int weight() default -1;
+        writer.writeEndDocument();
+        writer.writeEndDocument();
+    }
+
+    @Override
+    @NonNull
+    public Point getValue() {
+        Object value = super.getValue();
+        if (value != null) {
+            return (Point) value;
+        }
+        throw new NullPointerException();
+
+    }
 }

@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.aggregation.stages;
 
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+import com.whaleal.mars.core.query.filters.Filter;
 
 
 public class GraphLookup extends Stage {
@@ -94,7 +94,7 @@ public class GraphLookup extends Stage {
     }
 
     /**
-     * Field name whose value $graphLookup uses to recursively match against the connectToField of other documents in the collection. If
+     * Projection name whose value $graphLookup uses to recursively match against the connectToField of other documents in the collection. If
      * the value is an array, each element is individually followed through the traversal process.
      *
      * @param connectFromField the field name
@@ -106,7 +106,7 @@ public class GraphLookup extends Stage {
     }
 
     /**
-     * Field name in other documents against which to match the value of the field specified by the connectFromField parameter.
+     * Projection name in other documents against which to match the value of the field specified by the connectFromField parameter.
      *
      * @param connectToField the field name
      * @return this

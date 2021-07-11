@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.aggregation.stages;
 
 
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+import com.whaleal.mars.core.query.filters.Filter;
 
 public class Match extends Stage {
     private final Filter[] filters;

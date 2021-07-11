@@ -150,7 +150,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @param stream must not be {@literal null}.
      * @return
-     * @since 2.1
+     * 
      */
     default Streamable<T> and(Supplier<? extends Stream<? extends T>> stream) {
 
@@ -164,7 +164,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @param others must not be {@literal null}.
      * @return will never be {@literal null}.
-     * @since 2.2
+     *  2.2
      */
     @SuppressWarnings("unchecked")
     default Streamable<T> and(T... others) {
@@ -179,7 +179,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @param iterable must not be {@literal null}.
      * @return will never be {@literal null}.
-     * @since 2.2
+     *  2.2
      */
     default Streamable<T> and(Iterable<? extends T> iterable) {
 
@@ -194,7 +194,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @param streamable must not be {@literal null}.
      * @return will never be {@literal null}.
-     * @since 2.2
+     *  2.2
      */
     default Streamable<T> and(Streamable<? extends T> streamable) {
         return and((Supplier<? extends Stream<? extends T>>) streamable);
@@ -204,7 +204,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      * Creates a new, unmodifiable {@link List}.
      *
      * @return will never be {@literal null}.
-     * @since 2.2
+     *  2.2
      */
     default List<T> toList() {
         return stream().collect(StreamUtils.toUnmodifiableList());
@@ -214,7 +214,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      * Creates a new, unmodifiable {@link Set}.
      *
      * @return will never be {@literal null}.
-     * @since 2.2
+     *  2.2
      */
     default Set<T> toSet() {
         return stream().collect(StreamUtils.toUnmodifiableSet());
@@ -234,7 +234,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @return
      * @see #toStreamable(Collector)
-     * @since 2.2
+     *  2.2
      */
     public static <S> Collector<S, ?, Streamable<S>> toStreamable() {
         return toStreamable(Collectors.toList());
@@ -244,7 +244,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      * A collector to easily produce a {@link Streamable} from a {@link Stream} and the given intermediate collector.
      *
      * @return
-     * @since 2.2
+     *  2.2
      */
     @SuppressWarnings("unchecked")
     public static <S, T extends Iterable<S>> Collector<S, ?, Streamable<S>> toStreamable(

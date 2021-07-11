@@ -27,51 +27,41 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.filters;
 
-import com.mongodb.client.model.geojson.CoordinateReferenceSystem;
-import com.mongodb.client.model.geojson.MultiPolygon;
-import com.mongodb.client.model.geojson.Polygon;
+import com.mongodb.client.model.geojson.Point;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
-import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
-/**
- * Defines a $geoWithin filter.
- */
-@SuppressWarnings({"unchecked", "rawtypes"})
-public class GeoWithinFilter extends Filter {
-    private CoordinateReferenceSystem crs;
+class Box extends Filter {
 
-    GeoWithinFilter(String field, Polygon value) {
-        super("$geoWithin", field, value);
-    }
+    private final Point bottomLeft;
+    private final Point upperRight;
 
-    GeoWithinFilter(String field, MultiPolygon value) {
-        super("$geoWithin", field, value);
-    }
-
-    /**
-     * @param crs the CoordinateReferenceSystem to use
-     * @return this
-     */
-    public GeoWithinFilter crs(CoordinateReferenceSystem crs) {
-        this.crs = crs;
-        return this;
+    protected Box(String field, Point bottomLeft, Point upperRight) {
+        super("$box", field, null);
+        this.bottomLeft = bottomLeft;
+        this.upperRight = upperRight;
     }
 
     @Override
-    public final void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
         writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument(getName());
-        writer.writeName("$geometry");
+        writer.writeStartDocument("$geoWithin");
 
-        Object shape = getValue();
-        if (shape != null) {
-            Codec codec = mapper.getCodecRegistry().get(shape.getClass());
-            codec.encode(writer, shape, context);
+        writer.writeStartArray(getName());
+        writer.writeStartArray();
+        for (Double value : bottomLeft.getPosition().getValues()) {
+            writer.writeDouble(value);
         }
+        writer.writeEndArray();
+        writer.writeStartArray();
+        for (Double value : upperRight.getPosition().getValues()) {
+            writer.writeDouble(value);
+        }
+        writer.writeEndArray();
+        writer.writeEndArray();
 
         writer.writeEndDocument();
         writer.writeEndDocument();

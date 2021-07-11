@@ -27,32 +27,53 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.filters;
 
-import com.mongodb.client.model.geojson.Geometry;
+import com.mongodb.client.model.geojson.CoordinateReferenceSystem;
+import com.mongodb.client.model.geojson.MultiPolygon;
+import com.mongodb.client.model.geojson.Polygon;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
+import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
+/**
+ * Defines a $geoWithin filter.
+ */
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class GeoWithinFilter extends Filter {
+    private CoordinateReferenceSystem crs;
 
-public class GeoIntersectsFilter extends Filter {
-    GeoIntersectsFilter(String field, Geometry val) {
-        super("$geoIntersects", field, val);
+    GeoWithinFilter(String field, Polygon value) {
+        super("$geoWithin", field, value);
+    }
+
+    GeoWithinFilter(String field, MultiPolygon value) {
+        super("$geoWithin", field, value);
+    }
+
+    /**
+     * @param crs the CoordinateReferenceSystem to use
+     * @return this
+     */
+    public GeoWithinFilter crs(CoordinateReferenceSystem crs) {
+        this.crs = crs;
+        return this;
     }
 
     @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+    public final void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
         writer.writeStartDocument(path(mapper));
-        if (isNot()) {
-            writer.writeStartDocument("$not");
-        }
         writer.writeStartDocument(getName());
         writer.writeName("$geometry");
-        writeUnnamedValue(getValue(mapper), mapper, writer, context);
-        writer.writeEndDocument();
-        if (isNot()) {
-            writer.writeEndDocument();
+
+        Object shape = getValue();
+        if (shape != null) {
+            Codec codec = mapper.getCodecRegistry().get(shape.getClass());
+            codec.encode(writer, shape, context);
         }
+
+        writer.writeEndDocument();
         writer.writeEndDocument();
     }
 }

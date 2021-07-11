@@ -146,7 +146,7 @@ public class TaskExecutorAdapter implements AsyncListenableTaskExecutor {
      * @param taskDecorator      the specified decorator to be applied, if any
      * @param runnable           the runnable to execute
      * @throws RejectedExecutionException if the given runnable cannot be accepted
-     * @since 4.3
+     *  4.3
      */
     protected void doExecute(Executor concurrentExecutor, @Nullable TaskDecorator taskDecorator, Runnable runnable)
             throws RejectedExecutionException {

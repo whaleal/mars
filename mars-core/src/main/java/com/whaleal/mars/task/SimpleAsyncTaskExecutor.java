@@ -146,7 +146,7 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
      * {@code FutureTask} which does not propagate any exceptions; you might
      * have to cast it and call {@code Future#get} to evaluate exceptions.
      *
-     * @since 4.3
+     *  4.3
      */
     public final void setTaskDecorator(TaskDecorator taskDecorator) {
         this.taskDecorator = taskDecorator;

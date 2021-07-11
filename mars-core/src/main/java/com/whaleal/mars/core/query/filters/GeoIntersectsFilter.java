@@ -27,33 +27,32 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.index.annotation;
+package com.whaleal.mars.core.query.filters;
+
+import com.mongodb.client.model.geojson.Geometry;
+import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import org.bson.BsonWriter;
+import org.bson.codecs.EncoderContext;
 
 
-import com.whaleal.mars.core.index.IndexDirection;
+public class GeoIntersectsFilter extends Filter {
+    GeoIntersectsFilter(String field, Geometry val) {
+        super("$geoIntersects", field, val);
+    }
 
-import java.lang.annotation.*;
-
-/**
- * Define a field to be used in an index;
- */
-@Documented
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
-public @interface Field {
-    /**
-     * @return "Direction" of the indexing.  Defaults to {@link IndexDirection#ASC}.
-     */
-    IndexDirection type() default IndexDirection.ASC;
-
-    /**
-     * @return Projection name to index
-     */
-    String value();
-
-    /**
-     * @return The weight to use when creating a text index.  This value only makes sense when direction is {@link IndexDirection#TEXT}
-     */
-    int weight() default -1;
+    @Override
+    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+        writer.writeStartDocument(path(mapper));
+        if (isNot()) {
+            writer.writeStartDocument("$not");
+        }
+        writer.writeStartDocument(getName());
+        writer.writeName("$geometry");
+        writeUnnamedValue(getValue(mapper), mapper, writer, context);
+        writer.writeEndDocument();
+        if (isNot()) {
+            writer.writeEndDocument();
+        }
+        writer.writeEndDocument();
+    }
 }

@@ -81,7 +81,7 @@ public interface Resource extends InputStreamSource {
      * <p>This is conservatively {@code false} by default.
      *
      * @see #getFile()
-     * @since 5.0
+     *
      */
     default boolean isFile() {
         return false;
@@ -100,7 +100,7 @@ public interface Resource extends InputStreamSource {
      *
      * @throws IOException if the resource cannot be resolved as URI,
      *                     i.e. if the resource is not available as descriptor
-     * @since 2.5
+     *  2.5
      */
     URI getURI() throws IOException;
 
@@ -124,7 +124,7 @@ public interface Resource extends InputStreamSource {
      * @throws java.io.FileNotFoundException if the underlying resource doesn't exist
      * @throws IOException                   if the content channel could not be opened
      * @see #getInputStream()
-     * @since 5.0
+     *  5.0
      */
     default ReadableByteChannel readableChannel() throws IOException {
         return Channels.newChannel(getInputStream());

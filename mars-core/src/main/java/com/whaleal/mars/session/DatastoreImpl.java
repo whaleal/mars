@@ -290,7 +290,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     @Override
     public <T> T save(T entity, InsertOneOptions options, @Nullable String collectionName) {
         log.info("{}execute", getClass() + ".save()");
-        Object id = null;
 
         if (entity == null) {
             return null;

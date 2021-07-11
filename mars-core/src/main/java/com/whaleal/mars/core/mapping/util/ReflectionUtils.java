@@ -583,7 +583,7 @@ public abstract class ReflectionUtils {
     }
 
 
-    // Field handling
+    // Projection handling
 
     /**
      * Make the given method accessible, explicitly setting it accessible if
@@ -608,7 +608,7 @@ public abstract class ReflectionUtils {
      *
      * @param clazz the class to introspect
      * @param name  the name of the field
-     * @return the corresponding Field object, or {@code null} if not found
+     * @return the corresponding Projection object, or {@code null} if not found
      */
     @Nullable
     public static Field findField(Class<?> clazz, String name) {
@@ -623,7 +623,7 @@ public abstract class ReflectionUtils {
      * @param clazz the class to introspect
      * @param name  the name of the field (may be {@code null} if type is specified)
      * @param type  the type of the field (may be {@code null} if name is specified)
-     * @return the corresponding Field object, or {@code null} if not found
+     * @return the corresponding Projection object, or {@code null} if not found
      */
     @Nullable
     public static Field findField(Class<?> clazz, @Nullable String name, @Nullable Class<?> type) {
@@ -991,7 +991,7 @@ public abstract class ReflectionUtils {
          * @param next the next {@code MethodFilter}
          * @return a composite {@code MethodFilter}
          * @throws IllegalArgumentException if the MethodFilter argument is {@code null}
-         * @since 5.3.2
+         *  5.3.2
          */
         default MethodFilter and(MethodFilter next) {
             Assert.notNull(next, "Next MethodFilter must not be null");

@@ -27,38 +27,32 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
 
-import java.util.List;
+package com.whaleal.mars.internal;
 
-class ElemMatchFilter extends Filter {
-    ElemMatchFilter(String field, List<Filter> query) {
-        super("$elemMatch", field, query);
+
+/**
+ * Error during update.
+ */
+public class UpdateException extends RuntimeException {
+
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     */
+    public UpdateException(String message) {
+        super(message);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        if (isNot()) {
-            writer.writeStartDocument("$not");
-        }
-        writer.writeStartDocument(getName());
-        List<Filter> filters = (List<Filter>) getValue();
-        if (filters != null) {
-            for (Filter filter : filters) {
-                filter.encode(mapper, writer, context);
-            }
-        }
-        if (isNot()) {
-            writer.writeEndDocument();
-        }
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     * @param cause   the underlying cause
+     */
+    public UpdateException(String message, Throwable cause) {
+        super(message, cause);
     }
-
 }

@@ -27,7 +27,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.filters;
 
 import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.MultiPolygon;
@@ -392,7 +392,7 @@ public final class Filters {
      * @param schema the schema to use
      * @return the filter
      * @query.filter $jsonSchema
-     * @since 2.1
+     *
      */
     public static Filter jsonSchema(Document schema) {
         return new Filter("$jsonSchema", null, schema) {
@@ -445,7 +445,7 @@ public final class Filters {
      * @param field the field to check
      * @param val   the value to check
      * @return the filter
-     * @query.filter $minDistance
+     * @query.filter $minDistan  ce
      */
     public static Filter minDistance(String field, Object val) {
         return new Filter("$minDistance", field, val);

@@ -30,7 +30,10 @@
 package com.whaleal.mars.core.query;
 
 import com.mongodb.BasicDBList;
+import com.mongodb.client.model.geojson.Geometry;
+import com.mongodb.client.model.geojson.MultiPolygon;
 import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Polygon;
 import com.mongodb.lang.Nullable;
 import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.mars.util.*;
@@ -47,6 +50,8 @@ import static com.whaleal.mars.util.ObjectUtils.nullSafeHashCode;
 /**
  * Central class for creating queries. It follows a fluent API style so that you can easily chain together multiple
  * criteria. Static import of the 'Criteria.where' method will improve readability.
+ *
+ * this  is   basic Criteria
  */
 public class Criteria implements CriteriaDefinition {
 
@@ -69,23 +74,36 @@ public class Criteria implements CriteriaDefinition {
         FLAG_LOOKUP['u'] = Pattern.UNICODE_CASE;
     }
 
+    // key  is used  to  decorate  itself
     private @Nullable
     String key;
+
+    // criteriaChain  is used  to  decorate  it innerData
+    //  主要用于放置 前置 的 criteria ，实现 是一个 ArrayList   如果没有前置 。那么久放置自己 到该 criteraChain中 ，外部调用 主要是调用 该 参数 并获取该值
     private List<Criteria> criteriaChain;
+    //  核心内容  将 查询操作 放入到 一个 LinkedHashMap  即为 本身   内部 为一个 有序 平行的结构
+    //  比如 lte  gte  ne  等
+    //  比如 {a:{lt:10,gt:1}}  这个里面的   lt  gt  部分 放置在 本 map 中   ，而 key  在外部 key  中
     private LinkedHashMap<String, Object> criteria = new LinkedHashMap<String, Object>();
+
+    //  默认值 为 空对象 ，可以使用is() 设置
     private @Nullable
     Object isValue = NOT_SET;
+
 
     public Criteria() {
         this.criteriaChain = new ArrayList<Criteria>();
     }
 
+    //  通过key  进行构造  并初始化 criteriaChain  放置一个 空的元素
     public Criteria(String key) {
         this.criteriaChain = new ArrayList<Criteria>();
         this.criteriaChain.add(this);
         this.key = key;
     }
 
+    //  获取上一阶段的   Criteria 的 内部 criteriaChain
+    //  并将自己添加到 该criteriaChain 的 尾部。
     protected Criteria(List<Criteria> criteriaChain, String key) {
         this.criteriaChain = criteriaChain;
         this.criteriaChain.add(this);
@@ -97,16 +115,19 @@ public class Criteria implements CriteriaDefinition {
      *
      * @param key the property or field name.
      * @return new instance of {@link Criteria}.
+     *
      */
     public static Criteria where(String key) {
         return new Criteria(key);
     }
 
-    private static boolean requiresGeoJsonFormat(Object value) {
-       /* return value instanceof GeoJson
-                || (value instanceof GeoCommand && ((GeoCommand) value).getShape() instanceof GeoJson);*/
 
-        return false;
+
+    @Deprecated
+    private static boolean requiresGeoJsonFormat(Object value) {
+
+       return value instanceof Geometry;
+
     }
 
     /**
@@ -162,6 +183,7 @@ public class Criteria implements CriteriaDefinition {
      *
      * @param value can be {@literal null}.
      * @return this.
+     *  where  的 key  即为 本类对象的key
      */
     public Criteria is(@Nullable Object value) {
 
@@ -456,6 +478,62 @@ public class Criteria implements CriteriaDefinition {
     }
 
     /**
+     * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
+     * Mongo 2.4 and higher.
+     *
+     * @param polygon must not be {@literal null}
+     * @return this.
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
+     *      $geoWithin</a>
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
+     *      $centerSphere</a>
+     */
+    public Criteria within(Point polygon) {
+
+        Assert.notNull(polygon, "Circle must not be null!");
+
+        criteria.put("$geoWithin", polygon);
+        return this;
+    }
+    /**
+     * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
+     * Mongo 2.4 and higher.
+     *
+     * @param polygon must not be {@literal null}
+     * @return this.
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
+     *      $geoWithin</a>
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
+     *      $centerSphere</a>
+     */
+    public Criteria within(Polygon polygon) {
+
+        Assert.notNull(polygon, "Circle must not be null!");
+
+        criteria.put("$geoWithin", polygon);
+        return this;
+    }
+
+    /**
+     * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
+     * Mongo 2.4 and higher.
+     *
+     * @param polygon must not be {@literal null}
+     * @return this.
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
+     *      $geoWithin</a>
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
+     *      $centerSphere</a>
+     */
+    public Criteria within(MultiPolygon polygon) {
+
+        Assert.notNull(polygon, "Circle must not be null!");
+
+        criteria.put("$geoWithin", polygon);
+        return this;
+    }
+
+    /**
      * Creates a geospatial criterion using a {@literal $near} operation.
      *
      * @param point must not be {@literal null}
@@ -494,13 +572,13 @@ public class Criteria implements CriteriaDefinition {
      * @return this.
      */
     @SuppressWarnings("rawtypes")
-    /*public Criteria intersects(GeoJson geoJson) {
+    public Criteria intersects(Geometry geoJson) {
 
         Assert.notNull(geoJson, "GeoJson must not be null!");
         criteria.put("$geoIntersects", geoJson);
         return this;
     }
-*/
+
     /**
      * Creates a geo-spatial criterion using a {@literal $maxDistance} operation, for use with $near
      *
@@ -631,7 +709,22 @@ public class Criteria implements CriteriaDefinition {
     /*
      * (non-Javadoc)
      * @see CriteriaDefinition#getCriteriaObject()
+     *
+     *  初始化的时候 把自己放入  criteriaChain  中
+     *
+     *  获取时  如果size  刚好为1  就直接放入
+     *
+     *  否则 criteriaChain  中有多个元素  或者为空
+     *
+     *  如果为空 则 直接返回 空的  criteria
+     *
+     *  如果不为空
+     *  则 遍历 criteriaChain 并 迭代 后放入 同一个 document  中
+     *
+     *
+     *
      */
+    @Override
     public Document getCriteriaObject() {
 
         if (this.criteriaChain.size() == 1) {
@@ -639,6 +732,7 @@ public class Criteria implements CriteriaDefinition {
         } else if (CollectionUtils.isEmpty(this.criteriaChain) && !CollectionUtils.isEmpty(this.criteria)) {
             return getSingleCriteriaObject();
         } else {
+
             Document criteriaObject = new Document();
             for (Criteria c : this.criteriaChain) {
                 Document document = c.getSingleCriteriaObject();
@@ -650,11 +744,31 @@ public class Criteria implements CriteriaDefinition {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see CriteriaBackupDefinition#getCriteriaObject()
+     *
+     *  初始化的时候 把自己放入  criteriaChain  中
+     *
+     *  获取时  如果size  刚好为1  就直接放入
+     *
+     *  否则 criteriaChain  中有多个元素  或者为空
+     *
+     *  如果为空 则 直接返回 空的  criteria
+     *
+     *  如果不为空
+     *  则 遍历 criteriaChain 并 迭代 后放入 同一个 document  中
+     *
+     *
+     *
+     */
     protected Document getSingleCriteriaObject() {
 
         Document document = new Document();
+        //  设置为 false
         boolean not = false;
 
+        //  因为 保存的是个 linked  hashed  Map    当然  在 "key" -> "value"  时候 该 criteria  为空  ；在 "key" -> {filterOp ：value  } 时  该criteria  有值
         for (Entry<String, Object> entry : criteria.entrySet()) {
 
             String key = entry.getKey();

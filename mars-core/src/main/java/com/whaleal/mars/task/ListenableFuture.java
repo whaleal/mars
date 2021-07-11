@@ -55,7 +55,7 @@ public interface ListenableFuture<T> extends Future<T> {
      *
      * @param successCallback the success callback
      * @param failureCallback the failure callback
-     * @since 4.1
+     *  4.1
      */
     void addCallback(SuccessCallback<? super T> successCallback, FailureCallback failureCallback);
 
@@ -63,7 +63,7 @@ public interface ListenableFuture<T> extends Future<T> {
     /**
      * Expose this {@link ListenableFuture} as a JDK {@link CompletableFuture}.
      *
-     * @since 5.0
+     *  5.0
      */
     default CompletableFuture<T> completable() {
         CompletableFuture<T> completable = new DelegatingCompletableFuture<>(this);

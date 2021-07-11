@@ -22,7 +22,7 @@ public class TestParameterizedType {
     public void testMap() throws NoSuchFieldException {
         Field listField = TestParameterizedType.class.getDeclaredField("list");
         Field mapField = TestParameterizedType.class.getDeclaredField("map");
-        //对比 Field 类的 getType() 和 getGenericType()
+        //对比 Projection 类的 getType() 和 getGenericType()
         System.out.println(listField.getType());        // interface java.util.List
         System.out.println(listField.getGenericType()); // java.util.List<java.lang.Character>
         System.out.println(mapField.getType());         // interface java.util.Map

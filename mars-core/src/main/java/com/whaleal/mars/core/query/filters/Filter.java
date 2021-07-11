@@ -27,7 +27,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.filters;
 
 import com.mongodb.lang.Nullable;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;

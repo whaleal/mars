@@ -86,7 +86,7 @@ public class BasicQuery extends Query {
     public BasicQuery(Document queryObject, Document fieldsObject) {
 
         Assert.notNull(queryObject, "Query document must not be null");
-        Assert.notNull(fieldsObject, "Field document must not be null");
+        Assert.notNull(fieldsObject, "Projection document must not be null");
 
         this.queryObject = queryObject;
         this.fieldsObject = fieldsObject;
@@ -126,7 +126,7 @@ public class BasicQuery extends Query {
      */
     protected void setFieldsObject(Document fieldsObject) {
 
-        Assert.notNull(sortObject, "Field document must not be null");
+        Assert.notNull(sortObject, "Projection document must not be null");
 
         this.fieldsObject = fieldsObject;
     }
