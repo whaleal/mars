@@ -33,7 +33,7 @@ package com.whaleal.mars.core.aggregation;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
-import com.whaleal.mars.core.query.filters.Filter;
+import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 import com.whaleal.mars.session.MarsCursor;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.AggregationOptions;

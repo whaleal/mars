@@ -7,7 +7,7 @@
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.4</version>
+    <version>0.1.3</version>
     <name>Mars</name>
     <description>MongoDB driver framework</description>
     <!--我们项目的git地址-->
@@ -21,7 +21,7 @@
 
     <properties>
         <mongo.driver.version>4.2.3</mongo.driver.version>
-        <mars.version>0.1.4</mars.version>
+        <mars.version>0.1.3</mars.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring.version>2.5.1</spring.version>

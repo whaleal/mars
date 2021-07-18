@@ -27,38 +27,35 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
+package com.whaleal.mars.core.aggregation.stages.filters;
 
+import com.mongodb.client.model.geojson.Point;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-import java.util.List;
+class PolygonFilter extends Filter {
+    private final Point[] points;
 
-class ElemMatchFilter extends Filter {
-    ElemMatchFilter(String field, List<Filter> query) {
-        super("$elemMatch", field, query);
+    PolygonFilter(String field, Point[] points) {
+        super("$polygon", field, null);
+        this.points = points;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
         writer.writeStartDocument(path(mapper));
-        if (isNot()) {
-            writer.writeStartDocument("$not");
-        }
-        writer.writeStartDocument(getName());
-        List<Filter> filters = (List<Filter>) getValue();
-        if (filters != null) {
-            for (Filter filter : filters) {
-                filter.encode(mapper, writer, context);
+        writer.writeStartDocument("$geoWithin");
+        writer.writeStartArray("$polygon");
+        for (Point point : points) {
+            writer.writeStartArray();
+            for (Double value : point.getPosition().getValues()) {
+                writer.writeDouble(value);
             }
+            writer.writeEndArray();
         }
-        if (isNot()) {
-            writer.writeEndDocument();
-        }
+        writer.writeEndArray();
         writer.writeEndDocument();
         writer.writeEndDocument();
     }
-
 }

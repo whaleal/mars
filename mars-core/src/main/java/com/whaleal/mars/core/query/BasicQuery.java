@@ -42,7 +42,6 @@ import static com.whaleal.mars.util.ObjectUtils.nullSafeHashCode;
 public class BasicQuery extends Query {
 
     private final Document queryObject;
-
     private Document fieldsObject;
     private Document sortObject;
 

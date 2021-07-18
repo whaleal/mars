@@ -27,54 +27,53 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.expressions;
+package com.whaleal.mars.core.aggregation.stages.filters;
 
+import com.mongodb.client.model.geojson.CoordinateReferenceSystem;
+import com.mongodb.client.model.geojson.MultiPolygon;
+import com.mongodb.client.model.geojson.Polygon;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 import org.bson.BsonWriter;
+import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
 /**
- * Defines miscellaneous operators for aggregations.
+ * Defines a $geoWithin filter.
  */
-public final class Miscellaneous {
-    private Miscellaneous() {
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class GeoWithinFilter extends Filter {
+    private CoordinateReferenceSystem crs;
+
+    GeoWithinFilter(String field, Polygon value) {
+        super("$geoWithin", field, value);
+    }
+
+    GeoWithinFilter(String field, MultiPolygon value) {
+        super("$geoWithin", field, value);
     }
 
     /**
-     * Returns a random float between 0 and 1.
-     *
-     * @return the filter
-     * @aggregation.expression $rand
+     * @param crs the CoordinateReferenceSystem to use
+     * @return this
      */
-    public static Expression rand() {
-        return new Expression("$rand") {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                ExpressionHelper.document(writer, () -> {
-                    ExpressionHelper.document(writer, getOperation(), () -> {
-                    });
-                });
-            }
-        };
+    public GeoWithinFilter crs(CoordinateReferenceSystem crs) {
+        this.crs = crs;
+        return this;
     }
 
-    /**
-     * Matches a random selection of input documents. The number of documents selected approximates the sample rate expressed as a
-     * percentage of the total number of documents.
-     *
-     * @param rate the rate to check against
-     * @return the filter
-     * @aggregation.expression $sampleRate
-     */
-    public static Filter sampleRate(double rate) {
-        return new Filter("$sampleRate", null, rate) {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                writeNamedValue(getName(), getValue(), mapper, writer, context);
-            }
-        };
+    @Override
+    public final void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+        writer.writeStartDocument(path(mapper));
+        writer.writeStartDocument(getName());
+        writer.writeName("$geometry");
+
+        Object shape = getValue();
+        if (shape != null) {
+            Codec codec = mapper.getCodecRegistry().get(shape.getClass());
+            codec.encode(writer, shape, context);
+        }
+
+        writer.writeEndDocument();
+        writer.writeEndDocument();
     }
 }

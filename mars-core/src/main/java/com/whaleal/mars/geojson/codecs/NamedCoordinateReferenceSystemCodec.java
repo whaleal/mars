@@ -27,54 +27,51 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.expressions;
+package com.whaleal.mars.geojson.codecs;
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+import com.mongodb.client.model.geojson.CoordinateReferenceSystem;
+import com.mongodb.client.model.geojson.NamedCoordinateReferenceSystem;
+import org.bson.BsonReader;
 import org.bson.BsonWriter;
+import org.bson.codecs.Codec;
+import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
+import org.bson.codecs.configuration.CodecConfigurationException;
+
+
 
 /**
- * Defines miscellaneous operators for aggregations.
+ * Codec for a GeoJson Coordinate Reference System of type name.
+ *
+ *
+
  */
-public final class Miscellaneous {
-    private Miscellaneous() {
+public class NamedCoordinateReferenceSystemCodec implements Codec<NamedCoordinateReferenceSystem> {
+    @Override
+    public void encode(final BsonWriter writer, final NamedCoordinateReferenceSystem value, final EncoderContext encoderContext) {
+        writer.writeStartDocument();
+
+        writer.writeString("type", value.getType().getTypeName());
+
+        writer.writeStartDocument("properties");
+        writer.writeString("name", value.getName());
+        writer.writeEndDocument();
+
+        writer.writeEndDocument();
     }
 
-    /**
-     * Returns a random float between 0 and 1.
-     *
-     * @return the filter
-     * @aggregation.expression $rand
-     */
-    public static Expression rand() {
-        return new Expression("$rand") {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                ExpressionHelper.document(writer, () -> {
-                    ExpressionHelper.document(writer, getOperation(), () -> {
-                    });
-                });
-            }
-        };
+    @Override
+    public Class<NamedCoordinateReferenceSystem> getEncoderClass() {
+        return NamedCoordinateReferenceSystem.class;
     }
 
-    /**
-     * Matches a random selection of input documents. The number of documents selected approximates the sample rate expressed as a
-     * percentage of the total number of documents.
-     *
-     * @param rate the rate to check against
-     * @return the filter
-     * @aggregation.expression $sampleRate
-     */
-    public static Filter sampleRate(double rate) {
-        return new Filter("$sampleRate", null, rate) {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                writeNamedValue(getName(), getValue(), mapper, writer, context);
-            }
-        };
+    @Override
+    public NamedCoordinateReferenceSystem decode(final BsonReader reader, final DecoderContext decoderContext) {
+        //CoordinateReferenceSystem crs = decodeCoordinateReferenceSystem(reader);
+        Object crs = null ;
+        if (crs == null || !(crs instanceof NamedCoordinateReferenceSystem)) {
+            throw new CodecConfigurationException("Invalid NamedCoordinateReferenceSystem.");
+        }
+        return (NamedCoordinateReferenceSystem) crs;
     }
 }

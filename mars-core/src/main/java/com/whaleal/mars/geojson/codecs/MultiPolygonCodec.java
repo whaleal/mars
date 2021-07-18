@@ -27,55 +27,26 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
+package com.whaleal.mars.geojson.codecs;
 
-import java.util.Arrays;
-import java.util.List;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.locationtech.jts.geom.MultiPolygon;
 
-import static java.lang.String.format;
+/**
+ * A Codec for a GeoJSON MultiPolygon.
+ *
+ *
 
-class LogicalFilter extends Filter {
-    private final List<Filter> filters;
+ */
+public class MultiPolygonCodec extends AbstractGeometryCodec<MultiPolygon> {
 
-    LogicalFilter(String name, Filter... filters) {
-        super(name);
-        this.filters = Arrays.asList(filters);
-    }
-
-    @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartArray(getName());
-        for (Filter filter : filters) {
-            ExpressionHelper.document(writer, () -> filter.encode(mapper, writer, context));
-        }
-        writer.writeEndArray();
-    }
-
-    @Override
-    public Filter entityType(Class<?> type) {
-        super.entityType(type);
-        for (Filter filter : filters) {
-            filter.entityType(type);
-        }
-        return this;
-    }
-
-    @Override
-    public Filter isValidating(boolean validate) {
-        super.isValidating(validate);
-        for (Filter filter : filters) {
-            filter.isValidating(validate);
-        }
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return format("%s: %s", getName(), filters);
+    /**
+     * Constructs an instance.
+     *
+     * @param registry the registry
+     */
+    public MultiPolygonCodec(final CodecRegistry registry) {
+        super(registry, MultiPolygon.class);
     }
 }

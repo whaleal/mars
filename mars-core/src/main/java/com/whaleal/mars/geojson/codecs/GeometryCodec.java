@@ -27,53 +27,25 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
 
-import com.mongodb.client.model.geojson.CoordinateReferenceSystem;
-import com.mongodb.client.model.geojson.MultiPolygon;
-import com.mongodb.client.model.geojson.Polygon;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.Codec;
-import org.bson.codecs.EncoderContext;
+package com.whaleal.mars.geojson.codecs;
+
+import org.bson.codecs.configuration.CodecRegistry;
+import org.locationtech.jts.geom.Geometry;
 
 /**
- * Defines a $geoWithin filter.
+ * A Codec for a GeoJSON Geometry.
+ *
+ *
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
-public class GeoWithinFilter extends Filter {
-    private CoordinateReferenceSystem crs;
-
-    GeoWithinFilter(String field, Polygon value) {
-        super("$geoWithin", field, value);
-    }
-
-    GeoWithinFilter(String field, MultiPolygon value) {
-        super("$geoWithin", field, value);
-    }
+public final class GeometryCodec extends AbstractGeometryCodec<Geometry> {
 
     /**
-     * @param crs the CoordinateReferenceSystem to use
-     * @return this
+     * Construct a new instance
+     *
+     * @param registry the CodecRegistry
      */
-    public GeoWithinFilter crs(CoordinateReferenceSystem crs) {
-        this.crs = crs;
-        return this;
-    }
-
-    @Override
-    public final void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument(getName());
-        writer.writeName("$geometry");
-
-        Object shape = getValue();
-        if (shape != null) {
-            Codec codec = mapper.getCodecRegistry().get(shape.getClass());
-            codec.encode(writer, shape, context);
-        }
-
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+    public GeometryCodec(final CodecRegistry registry) {
+        super(registry, Geometry.class);
     }
 }

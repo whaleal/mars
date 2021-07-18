@@ -27,54 +27,38 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.expressions;
+package com.whaleal.mars.core.aggregation.stages.filters;
 
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-/**
- * Defines miscellaneous operators for aggregations.
- */
-public final class Miscellaneous {
-    private Miscellaneous() {
+import java.util.List;
+
+class ElemMatchFilter extends Filter {
+    ElemMatchFilter(String field, List<Filter> query) {
+        super("$elemMatch", field, query);
     }
 
-    /**
-     * Returns a random float between 0 and 1.
-     *
-     * @return the filter
-     * @aggregation.expression $rand
-     */
-    public static Expression rand() {
-        return new Expression("$rand") {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                ExpressionHelper.document(writer, () -> {
-                    ExpressionHelper.document(writer, getOperation(), () -> {
-                    });
-                });
+    @Override
+    @SuppressWarnings("unchecked")
+    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+        writer.writeStartDocument(path(mapper));
+        if (isNot()) {
+            writer.writeStartDocument("$not");
+        }
+        writer.writeStartDocument(getName());
+        List<Filter> filters = (List<Filter>) getValue();
+        if (filters != null) {
+            for (Filter filter : filters) {
+                filter.encode(mapper, writer, context);
             }
-        };
+        }
+        if (isNot()) {
+            writer.writeEndDocument();
+        }
+        writer.writeEndDocument();
+        writer.writeEndDocument();
     }
 
-    /**
-     * Matches a random selection of input documents. The number of documents selected approximates the sample rate expressed as a
-     * percentage of the total number of documents.
-     *
-     * @param rate the rate to check against
-     * @return the filter
-     * @aggregation.expression $sampleRate
-     */
-    public static Filter sampleRate(double rate) {
-        return new Filter("$sampleRate", null, rate) {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                writeNamedValue(getName(), getValue(), mapper, writer, context);
-            }
-        };
-    }
 }

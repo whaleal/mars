@@ -1,7 +1,13 @@
 package com.whaleal.mars.core.query;
 
-import com.whaleal.mars.core.query.filters.Filter;
-import com.whaleal.mars.core.query.filters.Filters;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import com.whaleal.mars.Constant;
+import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.geojson.codecs.GeometryDemo;
 import org.bson.Document;
 import org.junit.Test;
 
@@ -45,10 +51,65 @@ public class CriteriaTest {
 
 
 
-    public void test03(){
+    @Test
+    public void test11(){
+
+        GeometryDemo  demo = new GeometryDemo();
+
+        Criteria location = Criteria.where("location").geowithin(demo.createPolygonByWKT());
+
+        Document criteriaObject = location.getCriteriaObject();
+
+        System.out.println(criteriaObject);
+
+    }
+
+    @Test
+    public void test12(){
+
+        GeometryDemo  demo = new GeometryDemo();
+
+        Criteria location = Criteria.where("location").geowithin(demo.createPolygonByWKT());
+
+        Document criteriaObject = location.getCriteriaObject();
 
 
+        MongoClient client = MongoClients.create(Constant.server101);
 
+
+        MongoMappingContext mappingContext = new MongoMappingContext(client.getDatabase("mars"));
+        MongoDatabase mars = client.getDatabase("mars").withCodecRegistry(mappingContext.getCodecRegistry());
+
+        Document documents = mars.getCollection("places").find(criteriaObject).first();
+
+        System.out.println(documents);
+
+    }
+
+
+    @Test
+    public void test13(){
+
+        GeometryDemo  demo = new GeometryDemo();
+
+        Criteria location = Criteria.where("location").geowithin(demo.createPolygonByWKT());
+
+        Document criteriaObject = location.getCriteriaObject();
+
+        System.out.println(criteriaObject);
+
+    }
+
+    @Test
+    public void test14(){
+
+        GeometryDemo  demo = new GeometryDemo();
+
+        Criteria location = Criteria.where("location").geowithin(demo.createPolygonByWKT());
+
+        Document criteriaObject = location.getCriteriaObject();
+
+        System.out.println(criteriaObject);
 
     }
 }

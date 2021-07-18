@@ -27,72 +27,55 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
+package com.whaleal.mars.core.aggregation.stages.filters;
 
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-/**
- * Defines a text search filter
- */
-public class TextSearchFilter extends Filter {
-    private final String searchText;
-    private String language;
-    private Boolean caseSensitive;
-    private Boolean diacriticSensitive;
+import java.util.Arrays;
+import java.util.List;
 
-    protected TextSearchFilter(String searchText) {
-        super("$text");
-        this.searchText = searchText;
-    }
+import static java.lang.String.format;
 
-    /**
-     * Sets the search as case sensitive or not
-     *
-     * @param caseSensitive the case sensitivity
-     * @return this
-     */
-    public TextSearchFilter caseSensitive(Boolean caseSensitive) {
-        this.caseSensitive = caseSensitive;
-        return this;
-    }
+class LogicalFilter extends Filter {
+    private final List<Filter> filters;
 
-    /**
-     * Sets the search as diacritic sensitive or not
-     *
-     * @param diacriticSensitive the diacritic sensitivity
-     * @return this
-     */
-    public TextSearchFilter diacriticSensitive(Boolean diacriticSensitive) {
-        this.diacriticSensitive = diacriticSensitive;
-        return this;
+    LogicalFilter(String name, Filter... filters) {
+        super(name);
+        this.filters = Arrays.asList(filters);
     }
 
     @Override
     public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(getName());
-        writeNamedValue("$search", searchText, mapper, writer, context);
-        if (language != null) {
-            writeNamedValue("$language", language, mapper, writer, context);
+        writer.writeStartArray(getName());
+        for (Filter filter : filters) {
+            ExpressionHelper.document(writer, () -> filter.encode(mapper, writer, context));
         }
-        if (Boolean.TRUE.equals(caseSensitive)) {
-            writeNamedValue("$caseSensitive", caseSensitive, mapper, writer, context);
-        }
-        if (Boolean.TRUE.equals(diacriticSensitive)) {
-            writeNamedValue("$diacriticSensitive", diacriticSensitive, mapper, writer, context);
-        }
-        writer.writeEndDocument();
+        writer.writeEndArray();
     }
 
-    /**
-     * Sets the language to use
-     *
-     * @param language the language
-     * @return this
-     */
-    public TextSearchFilter language(String language) {
-        this.language = language;
+    @Override
+    public Filter entityType(Class<?> type) {
+        super.entityType(type);
+        for (Filter filter : filters) {
+            filter.entityType(type);
+        }
         return this;
+    }
+
+    @Override
+    public Filter isValidating(boolean validate) {
+        super.isValidating(validate);
+        for (Filter filter : filters) {
+            filter.isValidating(validate);
+        }
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return format("%s: %s", getName(), filters);
     }
 }

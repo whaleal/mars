@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.aggregation.stages;
 
 import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.core.query.filters.Filter;
+import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 
 
 public class GeoNear extends Stage {

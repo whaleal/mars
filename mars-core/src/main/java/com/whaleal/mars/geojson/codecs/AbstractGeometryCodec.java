@@ -27,43 +27,42 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
 
-import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
+package com.whaleal.mars.geojson.codecs;
+
+import org.bson.BsonReader;
 import org.bson.BsonWriter;
+import org.bson.codecs.Codec;
+import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.locationtech.jts.geom.Geometry;
 
-class Box extends Filter {
+import static com.whaleal.mars.geojson.codecs.GeometryDecoderHelper.decodeGeometry;
+import static com.whaleal.mars.geojson.codecs.GeometryEncoderHelper.encodeGeometry;
 
-    private final Point bottomLeft;
-    private final Point upperRight;
 
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+abstract class AbstractGeometryCodec<T extends Geometry> implements Codec<T> {
+    private final CodecRegistry registry;
+    private final Class<T> encoderClass;
+
+    AbstractGeometryCodec(final CodecRegistry registry, final Class<T> encoderClass) {
+        this.registry = registry;
+        this.encoderClass = encoderClass;
     }
 
     @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
+    public void encode(final BsonWriter writer, final T value, final EncoderContext encoderContext) {
+        encodeGeometry(writer, value, encoderContext, registry);
+    }
 
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
+    @Override
+    public T decode(final BsonReader reader, final DecoderContext decoderContext) {
+        return decodeGeometry(reader, getEncoderClass());
+    }
 
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+    @Override
+    public Class<T> getEncoderClass() {
+        return encoderClass;
     }
 }

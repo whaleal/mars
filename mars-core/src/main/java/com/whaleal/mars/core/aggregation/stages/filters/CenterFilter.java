@@ -27,54 +27,49 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.expressions;
+package com.whaleal.mars.core.aggregation.stages.filters;
 
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.lang.NonNull;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-/**
- * Defines miscellaneous operators for aggregations.
- */
-public final class Miscellaneous {
-    private Miscellaneous() {
+class CenterFilter extends Filter {
+    private final double radius;
+
+    protected CenterFilter(String filterName, String field, Point value, double radius) {
+        super(filterName, field, value);
+        this.radius = radius;
     }
 
-    /**
-     * Returns a random float between 0 and 1.
-     *
-     * @return the filter
-     * @aggregation.expression $rand
-     */
-    public static Expression rand() {
-        return new Expression("$rand") {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                ExpressionHelper.document(writer, () -> {
-                    ExpressionHelper.document(writer, getOperation(), () -> {
-                    });
-                });
-            }
-        };
+    @Override
+    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+        writer.writeStartDocument(path(mapper));
+        writer.writeStartDocument("$geoWithin");
+
+        writer.writeStartArray(getName());
+        Point center = getValue();
+        writer.writeStartArray();
+        for (Double value : center.getPosition().getValues()) {
+            writer.writeDouble(value);
+        }
+        writer.writeEndArray();
+        writer.writeDouble(radius);
+        writer.writeEndArray();
+
+        writer.writeEndDocument();
+        writer.writeEndDocument();
     }
 
-    /**
-     * Matches a random selection of input documents. The number of documents selected approximates the sample rate expressed as a
-     * percentage of the total number of documents.
-     *
-     * @param rate the rate to check against
-     * @return the filter
-     * @aggregation.expression $sampleRate
-     */
-    public static Filter sampleRate(double rate) {
-        return new Filter("$sampleRate", null, rate) {
-            @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                writeNamedValue(getName(), getValue(), mapper, writer, context);
-            }
-        };
+    @Override
+    @NonNull
+    public Point getValue() {
+        Object value = super.getValue();
+        if (value != null) {
+            return (Point) value;
+        }
+        throw new NullPointerException();
+
     }
 }

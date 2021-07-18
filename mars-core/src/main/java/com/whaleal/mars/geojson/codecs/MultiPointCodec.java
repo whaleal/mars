@@ -27,7 +27,26 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-@NonNullApi
-package com.whaleal.mars.core.query.filters;
 
-import com.mongodb.lang.NonNullApi;
+package com.whaleal.mars.geojson.codecs;
+
+import org.bson.codecs.configuration.CodecRegistry;
+import org.locationtech.jts.geom.MultiPoint;
+
+/**
+ * A Codec for a GeoJSON MultiPoint.
+ *
+ *
+
+ */
+public class MultiPointCodec extends AbstractGeometryCodec<MultiPoint> {
+
+    /**
+     * Constructs an instance.
+     *
+     * @param registry the registry
+     */
+    public MultiPointCodec(final CodecRegistry registry) {
+        super(registry, MultiPoint.class);
+    }
+}

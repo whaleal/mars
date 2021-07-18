@@ -30,17 +30,14 @@
 package com.whaleal.mars.core.query;
 
 import com.mongodb.BasicDBList;
-import com.mongodb.client.model.geojson.Geometry;
-import com.mongodb.client.model.geojson.MultiPolygon;
-import com.mongodb.client.model.geojson.Point;
-import com.mongodb.client.model.geojson.Polygon;
+
 import com.mongodb.lang.Nullable;
 import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.mars.util.*;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.bson.types.Binary;
-
+import org.locationtech.jts.geom.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -123,7 +120,7 @@ public class Criteria implements CriteriaDefinition {
 
 
 
-    @Deprecated
+
     private static boolean requiresGeoJsonFormat(Object value) {
 
        return value instanceof Geometry;
@@ -481,57 +478,22 @@ public class Criteria implements CriteriaDefinition {
      * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
      * Mongo 2.4 and higher.
      *
-     * @param polygon must not be {@literal null}
+     * @param geometry must not be {@literal null}
      * @return this.
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
      *      $geoWithin</a>
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
      *      $centerSphere</a>
      */
-    public Criteria within(Point polygon) {
+    public Criteria geowithin(Geometry geometry) {
 
-        Assert.notNull(polygon, "Circle must not be null!");
+        Assert.notNull(geometry, "geometry must not be null!");
 
-        criteria.put("$geoWithin", polygon);
-        return this;
-    }
-    /**
-     * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
-     * Mongo 2.4 and higher.
-     *
-     * @param polygon must not be {@literal null}
-     * @return this.
-     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
-     *      $geoWithin</a>
-     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
-     *      $centerSphere</a>
-     */
-    public Criteria within(Polygon polygon) {
-
-        Assert.notNull(polygon, "Circle must not be null!");
-
-        criteria.put("$geoWithin", polygon);
+        criteria.put("$geoWithin", geometry);
         return this;
     }
 
-    /**
-     * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
-     * Mongo 2.4 and higher.
-     *
-     * @param polygon must not be {@literal null}
-     * @return this.
-     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
-     *      $geoWithin</a>
-     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
-     *      $centerSphere</a>
-     */
-    public Criteria within(MultiPolygon polygon) {
 
-        Assert.notNull(polygon, "Circle must not be null!");
-
-        criteria.put("$geoWithin", polygon);
-        return this;
-    }
 
     /**
      * Creates a geospatial criterion using a {@literal $near} operation.
@@ -572,10 +534,10 @@ public class Criteria implements CriteriaDefinition {
      * @return this.
      */
     @SuppressWarnings("rawtypes")
-    public Criteria intersects(Geometry geoJson) {
+    public Criteria geointersects(Geometry geometry) {
 
-        Assert.notNull(geoJson, "GeoJson must not be null!");
-        criteria.put("$geoIntersects", geoJson);
+        Assert.notNull(geometry, "geometry must not be null!");
+        criteria.put("$geoIntersects", geometry);
         return this;
     }
 
@@ -775,6 +737,18 @@ public class Criteria implements CriteriaDefinition {
             Object value = entry.getValue();
 
             if (requiresGeoJsonFormat(value)) {
+                //  地理位置这块 key  fieldName  在外面
+                /**
+                 * <location field>: {
+                 *       $geoWithin: {
+                 *          $geometry: {
+                 *             type: <"Polygon" or "MultiPolygon"> ,
+                 *             coordinates: [ <coordinates> ]
+                 *          }
+                 *       }
+                 *    }
+                 */
+
                 value = new Document("$geometry", value);
             }
 
@@ -845,13 +819,6 @@ public class Criteria implements CriteriaDefinition {
             return true;
 
         }
-        /*else if (existingNearOperationValue instanceof GeoJson) {
-
-            Entity dbo = new Entity("$geometry", existingNearOperationValue).append(operation, maxDistance);
-            criteria.put(command, dbo);
-
-            return true;
-        }*/
 
         return false;
     }

@@ -385,7 +385,7 @@ public class Query {
      * @param timeUnit must not be {@literal null}.
      * @return this.
      * @see Meta#setMaxTime(long, TimeUnit)
-     * @deprecated since 2.1. Use {@link #maxTime(Duration)} instead.
+     * @deprecated . Use {@link #maxTime(Duration)} instead.
      */
     @Deprecated
     public Query maxTime(long timeout, TimeUnit timeUnit) {

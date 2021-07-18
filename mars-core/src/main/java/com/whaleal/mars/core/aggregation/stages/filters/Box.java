@@ -27,32 +27,43 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
+package com.whaleal.mars.core.aggregation.stages.filters;
 
-import com.mongodb.client.model.geojson.Geometry;
+import com.mongodb.client.model.geojson.Point;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
+class Box extends Filter {
 
-public class GeoIntersectsFilter extends Filter {
-    GeoIntersectsFilter(String field, Geometry val) {
-        super("$geoIntersects", field, val);
+    private final Point bottomLeft;
+    private final Point upperRight;
+
+    protected Box(String field, Point bottomLeft, Point upperRight) {
+        super("$box", field, null);
+        this.bottomLeft = bottomLeft;
+        this.upperRight = upperRight;
     }
 
     @Override
     public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
         writer.writeStartDocument(path(mapper));
-        if (isNot()) {
-            writer.writeStartDocument("$not");
+        writer.writeStartDocument("$geoWithin");
+
+        writer.writeStartArray(getName());
+        writer.writeStartArray();
+        for (Double value : bottomLeft.getPosition().getValues()) {
+            writer.writeDouble(value);
         }
-        writer.writeStartDocument(getName());
-        writer.writeName("$geometry");
-        writeUnnamedValue(getValue(mapper), mapper, writer, context);
+        writer.writeEndArray();
+        writer.writeStartArray();
+        for (Double value : upperRight.getPosition().getValues()) {
+            writer.writeDouble(value);
+        }
+        writer.writeEndArray();
+        writer.writeEndArray();
+
         writer.writeEndDocument();
-        if (isNot()) {
-            writer.writeEndDocument();
-        }
         writer.writeEndDocument();
     }
 }

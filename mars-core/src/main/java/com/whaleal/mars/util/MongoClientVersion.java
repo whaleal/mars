@@ -47,7 +47,7 @@ public class MongoClientVersion {
 
     /**
      * @return {@literal true} if MongoDB Java driver version 3.0 or later is on classpath.
-     * @deprecated since 2.1, which requires MongoDB Java driver 3.8. Returns {@literal true} by default.
+     * @deprecated , which requires MongoDB Java driver 3.8. Returns {@literal true} by default.
      */
     @Deprecated
     public static boolean isMongo3Driver() {
@@ -56,7 +56,7 @@ public class MongoClientVersion {
 
     /**
      * @return {@literal true} if MongoDB Java driver version 3.4 or later is on classpath.
-     * @deprecated since 2.1, which requires MongoDB Java driver 3.8. Returns {@literal true} by default.
+     * @deprecated , which requires MongoDB Java driver 3.8. Returns {@literal true} by default.
      */
     @Deprecated
     public static boolean isMongo34Driver() {

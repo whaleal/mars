@@ -27,35 +27,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
+@NonNullApi
+package com.whaleal.mars.core.aggregation.stages.filters;
 
-import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
-
-class PolygonFilter extends Filter {
-    private final Point[] points;
-
-    PolygonFilter(String field, Point[] points) {
-        super("$polygon", field, null);
-        this.points = points;
-    }
-
-    @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
-        writer.writeStartArray("$polygon");
-        for (Point point : points) {
-            writer.writeStartArray();
-            for (Double value : point.getPosition().getValues()) {
-                writer.writeDouble(value);
-            }
-            writer.writeEndArray();
-        }
-        writer.writeEndArray();
-        writer.writeEndDocument();
-        writer.writeEndDocument();
-    }
-}
+import com.mongodb.lang.NonNullApi;

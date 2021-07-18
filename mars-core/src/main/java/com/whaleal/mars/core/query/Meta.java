@@ -86,7 +86,7 @@ public class Meta {
      *
      * @param timeout
      * @param timeUnit
-     * @deprecated since 2.1. Use {@link #setMaxTime(Duration)} instead.
+     * @deprecated . Use {@link #setMaxTime(Duration)} instead.
      */
     @Deprecated
     public void setMaxTime(long timeout, @Nullable TimeUnit timeUnit) {

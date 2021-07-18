@@ -42,7 +42,7 @@ import java.util.*;
  * Miscellaneous {@code java.lang.Class} utility methods.
  * Mainly for internal use within the framework.
  * <p>
- * since 0.0.1
+ *  0.0.1
  * <p>
  * <p>
  * 该部分的功能 需要合并转移

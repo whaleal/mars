@@ -27,35 +27,11 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.codecs.stages;
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.core.aggregation.stages.Match;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
+/**
+ * This package contains classes that encode and decode GeoJSON objects.
+ */
+@NonNullApi
+package com.whaleal.mars.geojson.codecs;
 
-public class MatchCodec extends StageCodec<Match> {
-
-    public MatchCodec(MongoMappingContext mapper) {
-        super(mapper);
-    }
-
-    @Override
-    public Class<Match> getEncoderClass() {
-        return Match.class;
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void encodeStage(BsonWriter writer, Match value, EncoderContext encoderContext) {
-        ExpressionHelper.document(writer, () -> {
-            for (Filter filter : value.getFilters()) {
-                filter.encode(getMapper(), writer, encoderContext);
-            }
-        });
-    }
-
-
-}
+import com.mongodb.lang.NonNullApi;

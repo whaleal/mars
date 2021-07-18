@@ -27,49 +27,25 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.filters;
+package com.whaleal.mars.geojson.codecs;
 
-import com.mongodb.client.model.geojson.Point;
-import com.mongodb.lang.NonNull;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.locationtech.jts.geom.Polygon;
 
-class CenterFilter extends Filter {
-    private final double radius;
+/**
+ * A Codec for a GeoJSON polygon.
+ *
+ *
 
-    protected CenterFilter(String filterName, String field, Point value, double radius) {
-        super(filterName, field, value);
-        this.radius = radius;
-    }
+ */
+public class PolygonCodec extends AbstractGeometryCodec<Polygon> {
 
-    @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
-
-        writer.writeStartArray(getName());
-        Point center = getValue();
-        writer.writeStartArray();
-        for (Double value : center.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeDouble(radius);
-        writer.writeEndArray();
-
-        writer.writeEndDocument();
-        writer.writeEndDocument();
-    }
-
-    @Override
-    @NonNull
-    public Point getValue() {
-        Object value = super.getValue();
-        if (value != null) {
-            return (Point) value;
-        }
-        throw new NullPointerException();
-
+    /**
+     * Constructs an instance.
+     *
+     * @param registry the registry
+     */
+    public PolygonCodec(final CodecRegistry registry) {
+        super(registry, Polygon.class);
     }
 }
