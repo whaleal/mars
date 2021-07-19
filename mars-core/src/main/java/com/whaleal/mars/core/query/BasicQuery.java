@@ -157,6 +157,14 @@ public class BasicQuery extends Query {
     }
 
 
+    public void setSortObject(String sortObject) {
+
+        Assert.notNull(sortObject, "Sort String must not be null");
+
+        this.sortObject = Document.parse(sortObject);
+    }
+
+
     @Override
     public boolean isSorted() {
         return super.isSorted() || !sortObject.isEmpty();
