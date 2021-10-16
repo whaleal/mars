@@ -17,6 +17,7 @@
         <module>mars-core</module>
         <module>mars-test</module>
         <module>mars-springboot</module>
+        <module>mars-bson</module>
     </modules>
 
     <properties>
