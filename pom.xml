@@ -18,6 +18,7 @@
         <module>mars-test</module>
         <module>mars-springboot</module>
         <module>mars-bson</module>
+        <module>mars-criteria</module>
     </modules>
 
     <properties>
