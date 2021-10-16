@@ -20,7 +20,7 @@
     </modules>
 
     <properties>
-        <mongo.driver.version>4.2.3</mongo.driver.version>
+        <mongo.driver.version>4.3.3</mongo.driver.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring.version>2.5.1</spring.version>
