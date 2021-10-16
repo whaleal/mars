@@ -12,7 +12,7 @@
 	<a href="https://whaleal.com/"><img src="https://docs.whaleal.com/images/logo1.png" width="45%"></a>
 </p>
 <p align="center">
-	<strong>🍬A set of tools that keep Java sweet.</strong>
+	<strong>Mars - Object Relational Mapping Framework for NoSql (ORM)</strong>
 </p>
 <p align="center">
 	👉 <a href="https://whaleal.com">https://whaleal.com/</a> 👈
@@ -108,7 +108,6 @@ implementation 'com.whaleal.mars:mars-core:0.3.0'
 - [Maven中央库](https://repo1.maven.org/maven2/cn/mars/mars-core/)
 
 > 🔔️注意
-> mars 1.x支持JDK8+，对Android平台没有测试，不能保证所有工具类或工具方法可用。
 > 所有版本编译起始均为JDK8+
 
 ### 🚽编译安装
@@ -116,7 +115,7 @@ implementation 'com.whaleal.mars:mars-core:0.3.0'
 访问mars的github主页：[https://github.com/whaleal/mars](https://github.com/whaleal/mars) 下载整个项目源码（v1-main或v1-dev分支都可）然后进入mars项目目录执行：
 
 ```sh
-./mars.sh install
+mvn install 
 ```
 
 然后就可以使用Maven引入了。
