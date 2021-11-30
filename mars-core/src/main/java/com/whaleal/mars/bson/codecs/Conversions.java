@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.internal.NotMappableException;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Binary;
@@ -123,8 +123,8 @@ public final class Conversions {
 
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @Nullable
-    public static <T> T convert(@Nullable Object value, Class<T> target) {
+
+    public static <T> T convert( Object value, Class<T> target ) {
         if (value == null) {
             return (T) convertNull(target);
         }
@@ -149,7 +149,7 @@ public final class Conversions {
         return (T) function.apply(value);
     }
 
-    @Nullable
+
     private static Object convertNull(Class<?> toType) {
         if (isNumber(toType)) {
             return 0;
@@ -160,8 +160,8 @@ public final class Conversions {
     }
 
 
-    public static <S, T> void register(Class<S> source, Class<T> target, Function<S, T> function,
-                                       @Nullable String warning) {
+    public static <S, T> void register( Class<S> source, Class<T> target, Function<S, T> function,
+                                        String warning ) {
         final Function<S, T> conversion = warning == null
                 ? function
                 : s -> {
@@ -170,7 +170,7 @@ public final class Conversions {
             }
             return function.apply(s);
         };
-        CONVERSIONS.computeIfAbsent(source, (Class<?> c) -> new HashMap<>())
+        CONVERSIONS.computeIfAbsent(source, ( Class<?> c ) -> new HashMap<>())
                 .put(target, conversion);
     }
 

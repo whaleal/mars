@@ -47,7 +47,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $acos
+     *  $acos
      */
     public static Expression acos(Expression value) {
         return new Expression("$acos", value);
@@ -58,7 +58,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $acosh
+     *  $acosh
      */
     public static Expression acosh(Expression value) {
         return new Expression("$acosh", value);
@@ -69,7 +69,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $asin
+     *  $asin
      */
     public static Expression asin(Expression value) {
         return new Expression("$asin", value);
@@ -80,7 +80,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $asinh
+     *  $asinh
      */
     public static Expression asinh(Expression value) {
         return new Expression("$asinh", value);
@@ -91,7 +91,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $atan
+     *  $atan
      */
     public static Expression atan(Expression value) {
         return new Expression("$atan", value);
@@ -104,7 +104,7 @@ public final class TrigonometryExpressions {
      * @param yValue the y value
      * @param xValue the x value
      * @return the new expression
-     * @aggregation.expression $atan2
+     *  $atan2
      */
     public static Expression atan2(Expression yValue, Expression xValue) {
         return new Expression("$atan2", Arrays.asList(yValue, xValue));
@@ -115,7 +115,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $atanh
+     *  $atanh
      */
     public static Expression atanh(Expression value) {
         return new Expression("$atanh", value);
@@ -126,7 +126,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $cos
+     *  $cos
      */
     public static Expression cos(Expression value) {
         return new Expression("$cos", value);
@@ -137,7 +137,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $cosh
+     *  $cosh
      */
     public static Expression cosh(Expression value) {
         return new Expression("$cosh", value);
@@ -148,7 +148,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $degreesToRadians
+     *  $degreesToRadians
      */
     public static Expression degreesToRadians(Expression value) {
         return new Expression("$degreesToRadians", value);
@@ -159,7 +159,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $radiansToDegrees
+     *  $radiansToDegrees
      */
     public static Expression radiansToDegrees(Expression value) {
         return new Expression("$radiansToDegrees", value);
@@ -170,7 +170,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $sin
+     *  $sin
      */
     public static Expression sin(Expression value) {
         return new Expression("$sin", value);
@@ -181,7 +181,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $sinh
+     *  $sinh
      */
     public static Expression sinh(Expression value) {
         return new Expression("$sinh", value);
@@ -192,7 +192,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $tan
+     *  $tan
      */
     public static Expression tan(Expression value) {
         return new Expression("$tan", value);
@@ -203,7 +203,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $tanh
+     *  $tanh
      */
     public static Expression tanh(Expression value) {
         return new Expression("$tanh", value);

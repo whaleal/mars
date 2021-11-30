@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.bson.codecs.internal;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import org.bson.BsonType;
-import org.bson.assertions.Assertions;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -42,8 +42,8 @@ public class BsonTypeCodecMap {
     private final Codec<?>[] codecs = new Codec[256];
 
     public BsonTypeCodecMap(BsonTypeClassMap bsonTypeClassMap, CodecRegistry codecRegistry) {
-        this.bsonTypeClassMap = (BsonTypeClassMap) Assertions.notNull("bsonTypeClassMap", bsonTypeClassMap);
-        Assertions.notNull("codecRegistry", codecRegistry);
+        this.bsonTypeClassMap = (BsonTypeClassMap) Precondition.notNull("bsonTypeClassMap", bsonTypeClassMap);
+        Precondition.notNull("codecRegistry", codecRegistry);
         Iterator var3 = bsonTypeClassMap.keys().iterator();
 
         while (var3.hasNext()) {

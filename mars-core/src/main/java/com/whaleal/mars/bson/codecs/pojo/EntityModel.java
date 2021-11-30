@@ -30,7 +30,7 @@
 package com.whaleal.mars.bson.codecs.pojo;
 
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.Convention;
 import org.bson.codecs.configuration.CodecConfigurationException;
 
@@ -337,7 +337,6 @@ public final class EntityModel<T> {
     }
 
 
-    @Nullable
     public <A extends Annotation> A getAnnotation(Class<A> type) {
 
         for (Annotation annotation : annotations) {

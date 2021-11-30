@@ -88,7 +88,7 @@ public final class AccumulatorExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $last
+     *  $last
      */
     public static Expression last(Expression value) {
         return new Expression("$last", value);
@@ -99,7 +99,7 @@ public final class AccumulatorExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $max
+     *  $max
      */
     public static Expression max(Expression value) {
         return new Expression("$max", value);
@@ -110,7 +110,7 @@ public final class AccumulatorExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $min
+     *  $min
      */
     public static Expression min(Expression value) {
         return new Expression("$min", value);
@@ -121,7 +121,7 @@ public final class AccumulatorExpressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $push
+     *  $push
      */
     public static Expression push(Expression value) {
         return new Expression("$push", value);
@@ -134,7 +134,7 @@ public final class AccumulatorExpressions {
      * $push is only available in the $group stage.
      *
      * @return the new expression
-     * @aggregation.expression $push
+     *  $push
      */
     public static Push push() {
         return new Push();
@@ -146,7 +146,7 @@ public final class AccumulatorExpressions {
      * @param value      the value
      * @param additional any subsequent expressions to include in the expression
      * @return the new expression
-     * @aggregation.expression $stdDevPop
+     *  $stdDevPop
      */
     public static Expression stdDevPop(Expression value, Expression... additional) {
         List<Expression> expressions = new ArrayList<>();
@@ -161,7 +161,7 @@ public final class AccumulatorExpressions {
      * @param value      the value
      * @param additional any subsequent expressions to include in the expression
      * @return the new expression
-     * @aggregation.expression $stdDevSamp
+     *  $stdDevSamp
      */
     public static Expression stdDevSamp(Expression value, Expression... additional) {
         List<Expression> expressions = new ArrayList<>();
@@ -176,7 +176,7 @@ public final class AccumulatorExpressions {
      * @param first      the first expression to sum
      * @param additional any subsequent expressions to include in the sum
      * @return the new expression
-     * @aggregation.expression $sum
+     *  $sum
      */
     public static Expression sum(Expression first, Expression... additional) {
         List<Expression> expressions = new ArrayList<>();

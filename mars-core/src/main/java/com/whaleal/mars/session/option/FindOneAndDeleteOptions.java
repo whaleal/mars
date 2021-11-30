@@ -31,7 +31,6 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 import java.util.concurrent.TimeUnit;
@@ -55,18 +54,17 @@ public class FindOneAndDeleteOptions implements WriteConfigurable<FindOneAndDele
         this.originFindOneAndDeleteOptions = originFindOneAndDeleteOptions;
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originFindOneAndDeleteOptions.getCollation();
     }
 
 
-    @Nullable
     public long getMaxTime(TimeUnit timeUnit) {
         return originFindOneAndDeleteOptions.getMaxTime(timeUnit);
     }
 
-    @Nullable
+
     public Bson getSort() {
         return originFindOneAndDeleteOptions.getSort();
     }

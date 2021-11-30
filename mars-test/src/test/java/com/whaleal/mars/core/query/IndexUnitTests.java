@@ -19,8 +19,8 @@ package com.whaleal.mars.core.query;
 import org.bson.Entity;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.Preconditionj.core.api.Precondition.*;
+import static org.Preconditionj.core.api.Precondition.PreconditionThat;
 */
 
 /**
@@ -31,44 +31,44 @@ public class IndexUnitTests {
 	/*@Test
 	public void testWithAscendingIndex() {
 		IndexUnitTests i = new Index().on("name", Direction.ASC);
-		assertThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : 1}"));
+		PreconditionThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : 1}"));
 	}
 
 	@Test
 	public void testWithDescendingIndex() {
 		Index i = new Index().on("name", Direction.DESC);
-		assertThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : -1}"));
+		PreconditionThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : -1}"));
 	}
 
 	@Test
 	public void testNamedMultiFieldUniqueIndex() {
 		Index i = new Index().on("name", Direction.ASC).on("age", Direction.DESC);
 		i.named("test").unique();
-		assertThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : 1 , \"age\" : -1}"));
-		assertThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"name\" : \"test\" , \"unique\" : true}"));
+		PreconditionThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : 1 , \"age\" : -1}"));
+		PreconditionThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"name\" : \"test\" , \"unique\" : true}"));
 	}
 
 	@Test
 	public void testWithSparse() {
 		Index i = new Index().on("name", Direction.ASC);
 		i.sparse().unique();
-		assertThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : 1}"));
-		assertThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"unique\" : true , \"sparse\" : true}"));
+		PreconditionThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"name\" : 1}"));
+		PreconditionThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"unique\" : true , \"sparse\" : true}"));
 	}
 
 	@Test
 	public void testGeospatialIndex() {
 		GeospatialIndex i = new GeospatialIndex("location").withMin(0);
-		assertThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"location\" : \"2d\"}"));
-		assertThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"min\" : 0}"));
+		PreconditionThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"location\" : \"2d\"}"));
+		PreconditionThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"min\" : 0}"));
 	}
 
 	@Test // DATAMONGO-778
 	public void testGeospatialIndex2DSphere() {
 
 		GeospatialIndex i = new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE);
-		assertThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"location\" : \"2dsphere\"}"));
-		assertThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ }"));
+		PreconditionThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"location\" : \"2dsphere\"}"));
+		PreconditionThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ }"));
 	}
 
 	@Test // DATAMONGO-778
@@ -76,14 +76,14 @@ public class IndexUnitTests {
 
 		GeospatialIndex i = new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_HAYSTACK)
 				.withAdditionalField("name").withBucketSize(40);
-		assertThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"location\" : \"geoHaystack\" , \"name\" : 1}"));
-		assertThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"bucketSize\" : 40.0}"));
+		PreconditionThat(i.getIndexKeys()).isEqualTo(Entity.parse("{ \"location\" : \"geoHaystack\" , \"name\" : 1}"));
+		PreconditionThat(i.getIndexOptions()).isEqualTo(Entity.parse("{ \"bucketSize\" : 40.0}"));
 	}
 
 	@Test
 	public void ensuresPropertyOrder() {
 
 		Index on = new Index("foo", Direction.ASC).on("bar", Direction.ASC);
-		assertThat(on.getIndexKeys()).isEqualTo(Entity.parse("{ \"foo\" : 1 , \"bar\" : 1}"));
+		PreconditionThat(on.getIndexKeys()).isEqualTo(Entity.parse("{ \"foo\" : 1 , \"bar\" : 1}"));
 	}*/
 }

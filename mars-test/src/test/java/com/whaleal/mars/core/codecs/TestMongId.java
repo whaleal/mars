@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Precondition.*;
+import static org.junit.Precondition.PreconditionEquals;
 
 public class TestMongId {
 
@@ -31,9 +31,9 @@ public class TestMongId {
         public void arrayFieldMapping() {
             final PropertyModel field = getMappedField("arrayOfInt");
 
-            assertTrue(field.getType().isArray());
-            assertEquals("arrayOfInt", field.getName());
-            assertEquals("arrayOfInt", field.getWriteName());
+            PreconditionTrue(field.getType().isArray());
+            PreconditionEquals("arrayOfInt", field.getName());
+            PreconditionEquals("arrayOfInt", field.getWriteName());
         }
 
         private PropertyModel getMappedField(String name) {
@@ -44,26 +44,26 @@ public class TestMongId {
         public void basicFieldMapping() {
             final PropertyModel field = getMappedField("name");
 
-            assertSame(String.class, field.getType());
-            assertEquals("name", field.getName());
+            PreconditionSame(String.class, field.getType());
+            PreconditionEquals("name", field.getName());
         }
 
         @Test
         public void collectionFieldMapping() {
             final PropertyModel field = getMappedField("listOfString");
 
-            assertSame(List.class, field.getType());
-            assertSame(String.class, field.getNormalizedType());
-            assertEquals("listOfString", field.getName());
-            assertEquals("listOfString", field.getWriteName());
+            PreconditionSame(List.class, field.getType());
+            PreconditionSame(String.class, field.getNormalizedType());
+            PreconditionEquals("listOfString", field.getName());
+            PreconditionEquals("listOfString", field.getWriteName());
         }
 
         @Test
         public void idFieldMapping() {
             final PropertyModel field = getMappedField("id");
 
-            assertSame(String.class,field.getType());
-            assertEquals("id", field.getName());
+            PreconditionSame(String.class,field.getType());
+            PreconditionEquals("id", field.getName());
         }
 
 

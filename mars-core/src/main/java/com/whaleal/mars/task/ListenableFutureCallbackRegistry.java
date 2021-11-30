@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.task;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -52,7 +52,7 @@ public class ListenableFutureCallbackRegistry<T> {
 
     private State state = State.NEW;
 
-    @Nullable
+
     private Object result;
 
     private final Object mutex = new Object();
@@ -64,7 +64,7 @@ public class ListenableFutureCallbackRegistry<T> {
      * @param callback the callback to add
      */
     public void addCallback(ListenableFutureCallback<? super T> callback) {
-        Assert.notNull(callback, "'callback' must not be null");
+        Precondition.notNull(callback, "'callback' must not be null");
         synchronized (this.mutex) {
             switch (this.state) {
                 case NEW:
@@ -91,7 +91,7 @@ public class ListenableFutureCallbackRegistry<T> {
     }
 
     private void notifyFailure(FailureCallback callback) {
-        Assert.state(this.result instanceof Throwable, "No Throwable result for failure state");
+        Precondition.state(this.result instanceof Throwable, "No Throwable result for failure state");
         try {
             callback.onFailure((Throwable) this.result);
         } catch (Throwable ex) {
@@ -106,7 +106,7 @@ public class ListenableFutureCallbackRegistry<T> {
      *  4.1
      */
     public void addSuccessCallback(SuccessCallback<? super T> callback) {
-        Assert.notNull(callback, "'callback' must not be null");
+        Precondition.notNull(callback, "'callback' must not be null");
         synchronized (this.mutex) {
             switch (this.state) {
                 case NEW:
@@ -126,7 +126,7 @@ public class ListenableFutureCallbackRegistry<T> {
      *  4.1
      */
     public void addFailureCallback(FailureCallback callback) {
-        Assert.notNull(callback, "'callback' must not be null");
+        Precondition.notNull(callback, "'callback' must not be null");
         synchronized (this.mutex) {
             switch (this.state) {
                 case NEW:
@@ -140,7 +140,7 @@ public class ListenableFutureCallbackRegistry<T> {
     }
 
 
-    public void success(@Nullable T result) {
+    public void success( T result ) {
         synchronized (this.mutex) {
             this.state = State.SUCCESS;
             this.result = result;

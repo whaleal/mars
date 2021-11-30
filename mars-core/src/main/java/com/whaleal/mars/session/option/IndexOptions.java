@@ -31,7 +31,6 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 import java.util.concurrent.TimeUnit;
@@ -56,82 +55,82 @@ public class IndexOptions implements WriteConfigurable<IndexOptions> {
 
     }
 
-    @Nullable
+
     public Integer getBits() {
         return originIndexOptions.getBits();
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originIndexOptions.getCollation();
     }
 
-    @Nullable
+
     public String getName() {
         return originIndexOptions.getName();
     }
 
-    @Nullable
+
     public Integer getVersion() {
         return originIndexOptions.getVersion();
     }
 
-    @Nullable
+
     public Double getBucketSize() {
         return originIndexOptions.getBucketSize();
     }
 
-    @Nullable
+
     public String getDefaultLanguage() {
         return originIndexOptions.getDefaultLanguage();
     }
 
-    @Nullable
+
     public Long getExpireAfter(TimeUnit timeUnit) {
         return originIndexOptions.getExpireAfter(timeUnit);
     }
 
-    @Nullable
+
     public String getLanguageOverride() {
         return originIndexOptions.getLanguageOverride();
     }
 
-    @Nullable
+
     public Double getMax() {
         return originIndexOptions.getMax();
     }
 
-    @Nullable
+
     public Double getMin() {
         return originIndexOptions.getMin();
     }
 
-    @Nullable
+
     public Bson getPartialFilterExpression() {
         return originIndexOptions.getPartialFilterExpression();
     }
 
-    @Nullable
+
     public Integer getSphereVersion() {
         return originIndexOptions.getSphereVersion();
     }
 
-    @Nullable
+
     public Bson getStorageEngine() {
         return originIndexOptions.getStorageEngine();
     }
 
-    @Nullable
+
     public Integer getTextVersion() {
         return originIndexOptions.getTextVersion();
     }
 
-    @Nullable
+
     public Bson getWeights() {
         return originIndexOptions.getWeights();
     }
 
-    @Nullable
+
     public Bson getWildcardProjection() {
         return originIndexOptions.getWildcardProjection();
     }

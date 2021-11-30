@@ -31,11 +31,10 @@ package com.whaleal.mars.gridfs;
 
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.util.ObjectUtils;
-import com.whaleal.mars.util.StringUtils;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -52,49 +51,49 @@ import java.util.Optional;
  */
 public interface GridFsOperations extends ResourcePatternResolver {
 
-    default ObjectId storeGridFs(InputStream content, String filename,
-                                 @Nullable String bucketName) {
+    default ObjectId storeGridFs( InputStream content, String filename,
+                                  String bucketName ) {
         return storeGridFs(content, filename, null, null, bucketName);
     }
 
-    default ObjectId storeGridFs(InputStream content, @Nullable Object metadata, String bucketName) {
+    default ObjectId storeGridFs( InputStream content, Object metadata, String bucketName ) {
         return storeGridFs(content, null, metadata, bucketName);
     }
 
-    default ObjectId storeGridFs(InputStream content, @Nullable Document metadata,
-                                 @Nullable String bucketName) {
+    default ObjectId storeGridFs( InputStream content, Document metadata,
+                                  String bucketName ) {
         return storeGridFs(content, null, metadata, bucketName);
     }
 
-    default ObjectId storeGridFs(InputStream content, @Nullable String filename, @Nullable String contentType,
-                                 @Nullable String bucketName) {
+    default ObjectId storeGridFs( InputStream content, String filename, String contentType,
+                                  String bucketName ) {
         return storeGridFs(content, filename, contentType, null, bucketName);
     }
 
-    default ObjectId storeGridFs(InputStream content, @Nullable String filename, @Nullable Object metadata,
-                                 @Nullable String bucketName) {
+    default ObjectId storeGridFs( InputStream content, String filename, Object metadata,
+                                  String bucketName ) {
         return storeGridFs(content, filename, null, metadata, bucketName);
     }
 
-    ObjectId storeGridFs(InputStream content, @Nullable String filename, @Nullable String contentType,
-                         @Nullable Object metadata, @Nullable String bucketName);
+    ObjectId storeGridFs( InputStream content, String filename, String contentType,
+                          Object metadata, String bucketName );
 
-    default ObjectId storeGridFs(InputStream content, @Nullable String filename, @Nullable Document metadata,
-                                 @Nullable String bucketName) {
+    default ObjectId storeGridFs( InputStream content, String filename, Document metadata,
+                                  String bucketName ) {
         return storeGridFs(content, filename, null, metadata, bucketName);
     }
 
-    default ObjectId storeGridFs(InputStream content, @Nullable String filename, @Nullable String contentType,
-                                 @Nullable Document metadata, @Nullable String bucketName) {
+    default ObjectId storeGridFs( InputStream content, String filename, String contentType,
+                                  Document metadata, String bucketName ) {
 
         GridFsUpload.GridFsUploadBuilder<ObjectId> uploadBuilder = GridFsUpload.fromStream(content);
-        if (StringUtils.hasText(filename)) {
+        if (StrUtil.hasText(filename)) {
             uploadBuilder.filename(filename);
         }
-        if (!ObjectUtils.isEmpty(metadata)) {
+        if (!ObjectUtil.isEmpty(metadata)) {
             uploadBuilder.metadata(metadata);
         }
-        if (StringUtils.hasText(contentType)) {
+        if (StrUtil.hasText(contentType)) {
             uploadBuilder.contentType(contentType);
         }
 
@@ -113,7 +112,7 @@ public interface GridFsOperations extends ResourcePatternResolver {
 
     GridFSFindIterable findGridFs(Query query, String bucketName);
 
-    @Nullable
+
     default GridFSFile findOneGridFs(Query query) {
         return findOneGridFs(query, null);
     }
@@ -153,7 +152,7 @@ public interface GridFsOperations extends ResourcePatternResolver {
 
     @Override
     default GridFsResource[] getResources(String filenamePattern) {
-        if (!StringUtils.hasText(filenamePattern)) {
+        if (!StrUtil.hasText(filenamePattern)) {
             return new GridFsResource[0];
         }
 

@@ -30,7 +30,7 @@
 
 package com.whaleal.mars.internal;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import com.whaleal.mars.bson.codecs.pojo.EntityModel;
 import com.whaleal.mars.bson.codecs.pojo.PropertyModel;
@@ -41,6 +41,14 @@ import java.util.StringJoiner;
 import static java.util.Arrays.asList;
 
 
+/**
+ * 通过解析 传入的 表达式
+ * 获取类中的 field 的 值 或者 其他值
+ * 同时还可以对 中间的值进行 赋值
+ * <p>
+ * 这个类因为和 框架绑定
+ * 主要是通过表达式 返回其中的 propertyModel
+ */
 public class PathTarget {
     private final List<String> segments;
     private final boolean validateNames;
@@ -70,7 +78,7 @@ public class PathTarget {
      * @param path          path
      * @param validateNames true if names should be validated
      */
-    public PathTarget(MongoMappingContext mapper, @Nullable EntityModel root, String path, boolean validateNames) {
+    public PathTarget( MongoMappingContext mapper, EntityModel root, String path, boolean validateNames ) {
         segments = asList(path.split("\\."));
         this.root = root;
         this.mapper = mapper;
@@ -86,7 +94,7 @@ public class PathTarget {
      * @param path   the path
      * @param <T>    the root type
      */
-    public <T> PathTarget(MongoMappingContext mapper, @Nullable Class<T> type, String path) {
+    public <T> PathTarget( MongoMappingContext mapper, Class<T> type, String path ) {
         this(mapper, type != null && mapper.isMappable(type) ? mapper.getEntityModel(type) : null, path, true);
     }
 
@@ -99,7 +107,7 @@ public class PathTarget {
      * @param validateNames true if names should be validated
      * @param <T>           the root type
      */
-    public <T> PathTarget(MongoMappingContext mapper, @Nullable Class<T> type, String path, boolean validateNames) {
+    public <T> PathTarget( MongoMappingContext mapper, Class<T> type, String path, boolean validateNames ) {
         this(mapper, type != null && mapper.isMappable(type) ? mapper.getEntityModel(type) : null, path, validateNames);
     }
 
@@ -122,7 +130,7 @@ public class PathTarget {
      *
      * @return the field
      */
-    @Nullable
+
     public PropertyModel getTarget() {
         if (!resolved) {
             resolve();
@@ -180,7 +188,7 @@ public class PathTarget {
         segments.set(position - 1, nameToStore);
     }
 
-    @Nullable
+
     private PropertyModel resolveProperty(String segment) {
         if (context != null) {
             PropertyModel mf = context.getPropertyModel(segment);

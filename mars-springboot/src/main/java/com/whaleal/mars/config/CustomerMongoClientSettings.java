@@ -33,7 +33,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import com.whaleal.mars.util.Assert;
+
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class CustomerMongoClientSettings implements Customizer {
 
     private void validateConfiguration() {
         if (hasCustomAddress() || hasCustomCredentials() || hasReplicaSet()) {
-            Assert.state(this.properties.getUri() == null,
+            Precondition.state(this.properties.getUri() == null,
                     "Invalid mongo configuration, either uri or host/port/credentials/replicaSet must be specified");
         }
     }

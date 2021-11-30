@@ -30,7 +30,6 @@
 package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 /**
@@ -51,22 +50,22 @@ public class PushOptions implements WriteConfigurable<PushOptions> {
         this.originPushOptions = originPushOptions;
     }
 
-    @Nullable
+
     public Integer getPosition() {
         return originPushOptions.getPosition();
     }
 
-    @Nullable
+
     public Integer getSort() {
         return originPushOptions.getSort();
     }
 
-    @Nullable
+
     public Integer getSlice() {
         return originPushOptions.getSlice();
     }
 
-    @Nullable
+
     public Bson getSortDocument() {
         return originPushOptions.getSortDocument();
     }

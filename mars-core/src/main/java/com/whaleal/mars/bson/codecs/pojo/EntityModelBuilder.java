@@ -32,16 +32,16 @@ package com.whaleal.mars.bson.codecs.pojo;
 
 import com.whaleal.mars.bson.codecs.Convention;
 import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.util.StringUtils;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bson.codecs.pojo.IdGenerator;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
 
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.lang.String.format;
 import static java.util.Collections.*;
-import static org.bson.assertions.Assertions.notNull;
+
 
 
 public class EntityModelBuilder<T> {
@@ -235,10 +235,10 @@ public class EntityModelBuilder<T> {
             }
         }
         if (anno == null) {
-            this.collectionName = StringUtils.uncapitalize(type.getSimpleName());
+            this.collectionName = com.whaleal.icefrog.core.util.StrUtil.uncapitalize(type.getSimpleName());
             return;
         } else if ("".equals(anno.value())) {
-            this.collectionName = StringUtils.uncapitalize(type.getSimpleName());
+            this.collectionName = com.whaleal.icefrog.core.util.StrUtil.uncapitalize(type.getSimpleName());
             return;
         } else {
             this.collectionName = anno.value();

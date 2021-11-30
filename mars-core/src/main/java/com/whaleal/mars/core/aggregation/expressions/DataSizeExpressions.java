@@ -41,7 +41,7 @@ public final class DataSizeExpressions {
      *
      * @param expression the binary size expression
      * @return the new expression
-     * @aggregation.expression $binarySize
+     *  $binarySize
      */
     public static Expression binarySize(Expression expression) {
         return new Expression("$binarySize", expression);
@@ -52,7 +52,7 @@ public final class DataSizeExpressions {
      *
      * @param expression the bson size expression
      * @return the new expression
-     * @aggregation.expression $bsonSize
+     *  $bsonSize
      */
     public static Expression bsonSize(Expression expression) {
         return new Expression("$bsonSize", expression);

@@ -29,15 +29,15 @@
  */
 package com.whaleal.mars.core.messaging;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 
 class SimpleMessage<S, T> implements Message<S, T> {
 
-    private @Nullable
+    private
     final S raw;
-    private @Nullable
+    private
     final T body;
     private final MessageProperties properties;
 
@@ -46,9 +46,9 @@ class SimpleMessage<S, T> implements Message<S, T> {
      * @param body
      * @param properties must not be {@literal null}. Use {@link MessageProperties#empty()} instead.
      */
-    SimpleMessage(@Nullable S raw, @Nullable T body, MessageProperties properties) {
+    SimpleMessage( S raw,  T body, MessageProperties properties) {
 
-        Assert.notNull(properties, "Properties must not be null! Use MessageProperties.empty() instead.");
+        Precondition.notNull(properties, "Properties must not be null! Use MessageProperties.empty() instead.");
 
         this.raw = raw;
         this.body = body;
@@ -82,20 +82,20 @@ class SimpleMessage<S, T> implements Message<S, T> {
 
         SimpleMessage<?, ?> that = (SimpleMessage<?, ?>) o;
 
-        if (!ObjectUtils.nullSafeEquals(this.raw, that.raw)) {
+        if (!ObjectUtil.nullSafeEquals(this.raw, that.raw)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(this.body, that.body)) {
+        if (!ObjectUtil.nullSafeEquals(this.body, that.body)) {
             return false;
         }
-        return ObjectUtils.nullSafeEquals(this.properties, that.properties);
+        return ObjectUtil.nullSafeEquals(this.properties, that.properties);
     }
 
     @Override
     public int hashCode() {
-        int result = ObjectUtils.nullSafeHashCode(raw);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(body);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(properties);
+        int result = ObjectUtil.nullSafeHashCode(raw);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(body);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(properties);
         return result;
     }
 

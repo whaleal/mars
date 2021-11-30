@@ -30,7 +30,6 @@
 package com.whaleal.mars.geojson.codecs;
 
 
-import com.mongodb.lang.Nullable;
 import org.bson.BsonReader;
 import org.bson.BsonReaderMark;
 import org.bson.BsonType;
@@ -455,7 +454,7 @@ final class GeometryDecoderHelper {
                 + reader.getCurrentBsonType());
     }
 
-    @Nullable
+
     static Object decodeObject(final BsonReader reader) {
         String crsName = null;
         validateIsDocument(reader);

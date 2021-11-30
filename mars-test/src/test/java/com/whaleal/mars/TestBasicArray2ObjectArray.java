@@ -3,7 +3,7 @@ package com.whaleal.mars;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.model.Filters;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -19,9 +19,9 @@ public class TestBasicArray2ObjectArray {
 
         System.out.println(arr.getClass());
 
-        Assert.assertTrue(arr instanceof int[]);
+        Precondition.PreconditionTrue(arr instanceof int[]);
 
-        Assert.assertFalse(arr instanceof long[]);
+        Precondition.PreconditionFalse(arr instanceof long[]);
 
 
         BasicDBList  ret = new BasicDBList();

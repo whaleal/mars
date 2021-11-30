@@ -3,7 +3,7 @@ package com.whaleal.mars.core.index;
 
 import com.whaleal.mars.bean.Student;
 import org.bson.Document;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.whaleal.mars.core.Mars;
@@ -30,7 +30,7 @@ public class IndexTest {
     @Test
     public void testConnection(){
 
-        Assert.assertNotNull(mars);
+        Precondition.PreconditionNotNull(mars);
     }
 
 
@@ -46,11 +46,11 @@ public class IndexTest {
         mars.createIndex(index,coll);
 
         List<Index> cool = mars.getIndexes(coll);
-        Assert.assertEquals(cool.size() ,2);
+        Precondition.PreconditionEquals(cool.size() ,2);
 
-        Assert.assertEquals(cool.get(1).getIndexKeys(),new Document("c",1));
+        Precondition.PreconditionEquals(cool.get(1).getIndexKeys(),new Document("c",1));
 
-        Assert.assertEquals(cool.get(1).getIndexOptions().getExpireAfter(TimeUnit.SECONDS),Long.valueOf(3600));
+        Precondition.PreconditionEquals(cool.get(1).getIndexOptions().getExpireAfter(TimeUnit.SECONDS),Long.valueOf(3600));
 
         mars.dropIndexes(coll);
 
@@ -67,9 +67,9 @@ public class IndexTest {
 
         mars.createIndex(index ,coll);
         List<Index> indexes = mars.getIndexes(coll);
-        Assert.assertEquals(indexes.size() ,2);
+        Precondition.PreconditionEquals(indexes.size() ,2);
 
-        Assert.assertEquals(indexes.get(1).getIndexKeys(),new Document("a",1).append("b",-1));
+        Precondition.PreconditionEquals(indexes.get(1).getIndexKeys(),new Document("a",1).append("b",-1));
         mars.dropIndex(index,coll);
 
     }
@@ -80,20 +80,20 @@ public class IndexTest {
         mars.dropIndexes(coll);
         mars.ensureIndexes(Student.class ,coll);
         List<Index> indexes = mars.getIndexes(coll);
-        Assert.assertEquals(indexes.size() ,4);
+        Precondition.PreconditionEquals(indexes.size() ,4);
 
 
-        Assert.assertEquals(indexes.get(1).getIndexKeys(),new Document("salary",1).append("name",-1));
+        Precondition.PreconditionEquals(indexes.get(1).getIndexKeys(),new Document("salary",1).append("name",-1));
 
-        Assert.assertEquals(indexes.get(2).getIndexKeys(),new Document("idcc","hashed"));
+        Precondition.PreconditionEquals(indexes.get(2).getIndexKeys(),new Document("idcc","hashed"));
 
 
-        Assert.assertEquals(indexes.get(3).getIndexKeys(),new Document("idcc",1));
+        Precondition.PreconditionEquals(indexes.get(3).getIndexKeys(),new Document("idcc",1));
 
 
         Long expireAfter = indexes.get(3).getIndexOptions().getExpireAfter(TimeUnit.SECONDS);
 
-        Assert.assertEquals(expireAfter,Long.valueOf(10));
+        Precondition.PreconditionEquals(expireAfter,Long.valueOf(10));
 
         mars.dropIndexes(coll);
 

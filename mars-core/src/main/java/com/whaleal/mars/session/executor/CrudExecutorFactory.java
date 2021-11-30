@@ -86,7 +86,7 @@ public class CrudExecutorFactory {
         }
 
         // 如果type不存在，抛出异常
-        throw new AssertionError("Unknown OperationsEnum: " + type);
+        throw new IllegalArgumentException("Unknown OperationsEnum: " + type);
 
 
     }

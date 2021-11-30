@@ -36,7 +36,6 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
 import org.bson.Document;
 
 import java.util.List;
@@ -345,7 +344,7 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
      * @param writeConcern the write concern
      * @return this
      */
-    public AggregationOptions writeConcern(@Nullable WriteConcern writeConcern) {
+    public AggregationOptions writeConcern( WriteConcern writeConcern ) {
         this.writeConcern = writeConcern;
         return this;
     }
@@ -353,7 +352,7 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
     /**
      * @return the configuration value
      */
-    @Nullable
+
     public WriteConcern writeConcern() {
         return writeConcern;
     }

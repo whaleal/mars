@@ -1,6 +1,6 @@
 package com.whaleal.mars.core;
 
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -16,14 +16,14 @@ public class MarsURITest {
     @Before
     public void init() {
 
-        Assert.assertNotNull(mars);
+        Precondition.PreconditionNotNull(mars);
     }
 
 
     @Test
     public void checkMarsNotNull() {
 
-        Assert.assertNotNull(mars);
+        Precondition.PreconditionNotNull(mars);
     }
 
 

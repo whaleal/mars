@@ -30,7 +30,7 @@
 package com.whaleal.mars.session;
 
 import com.mongodb.ClientSessionOptions;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.UpdateDefinition;
@@ -39,7 +39,6 @@ import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
-import com.whaleal.mars.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,7 +80,7 @@ public interface Datastore extends IndexOperations {
         return replace(query, entity, options, null);
     }
 
-    <T> UpdateResult replace(Query query, T entity, ReplaceOptions options, @Nullable String collectionName);
+    <T> UpdateResult replace( Query query, T entity, ReplaceOptions options, String collectionName );
 
     default <T> DeleteResult delete(Query query, Class<T> entityClass) {
         return delete(query, entityClass, new DeleteOptions());
@@ -95,7 +94,7 @@ public interface Datastore extends IndexOperations {
     //todo  根据实体 Id  删除
     /*default  DeleteResult delete(Object entity) {
 
-        Assert.notNull(entity, "Object must not be null!");
+        Precondition.notNull(entity, "Object must not be null!");
 
         return delete(entity, getCollectionName(entity.getClass()));
     }
@@ -103,8 +102,8 @@ public interface Datastore extends IndexOperations {
 
     default  DeleteResult delete(Object entity, String collectionName) {
 
-        Assert.notNull(object, "Object must not be null!");
-        Assert.hasText(collectionName, "Collection name must not be null or empty!");
+        Precondition.notNull(object, "Object must not be null!");
+        Precondition.hasText(collectionName, "Collection name must not be null or empty!");
 
         Query query = operations.forEntity(object).getRemoveByQuery();
 
@@ -124,24 +123,24 @@ public interface Datastore extends IndexOperations {
 
     default DeleteResult delete(Query query, Class<?> entityClass, String collectionName) {
 
-        Assert.notNull(entityClass, "EntityClass must not be null!");
+        Precondition.notNull(entityClass, "EntityClass must not be null!");
         return delete(query, entityClass, new DeleteOptions(), collectionName);
     }
 
 
-    <T> DeleteResult delete(Query query, Class<T> entityClass, DeleteOptions options, @Nullable String collectionName);
+    <T> DeleteResult delete( Query query, Class<T> entityClass, DeleteOptions options, String collectionName );
 
     default <T> QueryCursor<T> findAll(Query query, Class<T> entityClass) {
         return findAll(query, entityClass, null);
     }
 
-    <T> QueryCursor<T> findAll(Query query, Class<T> entityClass, @Nullable String collectionName);
+    <T> QueryCursor<T> findAll( Query query, Class<T> entityClass, String collectionName );
 
     default <T> Optional<T> findOne(Query query, Class<T> entityClass) {
         return findOne(query, entityClass, null);
     }
 
-    <T> Optional<T> findOne(Query query, Class<T> entityClass, @Nullable String collectionName);
+    <T> Optional<T> findOne( Query query, Class<T> entityClass, String collectionName );
 
     /**
      * Inserts an entity in to the mapped collection.
@@ -153,7 +152,7 @@ public interface Datastore extends IndexOperations {
     /**
      * Inserts an entity in to the mapped collection.
      */
-    default <T> InsertOneResult insert(T entity, @Nullable String collectionName) {
+    default <T> InsertOneResult insert( T entity, String collectionName ) {
         return insert(entity, new InsertOneOptions(), collectionName);
     }
 
@@ -168,7 +167,7 @@ public interface Datastore extends IndexOperations {
     /**
      * Inserts an entity in to the mapped collection.
      */
-    <T> InsertOneResult insert(T entity, InsertOneOptions options, @Nullable String collectionName);
+    <T> InsertOneResult insert( T entity, InsertOneOptions options, String collectionName );
 
 
     /**
@@ -181,7 +180,7 @@ public interface Datastore extends IndexOperations {
     /**
      * Inserts a List of entities in to the mapped collection.
      */
-    default <T> InsertManyResult insert(Collection<? extends T> entities, @Nullable String collectionName) {
+    default <T> InsertManyResult insert( Collection<? extends T> entities, String collectionName ) {
         return insert(entities, new InsertManyOptions(), collectionName);
     }
 
@@ -196,7 +195,7 @@ public interface Datastore extends IndexOperations {
     /**
      * Inserts entities in to the mapped collection.
      */
-    <T> InsertManyResult insert(Collection<? extends T> entities, InsertManyOptions options, @Nullable String collectionName);
+    <T> InsertManyResult insert( Collection<? extends T> entities, InsertManyOptions options, String collectionName );
 
 
     default <T> UpdateResult update(Query query, T entity) {
@@ -207,12 +206,12 @@ public interface Datastore extends IndexOperations {
         return update(query, entity, options, null);
     }
 
-    default <T> UpdateResult update(Query query, T entity, @Nullable String collectionName) {
+    default <T> UpdateResult update( Query query, T entity, String collectionName ) {
         return update(query, entity, new UpdateOptions(), collectionName);
     }
 
 
-    <T> UpdateResult update(Query query, T entity, UpdateOptions options, @Nullable String collectionName);
+    <T> UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName );
 
 
     /**
@@ -245,7 +244,7 @@ public interface Datastore extends IndexOperations {
      * 修改更新的定义
      */
 
-    <T> UpdateResult update(Query query, UpdateDefinition update, Class<T> entityClass, UpdateOptions options, @Nullable String collectionName);
+    <T> UpdateResult update( Query query, UpdateDefinition update, Class<T> entityClass, UpdateOptions options, String collectionName );
 
 
     /**
@@ -266,7 +265,7 @@ public interface Datastore extends IndexOperations {
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    default <T> List<T> save(Collection<? extends T> entities, InsertManyOptions options, @Nullable String collectionName) {
+    default <T> List<T> save( Collection<? extends T> entities, InsertManyOptions options, String collectionName ) {
         if (entities.isEmpty()) {
             return new ArrayList<T>();
         }
@@ -295,7 +294,7 @@ public interface Datastore extends IndexOperations {
     /**
      * Saves an entity (Object) and updates the @Id field
      */
-    <T> T save(T entity, InsertOneOptions options, @Nullable String collectionName);
+    <T> T save( T entity, InsertOneOptions options, String collectionName );
 
 
     /**

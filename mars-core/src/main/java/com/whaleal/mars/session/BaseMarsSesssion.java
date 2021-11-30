@@ -36,6 +36,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.TransactionBody;
+import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 import com.mongodb.session.ServerSession;
 import org.bson.BsonDocument;
@@ -62,7 +63,6 @@ public class BaseMarsSesssion extends DatastoreImpl implements MarsSession {
         super(database, mongoClient);
         this.session = session;
     }
-
     @Override
     @Nullable
     public ServerAddress getPinnedServerAddress() {
@@ -70,9 +70,21 @@ public class BaseMarsSesssion extends DatastoreImpl implements MarsSession {
     }
 
     @Override
-    public void setPinnedServerAddress(ServerAddress address) {
-        session.setPinnedServerAddress(address);
+    public Object getTransactionContext() {
+        return this.session.getTransactionContext();
     }
+
+    @Override
+    public void setTransactionContext( ServerAddress serverAddress, Object o ) {
+
+        this.session.setTransactionContext(serverAddress,o);
+    }
+
+    @Override
+    public void clearTransactionContext() {
+        this.session.clearTransactionContext();
+    }
+
 
     @Override
     public boolean hasActiveTransaction() {
@@ -82,6 +94,12 @@ public class BaseMarsSesssion extends DatastoreImpl implements MarsSession {
     @Override
     public boolean notifyMessageSent() {
         return session.notifyMessageSent();
+    }
+
+    @Override
+    public void notifyOperationInitiated( Object o ) {
+
+        this.session.notifyOperationInitiated(o);
     }
 
     @Override
@@ -166,6 +184,17 @@ public class BaseMarsSesssion extends DatastoreImpl implements MarsSession {
     }
 
     @Override
+    public void setSnapshotTimestamp( BsonTimestamp bsonTimestamp ) {
+
+        this.session.setSnapshotTimestamp(bsonTimestamp);
+    }
+
+    @Override
+    public BsonTimestamp getSnapshotTimestamp() {
+        return this.session.getSnapshotTimestamp();
+    }
+
+    @Override
     public BsonDocument getClusterTime() {
         return session.getClusterTime();
     }
@@ -178,9 +207,9 @@ public class BaseMarsSesssion extends DatastoreImpl implements MarsSession {
     /**
      * @return the session
      */
+    @NonNull
     public ClientSession getSession() {
         return session;
     }
-
 
 }

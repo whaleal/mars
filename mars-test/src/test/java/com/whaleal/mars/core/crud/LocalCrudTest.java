@@ -5,7 +5,7 @@ import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.EntityGenerater;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -40,7 +40,7 @@ public class LocalCrudTest {
     public void init() {
         mars = new Mars(Constant.server101);
 
-        Assert.assertNotNull(mars);
+        Precondition.PreconditionNotNull(mars);
 
         for (int i = 0; i < 999999; i++) {
             people.add(EntityGenerater.getPerson());
@@ -74,11 +74,11 @@ public class LocalCrudTest {
         Person person = one.get();
 
         System.out.println(person);
-        Assert.assertNotNull(person);
+        Precondition.PreconditionNotNull(person);
 
-        Assert.assertNotNull(person.getId());
+        Precondition.PreconditionNotNull(person.getId());
 
-        Assert.assertEquals(person.getAddress().getCity().getName(), "上海");
+        Precondition.PreconditionEquals(person.getAddress().getCity().getName(), "上海");
 
 
 
@@ -89,12 +89,12 @@ public class LocalCrudTest {
 
         Person p = EntityGenerater.getPerson();
 
-        Assert.assertNull(p.getId());
+        Precondition.PreconditionNull(p.getId());
 
 
         mars.insert(p);
 
-        Assert.assertNotNull(p.getId());
+        Precondition.PreconditionNotNull(p.getId());
 
 
     }
@@ -206,7 +206,7 @@ public class LocalCrudTest {
         Query query = Query.query(Criteria.where("fName").is("f49858"));
         UpdateResult replace = mars.replace(query, Person, replaceOptions);
 
-        Assert.assertEquals(1, replace.getOriginUpdateResult().getModifiedCount());
+        Precondition.PreconditionEquals(1, replace.getOriginUpdateResult().getModifiedCount());
     }
 
     @Test
@@ -216,9 +216,9 @@ public class LocalCrudTest {
 
         Person p = one.get();
 
-        Assert.assertNotNull(p);
+        Precondition.PreconditionNotNull(p);
 
-        Assert.assertNotNull(p.getId());
+        Precondition.PreconditionNotNull(p.getId());
 
         System.out.println(p.getId());
 
@@ -312,15 +312,15 @@ public class LocalCrudTest {
         Optional<Person> one = mars.findOne(query, Person.class);
         Person person = one.get();
         System.out.println(person);
-        Assert.assertNotNull(person);
+        Precondition.PreconditionNotNull(person);
 
-        Assert.assertNotNull(person.getId());
-
-        System.out.println(person.getAge());
+        Precondition.PreconditionNotNull(person.getId());
 
         System.out.println(person.getAge());
 
-       // Assert.assertEquals(person.getAddress().getCity().getName(), "上海");
+        System.out.println(person.getAge());
+
+       // Precondition.PreconditionEquals(person.getAddress().getCity().getName(), "上海");
 
 
 

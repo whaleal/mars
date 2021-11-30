@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static org.bson.assertions.Assertions.notNull;
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 final class Either<L, R> {
 

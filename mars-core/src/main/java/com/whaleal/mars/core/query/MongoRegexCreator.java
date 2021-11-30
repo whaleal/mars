@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
+
 
 import java.util.regex.Pattern;
 
@@ -47,8 +47,8 @@ public enum MongoRegexCreator {
      * @param matcherType the type of matching to perform
      * @return {@literal source} when {@literal source} or {@literal matcherType} is {@literal null}.
      */
-    @Nullable
-    public String toRegularExpression(@Nullable String source, @Nullable MatchMode matcherType) {
+    
+    public String toRegularExpression( String source,  MatchMode matcherType) {
 
         if (matcherType == null || source == null) {
             return source;

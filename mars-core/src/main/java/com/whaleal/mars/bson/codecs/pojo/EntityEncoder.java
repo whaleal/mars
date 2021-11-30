@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs.pojo;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
@@ -122,8 +122,8 @@ class EntityEncoder implements org.bson.codecs.Encoder<Object> {
         encodeValue(writer, encoderContext, model, value);
     }
 
-    private void encodeValue(BsonWriter writer, EncoderContext encoderContext, PropertyModel model,
-                             @Nullable Object propertyValue) {
+    private void encodeValue( BsonWriter writer, EncoderContext encoderContext, PropertyModel model,
+                              Object propertyValue ) {
         if (model.shouldSerialize(propertyValue)) {
             writer.writeName(model.getWriteName());
             if (propertyValue == null) {
@@ -135,7 +135,7 @@ class EntityEncoder implements org.bson.codecs.Encoder<Object> {
         }
     }
 
-    @Nullable
+
     private IdGenerator getIdGenerator() {
         if (idGenerator == null) {
             PropertyModel idModel = MarsCodec.getEntityModel().getIdProperty();

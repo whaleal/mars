@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs.reader;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.BsonTypeMap;
 import com.whaleal.mars.bson.codecs.Conversions;
 import org.bson.*;
@@ -386,7 +386,7 @@ public class DocumentReader implements BsonReader {
                 .toString();
     }
 
-    BsonType getBsonType(@Nullable Object o) {
+    BsonType getBsonType( Object o ) {
         BsonType bsonType = o == null ? BsonType.NULL : TYPE_MAP.get(o.getClass());
         if (bsonType == null) {
             if (o instanceof List) {
@@ -406,7 +406,7 @@ public class DocumentReader implements BsonReader {
         return this.current;
     }
 
-    void state(@Nullable ReaderState next) {
+    void state( ReaderState next ) {
         current = next;
     }
 }

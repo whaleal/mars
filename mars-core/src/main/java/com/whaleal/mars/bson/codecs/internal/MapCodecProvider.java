@@ -36,7 +36,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 
 import java.util.Map;
 
-import static org.bson.assertions.Assertions.notNull;
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 public class MapCodecProvider implements CodecProvider {
     private final BsonTypeClassMap bsonTypeClassMap;

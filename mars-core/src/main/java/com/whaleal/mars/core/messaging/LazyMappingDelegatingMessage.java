@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.core.messaging;
 
+import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.bson.codecs.Conversions;
-import com.whaleal.mars.util.ClassUtils;
 import org.bson.Document;
 
 class LazyMappingDelegatingMessage<S, T> implements Message<S, T> {
@@ -59,7 +59,7 @@ class LazyMappingDelegatingMessage<S, T> implements Message<S, T> {
 
         Object messageBody = delegate.getBody();
 
-        if (ClassUtils.isAssignable(Document.class, messageBody.getClass())) {
+        if (ClassUtil.isAssignable(Document.class, messageBody.getClass())) {
             return (T) Conversions.convert((Document) messageBody, targetType);
         }
 

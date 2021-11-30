@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.aggregation.expressions.impls;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import org.bson.BsonWriter;
@@ -48,7 +48,7 @@ public class Expression {
     }
 
 
-    public Expression(String operation, @Nullable Object value) {
+    public Expression( String operation, Object value ) {
         this.operation = operation;
         this.value = value;
     }
@@ -64,7 +64,6 @@ public class Expression {
     }
 
 
-    @Nullable
     public Object getValue() {
         return value;
     }

@@ -32,7 +32,6 @@ package com.whaleal.mars.session.option;
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.model.BsonField;
-import com.mongodb.lang.Nullable;
 
 import java.util.List;
 
@@ -56,12 +55,12 @@ public class BucketOptions implements ReadConfigurable<BucketOptions> {
         this.originBucketOptions = originBucketOptions;
     }
 
-    @Nullable
+
     public Object getDefaultBucket() {
         return originBucketOptions.getDefaultBucket();
     }
 
-    @Nullable
+
     public List<BsonField> getOutput() {
         return originBucketOptions.getOutput();
     }

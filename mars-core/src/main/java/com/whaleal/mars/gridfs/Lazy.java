@@ -29,9 +29,9 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -44,7 +44,7 @@ public class Lazy<T> implements Supplier<T> {
 
     private final Supplier<? extends T> supplier;
 
-    private @Nullable
+    private
     T value;
     private volatile boolean resolved;
 
@@ -66,7 +66,7 @@ public class Lazy<T> implements Supplier<T> {
      * @param value    can be {@literal null}.
      * @param resolved whether the value handed into the constructor represents a resolved value.
      */
-    private Lazy(Supplier<? extends T> supplier, @Nullable T value, boolean resolved) {
+    private Lazy( Supplier<? extends T> supplier, T value, boolean resolved ) {
 
         this.supplier = supplier;
         this.value = value;
@@ -93,7 +93,7 @@ public class Lazy<T> implements Supplier<T> {
      */
     public static <T> Lazy<T> of(T value) {
 
-        Assert.notNull(value, "Value must not be null!");
+        Precondition.notNull(value, "Value must not be null!");
 
         return new Lazy<>(() -> value);
     }
@@ -144,7 +144,7 @@ public class Lazy<T> implements Supplier<T> {
      */
     public Lazy<T> or(Supplier<? extends T> supplier) {
 
-        Assert.notNull(supplier, "Supplier must not be null!");
+        Precondition.notNull(supplier, "Supplier must not be null!");
 
         return Lazy.of(() -> orElseGet(supplier));
     }
@@ -156,7 +156,7 @@ public class Lazy<T> implements Supplier<T> {
      */
     public Lazy<T> or(T value) {
 
-        Assert.notNull(value, "Value must not be null!");
+        Precondition.notNull(value, "Value must not be null!");
 
         return Lazy.of(() -> orElse(value));
     }
@@ -168,8 +168,8 @@ public class Lazy<T> implements Supplier<T> {
      * @param value
      * @return
      */
-    @Nullable
-    public T orElse(@Nullable T value) {
+
+    public T orElse( T value ) {
 
         T nullable = getNullable();
 
@@ -183,10 +183,10 @@ public class Lazy<T> implements Supplier<T> {
      * @param supplier must not be {@literal null}.
      * @return
      */
-    @Nullable
+
     private T orElseGet(Supplier<? extends T> supplier) {
 
-        Assert.notNull(supplier, "Default value supplier must not be null!");
+        Precondition.notNull(supplier, "Default value supplier must not be null!");
 
         T value = getNullable();
 
@@ -201,7 +201,7 @@ public class Lazy<T> implements Supplier<T> {
      */
     public <S> Lazy<S> map(Function<? super T, ? extends S> function) {
 
-        Assert.notNull(function, "Function must not be null!");
+        Precondition.notNull(function, "Function must not be null!");
 
         return Lazy.of(() -> function.apply(get()));
     }
@@ -214,7 +214,7 @@ public class Lazy<T> implements Supplier<T> {
      */
     public <S> Lazy<S> flatMap(Function<? super T, Lazy<? extends S>> function) {
 
-        Assert.notNull(function, "Function must not be null!");
+        Precondition.notNull(function, "Function must not be null!");
 
         return Lazy.of(() -> function.apply(get()).get());
     }
@@ -225,7 +225,7 @@ public class Lazy<T> implements Supplier<T> {
      * @return
      *  2.2
      */
-    @Nullable
+
     public T getNullable() {
 
         if (resolved) {
@@ -243,7 +243,7 @@ public class Lazy<T> implements Supplier<T> {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals( Object o ) {
 
         if (this == o) {
             return true;
@@ -259,11 +259,11 @@ public class Lazy<T> implements Supplier<T> {
             return false;
         }
 
-        if (!ObjectUtils.nullSafeEquals(supplier, lazy.supplier)) {
+        if (!ObjectUtil.nullSafeEquals(supplier, lazy.supplier)) {
             return false;
         }
 
-        return ObjectUtils.nullSafeEquals(value, lazy.value);
+        return ObjectUtil.nullSafeEquals(value, lazy.value);
     }
 
     /*
@@ -273,9 +273,9 @@ public class Lazy<T> implements Supplier<T> {
     @Override
     public int hashCode() {
 
-        int result = ObjectUtils.nullSafeHashCode(supplier);
+        int result = ObjectUtil.nullSafeHashCode(supplier);
 
-        result = 31 * result + ObjectUtils.nullSafeHashCode(value);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(value);
         result = 31 * result + (resolved ? 1 : 0);
 
         return result;

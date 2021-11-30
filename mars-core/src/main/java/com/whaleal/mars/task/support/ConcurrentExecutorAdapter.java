@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.task.support;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.task.TaskExecutor;
-import com.whaleal.mars.util.Assert;
 
 import java.util.concurrent.Executor;
 
@@ -46,7 +46,7 @@ public class ConcurrentExecutorAdapter implements Executor {
      * @param taskExecutor the Spring TaskExecutor to wrap
      */
     public ConcurrentExecutorAdapter(TaskExecutor taskExecutor) {
-        Assert.notNull(taskExecutor, "TaskExecutor must not be null");
+        Precondition.notNull(taskExecutor, "TaskExecutor must not be null");
         this.taskExecutor = taskExecutor;
     }
 

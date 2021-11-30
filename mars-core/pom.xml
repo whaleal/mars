@@ -13,7 +13,11 @@
     <artifactId>mars-core</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.whaleal.icefrog</groupId>
+            <artifactId>icefrog-core</artifactId>
+            <version>${icefrog.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
@@ -38,6 +42,7 @@
             <artifactId>jts-core</artifactId>
             <version>1.18.1</version>
         </dependency>
+
 
     </dependencies>
 </project>

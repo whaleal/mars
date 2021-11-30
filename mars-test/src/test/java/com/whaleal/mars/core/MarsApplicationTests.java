@@ -19,7 +19,7 @@ import com.whaleal.mars.bean.Address;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class MarsApplicationTests {
     @Test
     public void test() {
 
-        Assert.assertNotNull(mars);
+        Precondition.PreconditionNotNull(mars);
 
 
     }
@@ -66,12 +66,12 @@ public class MarsApplicationTests {
 
 
 
-        //Assert.assertEquals(mars.determineCollectionName(Address.class, tableName), tableName);
+        //Precondition.PreconditionEquals(mars.determineCollectionName(Address.class, tableName), tableName);
 
 
-        //Assert.assertEquals(mars.determineCollectionName(Address.class,null),"data");
+        //Precondition.PreconditionEquals(mars.determineCollectionName(Address.class,null),"data");
 
-        //Assert.assertEquals(mars.determineCollectionName(Address.class,null),"data");
+        //Precondition.PreconditionEquals(mars.determineCollectionName(Address.class,null),"data");
 
         //System.out.println(mars.determineCollectionName(Address.class, null));
 

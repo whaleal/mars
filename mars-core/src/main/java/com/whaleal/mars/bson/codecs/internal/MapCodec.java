@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.util.Arrays.asList;
-import static org.bson.assertions.Assertions.notNull;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 

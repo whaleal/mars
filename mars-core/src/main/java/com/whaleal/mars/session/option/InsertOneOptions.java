@@ -30,7 +30,7 @@
 package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -55,7 +55,7 @@ public class InsertOneOptions implements WriteConfigurable<InsertOneOptions> {
      *
      * @return
      */
-    @Nullable
+
     public Boolean getBypassDocumentValidation() {
         return this.originInsertOneOptions.getBypassDocumentValidation();
     }
@@ -66,7 +66,7 @@ public class InsertOneOptions implements WriteConfigurable<InsertOneOptions> {
      * @param bypassDocumentValidation If true, allows the write to opt-out of document level validation.
      * @return this
      */
-    public InsertOneOptions bypassDocumentValidation(@Nullable Boolean bypassDocumentValidation) {
+    public InsertOneOptions bypassDocumentValidation( Boolean bypassDocumentValidation ) {
         originInsertOneOptions.bypassDocumentValidation(bypassDocumentValidation);
         return this;
     }

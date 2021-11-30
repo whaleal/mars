@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.session.result;
 
-import com.mongodb.lang.Nullable;
+
 import org.bson.BsonValue;
 
 /**
@@ -63,7 +63,7 @@ public class UpdateResult extends com.mongodb.client.result.UpdateResult {
     }
 
     @Override
-    @Nullable
+
     public BsonValue getUpsertedId() {
         return originUpdateResult.getUpsertedId();
     }

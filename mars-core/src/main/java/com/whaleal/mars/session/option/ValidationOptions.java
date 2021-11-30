@@ -33,7 +33,6 @@ import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 /**
@@ -56,32 +55,32 @@ public class ValidationOptions implements ReadConfigurable<ValidationOptions> {
         this.originValidationOptions = originValidationOptions;
     }
 
-    @Nullable
+
     public ValidationAction getValidationAction() {
         return originValidationOptions.getValidationAction();
     }
 
-    @Nullable
+
     public ValidationLevel getValidationLevel() {
         return originValidationOptions.getValidationLevel();
     }
 
-    @Nullable
+
     public Bson getValidator() {
         return originValidationOptions.getValidator();
     }
 
-    public ValidationOptions validator(@Nullable Bson validator) {
+    public ValidationOptions validator( Bson validator ) {
         originValidationOptions.validator(validator);
         return this;
     }
 
-    public ValidationOptions validationLevel(@Nullable ValidationLevel validationLevel) {
+    public ValidationOptions validationLevel( ValidationLevel validationLevel ) {
         originValidationOptions.validationLevel(validationLevel);
         return this;
     }
 
-    public ValidationOptions validationAction(@Nullable ValidationAction validationAction) {
+    public ValidationOptions validationAction( ValidationAction validationAction ) {
         originValidationOptions.validationAction(validationAction);
         return this;
     }

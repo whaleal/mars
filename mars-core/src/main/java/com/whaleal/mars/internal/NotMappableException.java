@@ -30,7 +30,7 @@
 package com.whaleal.mars.internal;
 
 
-import com.mongodb.lang.Nullable;
+
 
 public final class NotMappableException extends RuntimeException {
     private static final long serialVersionUID = 1L;
@@ -39,11 +39,11 @@ public final class NotMappableException extends RuntimeException {
         super(type.getName());
     }
 
-    public NotMappableException(@Nullable String s) {
+    public NotMappableException( String s ) {
         super(s);
     }
 
-    public NotMappableException(@Nullable String s, @Nullable Throwable throwable) {
+    public NotMappableException( String s, Throwable throwable ) {
         super(s, throwable);
     }
 }

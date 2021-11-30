@@ -36,7 +36,6 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.codecs.GridFSFileCodecProvider;
-import com.mongodb.lang.Nullable;
 import com.whaleal.mars.bson.codecs.internal.JsonObjectCodecProvider;
 import com.whaleal.mars.bson.codecs.pojo.*;
 import com.whaleal.mars.bson.codecs.pojo.annotations.Concern;
@@ -78,13 +77,13 @@ public class MongoMappingContext {
     //private final MapperOptions options;
     private final DiscriminatorLookup discriminatorLookup = new DiscriminatorLookup(Collections.emptyMap(), Collections.emptySet());
     private final MarsCodecProvider marsCodecProvider;
-    //private final Datastore datastore;
+    //
     private final CodecRegistry codecRegistry;
 
     private final MongoDatabase database;
 
 
-    public MongoMappingContext(MongoDatabase database) {
+    public MongoMappingContext( MongoDatabase database ) {
         this.database = database;
 
         CodecRegistry codecRegistry = fromProviders(
@@ -153,7 +152,7 @@ public class MongoMappingContext {
 
 
     @SuppressWarnings("unchecked")
-    @Nullable
+
     public <T> Class<T> getClass(Document document) {
         // see if there is a className value
         Class c = null;
@@ -225,8 +224,7 @@ public class MongoMappingContext {
     }
 
 
-    @Nullable
-    public Object getId(@Nullable Object entity) {
+    public Object getId( Object entity ) {
         if (entity == null) {
             return null;
         }
@@ -249,7 +247,6 @@ public class MongoMappingContext {
     }
 
 
-    @Nullable
     public WriteConcern getWriteConcern(Class clazz) {
         WriteConcern wc = null;
         EntityModel entityModel = getEntityModel(clazz);
@@ -279,7 +276,7 @@ public class MongoMappingContext {
     }
 
 
-    public <A extends Annotation> EntityModel mapExternal(@Nullable A annotation, Class type) {
+    public <A extends Annotation> EntityModel mapExternal( A annotation, Class type ) {
         final Class actual = type;
         EntityModel model = mappedEntities.get(actual);
 
@@ -367,7 +364,7 @@ public class MongoMappingContext {
     }
 
 
-    public String determineCollectionName(EntityModel model, @Nullable String collectionName) {
+    public String determineCollectionName( EntityModel model, String collectionName ) {
 
         if (collectionName != null) {
             return collectionName;

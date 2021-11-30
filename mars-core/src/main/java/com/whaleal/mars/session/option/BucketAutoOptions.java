@@ -33,7 +33,6 @@ import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.model.BsonField;
 import com.mongodb.client.model.BucketGranularity;
-import com.mongodb.lang.Nullable;
 
 import java.util.List;
 
@@ -57,12 +56,12 @@ public class BucketAutoOptions implements ReadConfigurable<BucketAutoOptions> {
         this.originBucketAutoOptions = originBucketAutoOptions;
     }
 
-    @Nullable
+
     public BucketGranularity getGranularity() {
         return originBucketAutoOptions.getGranularity();
     }
 
-    @Nullable
+
     public List<BsonField> getOutput() {
         return originBucketAutoOptions.getOutput();
     }

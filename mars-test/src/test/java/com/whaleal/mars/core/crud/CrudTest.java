@@ -6,7 +6,7 @@ import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.bean.Person;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +50,7 @@ public class CrudTest {
 
     @Before
     public void isNull() {
-        Assert.assertNotNull(mars);
+        Precondition.PreconditionNotNull(mars);
 
         System.out.println(mars);
         student = StudentGenerator.getInstance(10000);

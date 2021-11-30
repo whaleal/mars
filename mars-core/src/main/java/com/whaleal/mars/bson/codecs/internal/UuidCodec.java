@@ -38,7 +38,7 @@ import org.bson.internal.UuidHelper;
 
 import java.util.UUID;
 
-import static org.bson.assertions.Assertions.notNull;
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 
 public class UuidCodec implements Codec<UUID> {

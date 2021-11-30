@@ -29,7 +29,6 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -161,7 +160,7 @@ public interface Resource extends InputStreamSource {
      * <p>Returns {@code null} if this type of resource does not
      * have a filename.
      */
-    @Nullable
+
     String getFilename();
 
     /**

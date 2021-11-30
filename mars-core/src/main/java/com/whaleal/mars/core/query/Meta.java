@@ -29,10 +29,10 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
-import com.whaleal.mars.util.StringUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
 
 import java.time.Duration;
 import java.util.*;
@@ -67,7 +67,7 @@ public class Meta {
     /**
      * @return {@literal null} if not set.
      */
-    @Nullable
+
     public Long getMaxTimeMsec() {
         return getValue(MetaKey.MAX_TIME_MS.key);
     }
@@ -89,7 +89,7 @@ public class Meta {
      * @deprecated . Use {@link #setMaxTime(Duration)} instead.
      */
     @Deprecated
-    public void setMaxTime(long timeout, @Nullable TimeUnit timeUnit) {
+    public void setMaxTime( long timeout, TimeUnit timeUnit ) {
         setValue(MetaKey.MAX_TIME_MS.key, (timeUnit != null ? timeUnit : TimeUnit.MILLISECONDS).toMillis(timeout));
     }
 
@@ -100,14 +100,14 @@ public class Meta {
      */
     public void setMaxTime(Duration timeout) {
 
-        Assert.notNull(timeout, "Timeout must not be null!");
+        Precondition.notNull(timeout, "Timeout must not be null!");
         setValue(MetaKey.MAX_TIME_MS.key, timeout.toMillis());
     }
 
     /**
      * @return {@literal null} if not set.
      */
-    @Nullable
+
     public String getComment() {
         return getValue(MetaKey.COMMENT.key);
     }
@@ -124,7 +124,7 @@ public class Meta {
     /**
      * @return {@literal null} if not set.
      */
-    @Nullable
+
     public Integer getCursorBatchSize() {
         return cursorBatchSize;
     }
@@ -148,7 +148,7 @@ public class Meta {
      */
     public boolean addFlag(CursorOption option) {
 
-        Assert.notNull(option, "CursorOption must not be null!");
+        Precondition.notNull(option, "CursorOption must not be null!");
         return this.flags.add(option);
     }
 
@@ -164,7 +164,7 @@ public class Meta {
      *
      * @return {@literal null} if not set.
      */
-    @Nullable
+
     public Boolean getAllowDiskUse() {
         return allowDiskUse;
     }
@@ -174,7 +174,7 @@ public class Meta {
      *
      * @param allowDiskUse use {@literal null} for server defaults.
      */
-    public void setAllowDiskUse(@Nullable Boolean allowDiskUse) {
+    public void setAllowDiskUse( Boolean allowDiskUse ) {
         this.allowDiskUse = allowDiskUse;
     }
 
@@ -200,17 +200,17 @@ public class Meta {
      * @param key   must not be {@literal null} or empty.
      * @param value
      */
-    void setValue(String key, @Nullable Object value) {
+    void setValue( String key, Object value ) {
 
-        Assert.hasText(key, "Meta key must not be 'null' or blank.");
+        Precondition.hasText(key, "Meta key must not be 'null' or blank.");
 
-        if (value == null || (value instanceof String && !StringUtils.hasText((String) value))) {
+        if (value == null || (value instanceof String && !StrUtil.hasText((String) value))) {
             this.values.remove(key);
         }
         this.values.put(key, value);
     }
 
-    @Nullable
+
     @SuppressWarnings("unchecked")
     private <T> T getValue(String key) {
         return (T) this.values.get(key);
@@ -229,8 +229,8 @@ public class Meta {
     @Override
     public int hashCode() {
 
-        int hash = ObjectUtils.nullSafeHashCode(this.values);
-        hash += ObjectUtils.nullSafeHashCode(this.flags);
+        int hash = ObjectUtil.nullSafeHashCode(this.values);
+        hash += ObjectUtil.nullSafeHashCode(this.flags);
         return hash;
     }
 
@@ -250,10 +250,10 @@ public class Meta {
         }
 
         Meta other = (Meta) obj;
-        if (!ObjectUtils.nullSafeEquals(this.values, other.values)) {
+        if (!ObjectUtil.nullSafeEquals(this.values, other.values)) {
             return false;
         }
-        return ObjectUtils.nullSafeEquals(this.flags, other.flags);
+        return ObjectUtil.nullSafeEquals(this.flags, other.flags);
     }
 
     private enum MetaKey {

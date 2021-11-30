@@ -47,7 +47,7 @@ public final class Miscellaneous {
      * Returns a random float between 0 and 1.
      *
      * @return the filter
-     * @aggregation.expression $rand
+     *  $rand
      */
     public static Expression rand() {
         return new Expression("$rand") {
@@ -67,7 +67,7 @@ public final class Miscellaneous {
      *
      * @param rate the rate to check against
      * @return the filter
-     * @aggregation.expression $sampleRate
+     *  $sampleRate
      */
     public static Filter sampleRate(double rate) {
         return new Filter("$sampleRate", null, rate) {

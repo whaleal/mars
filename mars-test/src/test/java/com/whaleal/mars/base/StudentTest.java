@@ -2,7 +2,7 @@ package com.whaleal.mars.base;
 
 import com.whaleal.mars.bean.Student;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -57,32 +57,32 @@ public class StudentTest {
     @Test
     public void testDelMany() {
         DeleteResult deleteResult = mars.delete(new Query(), Student.class, new DeleteOptions().multi(true));
-        Assert.assertEquals("删除异常", 9000, deleteResult.getDeletedCount());
+        Precondition.PreconditionEquals("删除异常", 9000, deleteResult.getDeletedCount());
     }
 
     @Test
     public void testInsertMany() {
         InsertManyResult result = mars.insert(stuList);
-        Assert.assertEquals("insert exception", 9000, result.getOriginInsertManyResult().getInsertedIds().size());
+        Precondition.PreconditionEquals("insert exception", 9000, result.getOriginInsertManyResult().getInsertedIds().size());
     }
 
     @Test
     public void testDelete() {
         DeleteResult deleteResult = mars.delete(new Query(), Student.class);
-        Assert.assertEquals("delete Exception", 1, deleteResult.getDeletedCount());
+        Precondition.PreconditionEquals("delete Exception", 1, deleteResult.getDeletedCount());
     }
 
     @Test
     public void testFind() {
         QueryCursor<Student> studentList = mars.findAll(new Query(), Student.class);
-        Assert.assertNotNull(studentList);
+        Precondition.PreconditionNotNull(studentList);
     }
 
     @Test
     public void testInsertOne() {
         Student student = StudentGenerator.getInstance(defStuNo);
         InsertOneResult insert = mars.insert(student,"stu");
-        Assert.assertNotNull("insert exception",insert);
+        Precondition.PreconditionNotNull("insert exception",insert);
     }
 
 

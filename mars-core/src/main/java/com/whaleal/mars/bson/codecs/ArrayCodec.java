@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs;
 
-import com.mongodb.lang.Nullable;
+
 import org.bson.BsonBinarySubType;
 import org.bson.BsonReader;
 import org.bson.BsonType;
@@ -88,7 +88,7 @@ class ArrayCodec implements Codec<Object> {
         return list.toArray();
     }
 
-    @Nullable
+
     private Object readValue(BsonReader reader, DecoderContext decoderContext) {
         BsonType bsonType = reader.getCurrentBsonType();
         if (bsonType == BsonType.NULL) {

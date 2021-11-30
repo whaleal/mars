@@ -39,7 +39,7 @@ import static java.lang.reflect.Modifier.isProtected;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
-import static org.bson.assertions.Assertions.notNull;
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 /**
  * 通过 classModelBuilder   及 clazz

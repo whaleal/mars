@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
+
 import org.bson.Document;
 
 /**
@@ -48,7 +48,7 @@ public interface CriteriaDefinition {
     /**
      * Get the identifying {@literal key}.
      */
-    @Nullable
+
     String getKey();
 
 }

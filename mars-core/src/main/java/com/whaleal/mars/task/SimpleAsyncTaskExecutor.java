@@ -29,8 +29,9 @@
  */
 package com.whaleal.mars.task;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
+
+
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.util.ConcurrencyThrottleSupport;
 import com.whaleal.mars.util.CustomizableThreadCreator;
 
@@ -78,10 +79,10 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
      */
     private final ConcurrencyThrottleAdapter concurrencyThrottle = new ConcurrencyThrottleAdapter();
 
-    @Nullable
+
     private ThreadFactory threadFactory;
 
-    @Nullable
+
     private TaskDecorator taskDecorator;
 
 
@@ -120,14 +121,14 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
      * @see #setThreadNamePrefix
      * @see #setThreadPriority
      */
-    public void setThreadFactory(@Nullable ThreadFactory threadFactory) {
+    public void setThreadFactory( ThreadFactory threadFactory) {
         this.threadFactory = threadFactory;
     }
 
     /**
      * Return the external factory to use for creating new Threads, if any.
      */
-    @Nullable
+
     public final ThreadFactory getThreadFactory() {
         return this.threadFactory;
     }
@@ -209,7 +210,7 @@ public class SimpleAsyncTaskExecutor extends CustomizableThreadCreator
      */
     @Override
     public void execute(Runnable task, long startTimeout) {
-        Assert.notNull(task, "Runnable must not be null");
+        Precondition.notNull(task, "Runnable must not be null");
         Runnable taskToUse = (this.taskDecorator != null ? this.taskDecorator.decorate(task) : task);
         if (isThrottleActive() && startTimeout > TIMEOUT_IMMEDIATE) {
             this.concurrencyThrottle.beforeAccess();

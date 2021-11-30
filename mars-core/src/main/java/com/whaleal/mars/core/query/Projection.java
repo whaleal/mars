@@ -29,9 +29,9 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import org.bson.Document;
 
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class Projection {
     private final Map<String, Integer> criteria = new HashMap<>();
     private final Map<String, Object> slices = new HashMap<>();
     private final Map<String, Criteria> elemMatchs = new HashMap<>();
-    private @Nullable
+    private
     String positionKey;
     private int positionValue;
 
@@ -60,7 +60,7 @@ public class Projection {
      */
     public Projection include(String field) {
 
-        Assert.notNull(field, "Key must not be null!");
+        Precondition.notNull(field, "Key must not be null!");
 
         criteria.put(field, 1);
 
@@ -75,7 +75,7 @@ public class Projection {
      */
     public Projection include(String... fields) {
 
-        Assert.notNull(fields, "Keys must not be null!");
+        Precondition.notNull(fields, "Keys must not be null!");
 
         for (String key : fields) {
             criteria.put(key, 1);
@@ -92,7 +92,7 @@ public class Projection {
      */
     public Projection exclude(String field) {
 
-        Assert.notNull(field, "Key must not be null!");
+        Precondition.notNull(field, "Key must not be null!");
 
         criteria.put(field, 0);
 
@@ -107,7 +107,7 @@ public class Projection {
      */
     public Projection exclude(String... fields) {
 
-        Assert.notNull(fields, "Keys must not be null!");
+        Precondition.notNull(fields, "Keys must not be null!");
 
         for (String key : fields) {
             criteria.put(key, 0);
@@ -125,7 +125,7 @@ public class Projection {
      */
     public Projection slice(String field, int size) {
 
-        Assert.notNull(field, "Key must not be null!");
+        Precondition.notNull(field, "Key must not be null!");
 
         slices.put(field, size);
 
@@ -163,7 +163,7 @@ public class Projection {
      */
     public Projection position(String field, int value) {
 
-        Assert.hasText(field, "DocumentField must not be null or empty!");
+        Precondition.hasText(field, "DocumentField must not be null or empty!");
 
         positionKey = field;
         positionValue = value;
@@ -204,25 +204,25 @@ public class Projection {
         if (positionValue != projection.positionValue) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(criteria, projection.criteria)) {
+        if (!ObjectUtil.nullSafeEquals(criteria, projection.criteria)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(slices, projection.slices)) {
+        if (!ObjectUtil.nullSafeEquals(slices, projection.slices)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(elemMatchs, projection.elemMatchs)) {
+        if (!ObjectUtil.nullSafeEquals(elemMatchs, projection.elemMatchs)) {
             return false;
         }
-        return ObjectUtils.nullSafeEquals(positionKey, projection.positionKey);
+        return ObjectUtil.nullSafeEquals(positionKey, projection.positionKey);
     }
 
     @Override
     public int hashCode() {
 
-        int result = ObjectUtils.nullSafeHashCode(criteria);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(slices);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(elemMatchs);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(positionKey);
+        int result = ObjectUtil.nullSafeHashCode(criteria);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(slices);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(elemMatchs);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(positionKey);
         result = 31 * result + positionValue;
         return result;
     }

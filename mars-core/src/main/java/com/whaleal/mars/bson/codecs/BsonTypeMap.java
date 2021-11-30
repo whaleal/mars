@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs;
 
-import com.mongodb.lang.Nullable;
+
 import org.bson.*;
 import org.bson.types.*;
 
@@ -67,7 +67,6 @@ public class BsonTypeMap {
     }
 
 
-    @Nullable
     public BsonType get(Class<?> type) {
         return map.get(type);
     }

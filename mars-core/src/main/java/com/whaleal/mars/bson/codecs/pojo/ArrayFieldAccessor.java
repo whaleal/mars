@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs.pojo;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.Conversions;
 
 import java.lang.reflect.Array;
@@ -86,7 +86,6 @@ public class ArrayFieldAccessor extends PropertyAccessorImpl {
     }
 
 
-    @Nullable
     private Object convert(Object o, Class<?> type) {
         if (o instanceof List) {
             List list = (List) o;

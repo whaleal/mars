@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.aggregation.stages.filters;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import com.whaleal.mars.bson.codecs.pojo.PropertyModel;
 import com.whaleal.mars.bson.codecs.writer.DocumentWriter;
@@ -50,7 +50,7 @@ public class OperationTarget {
      * @param target the target
      * @param value  the value
      */
-    public OperationTarget(@Nullable PathTarget target, @Nullable Object value) {
+    public OperationTarget( PathTarget target, Object value ) {
         this.target = target;
         this.value = value;
     }
@@ -86,7 +86,7 @@ public class OperationTarget {
     /**
      * @return the PathTarget for this instance
      */
-    @Nullable
+
     public PathTarget getTarget() {
         return target;
     }
@@ -94,7 +94,7 @@ public class OperationTarget {
     /**
      * @return the value
      */
-    @Nullable
+
     public Object getValue() {
         return value;
     }

@@ -8,7 +8,7 @@ import com.whaleal.mars.bson.codecs.writer.DocumentWriter;
 import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Before;
 import org.junit.Test;
 import org.locationtech.jts.geom.Point;
@@ -38,7 +38,7 @@ public class MultiPolygonCodecTest {
         Codec<AxisPlaneCoordinateSequence> pointCodec = context.getCodecRegistry().get(AxisPlaneCoordinateSequence.class);
 
 
-        Assert.assertNotNull(pointCodec);
+        Precondition.PreconditionNotNull(pointCodec);
 
 
     }

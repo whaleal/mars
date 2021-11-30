@@ -44,7 +44,7 @@
  */
 package com.whaleal.mars.session.option;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.core.query.Collation;
 
 import java.util.Optional;
@@ -71,14 +71,14 @@ public class FindAndModifyOptions {
         }
 
         @Override
-        public FindAndModifyOptions collation(@Nullable Collation collation) {
+        public FindAndModifyOptions collation( Collation collation ) {
             throw new UnsupportedOperationException(ERROR_MSG);
         }
     };
     private boolean returnNew;
     private boolean upsert;
     private boolean remove;
-    private @Nullable
+    private
     Collation collation;
 
     /**
@@ -105,7 +105,7 @@ public class FindAndModifyOptions {
      * @param source can be {@literal null}.
      * @return new instance of {@link FindAndModifyOptions}.
      */
-    public static FindAndModifyOptions of(@Nullable FindAndModifyOptions source) {
+    public static FindAndModifyOptions of( FindAndModifyOptions source ) {
 
         FindAndModifyOptions options = new FindAndModifyOptions();
         if (source == null) {
@@ -141,7 +141,7 @@ public class FindAndModifyOptions {
      * @param collation can be {@literal null}.
      * @return this.
      */
-    public FindAndModifyOptions collation(@Nullable Collation collation) {
+    public FindAndModifyOptions collation( Collation collation ) {
 
         this.collation = collation;
         return this;

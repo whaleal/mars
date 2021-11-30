@@ -48,7 +48,7 @@ public final class DateExpressions {
      * Constructs and returns a Date object given the date’s constituent properties.
      *
      * @return the new expression
-     * @aggregation.expression $dateFromParts
+     *  $dateFromParts
      */
     public static DateFromParts dateFromParts() {
         return new DateFromParts();
@@ -58,7 +58,7 @@ public final class DateExpressions {
      * Converts a date/time string to a date object.
      *
      * @return the new expression
-     * @aggregation.expression $dateFromString
+     *  $dateFromString
      */
     public static DateFromString dateFromString() {
         return new DateFromString();
@@ -69,7 +69,7 @@ public final class DateExpressions {
      *
      * @param date The input date for which to return parts.
      * @return the new expression
-     * @aggregation.expression $dateToParts
+     *  $dateToParts
      */
     public static DateToParts dateToParts(Expression date) {
         return new DateToParts(date);
@@ -79,7 +79,7 @@ public final class DateExpressions {
      * Returns the date as a formatted string.
      *
      * @return the new expression
-     * @aggregation.expression $dateToString
+     *  $dateToString
      */
     public static DateToString dateToString() {
         return new DateToString();
@@ -90,7 +90,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $dayOfMonth
+     *  $dayOfMonth
      */
     public static DateExpression dayOfMonth(Expression value) {
         return new DateExpression("$dayOfMonth", value);
@@ -101,7 +101,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $dayOfWeek
+     *  $dayOfWeek
      */
     public static DateExpression dayOfWeek(Expression value) {
         return new DateExpression("$dayOfWeek", value);
@@ -112,7 +112,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $dayOfYear
+     *  $dayOfYear
      */
     public static DateExpression dayOfYear(Expression value) {
         return new DateExpression("$dayOfYear", value);
@@ -123,7 +123,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $hour
+     *  $hour
      */
     public static DateExpression hour(Expression value) {
         return new DateExpression("$hour", value);
@@ -134,7 +134,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $isoDayOfWeek
+     *  $isoDayOfWeek
      */
     public static IsoDates isoDayOfWeek(Expression value) {
         return new IsoDates("$isoDayOfWeek", value);
@@ -146,7 +146,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $isoWeek
+     *  $isoWeek
      */
     public static IsoDates isoWeek(Expression value) {
         return new IsoDates("$isoWeek", value);
@@ -159,7 +159,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $isoWeekYear
+     *  $isoWeekYear
      */
     public static IsoDates isoWeekYear(Expression value) {
         return new IsoDates("$isoWeekYear", value);
@@ -170,7 +170,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $millisecond
+     *  $millisecond
      */
     public static DateExpression milliseconds(Expression value) {
         return new DateExpression("$millisecond", value);
@@ -181,7 +181,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $minute
+     *  $minute
      */
     public static DateExpression minute(Expression value) {
         return new DateExpression("$minute", value);
@@ -192,7 +192,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $month
+     *  $month
      */
     public static DateExpression month(Expression value) {
         return new DateExpression("$month", value);
@@ -203,7 +203,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $second
+     *  $second
      */
     public static DateExpression second(Expression value) {
         return new DateExpression("$second", value);
@@ -215,7 +215,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $toDate
+     *  $toDate
      */
     public static DateExpression toDate(Expression value) {
         return new DateExpression("$toDate", value);
@@ -227,7 +227,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $week
+     *  $week
      */
     public static DateExpression week(Expression value) {
         return new DateExpression("$week", value);
@@ -238,7 +238,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     * @aggregation.expression $year
+     *  $year
      */
     public static DateExpression year(Expression value) {
         return new DateExpression("$year", value);

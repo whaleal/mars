@@ -3,7 +3,7 @@ package com.whaleal.mars.core.aggreation;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
 import org.bson.Document;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -31,7 +31,7 @@ public class AggreationCodecTest {
     public void init(){
         mars = new Mars(Constant.server100);
 
-        Assert.assertNotNull(mars);
+        Precondition.PreconditionNotNull(mars);
     }
 
 

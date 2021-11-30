@@ -29,14 +29,14 @@
  */
 package com.whaleal.mars.core.aggregation.expressions.impls;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
 public class ArrayExpression extends Expression {
 
-    public ArrayExpression(String operation, @Nullable Object value) {
+    public ArrayExpression( String operation, Object value ) {
         super(operation, value);
     }
 

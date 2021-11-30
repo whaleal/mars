@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.util.ResourceUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -217,7 +217,7 @@ public abstract class AbstractResource implements Resource {
      * assuming that this resource type does not have a filename.
      */
     @Override
-    @Nullable
+    
     public String getFilename() {
         return null;
     }
@@ -229,7 +229,7 @@ public abstract class AbstractResource implements Resource {
      * @see #getDescription()
      */
     @Override
-    public boolean equals(@Nullable Object other) {
+    public boolean equals( Object other) {
         return (this == other || (other instanceof Resource &&
                 ((Resource) other).getDescription().equals(getDescription())));
     }

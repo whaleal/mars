@@ -49,7 +49,7 @@ public final class ComparisonExpressions {
      * @param first  an expression for the value to compare
      * @param second an expression yielding the value to check against
      * @return the new expression
-     * @aggregation.expression $cmp
+     *  $cmp
      */
     public static Expression cmp(Expression first, Expression second) {
         return new Expression("$cmp", Arrays.asList(first, second));
@@ -61,7 +61,7 @@ public final class ComparisonExpressions {
      * @param first  an expression for the value to compare
      * @param second an expression yielding the value to check against
      * @return the new expression
-     * @aggregation.expression $eq
+     *  $eq
      */
     public static Expression eq(Expression first, Expression second) {
         return new Expression("$eq", Arrays.asList(first, second));
@@ -76,7 +76,7 @@ public final class ComparisonExpressions {
      * @param first  an expression for the value to compare
      * @param second an expression yielding the value to check against
      * @return the new expression
-     * @aggregation.expression $gt
+     *  $gt
      */
     public static Expression gt(Expression first, Expression second) {
         return new Expression("$gt", Arrays.asList(first, second));
@@ -91,7 +91,7 @@ public final class ComparisonExpressions {
      * @param first  an expression for the value to compare
      * @param second an expression yielding the value to check against
      * @return the new expression
-     * @aggregation.expression $gte
+     *  $gte
      */
     public static Expression gte(Expression first, Expression second) {
         return new Expression("$gte", Arrays.asList(first, second));
@@ -103,7 +103,7 @@ public final class ComparisonExpressions {
      * @param first  an expression for the value to compare
      * @param second an expression yielding the value to check against
      * @return the new expression
-     * @aggregation.expression $lt
+     *  $lt
      */
     public static Expression lt(Expression first, Expression second) {
         return new Expression("$lt", Arrays.asList(first, second));
@@ -118,7 +118,7 @@ public final class ComparisonExpressions {
      * @param first  an expression for the value to compare
      * @param second an expression yielding the value to check against
      * @return the new expression
-     * @aggregation.expression $lte
+     *  $lte
      */
     public static Expression lte(Expression first, Expression second) {
         return new Expression("$lte", Arrays.asList(first, second));
@@ -130,7 +130,7 @@ public final class ComparisonExpressions {
      * @param first  an expression for the value to compare
      * @param second an expression yielding the value to check against
      * @return the new expression
-     * @aggregation.expression $ne
+     *  $ne
      */
     public static Expression ne(Expression first, Expression second) {
         return new Expression("$ne", Arrays.asList(first, second));

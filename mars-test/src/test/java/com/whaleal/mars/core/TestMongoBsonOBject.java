@@ -3,7 +3,7 @@ package com.whaleal.mars.core;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -40,8 +40,8 @@ public class TestMongoBsonOBject {
         BasicDBObject db = new BasicDBObject();
 
 
-        Assert.assertTrue(Map.class.isAssignableFrom(db.getClass()));
-        Assert.assertFalse(Collection.class.isAssignableFrom(db.getClass()));
+        Precondition.PreconditionTrue(Map.class.isAssignableFrom(db.getClass()));
+        Precondition.PreconditionFalse(Collection.class.isAssignableFrom(db.getClass()));
 
     }
 
@@ -50,8 +50,8 @@ public class TestMongoBsonOBject {
         BasicDBList list = new BasicDBList();
 
 
-        Assert.assertFalse(Map.class.isAssignableFrom(list.getClass()));
-        Assert.assertTrue(Collection.class.isAssignableFrom(list.getClass()));
+        Precondition.PreconditionFalse(Map.class.isAssignableFrom(list.getClass()));
+        Precondition.PreconditionTrue(Collection.class.isAssignableFrom(list.getClass()));
 
 
     }

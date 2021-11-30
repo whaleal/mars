@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bson.codecs.pojo;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.bson.codecs.Conversions;
 import org.bson.BsonInvalidOperationException;
 import org.bson.BsonReader;
@@ -70,8 +70,8 @@ public class EntityDecoder implements org.bson.codecs.Decoder<Object> {
         return classModel.getInstanceCreator();
     }
 
-    protected void decodeModel(BsonReader reader, DecoderContext decoderContext,
-                               MarsInstanceCreator instanceCreator, @Nullable PropertyModel model) {
+    protected void decodeModel( BsonReader reader, DecoderContext decoderContext,
+                                MarsInstanceCreator instanceCreator, PropertyModel model ) {
 
         if (model != null) {
             final BsonReaderMark mark = reader.getMark();

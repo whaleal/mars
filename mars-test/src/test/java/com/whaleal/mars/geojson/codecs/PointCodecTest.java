@@ -8,7 +8,7 @@ import com.whaleal.mars.bson.codecs.writer.DocumentWriter;
 import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
-import org.junit.Assert;
+import org.junit.Precondition;
 import org.junit.Before;
 import org.junit.Test;
 import org.locationtech.jts.geom.*;

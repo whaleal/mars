@@ -30,7 +30,7 @@
 package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -50,7 +50,7 @@ public class BulkWriteOptions implements WriteConfigurable<BulkWriteOptions> {
         this.originBulkWriteOptions = originBulkWriteOptions;
     }
 
-    @Nullable
+
     public Boolean getBypassDocumentValidation() {
         return originBulkWriteOptions.getBypassDocumentValidation();
     }
@@ -60,7 +60,7 @@ public class BulkWriteOptions implements WriteConfigurable<BulkWriteOptions> {
         return this;
     }
 
-    public BulkWriteOptions bypassDocumentValidation(@Nullable Boolean bypassDocumentValidation) {
+    public BulkWriteOptions bypassDocumentValidation( Boolean bypassDocumentValidation ) {
         originBulkWriteOptions.bypassDocumentValidation(bypassDocumentValidation);
         return this;
 

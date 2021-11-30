@@ -29,8 +29,9 @@
  */
 package com.whaleal.mars.task.support;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.task.TaskExecutor;
-import com.whaleal.mars.util.Assert;
+
 
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
@@ -48,7 +49,7 @@ public class ExecutorServiceAdapter extends AbstractExecutorService {
      * @param taskExecutor the target executor to delegate to
      */
     public ExecutorServiceAdapter(TaskExecutor taskExecutor) {
-        Assert.notNull(taskExecutor, "TaskExecutor must not be null");
+        Precondition.notNull(taskExecutor, "TaskExecutor must not be null");
         this.taskExecutor = taskExecutor;
     }
 

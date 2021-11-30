@@ -35,7 +35,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import static java.lang.String.format;
-import static org.bson.assertions.Assertions.notNull;
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 
 public final class TypeData<T> implements TypeWithTypeParameters<T> {

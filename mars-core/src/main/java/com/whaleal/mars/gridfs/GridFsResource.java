@@ -31,8 +31,7 @@ package com.whaleal.mars.gridfs;
 
 import com.mongodb.MongoGridFSException;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.util.BsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,7 +53,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
     public static final String CONTENT_TYPE_FIELD = "_contentType";
     private static final ByteArrayInputStream EMPTY_INPUT_STREAM = new ByteArrayInputStream(new byte[0]);
 
-    private final @Nullable
+    private final
     GridFSFile file;
     private final String filename;
 
@@ -106,7 +105,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
      */
     public static GridFsResource absent(String filename) {
 
-        Assert.notNull(filename, "Filename must not be null");
+        Precondition.notNull(filename, "Filename must not be null");
 
         return new GridFsResource(filename);
     }
@@ -196,7 +195,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
      */
     public Object getId() {
 
-        Assert.state(exists(), () -> String.format("%s does not exist.", getDescription()));
+        Precondition.state(exists(), () -> String.format("%s does not exist.", getDescription()));
 
         return getGridFSFile().getId();
     }
@@ -210,7 +209,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
     @Override
     public Object getFileId() {
 
-        Assert.state(exists(), () -> String.format("%s does not exist.", getDescription()));
+        Precondition.state(exists(), () -> String.format("%s does not exist.", getDescription()));
         return BsonUtils.toJavaType(getGridFSFile().getId());
     }
 
@@ -220,7 +219,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
      *
      * @return {@link GridFSFile}
      */
-    @Nullable
+
     public GridFSFile getGridFSFile() {
         return this.file;
     }
@@ -234,7 +233,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
     @SuppressWarnings("deprecation")
     public String getContentType() {
 
-        Assert.state(exists(), () -> String.format("%s does not exist.", getDescription()));
+        Precondition.state(exists(), () -> String.format("%s does not exist.", getDescription()));
 
         return Optional.ofNullable(getGridFSFile().getMetadata()).map(it -> it.get(CONTENT_TYPE_FIELD, String.class))
                 .orElseThrow(() -> new MongoGridFSException("No contentType data for this GridFS file"));

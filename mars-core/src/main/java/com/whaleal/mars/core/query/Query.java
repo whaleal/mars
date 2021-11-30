@@ -29,18 +29,20 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.Assert;
 import com.whaleal.mars.util.BsonUtils;
+import com.whaleal.mars.util.SerializationUtils;
 import org.bson.Document;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.whaleal.mars.util.ObjectUtils.nullSafeEquals;
-import static com.whaleal.mars.util.ObjectUtils.nullSafeHashCode;
+import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeEquals;
+import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
+
 
 /**
  * MongoDB Query object representing criteria, projection, sorting and query hints.
@@ -51,12 +53,12 @@ public class Query {
 
     private final Set<Class<?>> restrictedTypes = new HashSet<>();
     private final Map<String, CriteriaDefinition> criteria = new LinkedHashMap<>();
-    private @Nullable
+    private
     Projection projectionSpec = null;
     private Sort sort = Sort.unsorted();
     private long skip;
     private int limit;
-    private @Nullable
+    private
     String hint;
 
     private Meta meta = new Meta();
@@ -95,7 +97,7 @@ public class Query {
      */
     public static Query of(Query source) {
 
-        Assert.notNull(source, "Source must not be null!");
+        Precondition.notNull(source, "Source must not be null!");
 
         Document sourceFields = source.getFieldsObject();
         Document sourceSort = source.getSortObject();
@@ -158,7 +160,7 @@ public class Query {
      */
     public Query addCriteria(CriteriaDefinition criteriaDefinition) {
 
-        Assert.notNull(criteriaDefinition, "CriteriaDefinition must not be null!");
+        Precondition.notNull(criteriaDefinition, "CriteriaDefinition must not be null!");
 
         CriteriaDefinition existing = this.criteria.get(criteriaDefinition.getKey());
         String key = criteriaDefinition.getKey();
@@ -185,7 +187,7 @@ public class Query {
 
     public Query withProjection(Projection projection) {
 
-        Assert.notNull(projection, "projection must not be empty or null!");
+        Precondition.notNull(projection, "projection must not be empty or null!");
         this.projectionSpec = projection;
         return this;
     }
@@ -222,7 +224,7 @@ public class Query {
      */
     public Query withHint(String hint) {
 
-        Assert.hasText(hint, "Hint must not be empty or null!");
+        Precondition.hasText(hint, "Hint must not be empty or null!");
         this.hint = hint;
         return this;
     }
@@ -235,7 +237,7 @@ public class Query {
      */
     public Query withHint(Document hint) {
 
-        Assert.notNull(hint, "Hint must not be null!");
+        Precondition.notNull(hint, "Hint must not be null!");
         this.hint = hint.toJson();
         return this;
     }
@@ -249,7 +251,7 @@ public class Query {
      */
     public Query with(Sort sort) {
 
-        Assert.notNull(sort, "Sort must not be null!");
+        Precondition.notNull(sort, "Sort must not be null!");
 
         if (sort.isUnsorted()) {
             return this;
@@ -282,8 +284,8 @@ public class Query {
      */
     public Query restrict(Class<?> type, Class<?>... additionalTypes) {
 
-        Assert.notNull(type, "Type must not be null!");
-        Assert.notNull(additionalTypes, "AdditionalTypes must not be null");
+        Precondition.notNull(type, "Type must not be null!");
+        Precondition.notNull(additionalTypes, "AdditionalTypes must not be null");
 
         restrictedTypes.add(type);
         restrictedTypes.addAll(Arrays.asList(additionalTypes));
@@ -364,7 +366,7 @@ public class Query {
     /**
      * @return can be {@literal null}.
      */
-    @Nullable
+
     public String getHint() {
         return hint;
     }
@@ -502,7 +504,7 @@ public class Query {
      */
     public void setMeta(Meta meta) {
 
-        Assert.notNull(meta, "Query meta might be empty but must not be null.");
+        Precondition.notNull(meta, "Query meta might be empty but must not be null.");
         this.meta = meta;
     }
 
@@ -512,7 +514,7 @@ public class Query {
      * @param collation can be {@literal null}.
      * @return this.
      */
-    public Query collation(@Nullable Collation collation) {
+    public Query collation( Collation collation ) {
 
         this.collation = Optional.ofNullable(collation);
         return this;

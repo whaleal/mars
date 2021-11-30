@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.core.messaging;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 
 import java.time.Duration;
 
@@ -57,42 +57,6 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
     interface RequestOptions {
 
         /**
-         * Get the database name of the db.
-         *
-         * @return the name of the database to subscribe to. Can be {@literal null} in which case the default
-         */
-        @Nullable
-        default String getDatabaseName() {
-            return null;
-        }
-
-        /**
-         * Get the collection name.
-         *
-         * @return the name of the collection to subscribe to. Can be {@literal null}.
-         */
-        @Nullable
-        String getCollectionName();
-
-        /**
-         * Get the maximum wait time (the time till the next Entity is emitted) to apply when reading from the collection.
-         *
-         * @return never {@literal null}. {@link Duration#ZERO} by default.
-         */
-        default Duration maxAwaitTime() {
-            return Duration.ZERO;
-        }
-
-        /**
-         * Create empty options.
-         *
-         * @return new instance of empty {@link RequestOptions}.
-         */
-        static RequestOptions none() {
-            return () -> null;
-        }
-
-        /**
          * Create options with the provided database.
          *
          * @param database must not be {@literal null}.
@@ -100,7 +64,7 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
          */
         static RequestOptions justDatabase(String database) {
 
-            Assert.notNull(database, "Database must not be null!");
+            Precondition.notNull(database, "Database must not be null!");
 
             return new RequestOptions() {
 
@@ -124,8 +88,26 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
          */
         static RequestOptions justCollection(String collection) {
 
-            Assert.notNull(collection, "Collection must not be null!");
+            Precondition.notNull(collection, "Collection must not be null!");
             return () -> collection;
+        }
+
+        /**
+         * Get the maximum wait time (the time till the next Entity is emitted) to apply when reading from the collection.
+         *
+         * @return never {@literal null}. {@link Duration#ZERO} by default.
+         */
+        default Duration maxAwaitTime() {
+            return Duration.ZERO;
+        }
+
+        /**
+         * Create empty options.
+         *
+         * @return new instance of empty {@link RequestOptions}.
+         */
+        static RequestOptions none() {
+            return () -> null;
         }
 
         /**
@@ -137,8 +119,8 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
          */
         static RequestOptions of(String database, String collection) {
 
-            Assert.notNull(database, "Database must not be null!");
-            Assert.notNull(collection, "Collection must not be null!");
+            Precondition.notNull(database, "Database must not be null!");
+            Precondition.notNull(collection, "Collection must not be null!");
 
             return new RequestOptions() {
 
@@ -153,5 +135,23 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
                 }
             };
         }
+
+        /**
+         * Get the database name of the db.
+         *
+         * @return the name of the database to subscribe to. Can be {@literal null} in which case the default
+         */
+
+        default String getDatabaseName() {
+            return null;
+        }
+
+        /**
+         * Get the collection name.
+         *
+         * @return the name of the collection to subscribe to. Can be {@literal null}.
+         */
+
+        String getCollectionName();
     }
 }

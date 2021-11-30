@@ -30,7 +30,7 @@
  */
 package com.whaleal.mars.util;
 
-import com.mongodb.lang.Nullable;
+
 
 import java.util.HashMap;
 
@@ -146,27 +146,27 @@ public final class MongoDbErrorCodes {
         errorCodes.putAll(clientSessionCodes);
     }
 
-    public static boolean isDataIntegrityViolationCode(@Nullable Integer errorCode) {
+    public static boolean isDataIntegrityViolationCode( Integer errorCode) {
         return errorCode == null ? false : dataIntegrityViolationCodes.containsKey(errorCode);
     }
 
-    public static boolean isDataAccessResourceFailureCode(@Nullable Integer errorCode) {
+    public static boolean isDataAccessResourceFailureCode( Integer errorCode) {
         return errorCode == null ? false : dataAccessResourceFailureCodes.containsKey(errorCode);
     }
 
-    public static boolean isDuplicateKeyCode(@Nullable Integer errorCode) {
+    public static boolean isDuplicateKeyCode( Integer errorCode) {
         return errorCode == null ? false : duplicateKeyCodes.containsKey(errorCode);
     }
 
-    public static boolean isPermissionDeniedCode(@Nullable Integer errorCode) {
+    public static boolean isPermissionDeniedCode( Integer errorCode) {
         return errorCode == null ? false : permissionDeniedCodes.containsKey(errorCode);
     }
 
-    public static boolean isInvalidDataAccessApiUsageCode(@Nullable Integer errorCode) {
+    public static boolean isInvalidDataAccessApiUsageCode( Integer errorCode) {
         return errorCode == null ? false : invalidDataAccessApiUsageExeption.containsKey(errorCode);
     }
 
-    public static String getErrorDescription(@Nullable Integer errorCode) {
+    public static String getErrorDescription( Integer errorCode) {
         return errorCode == null ? null : errorCodes.get(errorCode);
     }
 
@@ -176,7 +176,7 @@ public final class MongoDbErrorCodes {
      * @param errorCode the error code to check.
      * @return {@literal true} if error matches.
      */
-    public static boolean isClientSessionFailureCode(@Nullable Integer errorCode) {
+    public static boolean isClientSessionFailureCode( Integer errorCode) {
         return errorCode == null ? false : clientSessionCodes.containsKey(errorCode);
     }
 
@@ -186,7 +186,7 @@ public final class MongoDbErrorCodes {
      * @param errorCode the error code to check.
      * @return {@literal true} if error matches.
      */
-    public static boolean isTransactionFailureCode(@Nullable Integer errorCode) {
+    public static boolean isTransactionFailureCode( Integer errorCode) {
         return errorCode == null ? false : transactionCodes.containsKey(errorCode);
     }
 }

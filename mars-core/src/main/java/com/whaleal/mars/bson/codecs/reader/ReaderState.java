@@ -30,7 +30,7 @@
 package com.whaleal.mars.bson.codecs.reader;
 
 import com.mongodb.DBRef;
-import com.mongodb.lang.Nullable;
+
 import org.bson.BsonBinary;
 import org.bson.BsonType;
 import org.bson.Document;
@@ -46,7 +46,7 @@ abstract class ReaderState {
         this.reader = reader;
     }
 
-    @Nullable
+
     public ReaderState nextState() {
         return nextState;
     }
