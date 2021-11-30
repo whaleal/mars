@@ -32,6 +32,6 @@
  * This package contains classes that encode and decode GeoJSON objects.
  */
 @NonNullApi
-package com.whaleal.mars.geojson.codecs;
+package com.whaleal.mars.codecs.geo;
 
 import com.mongodb.lang.NonNullApi;

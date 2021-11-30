@@ -27,7 +27,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.geojson.codecs;
+package com.whaleal.mars.codecs.geo;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.locationtech.jts.geom.Polygon;

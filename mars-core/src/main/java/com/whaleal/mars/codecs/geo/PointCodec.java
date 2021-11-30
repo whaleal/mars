@@ -28,7 +28,7 @@
  *    it in the license file.
  */
 
-package com.whaleal.mars.geojson.codecs;
+package com.whaleal.mars.codecs.geo;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.locationtech.jts.geom.Point;

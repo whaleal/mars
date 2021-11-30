@@ -28,7 +28,7 @@
  *    it in the license file.
  */
 
-package com.whaleal.mars.geojson.codecs;
+package com.whaleal.mars.codecs.geo;
 
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
@@ -38,8 +38,8 @@ import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.locationtech.jts.geom.Geometry;
 
-import static com.whaleal.mars.geojson.codecs.GeometryDecoderHelper.decodeGeometry;
-import static com.whaleal.mars.geojson.codecs.GeometryEncoderHelper.encodeGeometry;
+import static com.whaleal.mars.codecs.geo.GeometryDecoderHelper.decodeGeometry;
+import static com.whaleal.mars.codecs.geo.GeometryEncoderHelper.encodeGeometry;
 
 
 abstract class AbstractGeometryCodec<T extends Geometry> implements Codec<T> {
