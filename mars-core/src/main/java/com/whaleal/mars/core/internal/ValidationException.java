@@ -27,23 +27,20 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.internal;
+package com.whaleal.mars.core.internal;
 
 
-
-
-public final class NotMappableException extends RuntimeException {
+public class ValidationException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public NotMappableException(Class type) {
-        super(type.getName());
+
+    public ValidationException(String message) {
+        super(message);
     }
 
-    public NotMappableException( String s ) {
-        super(s);
+
+    public ValidationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public NotMappableException( String s, Throwable throwable ) {
-        super(s, throwable);
-    }
 }

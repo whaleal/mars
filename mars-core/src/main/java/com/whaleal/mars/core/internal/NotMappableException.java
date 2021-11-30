@@ -27,15 +27,23 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.internal;
+package com.whaleal.mars.core.internal;
 
 
-public class InvalidMongoDbApiUsageException extends RuntimeException {
 
-    private static final long serialVersionUID = 2034770973290508041L;
 
-    public InvalidMongoDbApiUsageException(String msg) {
-        super(msg);
+public final class NotMappableException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
+    public NotMappableException(Class type) {
+        super(type.getName());
     }
 
+    public NotMappableException( String s ) {
+        super(s);
+    }
+
+    public NotMappableException( String s, Throwable throwable ) {
+        super(s, throwable);
+    }
 }

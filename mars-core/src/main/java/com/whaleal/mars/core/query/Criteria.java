@@ -34,7 +34,7 @@ import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.icefrog.core.codec.Base64 ;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;

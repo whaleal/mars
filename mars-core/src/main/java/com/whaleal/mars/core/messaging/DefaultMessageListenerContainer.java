@@ -33,7 +33,7 @@ package com.whaleal.mars.core.messaging;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.mars.task.SimpleAsyncTaskExecutor;
 import com.whaleal.mars.util.ErrorHandler;
 import lombok.extern.slf4j.Slf4j;

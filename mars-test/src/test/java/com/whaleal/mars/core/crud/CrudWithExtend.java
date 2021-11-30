@@ -1,6 +1,6 @@
 package com.whaleal.mars.core.crud;
 
-import org.junit.Precondition;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -25,7 +25,7 @@ public class CrudWithExtend {
     public void init() {
         mars = new Mars(Constant.server100);
 
-        Precondition.PreconditionNotNull(mars);
+        Assert.assertNotNull(mars);
 
         for(int i = 0 ;i<999999 ;i++){
             people.add(EntityGenerater.getPerson());

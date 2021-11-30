@@ -33,7 +33,7 @@ package com.whaleal.mars.core.query;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.mars.util.SerializationUtils;
 import org.bson.Document;
 

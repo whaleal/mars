@@ -1,17 +1,19 @@
 package com.whaleal.mars.monitor;
 
 
-import static org.Preconditionj.core.api.Precondition.*;
+
 
 import java.net.UnknownHostException;
 
 import com.mongodb.client.MongoClients;
-import org.junit.Precondition;
+import org.junit.*;
 import org.junit.Before;
 
 import com.mongodb.client.MongoClient;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This test class assumes that you are already running the MongoDB server.
@@ -27,7 +29,7 @@ public class MongoMonitorIntegrationTests {
     public void init(){
         System.out.println(1111);
         mongoClient = MongoClients.create(Constant.server100);
-        Precondition.PreconditionNotNull(mongoClient);
+        Assert.assertNotNull(mongoClient);
     }
 
 
@@ -49,8 +51,8 @@ public class MongoMonitorIntegrationTests {
             throw e;
         }
 
-        PreconditionThat(hostName).isNotNull();
-        PreconditionThat(hostName).isEqualTo("127.0.0.1:27017");
+        assertThat(hostName).isNotNull();
+        assertThat(hostName).isEqualTo("127.0.0.1:27017");
     }
 
     @Test

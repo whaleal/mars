@@ -28,7 +28,7 @@
  *    it in the license file.
  */
 
-package com.whaleal.mars.internal;
+package com.whaleal.mars.core.internal;
 
 
 import com.whaleal.mars.codecs.MongoMappingContext;

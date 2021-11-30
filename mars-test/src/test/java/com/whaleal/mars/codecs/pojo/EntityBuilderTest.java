@@ -14,7 +14,7 @@ import org.bson.codecs.Codec;
 
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.junit.Precondition;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -29,7 +29,7 @@ public class EntityBuilderTest {
     public void init(){
         MongoClient  client = MongoClients.create(Constant.server100);
         context = new MongoMappingContext(client.getDatabase("mars"));
-        Precondition.PreconditionNotNull(context);
+        Assert.assertNotNull(context);
     }
 
 
@@ -39,7 +39,7 @@ public class EntityBuilderTest {
 
         Codec<Car> marsCodec = codecRegistry.get(Car.class);
 
-        Precondition.PreconditionNotNull(marsCodec);
+        Assert.assertNotNull(marsCodec);
 
         System.out.println(marsCodec);
 
@@ -81,7 +81,7 @@ public class EntityBuilderTest {
 
         Codec<String> stringCodec = defaultCodecRegistry.get(String.class);
 
-        Precondition.PreconditionNotNull(stringCodec);
+        Assert.assertNotNull(stringCodec);
 
         CodecRegistry  marCodec   = CodecRegistries.fromProviders(
                new ValueCodecProvider()
@@ -89,7 +89,7 @@ public class EntityBuilderTest {
 
         Codec<String> stringCodec1 = marCodec.get(String.class);
 
-        Precondition.PreconditionNotNull(stringCodec1);
+        Assert.assertNotNull(stringCodec1);
 
         System.out.println(stringCodec1);
 
@@ -107,7 +107,7 @@ public class EntityBuilderTest {
 
         Codec<Double> doubleCodec = marCodec.get(Double.class);
 
-        Precondition.PreconditionNotNull(doubleCodec);
+        Assert.assertNotNull(doubleCodec);
 
         System.out.println(doubleCodec);
 
@@ -121,7 +121,7 @@ public class EntityBuilderTest {
 
         EntityModel build = new EntityModelBuilder(Car.class).build();
 
-        Precondition.PreconditionNotNull(build);
+        Assert.assertNotNull(build);
 
         System.out.println(build);
     }
@@ -134,7 +134,7 @@ public class EntityBuilderTest {
 
         Codec<Car> marsCodec = codecRegistry.get(Car.class);
 
-        Precondition.PreconditionNotNull(marsCodec);
+        Assert.assertNotNull(marsCodec);
 
 
         System.out.println(marsCodec);
@@ -147,7 +147,7 @@ public class EntityBuilderTest {
 
         Codec<String> marsCodec = codecRegistry.get(String.class);
 
-        Precondition.PreconditionNotNull(marsCodec);
+        Assert.assertNotNull(marsCodec);
 
 
         System.out.println(marsCodec);

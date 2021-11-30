@@ -20,7 +20,7 @@ import org.bson.Entity;
 import org.junit.jupiter.api.Test;
 
 import static org.Preconditionj.core.api.Precondition.*;
-import static org.Preconditionj.core.api.Precondition.PreconditionThat;
+import static org.Preconditionj.core.api.Assert.assertThat;
 */
 
 /**

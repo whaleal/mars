@@ -27,20 +27,32 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.internal;
 
 
-public class ValidationException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+package com.whaleal.mars.core.internal;
 
 
-    public ValidationException(String message) {
+/**
+ * Error during update.
+ */
+public class UpdateException extends RuntimeException {
+
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     */
+    public UpdateException(String message) {
         super(message);
     }
 
-
-    public ValidationException(String message, Throwable cause) {
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     * @param cause   the underlying cause
+     */
+    public UpdateException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

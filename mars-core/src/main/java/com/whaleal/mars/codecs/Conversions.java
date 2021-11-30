@@ -30,7 +30,7 @@
 package com.whaleal.mars.codecs;
 
 
-import com.whaleal.mars.internal.NotMappableException;
+import com.whaleal.mars.core.internal.NotMappableException;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;

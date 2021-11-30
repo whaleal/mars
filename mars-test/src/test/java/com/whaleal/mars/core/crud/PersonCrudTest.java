@@ -11,7 +11,7 @@ import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.junit.Precondition;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -70,25 +70,25 @@ public class PersonCrudTest {
 
         InsertOneResult insertResult = mars.insert(person);
 
-        Precondition.PreconditionTrue(insertResult.wasAcknowledged());
-        Precondition.PreconditionEquals(insertResult.getInsertedId().asObjectId().getValue().toHexString(),"60dc738ffbd0bf3f4f7bc04c");
+        Assert.assertTrue(insertResult.wasAcknowledged());
+        Assert.assertEquals(insertResult.getInsertedId().asObjectId().getValue().toHexString(),"60dc738ffbd0bf3f4f7bc04c");
 
         Optional<Person> personFromDB = mars.findOne(Query.query(Criteria.where("_id").is(new ObjectId("60dc738ffbd0bf3f4f7bc04c"))), Person.class);
 
-        Precondition.PreconditionNotNull(personFromDB.get());
+        Assert.assertNotNull(personFromDB.get());
 
         Person person1 = personFromDB.get();
 
-        Precondition.PreconditionEquals(person.getAge(),person1.getAge());
+        Assert.assertEquals(person.getAge(),person1.getAge());
 
-        Precondition.PreconditionEquals(person.getId(),person1.getId());
-        Precondition.PreconditionEquals(person.getFirstName(),person1.getFirstName());
-        Precondition.PreconditionEquals(person.getLastName(),person1.getLastName());
-        Precondition.PreconditionEquals(person.getHeight(),person1.getHeight());
-        Precondition.PreconditionEquals(person.getBirthDate(),person1.getBirthDate());
-        Precondition.PreconditionEquals(person.getAddress(),person1.getAddress());
-        Precondition.PreconditionEquals(person.getCars().length,person1.getCars().length);
-        Precondition.PreconditionEquals(person.getCars()[0].id,person1.getCars()[0].id);
+        Assert.assertEquals(person.getId(),person1.getId());
+        Assert.assertEquals(person.getFirstName(),person1.getFirstName());
+        Assert.assertEquals(person.getLastName(),person1.getLastName());
+        Assert.assertEquals(person.getHeight(),person1.getHeight());
+        Assert.assertEquals(person.getBirthDate(),person1.getBirthDate());
+        Assert.assertEquals(person.getAddress(),person1.getAddress());
+        Assert.assertEquals(person.getCars().length,person1.getCars().length);
+        Assert.assertEquals(person.getCars()[0].id,person1.getCars()[0].id);
 
     }
 
@@ -104,15 +104,15 @@ public class PersonCrudTest {
             personList.add(EntityGenerater.getPerson());
         }
 
-        Precondition.PreconditionEquals(personList.size() ,number);
+        Assert.assertEquals(personList.size() ,number);
 
         InsertManyResult insertManyResult = mars.insert(personList);
 
-        Precondition.PreconditionTrue(insertManyResult.wasAcknowledged());
+        Assert.assertTrue(insertManyResult.wasAcknowledged());
 
         long count = mars.count(Person.class);
 
-        Precondition.PreconditionEquals(number, count);
+        Assert.assertEquals(number, count);
 
     }
 
@@ -129,7 +129,7 @@ public class PersonCrudTest {
         mars.insert(personList);
         long count = mars.count(Person.class);
 
-        Precondition.PreconditionEquals(count ,number);
+        Assert.assertEquals(count ,number);
 
     }
 
@@ -145,7 +145,7 @@ public class PersonCrudTest {
         mars.insert(personList);
         long count = mars.countById(new Query(),Person.class);
 
-        Precondition.PreconditionEquals(count ,number);
+        Assert.assertEquals(count ,number);
 
     }
 
@@ -161,25 +161,25 @@ public class PersonCrudTest {
 
         long count = mars.count(Person.class);
 
-        Precondition.PreconditionEquals(count ,0);
+        Assert.assertEquals(count ,0);
 
         Person person = EntityGenerater.getPerson();
 
         InsertOneResult insert = mars.insert(person);
 
-        Precondition.PreconditionTrue(insert.wasAcknowledged());
+        Assert.assertTrue(insert.wasAcknowledged());
 
-        Precondition.PreconditionNotNull(insert.getInsertedId().asObjectId().getValue().toHexString());
+        Assert.assertNotNull(insert.getInsertedId().asObjectId().getValue().toHexString());
 
         String  id = insert.getInsertedId().asObjectId().getValue().toHexString() ;
 
         long count1 = mars.count(Person.class);
-        Precondition.PreconditionEquals(count1 ,1);
+        Assert.assertEquals(count1 ,1);
 
         Query query = new Query().addCriteria(Criteria.where("_id").is(new ObjectId(id)));
         DeleteResult deleteResult = mars.delete(query, Person.class);
 
-        Precondition.PreconditionEquals(deleteResult.getDeletedCount(),1);
+        Assert.assertEquals(deleteResult.getDeletedCount(),1);
 
 
     }
@@ -196,7 +196,7 @@ public class PersonCrudTest {
         com.mongodb.client.result.InsertManyResult insertManyResult = mars.getCollection(Document.class,"person").insertMany(documents);
 
 
-        Precondition.PreconditionTrue(insertManyResult.wasAcknowledged());
+        Assert.assertTrue(insertManyResult.wasAcknowledged());
 
         int  number = insertManyResult.getInsertedIds().size() ;
 
@@ -209,7 +209,7 @@ public class PersonCrudTest {
 
         long deletedCount = result.getDeletedCount();
 
-        Precondition.PreconditionEquals(number ,deletedCount);
+        Assert.assertEquals(number ,deletedCount);
 
 
     }
@@ -235,11 +235,11 @@ public class PersonCrudTest {
 
         long deletedCount = result.getDeletedCount();
 
-        Precondition.PreconditionEquals(deletedCount , 1);
+        Assert.assertEquals(deletedCount , 1);
 
         long count = mars.count(Person.class);
 
-        Precondition.PreconditionEquals(count,0);
+        Assert.assertEquals(count,0);
 
     }
 
@@ -258,8 +258,8 @@ public class PersonCrudTest {
         UpdateResult result = mars.update(query, person, options);
 
 
-       Precondition.PreconditionTrue(result.wasAcknowledged()) ;
-       Precondition.PreconditionNotNull(result.getUpsertedId().asObjectId().getValue());
+       Assert.assertTrue(result.wasAcknowledged()) ;
+       Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
 
 
     }
@@ -312,7 +312,7 @@ public class PersonCrudTest {
         UpdateResult result = mars.update(query, entity, Person.class, options);
 
 
-        Precondition.PreconditionNotNull(result.getUpsertedId());
+        Assert.assertNotNull(result.getUpsertedId());
     }
 
 
@@ -331,7 +331,7 @@ public class PersonCrudTest {
         UpdateResult result = mars.update(query, person, options);
 
 
-        Precondition.PreconditionNotNull(result.getUpsertedId().asObjectId().getValue());
+        Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
 
     }
 
@@ -384,7 +384,7 @@ public class PersonCrudTest {
 
         UpdateResult result = mars.update(query, entity, Person.class, options);
 
-        Precondition.PreconditionNotNull(result.getUpsertedId().asObjectId().getValue());
+        Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
 
     }
 
@@ -400,7 +400,7 @@ public class PersonCrudTest {
         UpdateResult result = mars.update(query,update,"person");
 
 
-        Precondition.PreconditionEquals(result.getMatchedCount(),0);
+        Assert.assertEquals(result.getMatchedCount(),0);
 
     }
 
@@ -417,9 +417,9 @@ public class PersonCrudTest {
         UpdateResult result = mars.update(query,update,"person",new UpdateOptions().upsert(true));
 
 
-        Precondition.PreconditionEquals(result.getMatchedCount(),0);
+        Assert.assertEquals(result.getMatchedCount(),0);
 
-        Precondition.PreconditionNotNull(result.getUpsertedId().asObjectId().getValue());
+        Assert.assertNotNull(result.getUpsertedId().asObjectId().getValue());
     }
 
 
@@ -438,7 +438,7 @@ public class PersonCrudTest {
 
 
 
-        Precondition.PreconditionEquals(personList.size() , 1000);
+        Assert.assertEquals(personList.size() , 1000);
 
 
     }
@@ -457,7 +457,7 @@ public class PersonCrudTest {
         mars.ensureIndexes(Student.class ,"person");
         List<Index> person = mars.getIndexes("person");
 
-        Precondition.PreconditionEquals(person.size(),4);
+        Assert.assertEquals(person.size(),4);
 
     }
 
@@ -500,7 +500,7 @@ public class PersonCrudTest {
         com.mongodb.client.result.InsertManyResult insertManyResult = mars.getCollection(Document.class,"person").insertMany(documents);
 
 
-        Precondition.PreconditionTrue(insertManyResult.wasAcknowledged());
+        Assert.assertTrue(insertManyResult.wasAcknowledged());
 
     }
 

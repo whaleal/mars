@@ -44,8 +44,7 @@ public class Lazy<T> implements Supplier<T> {
 
     private final Supplier<? extends T> supplier;
 
-    private
-    T value;
+    private T value;
     private volatile boolean resolved;
 
     /**
@@ -223,7 +222,7 @@ public class Lazy<T> implements Supplier<T> {
      * Returns the value of the lazy evaluation.
      *
      * @return
-     *  2.2
+     *
      */
 
     public T getNullable() {
