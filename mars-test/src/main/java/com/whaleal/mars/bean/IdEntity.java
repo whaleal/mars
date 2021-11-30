@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bean;
 
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoId;
+import com.whaleal.mars.codecs.pojo.annotations.MongoId;
 
 public class IdEntity {
     public String get_id() {

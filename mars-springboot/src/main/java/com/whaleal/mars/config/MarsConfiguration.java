@@ -35,17 +35,15 @@ import com.mongodb.client.MongoClients;
 import com.whaleal.mars.core.Mars;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author cx
  * @Date 2020/12/18
- * 配置类，CustomerMongoTemplate和MongoProperties都是在这里获取的
+ * 配置类，MongoProperties都是在这里获取的
  * 原生的配置了许多Bean，涉及到mars的有
- * mars
- * mappingMongoConverter
+ *
  */
-@Configuration
+
 @EnableConfigurationProperties(MongoProperties.class)
 public class MarsConfiguration {
 
@@ -54,18 +52,17 @@ public class MarsConfiguration {
         return new Mars(mongoClient(properties), properties.getMongoClientDatabase());
     }
 
-
     private MongoClient mongoClient(MongoProperties properties) {
 
-        MongoClientSettings.Builder targetSettings = MongoClientSettings.builder();
+        MongoClientSettings.Builder builder = MongoClientSettings.builder();
 
         Customizer customizer = new
 
                 CustomerMongoClientSettings(properties);
 
-        customizer.customize(targetSettings);
+        customizer.customize(builder);
 
-        MongoClientSettings build = targetSettings.build();
+        MongoClientSettings build = builder.build();
 
         MongoClient mongoClient = MongoClients.create(build);
 

@@ -4,7 +4,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import com.whaleal.mars.geojson.codecs.GeometryDemo;

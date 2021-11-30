@@ -30,8 +30,8 @@
 package com.whaleal.mars.core.index;
 
 import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.bson.codecs.MarsOrmException;
-import com.whaleal.mars.bson.codecs.pojo.EntityModel;
+import com.whaleal.mars.codecs.MarsOrmException;
+import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.core.index.annotation.Index;
 import com.whaleal.mars.core.index.annotation.*;
 import org.bson.Document;

@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.messaging;
 
 import com.whaleal.icefrog.core.util.ClassUtil;
-import com.whaleal.mars.bson.codecs.Conversions;
+import com.whaleal.mars.codecs.Conversions;
 import org.bson.Document;
 
 class LazyMappingDelegatingMessage<S, T> implements Message<S, T> {

@@ -31,7 +31,7 @@ package com.whaleal.mars.session;
 
 import com.mongodb.ClientSessionOptions;
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.UpdateDefinition;
 import com.whaleal.mars.session.option.*;

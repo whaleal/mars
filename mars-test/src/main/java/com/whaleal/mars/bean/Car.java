@@ -30,8 +30,8 @@
 package com.whaleal.mars.bean;
 
 
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoId;
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.annotations.MongoId;
+import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
 
 import java.util.ArrayList;
 import java.util.List;

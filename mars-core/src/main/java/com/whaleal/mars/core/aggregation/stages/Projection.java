@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.aggregation.stages;
 
-import com.whaleal.mars.bson.codecs.MarsOrmException;
+import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Fields;

@@ -16,7 +16,6 @@
             <groupId>com.whaleal.mars</groupId>
             <artifactId>mars-core</artifactId>
             <version>${project.parent.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor -->

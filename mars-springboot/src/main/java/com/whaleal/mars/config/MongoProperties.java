@@ -32,17 +32,18 @@ package com.whaleal.mars.config;
 import com.mongodb.ConnectionString;
 import org.bson.UuidRepresentation;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
+import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 /**
  * @author cx
  * @Date 2020/12/18
  */
-@ConfigurationProperties(prefix = MongoProperties.MYBATIS_PREFIX)
+@Component
+@ConfigurationProperties(prefix = MongoProperties.MARS_PREFIX)
 public class MongoProperties {
 
-    public static final String MYBATIS_PREFIX = "mars.data.mongodb";
+    public static final String MARS_PREFIX = "mars.data.mongodb";
 
     /**
      * Default port used when the configured port is {@code null}.

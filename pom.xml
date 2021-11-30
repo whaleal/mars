@@ -23,7 +23,7 @@
         <mongo.driver.version>4.4.0</mongo.driver.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring.version>2.5.1</spring.version>
+        <spring.version>2.5.7</spring.version>
         <icefrog.version>1.1.5</icefrog.version>
     </properties>
 

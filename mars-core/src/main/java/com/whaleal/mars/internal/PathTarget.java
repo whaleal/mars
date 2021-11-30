@@ -31,9 +31,9 @@
 package com.whaleal.mars.internal;
 
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.bson.codecs.pojo.EntityModel;
-import com.whaleal.mars.bson.codecs.pojo.PropertyModel;
+import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.pojo.EntityModel;
+import com.whaleal.mars.codecs.pojo.PropertyModel;
 
 import java.util.List;
 import java.util.StringJoiner;

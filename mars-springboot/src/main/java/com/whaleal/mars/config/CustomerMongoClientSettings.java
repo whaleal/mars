@@ -34,6 +34,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
@@ -42,7 +43,6 @@ import java.util.Collections;
  * @author cx
  * @Date 2020/12/21
  */
-@Configuration
 public class CustomerMongoClientSettings implements Customizer {
 
     private final MongoProperties properties;

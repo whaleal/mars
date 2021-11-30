@@ -2,7 +2,6 @@ package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.base.SerializationUtil;
 import com.whaleal.mars.bean.*;
-import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
