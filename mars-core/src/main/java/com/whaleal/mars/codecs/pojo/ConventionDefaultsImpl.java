@@ -31,7 +31,6 @@ package com.whaleal.mars.codecs.pojo;
 
 
 import com.whaleal.mars.codecs.Convention;
-import com.whaleal.mars.bson.codecs.pojo.annotations.*;
 import com.whaleal.mars.codecs.pojo.annotations.*;
 import org.bson.BsonType;
 import org.bson.codecs.configuration.CodecConfigurationException;

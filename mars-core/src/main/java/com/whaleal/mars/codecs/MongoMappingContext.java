@@ -37,7 +37,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.codecs.GridFSFileCodecProvider;
 import com.whaleal.mars.codecs.internal.JsonObjectCodecProvider;
-import com.whaleal.mars.bson.codecs.pojo.*;
+import com.whaleal.mars.codecs.pojo.*;
 import com.whaleal.mars.codecs.pojo.annotations.Concern;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.reader.DocumentReader;
