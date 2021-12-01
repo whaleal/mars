@@ -32,11 +32,14 @@ package com.whaleal.mars.core.messaging;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.session.DatastoreImpl;
 import com.whaleal.mars.task.SimpleAsyncTaskExecutor;
 import com.whaleal.mars.util.ErrorHandler;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
@@ -47,8 +50,9 @@ import java.util.concurrent.Executor;
 /**
  * 消息监听者的容器，里面有好多消息监听
  */
-@Slf4j
+
 public class DefaultMessageListenerContainer implements MessageListenerContainer {
+    private static final Log log = LogFactory.get(DefaultMessageListenerContainer.class);
     private final Executor taskExecutor;
     private final TaskFactory taskFactory;
     private final Optional<ErrorHandler> errorHandler;

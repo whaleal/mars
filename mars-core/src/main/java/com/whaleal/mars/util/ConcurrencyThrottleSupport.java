@@ -29,7 +29,11 @@
  */
 package com.whaleal.mars.util;
 
-import lombok.extern.slf4j.Slf4j;
+
+
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
+import com.whaleal.mars.gridfs.GridFsResource;
 
 import java.io.Serializable;
 
@@ -46,8 +50,10 @@ import java.io.Serializable;
  * check the javadoc of the concrete class that you're using.
  */
 @SuppressWarnings("serial")
-@Slf4j
+
 public abstract class ConcurrencyThrottleSupport implements Serializable {
+
+    private static final Log log = LogFactory.get(ConcurrencyThrottleSupport.class);
 
     /**
      * Permit any number of concurrent invocations: that is, don't throttle concurrency.

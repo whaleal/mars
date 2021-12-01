@@ -41,6 +41,8 @@ import com.mongodb.client.model.ValidationLevel;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
@@ -64,7 +66,7 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.util.BsonUtils;
-import lombok.extern.slf4j.Slf4j;
+
 import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
@@ -82,10 +84,11 @@ import java.util.stream.Collectors;
  *
  * @Date 2020-12-03
  */
-@Slf4j
+
 public class DatastoreImpl extends AggregationImpl implements Datastore,
         MongoOperations, GridFsOperations, Statistic {
 
+    private static final Log log = LogFactory.get(DatastoreImpl.class);
     public MongoClient getMongoClient() {
         return mongoClient;
     }

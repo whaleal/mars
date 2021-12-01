@@ -91,6 +91,4 @@ public class Mars extends DatastoreImpl {
         super.setReadConcern(readConcern);
         this.readConcern = readConcern;
     }
-
-
 }

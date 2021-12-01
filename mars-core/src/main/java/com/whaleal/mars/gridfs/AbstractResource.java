@@ -30,8 +30,11 @@
 package com.whaleal.mars.gridfs;
 
 
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
+import com.whaleal.mars.core.messaging.DefaultMessageListenerContainer;
 import com.whaleal.mars.util.ResourceUtils;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,8 +46,9 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-@Slf4j
+
 public abstract class AbstractResource implements Resource {
+    private static final Log log = LogFactory.get(AbstractResource.class);
 
     /**
      * This implementation checks whether a File can be opened,

@@ -30,8 +30,11 @@
 package com.whaleal.mars.codecs;
 
 
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.internal.NotMappableException;
-import lombok.extern.slf4j.Slf4j;
+
+import com.whaleal.mars.core.messaging.DefaultMessageListenerContainer;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
@@ -54,9 +57,9 @@ import static java.lang.Boolean.FALSE;
  * 在某些转换丢失的情况下出现，用户可以在版本之间添加它们。 但是，这必须在理解的情况下完成
  * 无论如何，此 API 可能会发生变化，并且任何使用都可能会在某些时候中断。
  */
-@Slf4j
-public final class Conversions {
 
+public final class Conversions {
+    private static final Log log = LogFactory.get(Conversions.class);
     private static final Map<Class<?>, Map<Class<?>, Function<?, ?>>> CONVERSIONS = new HashMap<>();
 
     static {

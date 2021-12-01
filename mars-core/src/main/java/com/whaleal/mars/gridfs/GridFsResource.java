@@ -32,8 +32,10 @@ package com.whaleal.mars.gridfs;
 import com.mongodb.MongoGridFSException;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.util.BsonUtils;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -47,9 +49,10 @@ import java.util.Optional;
  * @author cs
  * @date 2021/04/07
  */
-@Slf4j
+
 public class GridFsResource extends InputStreamResource implements GridFsObject<Object, InputStream> {
 
+    private static final Log log = LogFactory.get(GridFsResource.class);
     public static final String CONTENT_TYPE_FIELD = "_contentType";
     private static final ByteArrayInputStream EMPTY_INPUT_STREAM = new ByteArrayInputStream(new byte[0]);
 

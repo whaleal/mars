@@ -30,13 +30,13 @@
 package com.whaleal.mars.core.index;
 
 import com.mongodb.client.MongoCollection;
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.core.index.annotation.Index;
 import com.whaleal.mars.core.index.annotation.*;
 import org.bson.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * A helper class for dealing with index definitions
  */
 public final class IndexHelper {
-    private static final Logger LOG = LoggerFactory.getLogger(IndexHelper.class);
+    private static final Log log = LogFactory.get(IndexHelper.class);
 
 
     private void calculateWeights(Index index, com.mongodb.client.model.IndexOptions indexOptions) {
@@ -128,7 +128,7 @@ public final class IndexHelper {
                 if (!index.options().disableValidation()) {
                     throw new MarsOrmException("error  with : " + path + entityModel.getType().getName());
                 }
-                LOG.warn("error  with : " + path + entityModel.getType().getName());
+                log.warn("error  with : " + path + entityModel.getType().getName());
             }
             keys.putAll(new Document(path, field.type().toIndexValue()));
         }

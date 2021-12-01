@@ -31,7 +31,7 @@ package com.whaleal.mars.gridfs;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.whaleal.icefrog.core.lang.Precondition;
-import lombok.extern.slf4j.Slf4j;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  * @author cs
  * @date 2021/04/09
  */
-@Slf4j
+
 public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
 
     private final

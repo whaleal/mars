@@ -19,28 +19,21 @@
             <version>${icefrog.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.whaleal.icefrog</groupId>
+            <artifactId>icefrog-log</artifactId>
+            <version>${icefrog.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>${mongo.driver.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
             <version>1.18.1</version>
+            <optional>true</optional>
         </dependency>
 
 
