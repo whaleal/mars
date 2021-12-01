@@ -20,10 +20,11 @@
     </modules>
 
     <properties>
-        <mongo.driver.version>4.2.3</mongo.driver.version>
+        <mongo.driver.version>4.4.0</mongo.driver.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring.version>2.5.1</spring.version>
+        <spring.version>2.5.7</spring.version>
+        <icefrog.version>1.1.5</icefrog.version>
     </properties>
 
     <!--发布的标准，这个是按照mongodb的标准来做的-->

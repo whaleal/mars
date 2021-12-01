@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.task;
 
-import com.mongodb.lang.Nullable;
+
 
 @FunctionalInterface
 public interface SuccessCallback<T> {
@@ -40,6 +40,6 @@ public interface SuccessCallback<T> {
      *
      * @param result the result
      */
-    void onSuccess(@Nullable T result);
+    void onSuccess( T result);
 
 }

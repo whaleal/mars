@@ -29,9 +29,12 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
+
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
+import com.whaleal.mars.core.messaging.DefaultMessageListenerContainer;
 import com.whaleal.mars.util.ResourceUtils;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,8 +46,9 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-@Slf4j
+
 public abstract class AbstractResource implements Resource {
+    private static final Log log = LogFactory.get(AbstractResource.class);
 
     /**
      * This implementation checks whether a File can be opened,
@@ -217,7 +221,7 @@ public abstract class AbstractResource implements Resource {
      * assuming that this resource type does not have a filename.
      */
     @Override
-    @Nullable
+    
     public String getFilename() {
         return null;
     }
@@ -229,7 +233,7 @@ public abstract class AbstractResource implements Resource {
      * @see #getDescription()
      */
     @Override
-    public boolean equals(@Nullable Object other) {
+    public boolean equals( Object other) {
         return (this == other || (other instanceof Resource &&
                 ((Resource) other).getDescription().equals(getDescription())));
     }

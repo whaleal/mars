@@ -60,7 +60,7 @@ public final class Expressions {
      *
      * @param value the value
      * @return the new expression
-     * @aggregation.expression $literal
+     *  $literal
      */
     public static Expression literal(Object value) {
         return new LiteralExpression(value);
@@ -70,7 +70,7 @@ public final class Expressions {
      * Returns the metadata associated with a document in a pipeline operations, e.g. "textScore" when performing text search.
      *
      * @return the new expression
-     * @aggregation.expression $meta
+     *  $meta
      */
     public static Expression meta() {
         return new MetaExpression();

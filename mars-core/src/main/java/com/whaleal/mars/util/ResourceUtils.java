@@ -30,7 +30,13 @@
 
 package com.whaleal.mars.util;
 
-import com.mongodb.lang.Nullable;
+
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ClassLoaderUtil;
+import com.whaleal.icefrog.core.util.ClassUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -134,7 +140,7 @@ public abstract class ResourceUtils {
      * @see #CLASSPATH_URL_PREFIX
      * @see URL
      */
-    public static boolean isUrl(@Nullable String resourceLocation) {
+    public static boolean isUrl( String resourceLocation) {
         if (resourceLocation == null) {
             return false;
         }
@@ -160,10 +166,10 @@ public abstract class ResourceUtils {
      * @throws FileNotFoundException if the resource cannot be resolved to a URL
      */
     public static URL getURL(String resourceLocation) throws FileNotFoundException {
-        Assert.notNull(resourceLocation, "Resource location must not be null");
+        Precondition.notNull(resourceLocation, "Resource location must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
-            ClassLoader cl = ClassUtils.getDefaultClassLoader();
+            ClassLoader cl = ClassLoaderUtil.getClassLoader();
             URL url = (cl != null ? cl.getResource(path) : ClassLoader.getSystemResource(path));
             if (url == null) {
                 String description = "class path resource [" + path + "]";
@@ -199,11 +205,11 @@ public abstract class ResourceUtils {
      *                               a file in the file system
      */
     public static File getFile(String resourceLocation) throws FileNotFoundException {
-        Assert.notNull(resourceLocation, "Resource location must not be null");
+        Precondition.notNull(resourceLocation, "Resource location must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
             String description = "class path resource [" + path + "]";
-            ClassLoader cl = ClassUtils.getDefaultClassLoader();
+            ClassLoader cl = ClassLoaderUtil.getClassLoader();
             URL url = (cl != null ? cl.getResource(path) : ClassLoader.getSystemResource(path));
             if (url == null) {
                 throw new FileNotFoundException(description +
@@ -245,7 +251,7 @@ public abstract class ResourceUtils {
      *                               a file in the file system
      */
     public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
-        Assert.notNull(resourceUrl, "Resource URL must not be null");
+        Precondition.notNull(resourceUrl, "Resource URL must not be null");
         if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
             throw new FileNotFoundException(
                     description + " cannot be resolved to absolute file path " +
@@ -284,7 +290,7 @@ public abstract class ResourceUtils {
      *                               a file in the file system
      */
     public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
-        Assert.notNull(resourceUri, "Resource URI must not be null");
+        Precondition.notNull(resourceUri, "Resource URI must not be null");
         if (!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
             throw new FileNotFoundException(
                     description + " cannot be resolved to absolute file path " +
@@ -413,7 +419,7 @@ public abstract class ResourceUtils {
      * @throws URISyntaxException if the location wasn't a valid URI
      */
     public static URI toURI(String location) throws URISyntaxException {
-        return new URI(StringUtils.replace(location, " ", "%20"));
+        return new URI(StrUtil.replace(location, " ", "%20"));
     }
 
     /**

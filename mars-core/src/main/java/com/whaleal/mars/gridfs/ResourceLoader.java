@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
+
 import com.whaleal.mars.util.ResourceUtils;
 
 public interface ResourceLoader {
@@ -67,7 +67,7 @@ public interface ResourceLoader {
      * @return the {@code ClassLoader}
      * (only {@code null} if even the system {@code ClassLoader} isn't accessible)
      */
-    @Nullable
+
     ClassLoader getClassLoader();
 
 }

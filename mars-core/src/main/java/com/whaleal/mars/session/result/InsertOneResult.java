@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.session.result;
 
-import com.mongodb.lang.Nullable;
+
 import org.bson.BsonValue;
 
 /**
@@ -53,7 +53,7 @@ public class InsertOneResult extends com.mongodb.client.result.InsertOneResult {
     }
 
     @Override
-    @Nullable
+
     public BsonValue getInsertedId() {
         return originInsertOneResult.getInsertedId();
     }

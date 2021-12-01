@@ -3,6 +3,7 @@ package com.whaleal.mars.core.aggreation;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
 import org.bson.Document;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

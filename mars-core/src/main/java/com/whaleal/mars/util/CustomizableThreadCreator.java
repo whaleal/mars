@@ -29,7 +29,9 @@
  */
 package com.whaleal.mars.util;
 
-import com.mongodb.lang.Nullable;
+
+
+import com.whaleal.icefrog.core.util.ClassUtil;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,7 +41,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Provides various bean properties: thread name prefix, thread priority, etc.
  *
  * <p>Serves as base class for thread factories such as
- * {@link org.springframework.scheduling.concurrent.CustomizableThreadFactory}.
  */
 
 public class CustomizableThreadCreator implements Serializable {
@@ -48,7 +49,7 @@ public class CustomizableThreadCreator implements Serializable {
     private String threadNamePrefix;
     private int threadPriority = Thread.NORM_PRIORITY;
     private boolean daemon = false;
-    @Nullable
+    
     private ThreadGroup threadGroup;
 
 
@@ -64,7 +65,7 @@ public class CustomizableThreadCreator implements Serializable {
      *
      * @param threadNamePrefix the prefix to use for the names of newly created threads
      */
-    public CustomizableThreadCreator(@Nullable String threadNamePrefix) {
+    public CustomizableThreadCreator( String threadNamePrefix) {
         this.threadNamePrefix = (threadNamePrefix != null ? threadNamePrefix : getDefaultThreadNamePrefix());
     }
 
@@ -80,7 +81,7 @@ public class CustomizableThreadCreator implements Serializable {
      * Specify the prefix to use for the names of newly created threads.
      * Default is "SimpleAsyncTaskExecutor-".
      */
-    public void setThreadNamePrefix(@Nullable String threadNamePrefix) {
+    public void setThreadNamePrefix( String threadNamePrefix) {
         this.threadNamePrefix = (threadNamePrefix != null ? threadNamePrefix : getDefaultThreadNamePrefix());
     }
 
@@ -136,7 +137,7 @@ public class CustomizableThreadCreator implements Serializable {
      * Return the thread group that threads should be created in
      * (or {@code null} for the default group).
      */
-    @Nullable
+    
     public ThreadGroup getThreadGroup() {
         return this.threadGroup;
     }
@@ -146,7 +147,7 @@ public class CustomizableThreadCreator implements Serializable {
      *
      * @see #setThreadGroupName
      */
-    public void setThreadGroup(@Nullable ThreadGroup threadGroup) {
+    public void setThreadGroup( ThreadGroup threadGroup) {
         this.threadGroup = threadGroup;
     }
 
@@ -182,7 +183,7 @@ public class CustomizableThreadCreator implements Serializable {
      * @return the default thread name prefix (never {@code null})
      */
     protected String getDefaultThreadNamePrefix() {
-        return ClassUtils.getShortName(getClass()) + "-";
+        return ClassUtil.getShortName(getClass()) + "-";
     }
 
 }

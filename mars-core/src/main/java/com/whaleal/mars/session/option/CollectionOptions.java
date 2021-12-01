@@ -31,23 +31,23 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.mars.core.query.Collation;
 import com.whaleal.mars.core.validation.Validator;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.Optionals;
+
 
 import java.util.Optional;
 
 public class CollectionOptions {
 
-    private @Nullable
+    private
     Long maxDocuments;
-    private @Nullable
+    private
     Long size;
-    private @Nullable
+    private
     Boolean capped;
-    private @Nullable
+    private
     Collation collation;
     private ValidationOptions validationOptions;
 
@@ -61,12 +61,12 @@ public class CollectionOptions {
      * @deprecated please use {@link CollectionOptions#empty()} as entry point.
      */
     @Deprecated
-    public CollectionOptions(@Nullable Long size, @Nullable Long maxDocuments, @Nullable Boolean capped) {
+    public CollectionOptions( Long size, Long maxDocuments, Boolean capped ) {
         this(size, maxDocuments, capped, null, ValidationOptions.none());
     }
 
-    private CollectionOptions(@Nullable Long size, @Nullable Long maxDocuments, @Nullable Boolean capped,
-                              @Nullable Collation collation, ValidationOptions validationOptions) {
+    private CollectionOptions( Long size, Long maxDocuments, Boolean capped,
+                               Collation collation, ValidationOptions validationOptions ) {
 
         this.maxDocuments = maxDocuments;
         this.size = size;
@@ -83,7 +83,7 @@ public class CollectionOptions {
      */
     public static CollectionOptions just(Collation collation) {
 
-        Assert.notNull(collation, "Collation must not be null!");
+        Precondition.notNull(collation, "Collation must not be null!");
 
         return new CollectionOptions(null, null, null, collation, ValidationOptions.none());
     }
@@ -133,7 +133,7 @@ public class CollectionOptions {
      * @param collation can be {@literal null}.
      * @return new {@link CollectionOptions}.
      */
-    public CollectionOptions collation(@Nullable Collation collation) {
+    public CollectionOptions collation( Collation collation ) {
         return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions);
     }
 
@@ -145,7 +145,7 @@ public class CollectionOptions {
      * @param validator can be {@literal null}.
      * @return new {@link CollectionOptions}.
      */
-    public CollectionOptions validator(@Nullable Validator validator) {
+    public CollectionOptions validator( Validator validator ) {
         return validation(validationOptions.validator(validator));
     }
 
@@ -208,7 +208,7 @@ public class CollectionOptions {
      */
     public CollectionOptions schemaValidationLevel(ValidationLevel validationLevel) {
 
-        Assert.notNull(validationLevel, "ValidationLevel must not be null!");
+        Precondition.notNull(validationLevel, "ValidationLevel must not be null!");
         return validation(validationOptions.validationLevel(validationLevel));
     }
 
@@ -221,7 +221,7 @@ public class CollectionOptions {
      */
     public CollectionOptions schemaValidationAction(ValidationAction validationAction) {
 
-        Assert.notNull(validationAction, "ValidationAction must not be null!");
+        Precondition.notNull(validationAction, "ValidationAction must not be null!");
         return validation(validationOptions.validationAction(validationAction));
     }
 
@@ -233,7 +233,7 @@ public class CollectionOptions {
      */
     public CollectionOptions validation(ValidationOptions validationOptions) {
 
-        Assert.notNull(validationOptions, "ValidationOptions must not be null!");
+        Precondition.notNull(validationOptions, "ValidationOptions must not be null!");
         return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions);
     }
 
@@ -287,11 +287,11 @@ public class CollectionOptions {
 
         private static final ValidationOptions NONE = new ValidationOptions(null, null, null);
 
-        private final @Nullable
+        private final
         Validator validator;
-        private final @Nullable
+        private final
         ValidationLevel validationLevel;
-        private final @Nullable
+        private final
         ValidationAction validationAction;
 
         public ValidationOptions(Validator validator, ValidationLevel validationLevel, ValidationAction validationAction) {
@@ -316,7 +316,7 @@ public class CollectionOptions {
          * @param validator can be {@literal null}.
          * @return new instance of {@link ValidationOptions}.
          */
-        public ValidationOptions validator(@Nullable Validator validator) {
+        public ValidationOptions validator( Validator validator ) {
             return new ValidationOptions(validator, validationLevel, validationAction);
         }
 
@@ -373,7 +373,7 @@ public class CollectionOptions {
          * @return {@literal true} if no arguments set.
          */
         boolean isEmpty() {
-            return !Optionals.isAnyPresent(getValidator(), getValidationAction(), getValidationLevel());
+            return !OptionalUtil.isAnyPresent(getValidator(), getValidationAction(), getValidationLevel());
         }
     }
 }

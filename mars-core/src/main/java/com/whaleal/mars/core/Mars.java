@@ -35,7 +35,6 @@ import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.lang.Nullable;
 import com.whaleal.mars.session.DatastoreImpl;
 
 /**
@@ -53,12 +52,12 @@ public class Mars extends DatastoreImpl {
      * 这个是连接级别的写关注
      * 或者理解为 库级别的读写关注
      */
-    private @Nullable
+    private
     WriteConcern writeConcern;
-    private @Nullable
+    private
     ReadPreference readPreference;
 
-    private @Nullable
+    private
     ReadConcern readConcern;
 
 
@@ -76,22 +75,20 @@ public class Mars extends DatastoreImpl {
 
 
     @Override
-    public void setWriteConcern(@Nullable WriteConcern writeConcern) {
+    public void setWriteConcern( WriteConcern writeConcern ) {
         super.setWriteConcern(writeConcern);
         this.writeConcern = writeConcern;
     }
 
 
-    public void setReadPreference(@Nullable ReadPreference readPreference) {
+    public void setReadPreference( ReadPreference readPreference ) {
         super.setReadPerference(readPreference);
         this.readPreference = readPreference;
     }
 
     @Override
-    public void setReadConcern(@Nullable ReadConcern readConcern) {
+    public void setReadConcern( ReadConcern readConcern ) {
         super.setReadConcern(readConcern);
         this.readConcern = readConcern;
     }
-
-
 }

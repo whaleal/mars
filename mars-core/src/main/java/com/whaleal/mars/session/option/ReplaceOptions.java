@@ -31,7 +31,7 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -51,12 +51,12 @@ public class ReplaceOptions implements WriteConfigurable<ReplaceOptions> {
         this.originReplaceOptions = originReplaceOptions;
     }
 
-    @Nullable
+
     public Boolean getBypassDocumentValidation() {
         return originReplaceOptions.getBypassDocumentValidation();
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originReplaceOptions.getCollation();
     }

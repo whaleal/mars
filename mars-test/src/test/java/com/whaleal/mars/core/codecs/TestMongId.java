@@ -2,12 +2,12 @@ package com.whaleal.mars.core.codecs;
 
 import org.junit.Before;
 import org.junit.Test;
-import com.whaleal.mars.bson.codecs.pojo.PropertyModel;
-import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoId;
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoProperty;
-import com.whaleal.mars.bson.codecs.pojo.EntityModel;
-import com.whaleal.mars.bson.codecs.pojo.EntityModelBuilder;
+import com.whaleal.mars.codecs.pojo.PropertyModel;
+import com.whaleal.mars.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.codecs.pojo.annotations.MongoId;
+import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.EntityModel;
+import com.whaleal.mars.codecs.pojo.EntityModelBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class TestMongId {
 

@@ -31,7 +31,7 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -65,7 +65,7 @@ public class DeleteOptions
         return this;
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originDeleteOptions.getCollation();
     }

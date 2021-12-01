@@ -9,7 +9,8 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -57,7 +58,7 @@ public class MarsGridFsTest {
         Matcher m = r.matcher("str123");
         System.out.println(m.matches());
         String str = "1";
-        Assert.state(str == null || Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]{0,15}$").matcher(str).matches(), "匹配错误");
+        Precondition.state(str == null || Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]{0,15}$").matcher(str).matches(), "匹配错误");
     }
 
     @Test

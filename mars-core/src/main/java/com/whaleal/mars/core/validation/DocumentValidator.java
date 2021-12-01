@@ -29,9 +29,9 @@
  */
 package com.whaleal.mars.core.validation;
 
-import com.whaleal.mars.core.query.SerializationUtils;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.util.SerializationUtils;
 import org.bson.Document;
 
 
@@ -51,7 +51,7 @@ class DocumentValidator implements Validator {
      */
     static DocumentValidator of(Document validatorObject) {
 
-        Assert.notNull(validatorObject, "ValidatorObject must not be null!");
+        Precondition.notNull(validatorObject, "ValidatorObject must not be null!");
 
         return new DocumentValidator(new Document(validatorObject));
     }
@@ -81,11 +81,11 @@ class DocumentValidator implements Validator {
 
         DocumentValidator that = (DocumentValidator) o;
 
-        return ObjectUtils.nullSafeEquals(validatorObject, that.validatorObject);
+        return ObjectUtil.nullSafeEquals(validatorObject, that.validatorObject);
     }
 
     @Override
     public int hashCode() {
-        return ObjectUtils.nullSafeHashCode(validatorObject);
+        return ObjectUtil.nullSafeHashCode(validatorObject);
     }
 }

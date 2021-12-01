@@ -33,7 +33,10 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ArrayUtil;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.mapping.CodecRegistryProvider;
 import com.whaleal.mars.core.query.Converter;
 import org.bson.*;
@@ -50,7 +53,7 @@ import java.util.stream.StreamSupport;
 public class BsonUtils {
 
     @SuppressWarnings("unchecked")
-    @Nullable
+
     public static <T> T get(Bson bson, String key) {
         return (T) asMap(bson).get(key);
     }
@@ -67,7 +70,7 @@ public class BsonUtils {
         return (Map) bson.toBsonDocument(Document.class, MongoClientSettings.getDefaultCodecRegistry());
     }
 
-    public static void addToMap(Bson bson, String key, @Nullable Object value) {
+    public static void addToMap( Bson bson, String key, Object value ) {
 
         if (bson instanceof Document) {
             ((Document) bson).put(key, value);
@@ -179,7 +182,7 @@ public class BsonUtils {
      */
     public static Document merge(Document... documents) {
 
-        if (ObjectUtils.isEmpty(documents)) {
+        if (ObjectUtil.isEmpty(documents)) {
             return new Document();
         }
 
@@ -199,7 +202,7 @@ public class BsonUtils {
      */
     public static Document toDocumentOrElse(String source, Function<String, Document> orElse) {
 
-        if (StringUtils.trimLeadingWhitespace(source).startsWith("{")) {
+        if (StrUtil.trimLeadingWhitespace(source).startsWith("{")) {
             return Document.parse(source);
         }
 
@@ -212,8 +215,8 @@ public class BsonUtils {
      * @param source
      * @return
      */
-    @Nullable
-    public static String toJson(@Nullable Document source) {
+
+    public static String toJson( Document source ) {
 
         if (source == null) {
             return null;
@@ -232,8 +235,8 @@ public class BsonUtils {
      * @param value can be {@literal null}.
      * @return {@literal true} if the given value looks like a json document.
      */
-    public static boolean isJsonDocument(@Nullable String value) {
-        return StringUtils.hasText(value) && (value.startsWith("{") && value.endsWith("}"));
+    public static boolean isJsonDocument( String value ) {
+        return StrUtil.hasText(value) && (value.startsWith("{") && value.endsWith("}"));
     }
 
     /**
@@ -242,8 +245,8 @@ public class BsonUtils {
      * @param value can be {@literal null}.
      * @return {@literal true} if the given value looks like a json array.
      */
-    public static boolean isJsonArray(@Nullable String value) {
-        return StringUtils.hasText(value) && (value.startsWith("[") && value.endsWith("]"));
+    public static boolean isJsonArray( String value ) {
+        return StrUtil.hasText(value) && (value.startsWith("[") && value.endsWith("]"));
     }
 
     /**
@@ -255,9 +258,9 @@ public class BsonUtils {
      * @return never {@literal null}.
      * @throws IllegalArgumentException if the required argument is {@literal null}.
      */
-    public static Document parse(String json, @Nullable CodecRegistryProvider codecRegistryProvider) {
+    public static Document parse( String json, CodecRegistryProvider codecRegistryProvider ) {
 
-        Assert.notNull(json, "Json must not be null!");
+        Precondition.notNull(json, "Json must not be null!");
 
         if (codecRegistryProvider == null) {
             return Document.parse(json);
@@ -267,8 +270,8 @@ public class BsonUtils {
                 .orElseGet(() -> new DocumentCodec(codecRegistryProvider.getCodecRegistry())));
     }
 
-    @Nullable
-    private static String toJson(@Nullable Object value) {
+
+    private static String toJson( Object value ) {
 
         if (value == null) {
             return null;
@@ -285,15 +288,15 @@ public class BsonUtils {
                 return toString((Collection<?>) value);
             } else if (value instanceof Map) {
                 return toString((Map<?, ?>) value);
-            } else if (ObjectUtils.isArray(value)) {
-                return toString(Arrays.asList(ObjectUtils.toObjectArray(value)));
+            } else if (ObjectUtil.isArray(value)) {
+                return toString(Arrays.asList(ObjectUtil.toArray(value)));
             }
 
             throw e instanceof JsonParseException ? (JsonParseException) e : new JsonParseException(e);
         }
     }
 
-    private static String serializeValue(@Nullable Object value) {
+    private static String serializeValue( Object value ) {
 
         if (value == null) {
             return "null";

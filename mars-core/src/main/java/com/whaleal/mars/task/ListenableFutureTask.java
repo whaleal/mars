@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.task;
 
-import com.mongodb.lang.Nullable;
+
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -64,7 +64,7 @@ public class ListenableFutureTask<T> extends FutureTask<T> implements Listenable
      * @param runnable the runnable task
      * @param result   the result to return on successful completion
      */
-    public ListenableFutureTask(Runnable runnable, @Nullable T result) {
+    public ListenableFutureTask(Runnable runnable,  T result) {
         super(runnable, result);
     }
 

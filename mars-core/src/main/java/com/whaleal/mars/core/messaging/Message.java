@@ -29,9 +29,9 @@
  */
 package com.whaleal.mars.core.messaging;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 
 public interface Message<S, T> {
 
@@ -40,7 +40,7 @@ public interface Message<S, T> {
      *
      * @return can be {@literal null}.
      */
-    @Nullable
+
     S getRaw();
 
     /**
@@ -48,7 +48,7 @@ public interface Message<S, T> {
      *
      * @return can be {@literal null}.
      */
-    @Nullable
+
     T getBody();
 
     /**
@@ -63,9 +63,9 @@ public interface Message<S, T> {
 
         private static final MessageProperties EMPTY = new MessageProperties();
 
-        private @Nullable
+        private
         String databaseName;
-        private @Nullable
+        private
         String collectionName;
 
         /**
@@ -73,7 +73,7 @@ public interface Message<S, T> {
          *
          * @return can be {@literal null}.
          */
-        @Nullable
+
         public String getDatabaseName() {
             return databaseName;
         }
@@ -83,7 +83,7 @@ public interface Message<S, T> {
          *
          * @return can be {@literal null}.
          */
-        @Nullable
+
         public String getCollectionName() {
             return collectionName;
         }
@@ -114,17 +114,17 @@ public interface Message<S, T> {
 
             MessageProperties that = (MessageProperties) o;
 
-            if (!ObjectUtils.nullSafeEquals(this.databaseName, that.databaseName)) {
+            if (!ObjectUtil.nullSafeEquals(this.databaseName, that.databaseName)) {
                 return false;
             }
 
-            return ObjectUtils.nullSafeEquals(this.collectionName, that.collectionName);
+            return ObjectUtil.nullSafeEquals(this.collectionName, that.collectionName);
         }
 
         @Override
         public int hashCode() {
-            int result = ObjectUtils.nullSafeHashCode(databaseName);
-            result = 31 * result + ObjectUtils.nullSafeHashCode(collectionName);
+            int result = ObjectUtil.nullSafeHashCode(databaseName);
+            result = 31 * result + ObjectUtil.nullSafeHashCode(collectionName);
             return result;
         }
 
@@ -138,9 +138,9 @@ public interface Message<S, T> {
          */
         public static class MessagePropertiesBuilder {
 
-            private @Nullable
+            private
             String databaseName;
-            private @Nullable
+            private
             String collectionName;
 
             /**
@@ -149,7 +149,7 @@ public interface Message<S, T> {
              */
             public MessagePropertiesBuilder databaseName(String dbName) {
 
-                Assert.notNull(dbName, "Database name must not be null!");
+                Precondition.notNull(dbName, "Database name must not be null!");
 
                 this.databaseName = dbName;
                 return this;
@@ -161,7 +161,7 @@ public interface Message<S, T> {
              */
             public MessagePropertiesBuilder collectionName(String collectionName) {
 
-                Assert.notNull(collectionName, "Collection name must not be null!");
+                Precondition.notNull(collectionName, "Collection name must not be null!");
 
                 this.collectionName = collectionName;
                 return this;

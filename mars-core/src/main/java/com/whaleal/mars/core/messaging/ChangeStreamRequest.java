@@ -32,9 +32,8 @@ package com.whaleal.mars.core.messaging;
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.FullDocument;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.aggregation.Aggregation;
-import com.whaleal.mars.util.Assert;
 import org.bson.BsonValue;
 import org.bson.Document;
 
@@ -57,8 +56,8 @@ public class ChangeStreamRequest<T>
     public ChangeStreamRequest(MessageListener<ChangeStreamDocument<Document>, ? super T> messageListener,
                                RequestOptions options) {
 
-        Assert.notNull(messageListener, "MessageListener must not be null!");
-        Assert.notNull(options, "Options must not be null!");
+        Precondition.notNull(messageListener, "MessageListener must not be null!");
+        Precondition.notNull(options, "Options must not be null!");
 
         this.options = options instanceof ChangeStreamRequestOptions ? (ChangeStreamRequestOptions) options
                 : ChangeStreamRequestOptions.of(options);
@@ -105,11 +104,11 @@ public class ChangeStreamRequest<T>
      */
     public static class ChangeStreamRequestOptions implements SubscriptionRequest.RequestOptions {
 
-        private final @Nullable
+        private final
         String databaseName;
-        private final @Nullable
+        private final
         String collectionName;
-        private final @Nullable
+        private final
         Duration maxAwaitTime;
         private final ChangeStreamOptions options;
 
@@ -120,8 +119,8 @@ public class ChangeStreamRequest<T>
          * @param collectionName can be {@literal null}.
          * @param options        must not be {@literal null}.
          */
-        public ChangeStreamRequestOptions(@Nullable String databaseName, @Nullable String collectionName,
-                                          ChangeStreamOptions options) {
+        public ChangeStreamRequestOptions( String databaseName, String collectionName,
+                                           ChangeStreamOptions options ) {
             this(databaseName, collectionName, null, options);
         }
 
@@ -133,10 +132,10 @@ public class ChangeStreamRequest<T>
          * @param maxAwaitTime   can be {@literal null}.
          * @param options        must not be {@literal null}.
          */
-        public ChangeStreamRequestOptions(@Nullable String databaseName, @Nullable String collectionName,
-                                          @Nullable Duration maxAwaitTime, ChangeStreamOptions options) {
+        public ChangeStreamRequestOptions( String databaseName, String collectionName,
+                                           Duration maxAwaitTime, ChangeStreamOptions options ) {
 
-            Assert.notNull(options, "Options must not be null!");
+            Precondition.notNull(options, "Options must not be null!");
 
             this.collectionName = collectionName;
             this.databaseName = databaseName;
@@ -146,7 +145,7 @@ public class ChangeStreamRequest<T>
 
         public static ChangeStreamRequestOptions of(RequestOptions options) {
 
-            Assert.notNull(options, "Options must not be null!");
+            Precondition.notNull(options, "Options must not be null!");
 
             return new ChangeStreamRequestOptions(options.getDatabaseName(), options.getCollectionName(),
                     ChangeStreamOptions.builder().build());
@@ -185,13 +184,13 @@ public class ChangeStreamRequest<T>
      */
     public static class ChangeStreamRequestBuilder<T> {
 
-        private @Nullable
+        private
         String databaseName;
-        private @Nullable
+        private
         String collectionName;
-        private @Nullable
+        private
         Duration maxAwaitTime;
-        private @Nullable
+        private
         MessageListener<ChangeStreamDocument<Document>, ? super T> listener;
         private final ChangeStreamOptions.ChangeStreamOptionsBuilder delegate = ChangeStreamOptions.builder();
 
@@ -206,7 +205,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> database(String databaseName) {
 
-            Assert.hasText(databaseName, "DatabaseName must not be null!");
+            Precondition.hasText(databaseName, "DatabaseName must not be null!");
 
             this.databaseName = databaseName;
             return this;
@@ -220,7 +219,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> collection(String collectionName) {
 
-            Assert.hasText(collectionName, "CollectionName must not be null!");
+            Precondition.hasText(collectionName, "CollectionName must not be null!");
 
             this.collectionName = collectionName;
             return this;
@@ -235,7 +234,7 @@ public class ChangeStreamRequest<T>
         public ChangeStreamRequestBuilder<T> publishTo(
                 MessageListener<ChangeStreamDocument<Document>, ? super T> messageListener) {
 
-            Assert.notNull(messageListener, "MessageListener must not be null!");
+            Precondition.notNull(messageListener, "MessageListener must not be null!");
 
             this.listener = messageListener;
             return this;
@@ -258,7 +257,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> filter(Aggregation aggregation) {
 
-            Assert.notNull(aggregation, "Aggregation must not be null!");
+            Precondition.notNull(aggregation, "Aggregation must not be null!");
             this.delegate.filter(aggregation);
             return this;
         }
@@ -272,8 +271,8 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> filter(Document... pipeline) {
 
-            Assert.notNull(pipeline, "Aggregation pipeline must not be null!");
-            Assert.noNullElements(pipeline, "Aggregation pipeline must not contain null elements!");
+            Precondition.notNull(pipeline, "Aggregation pipeline must not be null!");
+            Precondition.noNullElements(pipeline, "Aggregation pipeline must not contain null elements!");
 
             this.delegate.filter(pipeline);
             return this;
@@ -288,7 +287,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> collation(Collation collation) {
 
-            Assert.notNull(collation, "Collation must not be null!");
+            Precondition.notNull(collation, "Collation must not be null!");
 
             this.delegate.collation(collation);
             return this;
@@ -304,7 +303,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> resumeToken(BsonValue resumeToken) {
 
-            Assert.notNull(resumeToken, "Resume token not be null!");
+            Precondition.notNull(resumeToken, "Resume token not be null!");
 
             this.delegate.resumeToken(resumeToken);
             return this;
@@ -319,7 +318,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> resumeAt(Instant clusterTime) {
 
-            Assert.notNull(clusterTime, "ClusterTime must not be null!");
+            Precondition.notNull(clusterTime, "ClusterTime must not be null!");
 
             this.delegate.resumeAt(clusterTime);
             return this;
@@ -333,7 +332,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> resumeAfter(BsonValue resumeToken) {
 
-            Assert.notNull(resumeToken, "ResumeToken must not be null!");
+            Precondition.notNull(resumeToken, "ResumeToken must not be null!");
             this.delegate.resumeAfter(resumeToken);
 
             return this;
@@ -347,7 +346,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> startAfter(BsonValue resumeToken) {
 
-            Assert.notNull(resumeToken, "ResumeToken must not be null!");
+            Precondition.notNull(resumeToken, "ResumeToken must not be null!");
             this.delegate.startAfter(resumeToken);
 
             return this;
@@ -362,7 +361,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> fullDocumentLookup(FullDocument lookup) {
 
-            Assert.notNull(lookup, "FullDocument not be null!");
+            Precondition.notNull(lookup, "FullDocument not be null!");
 
             this.delegate.fullDocumentLookup(lookup);
             return this;
@@ -375,7 +374,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequestBuilder<T> maxAwaitTime(Duration timeout) {
 
-            Assert.notNull(timeout, "timeout not be null!");
+            Precondition.notNull(timeout, "timeout not be null!");
 
             this.maxAwaitTime = timeout;
             return this;
@@ -386,7 +385,7 @@ public class ChangeStreamRequest<T>
          */
         public ChangeStreamRequest<T> build() {
 
-            Assert.notNull(listener, "MessageListener must not be null!");
+            Precondition.notNull(listener, "MessageListener must not be null!");
 
             return new ChangeStreamRequest<>(listener,
                     new ChangeStreamRequestOptions(databaseName, collectionName, maxAwaitTime, delegate.build()));

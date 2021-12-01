@@ -1,6 +1,6 @@
 package com.whaleal.mars.core.crud;
 
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;

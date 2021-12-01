@@ -29,7 +29,8 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +55,7 @@ public class AntPath {
      */
     public AntPath(String path) {
 
-        Assert.notNull(path, "Path must not be null!");
+        Precondition.notNull(path, "Path must not be null!");
 
         this.path = path;
     }

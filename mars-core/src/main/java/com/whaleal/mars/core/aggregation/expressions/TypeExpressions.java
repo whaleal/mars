@@ -48,7 +48,7 @@ public final class TypeExpressions {
      * @param input the value to process
      * @param to    an expression giving the target type
      * @return the new expression
-     * @aggregation.expression $convert
+     *  $convert
      */
     public static Expression convert(Expression input, ConvertType to) {
         return new ConvertExpression(input, to);
@@ -60,7 +60,7 @@ public final class TypeExpressions {
      *
      * @param input the value to check
      * @return the new expression
-     * @aggregation.expression $isNumber
+     *  $isNumber
      */
     public static Expression isNumber(Expression input) {
         return new Expression("$isNumber", input);
@@ -71,7 +71,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toBool
+     *  $toBool
      */
     public static Expression toBool(Expression input) {
         return new Expression("$toBool", input);
@@ -82,7 +82,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toDate
+     *  $toDate
      */
     public static Expression toDate(Expression input) {
         return new Expression("$toDate", input);
@@ -93,7 +93,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toDecimal
+     *  $toDecimal
      */
     public static Expression toDecimal(Expression input) {
         return new Expression("$toDecimal", input);
@@ -104,7 +104,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toDouble
+     *  $toDouble
      */
     public static Expression toDouble(Expression input) {
         return new Expression("$toDouble", input);
@@ -115,7 +115,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toInt
+     *  $toInt
      */
     public static Expression toInt(Expression input) {
         return new Expression("$toInt", input);
@@ -126,7 +126,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toLong
+     *  $toLong
      */
     public static Expression toLong(Expression input) {
         return new Expression("$toLong", input);
@@ -137,7 +137,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toObjectId
+     *  $toObjectId
      */
     public static Expression toObjectId(Expression input) {
         return new Expression("$toObjectId", input);
@@ -148,7 +148,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toString
+     *  $toString
      */
     public static Expression toString(Expression input) {
         return StringExpressions.toString(input);
@@ -159,7 +159,7 @@ public final class TypeExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $type
+     *  $type
      */
     public static Expression type(Expression input) {
         return new Expression("$type", input);

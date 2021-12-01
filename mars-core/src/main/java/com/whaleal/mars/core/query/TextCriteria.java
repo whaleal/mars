@@ -29,10 +29,10 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
-import com.whaleal.mars.util.StringUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -44,11 +44,11 @@ import java.util.List;
 public class TextCriteria implements CriteriaDefinition {
 
     private final List<Term> terms;
-    private final @Nullable
+    private final
     String language;
-    private @Nullable
+    private
     Boolean caseSensitive;
-    private @Nullable
+    private
     Boolean diacriticSensitive;
 
     /**
@@ -61,7 +61,7 @@ public class TextCriteria implements CriteriaDefinition {
         this(null);
     }
 
-    private TextCriteria(@Nullable String language) {
+    private TextCriteria( String language ) {
 
         this.language = language;
         this.terms = new ArrayList<>();
@@ -85,7 +85,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public static TextCriteria forLanguage(String language) {
 
-        Assert.hasText(language, "Language must not be null or empty!");
+        Precondition.hasText(language, "Language must not be null or empty!");
         return new TextCriteria(language);
     }
 
@@ -111,7 +111,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public TextCriteria matching(Term term) {
 
-        Assert.notNull(term, "Term to add must not be null.");
+        Precondition.notNull(term, "Term to add must not be null.");
 
         this.terms.add(term);
         return this;
@@ -123,7 +123,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public TextCriteria matching(String term) {
 
-        if (StringUtils.hasText(term)) {
+        if (StrUtil.hasText(term)) {
             matching(new Term(term));
         }
         return this;
@@ -135,7 +135,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public TextCriteria notMatching(String term) {
 
-        if (StringUtils.hasText(term)) {
+        if (StrUtil.hasText(term)) {
             matching(new Term(term, Term.Type.WORD).negate());
         }
         return this;
@@ -161,7 +161,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public TextCriteria notMatchingPhrase(String phrase) {
 
-        if (StringUtils.hasText(phrase)) {
+        if (StrUtil.hasText(phrase)) {
             matching(new Term(phrase, Term.Type.PHRASE).negate());
         }
         return this;
@@ -175,7 +175,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public TextCriteria matchingPhrase(String phrase) {
 
-        if (StringUtils.hasText(phrase)) {
+        if (StrUtil.hasText(phrase)) {
             matching(new Term(phrase, Term.Type.PHRASE));
         }
         return this;
@@ -217,7 +217,7 @@ public class TextCriteria implements CriteriaDefinition {
 
         Document document = new Document();
 
-        if (StringUtils.hasText(language)) {
+        if (StrUtil.hasText(language)) {
             document.put("$language", language);
         }
 
@@ -252,9 +252,9 @@ public class TextCriteria implements CriteriaDefinition {
 
         TextCriteria that = (TextCriteria) o;
 
-        return ObjectUtils.nullSafeEquals(terms, that.terms) && ObjectUtils.nullSafeEquals(language, that.language)
-                && ObjectUtils.nullSafeEquals(caseSensitive, that.caseSensitive)
-                && ObjectUtils.nullSafeEquals(diacriticSensitive, that.diacriticSensitive);
+        return ObjectUtil.nullSafeEquals(terms, that.terms) && ObjectUtil.nullSafeEquals(language, that.language)
+                && ObjectUtil.nullSafeEquals(caseSensitive, that.caseSensitive)
+                && ObjectUtil.nullSafeEquals(diacriticSensitive, that.diacriticSensitive);
     }
 
     /*
@@ -266,10 +266,10 @@ public class TextCriteria implements CriteriaDefinition {
 
         int result = 17;
 
-        result += ObjectUtils.nullSafeHashCode(terms);
-        result += ObjectUtils.nullSafeHashCode(language);
-        result += ObjectUtils.nullSafeHashCode(caseSensitive);
-        result += ObjectUtils.nullSafeHashCode(diacriticSensitive);
+        result += ObjectUtil.nullSafeHashCode(terms);
+        result += ObjectUtil.nullSafeHashCode(language);
+        result += ObjectUtil.nullSafeHashCode(caseSensitive);
+        result += ObjectUtil.nullSafeHashCode(diacriticSensitive);
 
         return result;
     }
@@ -284,6 +284,6 @@ public class TextCriteria implements CriteriaDefinition {
             }
         }
 
-        return StringUtils.collectionToDelimitedString(result, " ");
+        return StrUtil.collectionToDelimitedString(result, " ");
     }
 }

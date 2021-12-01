@@ -2,7 +2,6 @@ package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.base.SerializationUtil;
 import com.whaleal.mars.bean.*;
-import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
@@ -12,7 +11,7 @@ import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;

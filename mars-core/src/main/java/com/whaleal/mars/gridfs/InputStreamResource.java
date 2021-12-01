@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,8 +59,8 @@ public class InputStreamResource extends AbstractResource {
      * @param inputStream the InputStream to use
      * @param description where the InputStream comes from
      */
-    public InputStreamResource(InputStream inputStream, @Nullable String description) {
-        Assert.notNull(inputStream, "InputStream must not be null");
+    public InputStreamResource( InputStream inputStream, String description ) {
+        Precondition.notNull(inputStream, "InputStream must not be null");
         this.inputStream = inputStream;
         this.description = (description != null ? description : "");
     }
@@ -110,7 +110,7 @@ public class InputStreamResource extends AbstractResource {
      * This implementation compares the underlying InputStream.
      */
     @Override
-    public boolean equals(@Nullable Object other) {
+    public boolean equals( Object other ) {
         return (this == other || (other instanceof InputStreamResource &&
                 ((InputStreamResource) other).inputStream.equals(this.inputStream)));
     }

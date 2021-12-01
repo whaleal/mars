@@ -35,16 +35,15 @@ package com.whaleal.mars.core.query;
 //
 
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
+import com.whaleal.icefrog.core.lang.Precondition;
 
 @FunctionalInterface
 public interface Converter<S, T> {
-    @Nullable
+
     T convert(S var1);
 
     default <U> Converter<S, U> andThen(Converter<? super T, ? extends U> after) {
-        Assert.notNull(after, "After Converter must not be null");
+        Precondition.notNull(after, "After Converter must not be null");
         return (s) -> {
             T initialResult = this.convert(s);
             return initialResult != null ? after.convert(initialResult) : null;

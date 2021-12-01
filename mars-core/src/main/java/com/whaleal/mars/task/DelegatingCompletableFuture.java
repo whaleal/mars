@@ -29,7 +29,8 @@
  */
 package com.whaleal.mars.task;
 
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -41,7 +42,7 @@ class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
 
 
     public DelegatingCompletableFuture(Future<T> delegate) {
-        Assert.notNull(delegate, "Delegate must not be null");
+        Precondition.notNull(delegate, "Delegate must not be null");
         this.delegate = delegate;
     }
 

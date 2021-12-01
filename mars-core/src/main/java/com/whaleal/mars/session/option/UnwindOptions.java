@@ -31,7 +31,7 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -53,17 +53,17 @@ public class UnwindOptions implements ReadConfigurable<UnwindOptions> {
         this.originUnwindOptions = originUnwindOptions;
     }
 
-    @Nullable
+    
     public String getIncludeArrayIndex() {
         return originUnwindOptions.getIncludeArrayIndex();
     }
 
-    public UnwindOptions preserveNullAndEmptyArrays(@Nullable Boolean preserveNullAndEmptyArrays) {
+    public UnwindOptions preserveNullAndEmptyArrays( Boolean preserveNullAndEmptyArrays) {
         originUnwindOptions.preserveNullAndEmptyArrays(preserveNullAndEmptyArrays);
         return this;
     }
 
-    public UnwindOptions includeArrayIndex(@Nullable String arrayIndexFieldName) {
+    public UnwindOptions includeArrayIndex( String arrayIndexFieldName) {
         originUnwindOptions.includeArrayIndex(arrayIndexFieldName);
         return this;
     }

@@ -37,8 +37,8 @@ import static java.util.Arrays.asList;
 
 /**
  * Defines helper methods for the array expressions
- *
- * @aggregation.expression Expressions
+ * <p>
+ * Expressions
  */
 public final class ArrayExpressions {
     private ArrayExpressions() {
@@ -60,7 +60,7 @@ public final class ArrayExpressions {
      *
      * @param array the array to use
      * @return the new expression
-     * @aggregation.expression $arrayToObject
+     *  $arrayToObject
      */
     public static Expression arrayToObject(Expression array) {
         return new Expression("$arrayToObject", array);
@@ -72,7 +72,7 @@ public final class ArrayExpressions {
      * @param array      the array to use
      * @param additional any additional arrays to concatenate
      * @return the new expression
-     * @aggregation.expression $concatArrays
+     *  $concatArrays
      */
     public static Expression concatArrays(Expression array, Expression additional) {
         return new Expression("$concatArrays", asList(array, additional));
@@ -84,7 +84,7 @@ public final class ArrayExpressions {
      * @param array the array to use
      * @param index the index to return
      * @return the new expression
-     * @aggregation.expression $arrayElemAt
+     *  $arrayElemAt
      */
     public static Expression elementAt(Expression array, Expression index) {
         return new Expression("$arrayElemAt", Arrays.asList(array, index));
@@ -96,7 +96,7 @@ public final class ArrayExpressions {
      * @param array       the array to use
      * @param conditional the conditional to use for filtering
      * @return the new expression
-     * @aggregation.expression $filter
+     *  $filter
      */
     public static ArrayFilterExpression filter(Expression array, Expression conditional) {
         return new ArrayFilterExpression(array, conditional);
@@ -108,7 +108,7 @@ public final class ArrayExpressions {
      * @param search the expression to search for
      * @param array  the array to use
      * @return the new expression
-     * @aggregation.expression $in
+     *  $in
      */
     public static Expression in(Expression search, Expression array) {
         return new Expression("$in", Arrays.asList(search, array));
@@ -121,7 +121,7 @@ public final class ArrayExpressions {
      * @param array  the array to use
      * @param search the expression to search for
      * @return the new expression
-     * @aggregation.expression $indexOfArray
+     *  $indexOfArray
      */
     public static Expression indexOfArray(Expression array, Expression search) {
         return new ArrayIndexExpression(array, search);
@@ -132,7 +132,7 @@ public final class ArrayExpressions {
      *
      * @param array the array to use
      * @return the new expression
-     * @aggregation.expression $isArray
+     *  $isArray
      */
     public static Expression isArray(Expression array) {
         return new Expression("$isArray", Arrays.asList(array));
@@ -144,7 +144,7 @@ public final class ArrayExpressions {
      * @param input the array to use
      * @param in    An expression that is applied to each element of the input array.
      * @return the new expression
-     * @aggregation.expression $map
+     *  $map
      */
     public static MapExpression map(Expression input, Expression in) {
         return new MapExpression(input, in);
@@ -155,7 +155,7 @@ public final class ArrayExpressions {
      *
      * @param array the array to use
      * @return the new expression
-     * @aggregation.expression $objectToArray
+     *  $objectToArray
      */
     public static Expression objectToArray(Expression array) {
         return new Expression("$objectToArray", array);
@@ -167,7 +167,7 @@ public final class ArrayExpressions {
      * @param start the starting value
      * @param end   the ending value
      * @return the new expression
-     * @aggregation.expression $range
+     *  $range
      */
     public static RangeExpression range(int start, int end) {
         return new RangeExpression(start, end);
@@ -180,7 +180,7 @@ public final class ArrayExpressions {
      * @param initial The initial cumulative value set before in is applied to the first element of the input array.
      * @param in      A valid expression that $reduce applies to each element in the input array in left-to-right order.
      * @return the new expression
-     * @aggregation.expression $reduce
+     *  $reduce
      */
     public static Expression reduce(Expression input, Expression initial, Expression in) {
         //return new ReduceExpression(input, initial, in);
@@ -192,7 +192,7 @@ public final class ArrayExpressions {
      *
      * @param array the array to use
      * @return the new expression
-     * @aggregation.expression $reverseArray
+     *  $reverseArray
      */
     public static Expression reverseArray(Expression array) {
         return new Expression("$reverseArray", array);
@@ -203,7 +203,7 @@ public final class ArrayExpressions {
      *
      * @param array the array to use
      * @return the new expression
-     * @aggregation.expression $size
+     *  $size
      */
     public static Expression size(Expression array) {
         return new Expression("$size", array);
@@ -215,7 +215,7 @@ public final class ArrayExpressions {
      * @param array the array to use
      * @param size  the number of elements to return
      * @return the new expression
-     * @aggregation.expression $slice
+     *  $slice
      */
     public static Expression slice(Expression array, int size) {
         return new SliceExpression(array, size);
@@ -226,7 +226,7 @@ public final class ArrayExpressions {
      *
      * @param arrays the arrays to use
      * @return the new expression
-     * @aggregation.expression $zip
+     *  $zip
      */
     public static ZipExpression zip(Expression... arrays) {
         return new ZipExpression(asList(arrays));

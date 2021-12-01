@@ -49,7 +49,7 @@ public final class BooleanExpressions {
      * @param first      the first expression
      * @param additional any additional expressions
      * @return the new expression
-     * @aggregation.expression $and
+     *  $and
      */
     public static Expression and(Expression first, Expression... additional) {
         return new Expression("$and", Expressions.toList(first, additional));
@@ -61,7 +61,7 @@ public final class BooleanExpressions {
      *
      * @param value the expression
      * @return the new expression
-     * @aggregation.expression $not
+     *  $not
      */
     public static Expression not(Expression value) {
         return new Expression("$not", Arrays.asList(value));
@@ -73,7 +73,7 @@ public final class BooleanExpressions {
      * @param first      the first expression
      * @param additional any additional expressions
      * @return the new expression
-     * @aggregation.expression $or
+     *  $or
      */
     public static Expression or(Expression first, Expression... additional) {
         return new Expression("$or", Expressions.toList(first, additional));

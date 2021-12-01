@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.aggregation.expressions;
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.filters.Filter;
@@ -47,7 +47,7 @@ public final class Miscellaneous {
      * Returns a random float between 0 and 1.
      *
      * @return the filter
-     * @aggregation.expression $rand
+     *  $rand
      */
     public static Expression rand() {
         return new Expression("$rand") {
@@ -67,7 +67,7 @@ public final class Miscellaneous {
      *
      * @param rate the rate to check against
      * @return the filter
-     * @aggregation.expression $sampleRate
+     *  $sampleRate
      */
     public static Filter sampleRate(double rate) {
         return new Filter("$sampleRate", null, rate) {

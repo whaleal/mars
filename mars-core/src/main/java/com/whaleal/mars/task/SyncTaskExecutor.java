@@ -29,7 +29,9 @@
  */
 package com.whaleal.mars.task;
 
-import com.whaleal.mars.util.Assert;
+
+
+import com.whaleal.icefrog.core.lang.Precondition;
 
 import java.io.Serializable;
 
@@ -59,7 +61,7 @@ public class SyncTaskExecutor implements TaskExecutor, Serializable {
      */
     @Override
     public void execute(Runnable task) {
-        Assert.notNull(task, "Runnable must not be null");
+        Precondition.notNull(task, "Runnable must not be null");
         task.run();
     }
 

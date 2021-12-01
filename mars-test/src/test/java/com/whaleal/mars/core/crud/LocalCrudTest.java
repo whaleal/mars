@@ -5,7 +5,7 @@ import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.EntityGenerater;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;

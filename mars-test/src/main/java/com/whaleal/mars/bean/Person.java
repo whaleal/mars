@@ -29,11 +29,10 @@
  */
 package com.whaleal.mars.bean;
 
-import com.whaleal.mars.bson.codecs.pojo.StorageType;
-import com.whaleal.mars.bson.codecs.pojo.annotations.CappedAt;
-import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoProperty;
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoId;
+import com.whaleal.mars.codecs.pojo.StorageType;
+import com.whaleal.mars.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.annotations.MongoId;
 
 import java.time.LocalDate;
 

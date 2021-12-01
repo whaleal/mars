@@ -32,7 +32,6 @@ package com.whaleal.mars.session.option;
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -56,23 +55,23 @@ public class CountOptions implements ReadConfigurable<CountOptions> {
         this.originCountOptions = originCountOptions;
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originCountOptions.getCollation();
     }
 
-    @Nullable
+
     public int getLimit() {
         return originCountOptions.getLimit();
     }
 
-    @Nullable
+
     public long getMaxTime(TimeUnit timeUnit) {
         //这里获取最大Time，默认时间单位是MILLISECONDS
         return originCountOptions.getMaxTime(timeUnit);
     }
 
-    @Nullable
+
     public int getSkip() {
         return originCountOptions.getSkip();
     }

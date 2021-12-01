@@ -1,17 +1,19 @@
 package com.whaleal.mars.monitor;
 
 
-import static org.assertj.core.api.Assertions.*;
+
 
 import java.net.UnknownHostException;
 
 import com.mongodb.client.MongoClients;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 
 import com.mongodb.client.MongoClient;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This test class assumes that you are already running the MongoDB server.

@@ -3,7 +3,7 @@ package com.whaleal.mars.core;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Test;
 
 import java.util.Collection;

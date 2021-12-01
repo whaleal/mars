@@ -29,11 +29,12 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
-import com.whaleal.mars.util.StringUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.util.SerializationUtils;
 import org.bson.Document;
 
 import java.util.*;
@@ -55,7 +56,7 @@ public class Update implements UpdateDefinition {
      * @param key the field to update.
      * @return new instance of {@link Update}.
      */
-    public static Update update(String key, @Nullable Object value) {
+    public static Update update( String key, Object value ) {
         return new Update().set(key, value);
     }
 
@@ -100,7 +101,7 @@ public class Update implements UpdateDefinition {
      * @return {@literal true} if given key is prefixed.
      */
     private static boolean isKeyword(String key) {
-        return StringUtils.startsWithIgnoreCase(key, "$");
+        return StrUtil.startsWithIgnoreCase(key, "$");
     }
 
     /**
@@ -112,7 +113,7 @@ public class Update implements UpdateDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/update/set/">MongoDB Update operator: $set</a>
      */
-    public Update set(String key, @Nullable Object value) {
+    public Update set( String key, Object value ) {
         addMultiFieldOperation("$set", key, value);
         return this;
     }
@@ -126,7 +127,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/setOnInsert/">MongoDB Update operator:
      * $setOnInsert</a>
      */
-    public Update setOnInsert(String key, @Nullable Object value) {
+    public Update setOnInsert( String key, Object value ) {
         addMultiFieldOperation("$setOnInsert", key, value);
         return this;
     }
@@ -170,7 +171,7 @@ public class Update implements UpdateDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/push/">MongoDB Update operator: $push</a>
      */
-    public Update push(String key, @Nullable Object value) {
+    public Update push( String key, Object value ) {
         addMultiFieldOperation("$push", key, value);
         return this;
     }
@@ -232,7 +233,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/addToSet/">MongoDB Update operator:
      * $addToSet</a>
      */
-    public Update addToSet(String key, @Nullable Object value) {
+    public Update addToSet( String key, Object value ) {
         addMultiFieldOperation("$addToSet", key, value);
         return this;
     }
@@ -258,7 +259,7 @@ public class Update implements UpdateDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/pull/">MongoDB Update operator: $pull</a>
      */
-    public Update pull(String key, @Nullable Object value) {
+    public Update pull( String key, Object value ) {
         addMultiFieldOperation("$pull", key, value);
         return this;
     }
@@ -329,7 +330,7 @@ public class Update implements UpdateDefinition {
      */
     public Update multiply(String key, Number multiplier) {
 
-        Assert.notNull(multiplier, "Multiplier must not be null.");
+        Precondition.notNull(multiplier, "Multiplier must not be null.");
         addMultiFieldOperation("$mul", key, multiplier.doubleValue());
         return this;
     }
@@ -345,7 +346,7 @@ public class Update implements UpdateDefinition {
      */
     public Update max(String key, Object value) {
 
-        Assert.notNull(value, "Value for max operation must not be null.");
+        Precondition.notNull(value, "Value for max operation must not be null.");
         addMultiFieldOperation("$max", key, value);
         return this;
     }
@@ -361,7 +362,7 @@ public class Update implements UpdateDefinition {
      */
     public Update min(String key, Object value) {
 
-        Assert.notNull(value, "Value for min operation must not be null.");
+        Precondition.notNull(value, "Value for min operation must not be null.");
         addMultiFieldOperation("$min", key, value);
         return this;
     }
@@ -441,15 +442,15 @@ public class Update implements UpdateDefinition {
     @Deprecated
     protected void addFieldOperation(String operator, String key, Object value) {
 
-        Assert.hasText(key, "Key/Path for update must not be null or blank.");
+        Precondition.hasText(key, "Key/Path for update must not be null or blank.");
 
         modifierOps.put(operator, new Document(key, value));
         this.keysToUpdate.add(key);
     }
 
-    protected void addMultiFieldOperation(String operator, String key, @Nullable Object value) {
+    protected void addMultiFieldOperation( String operator, String key, Object value ) {
 
-        Assert.hasText(key, "Key/Path for update must not be null or blank.");
+        Precondition.hasText(key, "Key/Path for update must not be null or blank.");
         Object existingValue = this.modifierOps.get(operator);
         Document keyValueMap;
 
@@ -626,7 +627,7 @@ public class Update implements UpdateDefinition {
          */
         @Override
         public int hashCode() {
-            return ObjectUtils.nullSafeHashCode(getKey()) + ObjectUtils.nullSafeHashCode(getValue());
+            return ObjectUtil.nullSafeHashCode(getKey()) + ObjectUtil.nullSafeHashCode(getValue());
         }
 
         /*
@@ -756,7 +757,7 @@ public class Update implements UpdateDefinition {
          */
         SortModifier(Sort.Direction direction) {
 
-            Assert.notNull(direction, "Direction must not be null!");
+            Precondition.notNull(direction, "Direction must not be null!");
             this.sort = direction.isAscending() ? 1 : -1;
         }
 
@@ -767,7 +768,7 @@ public class Update implements UpdateDefinition {
          */
         SortModifier(Sort sort) {
 
-            Assert.notNull(sort, "Sort must not be null!");
+            Precondition.notNull(sort, "Sort must not be null!");
 
             for (Sort.Order order : sort) {
 
@@ -807,8 +808,8 @@ public class Update implements UpdateDefinition {
          */
         protected BitwiseOperatorBuilder(Update reference, String key) {
 
-            Assert.notNull(reference, "Reference must not be null!");
-            Assert.notNull(key, "Key must not be null!");
+            Precondition.notNull(reference, "Reference must not be null!");
+            Precondition.notNull(key, "Key must not be null!");
 
             this.reference = reference;
             this.key = key;
@@ -917,7 +918,7 @@ public class Update implements UpdateDefinition {
          */
         public PushOperatorBuilder sort(Sort.Direction direction) {
 
-            Assert.notNull(direction, "Direction must not be null.");
+            Precondition.notNull(direction, "Direction must not be null.");
             this.modifiers.addModifier(new SortModifier(direction));
             return this;
         }
@@ -931,7 +932,7 @@ public class Update implements UpdateDefinition {
          */
         public PushOperatorBuilder sort(Sort sort) {
 
-            Assert.notNull(sort, "Sort must not be null.");
+            Precondition.notNull(sort, "Sort must not be null.");
             this.modifiers.addModifier(new SortModifier(sort));
             return this;
         }
@@ -955,7 +956,7 @@ public class Update implements UpdateDefinition {
          * @param position can be {@literal null} which will be appended at the last position.
          * @return never {@literal null}.
          */
-        public PushOperatorBuilder atPosition(@Nullable Position position) {
+        public PushOperatorBuilder atPosition( Position position ) {
 
             if (position == null || Position.LAST.equals(position)) {
                 return this;

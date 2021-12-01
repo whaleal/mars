@@ -31,7 +31,6 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 /**
@@ -54,33 +53,33 @@ public class GraphLookupOptions implements ReadConfigurable<GraphLookupOptions> 
         this.originGraphLookupOptions = originGraphLookupOptions;
     }
 
-    @Nullable
+
     public String getDepthField() {
         return originGraphLookupOptions.getDepthField();
     }
 
-    @Nullable
+
     public Integer getMaxDepth() {
         return originGraphLookupOptions.getMaxDepth();
     }
 
-    @Nullable
+
     public Bson getRestrictSearchWithMatch() {
         return originGraphLookupOptions.getRestrictSearchWithMatch();
     }
 
 
-    public GraphLookupOptions depthField(@Nullable String field) {
+    public GraphLookupOptions depthField( String field ) {
         originGraphLookupOptions.depthField(field);
         return this;
     }
 
-    public GraphLookupOptions maxDepth(@Nullable Integer max) {
+    public GraphLookupOptions maxDepth( Integer max ) {
         originGraphLookupOptions.maxDepth(max);
         return this;
     }
 
-    public GraphLookupOptions restrictSearchWithMatch(@Nullable Bson filter) {
+    public GraphLookupOptions restrictSearchWithMatch( Bson filter ) {
         originGraphLookupOptions.restrictSearchWithMatch(filter);
         return this;
     }

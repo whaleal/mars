@@ -2,7 +2,7 @@ package com.whaleal.mars.base;
 
 import com.whaleal.mars.bean.Student;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;

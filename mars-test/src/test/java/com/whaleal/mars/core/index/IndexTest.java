@@ -3,7 +3,7 @@ package com.whaleal.mars.core.index;
 
 import com.whaleal.mars.bean.Student;
 import org.bson.Document;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.whaleal.mars.core.Mars;

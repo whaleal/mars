@@ -36,13 +36,12 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.FullDocument;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.util.ClassUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.Aggregation;
 import com.whaleal.mars.session.option.AggregationOptions;
-import com.whaleal.mars.util.ClassUtils;
 import com.whaleal.mars.util.ErrorHandler;
-import com.whaleal.mars.util.StringUtils;
 import org.bson.BsonDocument;
 import org.bson.BsonTimestamp;
 import org.bson.BsonValue;
@@ -71,7 +70,7 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
         List<Document> filter = Collections.emptyList();
         BsonDocument resumeToken = new BsonDocument();
         Collation collation = null;
-        FullDocument fullDocument = ClassUtils.isAssignable(Document.class, targetType) ? FullDocument.DEFAULT
+        FullDocument fullDocument = ClassUtil.isAssignable(Document.class, targetType) ? FullDocument.DEFAULT
                 : FullDocument.UPDATE_LOOKUP;
         BsonTimestamp startAt = null;
         boolean resumeAfter = true;
@@ -96,19 +95,19 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
             }
 
             fullDocument = changeStreamOptions.getFullDocumentLookup()
-                    .orElseGet(() -> ClassUtils.isAssignable(Document.class, targetType) ? FullDocument.DEFAULT
+                    .orElseGet(() -> ClassUtil.isAssignable(Document.class, targetType) ? FullDocument.DEFAULT
                             : FullDocument.UPDATE_LOOKUP);
 
             startAt = changeStreamOptions.getResumeBsonTimestamp().orElse(null);
         }
 
-        MongoDatabase db = StringUtils.hasText(options.getDatabaseName())
+        MongoDatabase db = StrUtil.hasText(options.getDatabaseName())
                 ? mars.getMongoClient().getDatabase(options.getDatabaseName())
                 : mars.getDatabase();
 
         ChangeStreamIterable<Document> iterable;
 
-        if (StringUtils.hasText(options.getCollectionName())) {
+        if (StrUtil.hasText(options.getCollectionName())) {
             iterable = filter.isEmpty() ? db.getCollection(options.getCollectionName()).watch(Document.class)
                     : db.getCollection(options.getCollectionName()).watch(filter, Document.class);
 
@@ -185,8 +184,8 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
 
     MongoNamespace createNamespaceFromOptions(SubscriptionRequest.RequestOptions options) {
 
-        String collectionName = StringUtils.hasText(options.getCollectionName()) ? options.getCollectionName() : "unknown";
-        String databaseName = StringUtils.hasText(options.getDatabaseName()) ? options.getDatabaseName() : "unknown";
+        String collectionName = StrUtil.hasText(options.getCollectionName()) ? options.getCollectionName() : "unknown";
+        String databaseName = StrUtil.hasText(options.getDatabaseName()) ? options.getDatabaseName() : "unknown";
 
         return new MongoNamespace(databaseName, collectionName);
     }
@@ -205,14 +204,12 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
         }
 
 
-        @Nullable
         @Override
         public ChangeStreamDocument<Document> getRaw() {
             return delegate.getRaw();
         }
 
 
-        @Nullable
         @Override
         public T getBody() {
             return delegate.getBody();
@@ -228,7 +225,7 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
          * @return the resume token or {@literal null} if not set.
          * @see ChangeStreamEvent#getResumeToken()
          */
-        @Nullable
+
         BsonValue getResumeToken() {
             return delegate.getResumeToken();
         }
@@ -237,7 +234,7 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
          * @return the cluster time of the event or {@literal null}.
          * @see ChangeStreamEvent#getTimestamp()
          */
-        @Nullable
+
         Instant getTimestamp() {
             return delegate.getTimestamp();
         }

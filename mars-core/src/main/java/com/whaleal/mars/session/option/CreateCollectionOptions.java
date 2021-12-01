@@ -33,7 +33,6 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.IndexOptionDefaults;
 import com.mongodb.client.model.ValidationOptions;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 /**
@@ -54,32 +53,32 @@ public class CreateCollectionOptions implements WriteConfigurable<CreateCollecti
         this.originCreateCollectionOptions = originCreateCollectionOptions;
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originCreateCollectionOptions.getCollation();
     }
 
-    @Nullable
+
     public long getMaxDocuments() {
         return originCreateCollectionOptions.getMaxDocuments();
     }
 
-    @Nullable
+
     public ValidationOptions getValidationOptions() {
         return originCreateCollectionOptions.getValidationOptions();
     }
 
-    @Nullable
+
     public IndexOptionDefaults getIndexOptionDefaults() {
         return originCreateCollectionOptions.getIndexOptionDefaults();
     }
 
-    @Nullable
+
     public long getSizeInBytes() {
         return originCreateCollectionOptions.getSizeInBytes();
     }
 
-    @Nullable
+
     public Bson getStorageEngineOptions() {
         return originCreateCollectionOptions.getStorageEngineOptions();
     }

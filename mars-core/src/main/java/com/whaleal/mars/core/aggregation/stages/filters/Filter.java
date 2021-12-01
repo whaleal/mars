@@ -29,11 +29,11 @@
  */
 package com.whaleal.mars.core.aggregation.stages.filters;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.bson.codecs.pojo.PropertyModel;
+
+import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.pojo.PropertyModel;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.internal.PathTarget;
+import com.whaleal.mars.core.internal.PathTarget;
 import org.bson.BsonWriter;
 import org.bson.Document;
 import org.bson.codecs.Codec;
@@ -48,7 +48,7 @@ import static java.lang.String.format;
 public class Filter {
     private final String name;
     private String field;
-    @Nullable
+
     private Object value;
     private boolean not;
     private boolean validate;
@@ -60,7 +60,7 @@ public class Filter {
         this.name = name;
     }
 
-    protected Filter(String name, @Nullable String field, @Nullable Object value) {
+    protected Filter( String name, String field, Object value ) {
         this.name = name;
         this.field = field != null ? field : "";
         this.value = value;
@@ -108,7 +108,7 @@ public class Filter {
     /**
      * @return the filter field
      */
-    @Nullable
+
     public String getField() {
         return field;
     }
@@ -127,7 +127,7 @@ public class Filter {
     /**
      * @return the filter name
      */
-    @Nullable
+
     public String getName() {
         return name;
     }
@@ -135,7 +135,7 @@ public class Filter {
     /**
      * @return the filter value
      */
-    @Nullable
+
     public Object getValue() {
         return value;
     }
@@ -153,7 +153,7 @@ public class Filter {
         return this;
     }
 
-    @Nullable
+
     protected Object getValue(MongoMappingContext mapper) {
         if (!mapped) {
             PathTarget target = pathTarget(mapper);
@@ -185,8 +185,8 @@ public class Filter {
         return pathTarget;
     }
 
-    protected void writeNamedValue(@Nullable String name, @Nullable Object named, MongoMappingContext mapper, BsonWriter writer,
-                                   EncoderContext encoderContext) {
+    protected void writeNamedValue( String name, Object named, MongoMappingContext mapper, BsonWriter writer,
+                                    EncoderContext encoderContext ) {
         writer.writeName(name);
         if (named != null) {
             Codec codec = mapper.getCodecRegistry().get(named.getClass());
@@ -196,7 +196,7 @@ public class Filter {
         }
     }
 
-    protected void writeUnnamedValue(@Nullable Object value, MongoMappingContext mapper, BsonWriter writer, EncoderContext encoderContext) {
+    protected void writeUnnamedValue( Object value, MongoMappingContext mapper, BsonWriter writer, EncoderContext encoderContext ) {
         if (value != null) {
             Codec codec = mapper.getCodecRegistry().get(value.getClass());
             encoderContext.encodeWithChildContext(codec, writer, value);

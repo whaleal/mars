@@ -29,10 +29,10 @@
  */
 package com.whaleal.mars.core.validation;
 
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.core.query.CriteriaDefinition;
-import com.whaleal.mars.core.query.SerializationUtils;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtils;
+import com.whaleal.mars.util.SerializationUtils;
 import org.bson.Document;
 
 /**
@@ -56,7 +56,7 @@ class CriteriaValidator implements Validator {
      */
     static CriteriaValidator of(CriteriaDefinition criteria) {
 
-        Assert.notNull(criteria, "Criteria must not be null!");
+        Precondition.notNull(criteria, "Criteria must not be null!");
 
         return new CriteriaValidator(criteria);
     }
@@ -85,11 +85,11 @@ class CriteriaValidator implements Validator {
 
         CriteriaValidator that = (CriteriaValidator) o;
 
-        return ObjectUtils.nullSafeEquals(criteria, that.criteria);
+        return ObjectUtil.nullSafeEquals(criteria, that.criteria);
     }
 
     @Override
     public int hashCode() {
-        return ObjectUtils.nullSafeHashCode(criteria);
+        return ObjectUtil.nullSafeHashCode(criteria);
     }
 }
