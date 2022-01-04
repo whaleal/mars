@@ -20,6 +20,9 @@
 	<strong>Mars - Object Relational Mapping Framework for NoSql (ORM)</strong>
 </p>
 <p align="center">
+	<strong>Mars - Object Document Mapping Framework for NoSql (ORM)</strong>
+</p>
+<p align="center">
 	👉 <a href="https://whaleal.com">https://whaleal.com/</a> 👈
 </p>
 
@@ -68,7 +71,7 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 -------------------------------------------------------------------------------
 
 ## 🛠️包含组件
-一个Java基础工具类，对文件、流、加密解密、转码、正则、线程、XML等JDK方法进行封装，组成各种Util工具类，同时提供以下组件：
+一个MongoDB java  ORM/ODM 框架，同时提供以下组件：
 
 | 模块                |     介绍                                                                          |
 | -------------------|---------------------------------------------------------------------------------- |
@@ -97,13 +100,13 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-core</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
 ### 🍐Gradle
 ```
-implementation 'com.whaleal.mars:mars-core:0.3.0'
+implementation 'com.whaleal.mars:mars-core:0.4.0'
 ```
 
 ### 📥下载jar

@@ -1,5 +1,7 @@
 # Compiled class file
 *.class
+# Java DOC
+*.html
 
 # Log file
 *.log

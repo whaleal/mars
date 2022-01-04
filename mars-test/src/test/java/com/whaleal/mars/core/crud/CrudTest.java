@@ -85,13 +85,16 @@ public class CrudTest {
 
        Student student = StudentGenerator.getInstance(stuNo);
 
+        mars.dropCollection(Student.class);
         mars.insert(student);
+        mars.dropCollection(Student.class);
 
     }
 
     @Test
     public void insertMany() {
         System.out.println("getTime: " +System.currentTimeMillis());
+        mars.dropCollection(Student.class);
         mars.insert(student);
         System.out.println("endTime: " +System.currentTimeMillis());
     }

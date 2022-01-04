@@ -42,10 +42,10 @@ public class MarsAggregationTest {
 
 
     @Test
-    public void testAggPtoject(){
+    public void testAggProject(){
 
         AggregationPipeline  pipeline = new AggregationPipeline();
-        pipeline.project(Projection.of().exclude("stuName"));
+        pipeline.project(Projection.of().exclude("_id").include("stuAge").include("classNo"));
         QueryCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
 
         while (aggregate.hasNext()){
@@ -59,7 +59,7 @@ public class MarsAggregationTest {
         AggregationPipeline  pipeline = new AggregationPipeline();
         pipeline.group(Group.of(id("stuName"))
                 .field("counter", sum(field("age"))));
-        QueryCursor<Document> aggregate = mars.aggregate(pipeline, Document.class);
+        QueryCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
 
 
         while (aggregate.hasNext()){
