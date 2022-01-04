@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.whaleal.mars</groupId>
         <artifactId>mars</artifactId>
-        <version>0.3.0</version>
+        <version>0.4.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,12 +17,6 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>com.whaleal.mars</groupId>
-            <artifactId>mars-core</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.whaleal.mars</groupId>
