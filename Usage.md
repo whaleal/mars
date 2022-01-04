@@ -13,7 +13,7 @@
 > 我们希望 `Mars` 框架将来可以整合多个数据库，对不同的数据平台提供统一的驱动操作。让用户能够达到只用Mars就可以对多种不同类型数据库进行操作
 
 ##  版本信息 
-目前已发布至 0.1.2  
+目前已发布至 0.4.0
 请修改相关pom  文件 
 
 
@@ -88,13 +88,15 @@ Mars mars = new Mars("mongodb://root:123456@server100:37017,server100:37018,serv
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-springboot</artifactId>
-    <version>0.1.2</version>
+    <version>0.4.0</version>
 </dependency>
+```
 
+```xml
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-core</artifactId>
-    <version>0.1.2</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
