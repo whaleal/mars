@@ -37,7 +37,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableAspectJAutoProxy
 @EnableScheduling
-@ComponentScan(basePackages = "com.whaleal.mars")
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
