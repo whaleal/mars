@@ -180,7 +180,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         T result = crudExecutor.execute(session, collection, query, null, null);
 
-        log.info("{} execute end", getClass() + ".delete()");
+        log.info("{} execute end", getClass() + ".findOne()");
         if (result == null) {
             return Optional.empty();
         }
@@ -615,12 +615,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         EntityModel entityModel = this.mapper.getEntityModel(type);
         String collName = this.mapper.determineCollectionName(entityModel, collectionName);
         MongoCollection<T> collection = this.database.getCollection(collName, type);
-
-
+        
         return  this.withConcern(collection , type);
-
-
-
 
     }
 

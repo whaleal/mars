@@ -49,20 +49,18 @@ import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
  */
 public class Query {
 
-    private static final String RESTRICTED_TYPES_KEY = "_$RESTRICTED_TYPES";
-
-    private final Set<Class<?>> restrictedTypes = new HashSet<>();
+    // 主要查询 criteria 可以拼接多个,这里是有序存储 。
     private final Map<String, CriteriaDefinition> criteria = new LinkedHashMap<>();
-    private
-    Projection projectionSpec = null;
+    // projection
+    private Projection projectionSpec = null;
+    // sorting
     private Sort sort = Sort.unsorted();
     private long skip;
     private int limit;
-    private
-    String hint;
+    private String hint;
 
     private Meta meta = new Meta();
-
+    // collation
     private Optional<Collation> collation = Optional.empty();
 
     public Query() {
@@ -130,26 +128,13 @@ public class Query {
         target.limit = source.getLimit();
         target.hint = source.getHint();
         target.collation = source.getCollation();
-        target.restrictedTypes.addAll(source.getRestrictedTypes());
+
 
         if (source.getMeta().hasValues()) {
             target.setMeta(new Meta(source.getMeta()));
         }
 
         return target;
-    }
-
-    /**
-     * Returns whether the given key is the one used to hold the type restriction information.
-     *
-     * @param key
-     * @return
-     * @deprecated don't call this method as the restricted type handling will undergo some significant changes going
-     * forward.
-     */
-    @Deprecated
-    public static boolean isRestrictedTypeKey(String key) {
-        return RESTRICTED_TYPES_KEY.equals(key);
     }
 
     /**
@@ -268,30 +253,7 @@ public class Query {
         return this;
     }
 
-    /**
-     * @return the restrictedTypes
-     */
-    public Set<Class<?>> getRestrictedTypes() {
-        return restrictedTypes;
-    }
 
-    /**
-     * Restricts the query to only return documents instances that are exactly of the given types.
-     *
-     * @param type            may not be {@literal null}
-     * @param additionalTypes may not be {@literal null}
-     * @return this.
-     */
-    public Query restrict(Class<?> type, Class<?>... additionalTypes) {
-
-        Precondition.notNull(type, "Type must not be null!");
-        Precondition.notNull(additionalTypes, "AdditionalTypes must not be null");
-
-        restrictedTypes.add(type);
-        restrictedTypes.addAll(Arrays.asList(additionalTypes));
-
-        return this;
-    }
 
     /**
      * @return the query {@link Document}.
@@ -302,10 +264,6 @@ public class Query {
 
         for (CriteriaDefinition definition : criteria.values()) {
             document.putAll(definition.getCriteriaObject());
-        }
-
-        if (!restrictedTypes.isEmpty()) {
-            document.put(RESTRICTED_TYPES_KEY, getRestrictedTypes());
         }
 
         return document;
@@ -455,19 +413,6 @@ public class Query {
         return this;
     }
 
-    /**
-     * Allows querying of a replica.
-     *
-     * @return this.
-     * @see Meta.CursorOption#SLAVE_OK
-     * @deprecated since 3.0.2, use {@link #allowSecondaryReads()}.
-     */
-    @Deprecated
-    public Query slaveOk() {
-
-        meta.addFlag(Meta.CursorOption.SLAVE_OK);
-        return this;
-    }
 
     /**
      * Allows querying of a replica.

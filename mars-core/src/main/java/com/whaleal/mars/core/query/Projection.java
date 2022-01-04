@@ -41,15 +41,29 @@ import java.util.Map.Entry;
 /**
  * Projection projection.
  *
+ * 对于包含数组的字段，MongoDB 提供了以下用于操作数组的投影运算符：$elemMatch、$slice 和 $。
+ * Name       ----------     Description
+ * $
+ * Projects the first element in an array that matches the query condition.
+ * $elemMatch
+ * Projects the first element in an array that matches the specified $elemMatch condition.
+ * $meta
+ * Projects the available per-document metadata.
+ * $slice
+ * Limits the number of elements projected from an array. Supports skip and limit slices.
+ *
  * 其实就是一个projection
  */
 public class Projection {
 
+    // 普通操作 用这 例如:{ item: 1, status: 1, "size.uom": 1 }
     private final Map<String, Integer> criteria = new HashMap<>();
+    //以下示例使用 $slice 投影运算符返回 instock 数组中的最后一个元素：
+    // { item: 1, status: 1, instock: { $slice: -1 } }
     private final Map<String, Object> slices = new HashMap<>();
+    //
     private final Map<String, Criteria> elemMatchs = new HashMap<>();
-    private
-    String positionKey;
+    private String positionKey;
     private int positionValue;
 
     /**
