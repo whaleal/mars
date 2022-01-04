@@ -52,13 +52,10 @@ public class Mars extends DatastoreImpl {
      * 这个是连接级别的写关注
      * 或者理解为 库级别的读写关注
      */
-    private
-    WriteConcern writeConcern;
-    private
-    ReadPreference readPreference;
+    private WriteConcern writeConcern;
+    private ReadPreference readPreference;
 
-    private
-    ReadConcern readConcern;
+    private ReadConcern readConcern;
 
 
     public Mars(String connectionString) {
@@ -81,14 +78,29 @@ public class Mars extends DatastoreImpl {
     }
 
 
-    public void setReadPreference( ReadPreference readPreference ) {
-        super.setReadPerference(readPreference);
-        this.readPreference = readPreference;
-    }
 
     @Override
     public void setReadConcern( ReadConcern readConcern ) {
         super.setReadConcern(readConcern);
         this.readConcern = readConcern;
+    }
+
+    @Override
+    public void setReadPreference( ReadPreference readPerference ) {
+        super.setReadPreference(readPerference);
+        this.readPreference = readPerference ;
+    }
+
+
+    public WriteConcern getWriteConcern() {
+        return writeConcern;
+    }
+
+    public ReadPreference getReadPreference() {
+        return readPreference;
+    }
+
+    public ReadConcern getReadConcern() {
+        return readConcern;
     }
 }
