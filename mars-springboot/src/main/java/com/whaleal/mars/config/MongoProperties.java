@@ -32,14 +32,12 @@ package com.whaleal.mars.config;
 import com.mongodb.ConnectionString;
 import org.bson.UuidRepresentation;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 /**
  * @author cx
  * @Date 2020/12/18
  */
-@Component
 @ConfigurationProperties(prefix = MongoProperties.MARS_PREFIX)
 public class MongoProperties {
 

@@ -35,6 +35,7 @@ import com.mongodb.client.MongoClients;
 import com.whaleal.mars.core.Mars;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author cx
@@ -43,7 +44,7 @@ import org.springframework.context.annotation.Bean;
  * 原生的配置了许多Bean，涉及到mars的有
  *
  */
-
+@Configuration
 @EnableConfigurationProperties(MongoProperties.class)
 public class MarsConfiguration {
 
