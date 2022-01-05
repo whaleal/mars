@@ -53,7 +53,7 @@ import java.net.*;
  * object, which in turn allows one to obtain a {@code java.io.File} in the
  * file system through its {@code getFile()} method.
  */
-public abstract class ResourceUtils {
+public abstract class ResourceUtil {
 
     /**
      * Pseudo URL prefix for loading from the class path: "classpath:".

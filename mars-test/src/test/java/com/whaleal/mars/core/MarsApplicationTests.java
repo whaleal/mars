@@ -59,23 +59,6 @@ public class MarsApplicationTests {
 
     }
 
-    @Test
-    public void testCollectionName() {
-
-        String tableName = "marsTables";
-
-
-
-        //Assert.assertEquals(mars.determineCollectionName(Address.class, tableName), tableName);
-
-
-        //Assert.assertEquals(mars.determineCollectionName(Address.class,null),"data");
-
-        //Assert.assertEquals(mars.determineCollectionName(Address.class,null),"data");
-
-        //System.out.println(mars.determineCollectionName(Address.class, null));
-
-    }
 
     @Test
     public void testEnsureIndexes() {

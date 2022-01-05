@@ -27,42 +27,35 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-
-package com.whaleal.mars.codecs.geo;
-
-import org.bson.BsonReader;
-import org.bson.BsonWriter;
-import org.bson.codecs.Codec;
-import org.bson.codecs.DecoderContext;
-import org.bson.codecs.EncoderContext;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.locationtech.jts.geom.Geometry;
-
-import static com.whaleal.mars.codecs.geo.GeometryDecoderHelper.decodeGeometry;
-import static com.whaleal.mars.codecs.geo.GeometryEncoderHelper.encodeGeometry;
+package com.whaleal.mars.codecs.pojo.annotations;
 
 
-abstract class AbstractGeometryCodec<T extends Geometry> implements Codec<T> {
-    private final CodecRegistry registry;
-    private final Class<T> encoderClass;
 
-    AbstractGeometryCodec(final CodecRegistry registry, final Class<T> encoderClass) {
-        this.registry = registry;
-        this.encoderClass = encoderClass;
-    }
+import java.lang.annotation.*;
 
-    @Override
-    public void encode(final BsonWriter writer, final T value, final EncoderContext encoderContext) {
-        encodeGeometry(writer, value, encoderContext, registry);
-    }
+/**
+ *
+ * An annotation that configures a property.
+ *
+ * <p>Note: Requires the {@link org.bson.codecs.pojo.Conventions#ANNOTATION_CONVENTION}</p>
+ */
+@Documented
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Property {
 
-    @Override
-    public T decode(final BsonReader reader, final DecoderContext decoderContext) {
-        return decodeGeometry(reader, getEncoderClass());
-    }
+    /**
+     * 用于标识该类的引用
+     * 可以用于复杂的类型，如内嵌对象等 用于反序列化的对象，适合子类等情况
+     *
+     * @return the concrete class to instantiate.
+     */
+    Class<?> concreteClass() default Object.class;
 
-    @Override
-    public Class<T> getEncoderClass() {
-        return encoderClass;
-    }
+    /**
+     * 用于标记字段别名
+     *
+     * @return the field name to use in the document.  Defaults to the java field name.
+     */
+    String value() default "";
 }

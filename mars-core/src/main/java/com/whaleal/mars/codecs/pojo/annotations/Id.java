@@ -27,51 +27,28 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.codecs.geo;
+package com.whaleal.mars.codecs.pojo.annotations;
 
-import com.mongodb.client.model.geojson.CoordinateReferenceSystem;
-import com.mongodb.client.model.geojson.NamedCoordinateReferenceSystem;
-import org.bson.BsonReader;
-import org.bson.BsonWriter;
-import org.bson.codecs.Codec;
-import org.bson.codecs.DecoderContext;
-import org.bson.codecs.EncoderContext;
-import org.bson.codecs.configuration.CodecConfigurationException;
+import com.whaleal.mars.codecs.pojo.StorageType;
 
-
+import java.lang.annotation.*;
 
 /**
- * Codec for a GeoJson Coordinate Reference System of type name.
+ * An annotation that configures the property as the id property .
  *
- *
-
+ * @author wh
  */
-public class NamedCoordinateReferenceSystemCodec implements Codec<NamedCoordinateReferenceSystem> {
-    @Override
-    public void encode(final BsonWriter writer, final NamedCoordinateReferenceSystem value, final EncoderContext encoderContext) {
-        writer.writeStartDocument();
 
-        writer.writeString("type", value.getType().getTypeName());
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+public @interface Id {
 
-        writer.writeStartDocument("properties");
-        writer.writeString("name", value.getName());
-        writer.writeEndDocument();
-
-        writer.writeEndDocument();
-    }
-
-    @Override
-    public Class<NamedCoordinateReferenceSystem> getEncoderClass() {
-        return NamedCoordinateReferenceSystem.class;
-    }
-
-    @Override
-    public NamedCoordinateReferenceSystem decode(final BsonReader reader, final DecoderContext decoderContext) {
-        //CoordinateReferenceSystem crs = decodeCoordinateReferenceSystem(reader);
-        Object crs = null ;
-        if (crs == null || !(crs instanceof NamedCoordinateReferenceSystem)) {
-            throw new CodecConfigurationException("Invalid NamedCoordinateReferenceSystem.");
-        }
-        return (NamedCoordinateReferenceSystem) crs;
-    }
+    /**
+     * 用于标识该类的引用
+     * 可以用于复杂的类型，如内嵌对象等 用于反序列化的对象，适合子类等情况
+     *
+     * @return the concrete class to instantiate.
+     */
+    Class<?> concreteClass() default Object.class;
 }

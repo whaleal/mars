@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.codecs.pojo;
 
-import com.whaleal.mars.codecs.pojo.annotations.MongoId;
-import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
 import org.bson.codecs.configuration.CodecConfigurationException;
 
 import java.lang.annotation.Annotation;
@@ -47,7 +47,7 @@ final class CreatorExecutable<T> {
     private final Class<T> clazz;
     private final Constructor<T> constructor;
     private final Method method;
-    private final List<MongoProperty> properties = new ArrayList<MongoProperty>();
+    private final List< Property > properties = new ArrayList< Property >();
     private final Integer idPropertyIndex;
     private final List<Class<?>> parameterTypes = new ArrayList<Class<?>>();
     private final List<Type> parameterGenericTypes = new ArrayList<Type>();
@@ -78,12 +78,12 @@ final class CreatorExecutable<T> {
                 Annotation[] parameterAnnotation = parameterAnnotations[i];
 
                 for (Annotation annotation : parameterAnnotation) {
-                    if (annotation.annotationType().equals(MongoProperty.class)) {
-                        properties.add((MongoProperty) annotation);
+                    if (annotation.annotationType().equals(Property.class)) {
+                        properties.add((Property) annotation);
                         break;
                     }
 
-                    if (annotation.annotationType().equals(MongoId.class)) {
+                    if (annotation.annotationType().equals(Id.class)) {
                         properties.add(null);
                         idPropertyIndex = i;
                         break;
@@ -99,7 +99,7 @@ final class CreatorExecutable<T> {
         return clazz;
     }
 
-    List<MongoProperty> getProperties() {
+    List< Property > getProperties() {
         return properties;
     }
 

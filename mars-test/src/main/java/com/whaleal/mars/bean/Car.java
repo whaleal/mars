@@ -30,22 +30,22 @@
 package com.whaleal.mars.bean;
 
 
-import com.whaleal.mars.codecs.pojo.annotations.MongoId;
-import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Car {
-    @MongoId
+    @Id
     public String id;
-    @MongoProperty()
+    @Property()
     public Long carNum;
     public String model;
     public String size;
 
-    @MongoProperty(value = "weig")
+    @Property(value = "weig")
     public Double weight;
     public String out;
     public Address address;
@@ -73,7 +73,7 @@ public class Car {
         this.cc = cc;
     }
 
-    @MongoProperty("cName")
+    @Property("cName")
     private  String  cc ;
 
 

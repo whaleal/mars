@@ -22,15 +22,12 @@ import static com.whaleal.mars.core.aggregation.stages.Group.id;
 
 public class AggreationCodecTest {
 
-
-
-
     Mars mars   ;
 
 
     @Before
     public void init(){
-        mars = new Mars(Constant.server100);
+        mars = new Mars(Constant.connectingStr);
 
         Assert.assertNotNull(mars);
     }

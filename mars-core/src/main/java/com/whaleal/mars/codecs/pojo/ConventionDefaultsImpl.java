@@ -36,7 +36,6 @@ import org.bson.BsonType;
 import org.bson.codecs.configuration.CodecConfigurationException;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -49,9 +48,8 @@ import static java.lang.reflect.Modifier.isStatic;
 final class ConventionDefaultsImpl implements Convention {
     @Override
     public void apply(final EntityModelBuilder<?> entityModelBuilder) {
-        for (final Annotation annotation : entityModelBuilder.getAnnotations()) {
-            processClassAnnotation(entityModelBuilder, annotation);
-        }
+        processClassAnnotation(entityModelBuilder);
+
 
         for (PropertyModelBuilder<?> propertyModelBuilder : entityModelBuilder.getPropertyModelBuilders()) {
             processPropertyAnnotations(entityModelBuilder, propertyModelBuilder);
@@ -69,14 +67,14 @@ final class ConventionDefaultsImpl implements Convention {
     private <T> void processCreatorAnnotation(final EntityModelBuilder<T> entityModelBuilder) {
         Class<T> clazz = entityModelBuilder.getType();
         CreatorExecutable<T> creatorExecutable = null;
-        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+        for (java.lang.reflect.Constructor constructor : clazz.getDeclaredConstructors()) {
             if (isPublic(constructor.getModifiers()) && !constructor.isSynthetic()) {
                 for (Annotation annotation : constructor.getDeclaredAnnotations()) {
-                    if (annotation.annotationType().equals(MongoCreator.class)) {
+                    if (annotation.annotationType().equals(Constructor.class)) {
                         if (creatorExecutable != null) {
                             throw new CodecConfigurationException("Found multiple constructors annotated with @MongoCreator");
                         }
-                        creatorExecutable = new CreatorExecutable<T>(clazz, (Constructor<T>) constructor);
+                        creatorExecutable = new CreatorExecutable<T>(clazz, (java.lang.reflect.Constructor) constructor);
                     }
                 }
             }
@@ -88,7 +86,7 @@ final class ConventionDefaultsImpl implements Convention {
             for (Method method : bsonCreatorClass.getDeclaredMethods()) {
                 if (isStatic(method.getModifiers()) && !method.isSynthetic() && !method.isBridge()) {
                     for (Annotation annotation : method.getDeclaredAnnotations()) {
-                        if (annotation.annotationType().equals(MongoCreator.class)) {
+                        if (annotation.annotationType().equals(Constructor.class)) {
                             if (creatorExecutable != null) {
                                 throw new CodecConfigurationException("Found multiple constructors / methods annotated with @MongoCreator");
                             } else if (!bsonCreatorClass.isAssignableFrom(method.getReturnType())) {
@@ -107,7 +105,7 @@ final class ConventionDefaultsImpl implements Convention {
         }
 
         if (creatorExecutable != null) {
-            List<MongoProperty> properties = creatorExecutable.getProperties();
+            List< Property > properties = creatorExecutable.getProperties();
             List<Class<?>> parameterTypes = creatorExecutable.getParameterTypes();
             List<Type> parameterGenericTypes = creatorExecutable.getParameterGenericTypes();
 
@@ -124,14 +122,14 @@ final class ConventionDefaultsImpl implements Convention {
                 if (isIdProperty) {
                     propertyModelBuilder = entityModelBuilder.getProperty(entityModelBuilder.getIdPropertyName());
                 } else {
-                    MongoProperty mongoProperty = properties.get(i);
+                    Property property = properties.get(i);
 
                     // Find the property using write name and falls back to read name
                     for (PropertyModelBuilder<?> builder : entityModelBuilder.getPropertyModelBuilders()) {
-                        if (mongoProperty.value().equals(builder.getWriteName())) {
+                        if (property.value().equals(builder.getWriteName())) {
                             propertyModelBuilder = builder;
                             break;
-                        } else if (mongoProperty.value().equals(builder.getReadName())) {
+                        } else if (property.value().equals(builder.getReadName())) {
                             // When there is a property that matches the read name of the parameter, save it but continue to look
                             // This is just in case there is another property that matches the write name.
                             propertyModelBuilder = builder;
@@ -140,16 +138,16 @@ final class ConventionDefaultsImpl implements Convention {
 
                     // Support legacy options, when MongoProperty matches the actual POJO property name (e.g. method name or field name).
                     if (propertyModelBuilder == null) {
-                        propertyModelBuilder = entityModelBuilder.getProperty(mongoProperty.value());
+                        propertyModelBuilder = entityModelBuilder.getProperty(property.value());
                     }
 
                     if (propertyModelBuilder == null) {
-                        propertyModelBuilder = addCreatorPropertyToClassModelBuilder(entityModelBuilder, mongoProperty.value(),
+                        propertyModelBuilder = addCreatorPropertyToClassModelBuilder(entityModelBuilder, property.value(),
                                 parameterType);
                     } else {
                         // If not using a legacy MongoProperty reference to the property set the write name to be the annotated name.
-                        if (!mongoProperty.value().equals(propertyModelBuilder.getName())) {
-                            propertyModelBuilder.writeName(mongoProperty.value());
+                        if (!property.value().equals(propertyModelBuilder.getName())) {
+                            propertyModelBuilder.writeName(property.value());
                         }
                         tryToExpandToGenericType(parameterType, propertyModelBuilder, genericType);
                     }
@@ -170,27 +168,34 @@ final class ConventionDefaultsImpl implements Convention {
      * 此处值解析了 discriminator  相关的数据
      * 后期的先关 属性都应该在这里添加
      */
-    private void processClassAnnotation(final EntityModelBuilder<?> entityModelBuilder, final Annotation annotation) {
+    private void processClassAnnotation(final EntityModelBuilder<?> entityModelBuilder) {
+        List< Annotation > annotations = entityModelBuilder.getAnnotations();
 
+        for(Annotation annotation :annotations){
 
-        if (annotation instanceof Entity) {
-            Entity document = (Entity) annotation;
+            //  其他解析都可以在 下面添加
+            if (annotation instanceof Discriminator) {
+                Discriminator discriminator = (Discriminator) annotation;
 
-            if (document.useDiscriminator()) {
-                String key = document.discriminatorKey();
-                if (!key.equals("")) {
-                    entityModelBuilder.discriminatorKey(key);
+                if (discriminator.useDiscriminator()) {
+                    String key = discriminator.key();
+                    if (!key.equals("")) {
+                        entityModelBuilder.discriminatorKey(key);
+                    }
+
+                    String name = discriminator.value();
+                    if (!name.equals("")) {
+                        entityModelBuilder.discriminator(name);
+                    }
+                    entityModelBuilder.enableDiscriminator(true);
+                } else {
+                    entityModelBuilder.enableDiscriminator(false);
                 }
-
-                String name = document.discriminator();
-                if (!name.equals("")) {
-                    entityModelBuilder.discriminator(name);
-                }
-                entityModelBuilder.enableDiscriminator(true);
-            } else {
-                entityModelBuilder.enableDiscriminator(false);
             }
         }
+
+
+
     }
 
     /**
@@ -200,27 +205,25 @@ final class ConventionDefaultsImpl implements Convention {
                                             final PropertyModelBuilder<?> propertyModelBuilder) {
         for (Annotation annotation : propertyModelBuilder.getReadAnnotations()) {
 
-            if (annotation instanceof MongoProperty) {
-                MongoProperty mongoProperty = (MongoProperty) annotation;
-                if (!"".equals(mongoProperty.value())) {
-                    propertyModelBuilder.readName(mongoProperty.value());
+            if (annotation instanceof Property) {
+                Property property = (Property) annotation;
+                if (!"".equals(property.value())) {
+                    propertyModelBuilder.readName(property.value());
                 }
-                propertyModelBuilder.discriminatorEnabled(mongoProperty.useDiscriminator());
+
                 if (propertyModelBuilder.getName().equals(entityModelBuilder.getIdPropertyName())) {
                     entityModelBuilder.idPropertyName(null);
                 }
 
+            } else if(annotation instanceof Representation){
+                BsonType bsonRep = ((Representation) annotation).value();
+                propertyModelBuilder.bsonRepresentation(bsonRep);
+            }else if (annotation instanceof Id) {
 
-                BsonType bsonRep = mongoProperty.storageType().getJavaClass();
-                propertyModelBuilder.bsonRepresentation(bsonRep);
-            } else if (annotation instanceof MongoId) {
-                MongoId mongoId = (MongoId) annotation;
                 entityModelBuilder.idPropertyName(propertyModelBuilder.getName());
-                BsonType bsonRep = mongoId.value().getJavaClass();
-                propertyModelBuilder.bsonRepresentation(bsonRep);
-            } else if (annotation instanceof MongoId) {
                 propertyModelBuilder.readName(null);
-            } else {
+
+            }  else {
                 String propertyName = propertyModelBuilder.getName();
                 if (propertyName.equals("_id")) {
                     entityModelBuilder.idPropertyName(propertyName);
@@ -229,19 +232,19 @@ final class ConventionDefaultsImpl implements Convention {
         }
 
         for (Annotation annotation : propertyModelBuilder.getWriteAnnotations()) {
-            if (annotation instanceof MongoProperty) {
-                MongoProperty mongoProperty = (MongoProperty) annotation;
-                if (!"".equals(mongoProperty.value())) {
-                    propertyModelBuilder.writeName(mongoProperty.value());
+            if (annotation instanceof Property) {
+                Property property = (Property) annotation;
+                if (!"".equals(property.value())) {
+                    propertyModelBuilder.writeName(property.value());
                 }
 
-            } else if (annotation instanceof MongoId) {
-                MongoId mongoProperty = (MongoId) annotation;
+            } else if (annotation instanceof Id) {
+                Id mongoProperty = (Id) annotation;
 
                 propertyModelBuilder.writeName("_id");
 
 
-            } else if (annotation instanceof MongoIgnore) {
+            } else if (annotation instanceof PropIgnore) {
                 propertyModelBuilder.writeName(null);
             }
         }

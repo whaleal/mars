@@ -34,7 +34,6 @@ import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.MongoClientSettings;
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ArrayUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.mapping.CodecRegistryProvider;
@@ -50,7 +49,7 @@ import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
 
-public class BsonUtils {
+public class BsonUtil {
 
     @SuppressWarnings("unchecked")
 
@@ -313,7 +312,7 @@ public class BsonUtils {
     }
 
     private static String toString(Collection<?> source) {
-        return iterableToDelimitedString(source, "[ ", " ]", BsonUtils::toJson);
+        return iterableToDelimitedString(source, "[ ", " ]", BsonUtil::toJson);
     }
 
     private static <T> String iterableToDelimitedString(Iterable<T> source, String prefix, String suffix,

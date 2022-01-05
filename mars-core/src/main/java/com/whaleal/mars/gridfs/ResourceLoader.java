@@ -30,14 +30,14 @@
 package com.whaleal.mars.gridfs;
 
 
-import com.whaleal.mars.util.ResourceUtils;
+import com.whaleal.mars.util.ResourceUtil;
 
 public interface ResourceLoader {
 
     /**
      * Pseudo URL prefix for loading from the class path: "classpath:".
      */
-    String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
+    String CLASSPATH_URL_PREFIX = ResourceUtil.CLASSPATH_URL_PREFIX;
 
 
     /**

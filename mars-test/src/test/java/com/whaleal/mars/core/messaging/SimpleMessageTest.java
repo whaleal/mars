@@ -5,7 +5,7 @@ import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.message.DocumnetMessageListener;
+import com.whaleal.mars.task.DocumnetMessageListener;
 
 /**
  * 不需要容器的changeStream的启动方法
@@ -14,7 +14,7 @@ public class SimpleMessageTest {
 
     @Test
     public void testServer100() throws InterruptedException {
-        Mars mars100 = new Mars(Constant.server100);
+        Mars mars100 = new Mars(Constant.connectingStr);
         //DocumnetMessageListener listener = new DocumnetMessageListener();
         DocumnetMessageListener listener = new DocumnetMessageListener();
         MessageListenerContainer container = new DefaultMessageListenerContainer(mars100);

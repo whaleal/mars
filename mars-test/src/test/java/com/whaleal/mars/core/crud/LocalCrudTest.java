@@ -3,7 +3,6 @@ package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.EntityGenerater;
-import com.whaleal.mars.bean.Student;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.junit.*;
@@ -39,7 +38,7 @@ public class LocalCrudTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server101);
+        mars = new Mars(Constant.connectingStr);
 
         Assert.assertNotNull(mars);
 

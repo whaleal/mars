@@ -32,8 +32,7 @@ package com.whaleal.mars.codecs.pojo.annotations;
 
 /**
  * @Date 2021-06-29
- * 未启用
+ * 暂时未启用
  */
-@Deprecated
 public @interface Collation {
 }

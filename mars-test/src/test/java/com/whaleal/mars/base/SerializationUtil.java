@@ -94,7 +94,7 @@ public class SerializationUtil {
             File file = new File("src/test/resources/person");
             ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream(file));
 
-            Mars mars = new Mars(Constant.server101);
+            Mars mars = new Mars(Constant.connectingStr);
 
             MongoCursor<Document> person = mars.getCollection(Document.class, "person").find(new Document()).iterator();
 

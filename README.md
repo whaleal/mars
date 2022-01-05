@@ -20,7 +20,7 @@
 	<strong>Mars - Object Relational Mapping Framework for NoSql (ORM)</strong>
 </p>
 <p align="center">
-	<strong>Mars - Object Document Mapping Framework for NoSql (ORM)</strong>
+	<strong>Mars - Object Document Mapping Framework for NoSql (ODM)</strong>
 </p>
 <p align="center">
 	👉 <a href="https://whaleal.com">https://whaleal.com/</a> 👈

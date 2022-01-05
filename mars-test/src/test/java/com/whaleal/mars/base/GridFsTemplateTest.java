@@ -25,35 +25,8 @@ import java.util.function.Consumer;
 public class GridFsTemplateTest {
     @Autowired
     Mars mars;
-    //@Autowired
-    //private GridFsTemplate gridFsTemplate;
-    //@Autowired
-    //private MongoDatabaseFactory factory;
-    @Autowired  // 这个是之前在config里配置的
-    private GridFSBucket gridFSBucket;
 
-    @Test
-    public void testBucketFind() {
-        GridFSDownloadStream stream = gridFSBucket.openDownloadStream(new ObjectId("606e967aa64fc91968c4cca4"));
-        int fileLength = (int) stream.getGridFSFile().getLength();
-        byte[] bytesToWriteTo = new byte[fileLength];
-        stream.read(bytesToWriteTo);
-        stream.close();
 
-        System.out.println(new String(bytesToWriteTo, StandardCharsets.UTF_8));
-    }
-
-    @Test
-    public void testBucket() {
-        byte[] data = "Data to upload into GridFS".getBytes(StandardCharsets.UTF_8);
-        GridFSUploadStream uploadStream = gridFSBucket.openUploadStream("simpleData");
-        uploadStream.write(data);
-        uploadStream.close();
-        System.out.println("The fileId of the uploaded file is: " + uploadStream.getObjectId().toHexString());
-        System.out.println(gridFSBucket);
-        System.out.println(gridFSBucket.getBucketName());
-        System.out.println(gridFSBucket.getChunkSizeBytes());
-    }
 
     @Test
     public void testFindAll() {
@@ -66,16 +39,7 @@ public class GridFsTemplateTest {
         });
     }
 
-    @Test
-    public void testMongoGridFs() {
-        GridFSBucket bucket = GridFSBuckets.create(mars.getDatabase());
-        GridFSDownloadStream downloadStream = bucket.openDownloadStream("back");
-        int fileLength = (int) downloadStream.getGridFSFile().getLength();
-        byte[] bytesToWriteTo = new byte[fileLength];
-        downloadStream.read(bytesToWriteTo);
-        downloadStream.close();
-        System.out.println(new String(bytesToWriteTo, StandardCharsets.UTF_8));
-    }
+
 
     @Test
     public void testFind() {

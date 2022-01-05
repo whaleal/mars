@@ -41,9 +41,9 @@ import java.util.*;
 /**
  * Utility methods for JSON serialization.
  */
-public abstract class SerializationUtils {
+public abstract class SerializationUtil {
 
-    private SerializationUtils() {
+    private SerializationUtil() {
 
     }
 
@@ -156,7 +156,7 @@ public abstract class SerializationUtils {
     }
 
     private static String toString(Collection<?> source) {
-        return iterableToDelimitedString(source, "[ ", " ]", SerializationUtils::serializeToJsonSafely);
+        return iterableToDelimitedString(source, "[ ", " ]", SerializationUtil::serializeToJsonSafely);
     }
 
     /**

@@ -34,7 +34,7 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.SerializationUtils;
+import com.whaleal.mars.util.SerializationUtil;
 import org.bson.Document;
 
 import java.util.*;
@@ -525,7 +525,7 @@ public class Update implements UpdateDefinition {
             doc.append("$isolated", 1);
         }
 
-        return SerializationUtils.serializeToJsonSafely(doc);
+        return SerializationUtil.serializeToJsonSafely(doc);
     }
 
     public enum Position {
@@ -551,7 +551,7 @@ public class Update implements UpdateDefinition {
          * @return a safely serialized JSON representation.
          */
         default String toJsonString() {
-            return SerializationUtils.serializeToJsonSafely(Collections.singletonMap(getKey(), getValue()));
+            return SerializationUtil.serializeToJsonSafely(Collections.singletonMap(getKey(), getValue()));
         }
     }
 
@@ -611,7 +611,7 @@ public class Update implements UpdateDefinition {
 
         @Override
         public String toString() {
-            return SerializationUtils.serializeToJsonSafely(this.modifiers);
+            return SerializationUtil.serializeToJsonSafely(this.modifiers);
         }
     }
 

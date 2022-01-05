@@ -27,7 +27,7 @@ public class CrudWithExtend {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server100);
+        mars = new Mars(Constant.connectingStr);
 
         Assert.assertNotNull(mars);
 

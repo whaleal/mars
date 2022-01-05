@@ -33,7 +33,7 @@ public class PersonCrudTest {
     @Before
     public void init() {
         //  创建连接
-        mars = new Mars(Constant.server101);
+        mars = new Mars(Constant.connectingStr);
 
         // 清空需要的表
         mars.dropCollection(Person.class);

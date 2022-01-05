@@ -34,7 +34,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
-import com.whaleal.mars.util.BsonUtils;
+import com.whaleal.mars.util.BsonUtil;
 
 
 import java.io.ByteArrayInputStream;
@@ -213,7 +213,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
     public Object getFileId() {
 
         Precondition.state(exists(), () -> String.format("%s does not exist.", getDescription()));
-        return BsonUtils.toJavaType(getGridFSFile().getId());
+        return BsonUtil.toJavaType(getGridFSFile().getId());
     }
 
 

@@ -3,9 +3,8 @@ package com.whaleal.mars.core.codecs;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
-import com.whaleal.mars.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.codecs.pojo.annotations.MongoId;
-import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.codecs.pojo.EntityModelBuilder;
 
@@ -70,11 +69,10 @@ public class TestMongId {
             return new ArrayList<>(Arrays.asList(values));
         }
 
-        @Entity
         private static class TestEntity {
-            @MongoId
+            @Id
             private String id;
-            @MongoProperty("n")
+            @Property("n")
             private String name;
             private List<String> listOfString;
             private List<List<String>> listOfListOfString;
@@ -84,7 +82,6 @@ public class TestMongId {
             private Embed  embed ;
         }
 
-        @Entity
         private static class Embed {
             private String embedName;
             private List<Embed> embeddeds;

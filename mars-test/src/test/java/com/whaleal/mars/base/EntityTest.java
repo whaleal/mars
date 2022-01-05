@@ -12,7 +12,7 @@ public class EntityTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server101);
+        mars = new Mars(Constant.connectingStr);
     }
 
     @Test

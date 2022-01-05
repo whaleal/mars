@@ -30,6 +30,7 @@
 package com.whaleal.mars.codecs.pojo;
 
 
+import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.codecs.Convention;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import org.bson.codecs.configuration.CodecConfigurationException;
@@ -235,10 +236,10 @@ public class EntityModelBuilder<T> {
             }
         }
         if (anno == null) {
-            this.collectionName = com.whaleal.icefrog.core.util.StrUtil.uncapitalize(type.getSimpleName());
+            this.collectionName = StrUtil.uncapitalize(type.getSimpleName());
             return;
         } else if ("".equals(anno.value())) {
-            this.collectionName = com.whaleal.icefrog.core.util.StrUtil.uncapitalize(type.getSimpleName());
+            this.collectionName = StrUtil.uncapitalize(type.getSimpleName());
             return;
         } else {
             this.collectionName = anno.value();

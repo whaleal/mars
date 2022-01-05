@@ -30,6 +30,8 @@
 package com.whaleal.mars.core.query;
 
 import com.mongodb.BasicDBList;
+import com.mongodb.client.model.geojson.Geometry;
+import com.mongodb.client.model.geojson.Point;
 import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
@@ -39,8 +41,7 @@ import com.whaleal.icefrog.core.codec.Base64 ;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.bson.types.Binary;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
+
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -523,7 +524,7 @@ public class Criteria implements CriteriaDefinition {
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/nearSphere/">MongoDB Query operator:
      * $nearSphere</a>
      */
-    public Criteria nearSphere(Point point) {
+    public Criteria nearSphere( Point point) {
 
         Precondition.notNull(point, "Point must not be null!");
 
@@ -538,7 +539,7 @@ public class Criteria implements CriteriaDefinition {
      * @return this.
      */
     @SuppressWarnings("rawtypes")
-    public Criteria geointersects(Geometry geometry) {
+    public Criteria geointersects( Geometry geometry) {
 
         Precondition.notNull(geometry, "geometry must not be null!");
         criteria.put("$geoIntersects", geometry);
