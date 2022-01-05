@@ -70,6 +70,70 @@ public class TestMongId {
         }
 
         private static class TestEntity {
+            public String getId() {
+                return id;
+            }
+
+            public void setId( String id ) {
+                this.id = id;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName( String name ) {
+                this.name = name;
+            }
+
+            public List< String > getListOfString() {
+                return listOfString;
+            }
+
+            public void setListOfString( List< String > listOfString ) {
+                this.listOfString = listOfString;
+            }
+
+            public List< List< String > > getListOfListOfString() {
+                return listOfListOfString;
+            }
+
+            public void setListOfListOfString( List< List< String > > listOfListOfString ) {
+                this.listOfListOfString = listOfListOfString;
+            }
+
+            public int[] getArrayOfInt() {
+                return arrayOfInt;
+            }
+
+            public void setArrayOfInt( int[] arrayOfInt ) {
+                this.arrayOfInt = arrayOfInt;
+            }
+
+            public Map< String, Integer > getMapOfInts() {
+                return mapOfInts;
+            }
+
+            public void setMapOfInts( Map< String, Integer > mapOfInts ) {
+                this.mapOfInts = mapOfInts;
+            }
+
+            public List< Embed > getListOfEmbeds() {
+                return listOfEmbeds;
+            }
+
+            public void setListOfEmbeds( List< Embed > listOfEmbeds ) {
+                this.listOfEmbeds = listOfEmbeds;
+            }
+
+            public Embed getEmbed() {
+                return embed;
+            }
+
+            public void setEmbed( Embed embed ) {
+                this.embed = embed;
+            }
+
             @Id
             private String id;
             @Property("n")
@@ -83,6 +147,22 @@ public class TestMongId {
         }
 
         private static class Embed {
+            public String getEmbedName() {
+                return embedName;
+            }
+
+            public void setEmbedName( String embedName ) {
+                this.embedName = embedName;
+            }
+
+            public List< Embed > getEmbeddeds() {
+                return embeddeds;
+            }
+
+            public void setEmbeddeds( List< Embed > embeddeds ) {
+                this.embeddeds = embeddeds;
+            }
+
             private String embedName;
             private List<Embed> embeddeds;
         }
