@@ -1,31 +1,31 @@
 /**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
+ * Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Server Side Public License, version 1,
+ * as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
+ * <p>
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Server Side Public License for more details.
+ * <p>
+ * You should have received a copy of the Server Side Public License
+ * along with this program. If not, see
+ * <http://www.whaleal.com/licensing/server-side-public-license>.
+ * <p>
+ * As a special exception, the copyright holders give permission to link the
+ * code of portions of this program with the OpenSSL library under certain
+ * conditions as described in each individual source file and distribute
+ * linked combinations including the program with the OpenSSL library. You
+ * must comply with the Server Side Public License in all respects for
+ * all of the code used other than as permitted herein. If you modify file(s)
+ * with this exception, you may extend this exception to your version of the
+ * file(s), but you are not obligated to do so. If you do not wish to do so,
+ * delete this exception statement from your version. If you delete this
+ * exception statement from all source files in the program, then also delete
+ * it in the license file.
  */
 package com.whaleal.mars.session;
 
@@ -43,11 +43,14 @@ import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
+import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
 import com.whaleal.mars.codecs.pojo.annotations.CappedAt;
 import com.whaleal.mars.codecs.pojo.annotations.Concern;
+import com.whaleal.mars.codecs.pojo.annotations.Language;
+import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexHelper;
@@ -66,9 +69,7 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.util.BsonUtil;
-
 import org.bson.Document;
-import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
 
@@ -78,6 +79,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
+
+import static com.whaleal.mars.util.SerializationUtil.serializeToJsonSafely;
 
 /**
  * 关于数据操作的数据操作的一些具体实现
@@ -89,28 +92,22 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         MongoOperations, GridFsOperations, Statistic {
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
-    public MongoClient getMongoClient() {
-        return mongoClient;
-    }
-
+    protected static Lock lock = new ReentrantLock();
     private final MongoClient mongoClient;
     private final MongoMappingContext mapper;
-    private MongoDatabase database;
     private final GridFSBucket defaultGridFSBucket;
-
     //缓存 collectionName
-    private Map<String, String> collectionNameCache = new HashMap<String, String>();
+    private final Map< String, String > collectionNameCache = new HashMap< String, String >();
+    private MongoDatabase database;
 
-    protected static Lock lock = new ReentrantLock();
-
-    public DatastoreImpl(MongoClient mongoClient, String dbName) {
+    public DatastoreImpl( MongoClient mongoClient, String dbName ) {
         this(mongoClient.getDatabase(dbName), mongoClient);
     }
 
     /**
      * Copy constructor for a datastore
      */
-    public DatastoreImpl(MongoDatabase database, MongoClient mongoClient) {
+    public DatastoreImpl( MongoDatabase database, MongoClient mongoClient ) {
 
         super(database);
 
@@ -122,10 +119,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
     }
 
-    public MongoDatabase getDatabase() {
-        return this.database;
-    }
-
     protected static com.mongodb.client.model.Collation fromDocument( Document source ) {
 
         if (source == null) {
@@ -135,9 +128,17 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         return Collation.from(source).toMongoCollation();
     }
 
+    public MongoClient getMongoClient() {
+        return mongoClient;
+    }
+
+    public MongoDatabase getDatabase() {
+        return this.database;
+    }
+
     @Override
-    public <T> DeleteResult delete( Query query, Class<T> entityClass, DeleteOptions options, String collectionName ) {
-        log.info("{}execute", getClass() + ".delete()");
+    public < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions options, String collectionName ) {
+
 
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 
@@ -148,72 +149,74 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         CrudExecutor executor = CrudExecutorFactory.create(CrudEnum.DELETE);
 
         DeleteResult result = executor.execute(session, collection, query, options, null);
-        log.info("{} execute end", getClass() + ".delete()");
+
         return result;
 
     }
 
     @Override
-    public <T> QueryCursor<T> findAll( Query query, Class<T> entityClass, String collectionName ) {
-        log.info("{}execute", getClass() + ".findAll()");
+    public < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName ) {
+
         ClientSession session = this.startSession();
 
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ALL);
 
-        MongoCursor<T> iterator = crudExecutor.execute(session, collection, query, null, null);
+        MongoCursor< T > iterator = crudExecutor.execute(session, collection, query, null, null);
 
-        log.info("{} execute end", getClass() + ".findAll()");
-        return new QueryCursor<T>(iterator, entityClass);
+
+        return new QueryCursor< T >(iterator, entityClass);
 
     }
 
     @Override
-    public <T> Optional<T> findOne( Query query, Class<T> entityClass, String collectionName ) {
-        log.info("{}execute", getClass() + ".findOne()");
+    public < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName ) {
+
         ClientSession session = this.startSession();
 
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
 
-        T result = crudExecutor.execute(session, collection, query, null, null);
 
-        log.info("{} execute end", getClass() + ".findOne()");
+        T result = crudExecutor.execute(session, collection, query, null, null);
+        if (log.isDebugEnabled()) {
+            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", serializeToJsonSafely(query.getQueryObject()),
+                    query.getSortObject(), query.getFieldsObject(), collectionName);
+        }
+
         if (result == null) {
             return Optional.empty();
         }
 
-        log.info("{} execute end", getClass() + ".findOne()");
         return Optional.ofNullable(result);
 
     }
 
     @Override
-    public <T> InsertOneResult insert( T entity, InsertOneOptions options, String collectionName ) {
-        log.info("{}execute", getClass() + ".insert()");
-        ClientSession session = this.startSession();
+    public < T > InsertOneResult insert( T entity, InsertOneOptions options, String collectionName ) {
 
+        ClientSession session = this.startSession();
         MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
         InsertOneResult result = crudExecutor.execute(session, collection, null, options, entity);
-        log.info("{} execute end", getClass() + ".insert()");
+
         return result;
     }
 
     @Override
-    public <T> InsertManyResult insert( Collection<? extends T> entities, InsertManyOptions options, String collectionName ) {
-        log.info("{}execute", getClass() + ".insert()");
+    public < T > InsertManyResult insert( Collection< ? extends T > entities, InsertManyOptions options, String collectionName ) {
+
         if (entities == null || entities.isEmpty()) {
             throw new IllegalArgumentException("entities in operation can't be null or empty ");
         }
 
         ClientSession session = this.startSession();
 
-        Class<?> type = null;
+        Class< ? > type = null;
 
         for (T entity : entities) {
 
@@ -228,28 +231,27 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_MANY);
 
-
         InsertManyResult result = crudExecutor.execute(session, collection, null, options, entities);
-        log.info("{} execute end", getClass() + ".insert()");
+
         return result;
 
     }
 
     @Override
-    public <T> UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName ) {
-        log.info("{}execute", getClass() + ".update()");
+    public < T > UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName ) {
+
         Document entityDoc = this.toDocument(entity);
         if (entityDoc == null) {
             throw new IllegalArgumentException();
         }
         ClientSession session = this.startSession();
-        MongoCollection<?> collection = this.getCollection(entity.getClass(), collectionName);
+        MongoCollection< ? > collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.UPDATE);
 
         UpdateResult result = crudExecutor.execute(session, collection, query, options, entityDoc);
-        log.info("{} execute end", getClass() + ".update()");
+
         return result;
 
     }
@@ -258,15 +260,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
      * update的另一种形式
      */
     @Override
-    public <T> UpdateResult update( Query query, UpdateDefinition update, Class<T> entityClass, UpdateOptions options, String collectionName ) {
-        log.info("{}execute", getClass() + ".update()");
+    public < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options, String collectionName ) {
+
         ClientSession session = this.startSession();
         MongoCollection collection = this.getCollection(entityClass, collectionName);
         collection = prepareConcern(collection, options);
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.UPDATE_DEFINITION);
 
         UpdateResult result = crudExecutor.execute(session, collection, query, options, update.getUpdateObject());
-        log.info("{} execute end", getClass() + ".update()");
+
         return result;
     }
 
@@ -285,7 +287,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
 
     @Override
-    public MarsSession startSession(ClientSessionOptions options) {
+    public MarsSession startSession( ClientSessionOptions options ) {
         ClientSession clientSession = null;
         try {
             clientSession = this.mongoClient.startSession(options);
@@ -304,8 +306,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
 
     @Override
-    public <T> UpdateResult replace(Query query, T entity, ReplaceOptions options, String collectionName) {
-        log.info("{}execute", getClass() + ".replace()");
+    public < T > UpdateResult replace( Query query, T entity, ReplaceOptions options, String collectionName ) {
+
         ClientSession session = this.startSession();
 
         MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
@@ -313,15 +315,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.REPLACE);
 
         UpdateResult execute = crudExecutor.execute(session, collection, query, options, entity);
-        log.info("{} execute end", getClass() + ".replace()");
+
         return execute;
 
     }
 
     //索引操作
     @Override
-    public void createIndex(Index index, String collectionName) {
-        log.info("{}execute", getClass() + ".createIndex()");
+    public void createIndex( Index index, String collectionName ) {
+
         ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
@@ -331,23 +333,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         crudExecutor.execute(session, collection, null, index.getIndexOptions(), index);
 
-
-        log.info("{} execute end", getClass() + ".createIndex()");
     }
 
 
     @Override
-    public <T> void ensureIndexes(Class<T> entityClass, String collectionName) {
-        log.info("{}execute", getClass() + ".ensureIndexes()");
+    public < T > void ensureIndexes( Class< T > entityClass, String collectionName ) {
+
         final IndexHelper indexHelper = new IndexHelper();
         String collName = this.mapper.determineCollectionName(entityClass, collectionName);
         indexHelper.createIndex(this.database.getCollection(collName), this.mapper.getEntityModel(entityClass));
-        log.info("{} execute end", getClass() + ".ensureIndexes()");
+
     }
 
     @Override
-    public void dropIndex(Index index, String collectionName) {
-        log.info("{}execute", getClass() + ".dropIndex()");
+    public void dropIndex( Index index, String collectionName ) {
+
         ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
@@ -355,12 +355,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_ONE);
 
         crudExecutor.execute(session, collection, null, null, index);
-        log.info("{} execute end", getClass() + ".dropIndex()");
+
     }
 
     @Override
-    public void dropIndexes(String collectionName) {
-        log.info("{}execute", getClass() + ".dropIndexes()");
+    public void dropIndexes( String collectionName ) {
+
         ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
@@ -368,20 +368,20 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_MANY);
 
         crudExecutor.execute(session, collection, null, null, null);
-        log.info("{} execute end", getClass() + ".dropIndexes()");
+
     }
 
     @Override
-    public List<Index> getIndexes(String collectionName) {
-        log.info("{}execute", getClass() + ".getIndexes()");
+    public List< Index > getIndexes( String collectionName ) {
+
         ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
 
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_FIND);
 
-        List<Index> execute = crudExecutor.execute(session, collection, null, null, null);
-        log.info("{} execute end", getClass() + ".getIndexes()");
+        List< Index > execute = crudExecutor.execute(session, collection, null, null, null);
+
         return execute;
 
     }
@@ -390,10 +390,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     /**
      * 将Collections<T> 转成 List<Entity>
      */
-    public <T> List<Document> toDocuments(Collection<? extends T> entities) {
+    public < T > List< Document > toDocuments( Collection< ? extends T > entities ) {
 
         if (entities.isEmpty()) {
-            return new ArrayList<Document>();
+            return new ArrayList< Document >();
         }
 
         return entities.stream().map(x -> mapper.toDocument(x)).collect(Collectors.toList());
@@ -401,21 +401,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     }
 
 
-    private <T> MongoCollection<T> prepareConcern(MongoCollection<T> collection, Option option) {
+    private < T > MongoCollection< T > prepareConcern( MongoCollection< T > collection, Option option ) {
         return option.prepare(collection);
 
     }
 
-    public void setWriteConcern(WriteConcern writeConcern) {
+    public void setWriteConcern( WriteConcern writeConcern ) {
         this.database = database.withWriteConcern(writeConcern);
 
     }
 
-    public void setReadConcern(ReadConcern readConcern) {
+    public void setReadConcern( ReadConcern readConcern ) {
         this.database = database.withReadConcern(readConcern);
     }
 
-    public void setReadPreference(ReadPreference readPerference) {
+    public void setReadPreference( ReadPreference readPerference ) {
         this.database = database.withReadPreference(readPerference);
     }
 
@@ -441,8 +441,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
      */
 
     @Override
-    public <T> T save( T entity, InsertOneOptions options, String collectionName ) {
-        log.info("{}execute", getClass() + ".save()");
+    public < T > T save( T entity, InsertOneOptions options, String collectionName ) {
+
 
         if (entity == null) {
             return null;
@@ -465,14 +465,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         } else {
             insert(entity, options, collectionName);
         }
-        log.info("{} execute end", getClass() + ".save()");
+
         return entity;
 
     }
 
     @Override
-    public <T> T storeGridFs(GridFsObject<T, InputStream> upload, String bucketName) {
-        log.info("{}execute", getClass() + ".storeGridFs()");
+    public < T > T storeGridFs( GridFsObject< T, InputStream > upload, String bucketName ) {
+
         GridFSUploadOptions uploadOptions = computeUploadOptionsFor(upload.getOptions().getContentType(),
                 upload.getOptions().getMetadata());
 
@@ -486,7 +486,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         getGridFsBucket(bucketName).uploadFromStream(BsonUtil.simpleToBsonValue(upload.getFileId()), upload.getFilename(),
                 upload.getContent(), uploadOptions);
-        log.info("{} execute end", getClass() + ".storeGridFs()");
+
         return upload.getFileId();
     }
 
@@ -497,20 +497,20 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     }
 
     @Override
-    public GridFSFile findOneGridFs(Query query, String bucketName) {
+    public GridFSFile findOneGridFs( Query query, String bucketName ) {
         return findGridFs(query, bucketName).first();
     }
 
     @Override
-    public void rename(ObjectId id, String newFilename, String bucketName) {
-        log.info("{}execute", getClass() + ".rename()");
+    public void rename( ObjectId id, String newFilename, String bucketName ) {
+
         getGridFsBucket(bucketName).rename(id, newFilename);
-        log.info("{} execute end", getClass() + ".rename()");
+
     }
 
     @Override
-    public GridFSFindIterable findGridFs(Query query, String bucketName) {
-        log.info("{}execute", getClass() + ".findGridFs()");
+    public GridFSFindIterable findGridFs( Query query, String bucketName ) {
+
         Precondition.notNull(query, "Query must not be null!");
 
         Document queryObject = query.getQueryObject();
@@ -525,18 +525,18 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
             iterable = iterable.limit(query.getLimit());
         }
 
-        MongoCursor<GridFSFile> iterator = iterable.iterator();
+        MongoCursor< GridFSFile > iterator = iterable.iterator();
         Precondition.notNull(iterator.tryNext(), "No file found with the query");
-        log.info("{} execute end", getClass() + ".findGridFs()");
+
         return iterable;
     }
 
 
     @Override
-    public void deleteGridFs(ObjectId id, String bucketName) {
-        log.info("{}execute", getClass() + ".deleteGridFs()");
+    public void deleteGridFs( ObjectId id, String bucketName ) {
+
         getGridFsBucket(bucketName).delete(id);
-        log.info("{} execute end", getClass() + ".deleteGridFs()");
+
     }
 
 
@@ -546,24 +546,24 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     }
 
     @Override
-    public void deleteGridFs(Query query, String bucketName) {
-        log.info("{}execute", getClass() + ".deleteGridFs()");
+    public void deleteGridFs( Query query, String bucketName ) {
+
         GridFSFindIterable iterable = findGridFs(query);
-        MongoCursor<GridFSFile> iterator = iterable.iterator();
+        MongoCursor< GridFSFile > iterator = iterable.iterator();
         Precondition.notNull(iterator.tryNext(), "no file found to delete");
         while (iterator.hasNext()) {
             getGridFsBucket(bucketName).delete(iterator.next().getObjectId());
         }
-        log.info("{} execute end", getClass() + ".deleteGridFs()");
+
     }
 
 
-    private GridFSBucket getGridFsBucket(String bucketName) {
+    private GridFSBucket getGridFsBucket( String bucketName ) {
         return bucketName == null ? defaultGridFSBucket : GridFSBuckets.create(database, bucketName);
     }
 
     @Override
-    public GridFsResource getResource(GridFSFile file, String bucketName) {
+    public GridFsResource getResource( GridFSFile file, String bucketName ) {
 
         Precondition.notNull(file, "GridFSFile must not be null!");
 
@@ -571,11 +571,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     }
 
 
-    public Document toDocument(Object entity) {
+    public Document toDocument( Object entity ) {
         final EntityModel entityModel = this.mapper.getEntityModel(entity.getClass());
 
         DocumentWriter writer = new DocumentWriter();
-        ((Codec) this.mapper.getCodecRegistry().get(entityModel.getType()))
+        this.mapper.getCodecRegistry().get(entityModel.getType())
                 .encode(writer, entity, EncoderContext.builder().build());
 
         return writer.getDocument();
@@ -586,18 +586,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
      * @param <T>  the class type
      * @return the collection mapped for this class
      */
-    public <T> MongoCollection<T> getCollection(Class<T> type) {
+    public < T > MongoCollection< T > getCollection( Class< T > type ) {
         EntityModel entityModel = mapper.getEntityModel(type);
         String collectionName = entityModel.getCollectionName();
 
-        MongoCollection<T> collection = this.database.getCollection(collectionName, type);
+        MongoCollection< T > collection = this.database.getCollection(collectionName, type);
 
         Concern annotation = (Concern) entityModel.getAnnotation(Concern.class);
-        if (annotation != null ) {
-
-
-
-
+        if (annotation != null) {
 
 
         }
@@ -610,57 +606,69 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
      * @param <T>  the class type
      * @return the collection mapped for this class
      */
-    public <T> MongoCollection<T> getCollection(Class<T> type, String collectionName) {
+    public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(type);
         String collName = this.mapper.determineCollectionName(entityModel, collectionName);
-        MongoCollection<T> collection = this.database.getCollection(collName, type);
+        MongoCollection< T > collection = this.database.getCollection(collName, type);
 
-        return  this.withConcern(collection , type);
+        return this.withConcern(collection, type);
 
     }
 
 
     @Override
-    public <T> long count(Class<T> clazz, CountOptions countOptions) {
-        log.info("{}execute", getClass() + ".count()");
+    public < T > long count( Class< T > clazz, CountOptions countOptions ) {
 
         com.mongodb.client.model.EstimatedDocumentCountOptions escountOptions = new com.mongodb.client.model.EstimatedDocumentCountOptions();
 
         escountOptions.maxTime(countOptions.getMaxTime(TimeUnit.SECONDS), TimeUnit.SECONDS);
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
+        if (log.isDebugEnabled()) {
+            log.debug("Executing count: {} in collection: {}", "{}", collectionName);
+        }
         return this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
 
     }
 
     @Override
-    public <T> long countById(Query query, Class<T> clazz, CountOptions countOptions) {
-        log.info("{} execute", getClass() + ".countById()");
+    public < T > long countById( Query query, Class< T > clazz, CountOptions countOptions ) {
+
         String collectionName = this.mapper.determineCollectionName(clazz, null);
+        if (log.isDebugEnabled()) {
+            log.debug("Executing count: {} in collection: {}", serializeToJsonSafely(query.getQueryObject()), collectionName);
+        }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
 
     @Override
-    public <T> long count(String collName, CountOptions countOptions) {
-        log.info("{} execute", getClass() + ".count()");
+    public < T > long count( String collectionName, CountOptions countOptions ) {
+
         com.mongodb.client.model.EstimatedDocumentCountOptions escountOptions = new com.mongodb.client.model.EstimatedDocumentCountOptions();
 
         escountOptions.maxTime(countOptions.getMaxTime(TimeUnit.SECONDS), TimeUnit.SECONDS);
 
-        return this.database.getCollection(collName).estimatedDocumentCount(escountOptions);
+        if (log.isDebugEnabled()) {
+            log.debug("Executing count: {} in collection: {}", "{}", collectionName);
+        }
+
+        return this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
     }
 
     @Override
-    public <T> long countById(Query query, String collName, CountOptions countOptions) {
-        log.info("{} execute", getClass() + ".count()");
-        return this.database.getCollection(collName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
+    public < T > long countById( Query query, String collectionName, CountOptions countOptions ) {
+        if (log.isDebugEnabled()) {
+            log.debug("Executing count: {} in collection: {}", serializeToJsonSafely(query.getQueryObject()), collectionName);
+        }
+        return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
 
 
     @Override
-    public <T> MongoCollection<Document> createCollection(Class<T> entityClass) {
-        return createCollection(entityClass, CollectionOptions.empty());
+    public < T > MongoCollection< Document > createCollection( Class< T > entityClass ) {
+        Precondition.notNull(entityClass, "EntityClass must not be null!");
+        return createCollection(entityClass, getCollectionOptions(entityClass));
     }
 
     private GridFSUploadOptions computeUploadOptionsFor( String contentType, Document metadata ) {
@@ -690,60 +698,48 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
      * @return {@link MongoCollection<Document>}
      */
     @Override
-    public <T> MongoCollection<Document> createCollection( Class<T> entityClass,
-                                                           CollectionOptions collectionOptions ) {
+    public < T > MongoCollection< Document > createCollection( Class< T > entityClass,
+                                                               CollectionOptions collectionOptions ) {
 
         Precondition.notNull(entityClass, "EntityClass must not be null!");
 
         CollectionOptions options = collectionOptions != null ? collectionOptions : CollectionOptions.empty();
+
         Document document = convertToDocument(options);
-
-        //TODO it may contains some bug，so please use it carefully.
-        CappedAt capped = (CappedAt) this.mapper.getEntityModel(entityClass).getAnnotation(CappedAt.class);
-
-        if (!ObjectUtil.isEmpty(capped)) {
-            document.put("capped", true);
-            document.put("size", capped.value());
-            document.put("max", capped.count());
-        }
-
-        /*
-        if (!ObjectUtil.isEmpty(capped)) {
-            document.put("collation", collation.value());
-        }
-        document.put("concern", annotation.concern());*/
-
 
         return doCreateCollection(this.mapper.getEntityModel(entityClass).getCollectionName(), document);
     }
 
     @Override
-    public MongoCollection<Document> createCollection(String collectionName) {
+    public MongoCollection< Document > createCollection( String collectionName ) {
         Precondition.notNull(collectionName, "CollectionName must not be null!");
 
         return doCreateCollection(collectionName, new Document());
     }
 
     @Override
-    public <T> void dropCollection(Class<T> entityClass) {
-        String collectionName = this.mapper.getEntityModel(entityClass).getCollectionName();
-        System.out.println(collectionName);
+    public < T > void dropCollection( Class< T > entityClass ) {
         dropCollection(this.mapper.getEntityModel(entityClass).getCollectionName());
     }
 
     @Override
-    public MongoCollection<Document> createCollection(String collectionName, CollectionOptions collectionOptions) {
+    public MongoCollection< Document > createCollection( String collectionName, CollectionOptions collectionOptions ) {
 
         Precondition.notNull(collectionName, "CollectionName must not be null!");
         return doCreateCollection(collectionName, convertToDocument(collectionOptions));
     }
 
     @Override
-    public void dropCollection(String collectionName) {
+    public void dropCollection( String collectionName ) {
         Precondition.notNull(collectionName, "CollectionName must not be null!");
         lock.lock();
         try {
-            this.database.getCollection(collectionName).drop();
+            MongoCollection< Document > collection = this.database.getCollection(collectionName);
+            collection.drop();
+            if (log.isDebugEnabled()) {
+                log.debug("Dropped collection [{}]",
+                        collection.getNamespace() != null ? collection.getNamespace().getCollectionName() : collectionName);
+            }
         } finally {
             lock.unlock();
         }
@@ -767,7 +763,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         return document;
     }
 
-    protected MongoCollection<Document> doCreateCollection( String collectionName, Document collectionOptions ) {
+    protected MongoCollection< Document > doCreateCollection( String collectionName, Document collectionOptions ) {
         lock.lock();
         try {
             com.mongodb.client.model.CreateCollectionOptions co = new com.mongodb.client.model.CreateCollectionOptions();
@@ -804,7 +800,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
             this.database.createCollection(collectionName, co);
 
-            MongoCollection<Document> coll = database.getCollection(collectionName, Document.class);
+            MongoCollection< Document > coll = database.getCollection(collectionName, Document.class);
             return coll;
         } finally {
             lock.unlock();
@@ -812,29 +808,81 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     }
 
 
-    public <T> MongoCollection<T>  withConcern(MongoCollection<T> collection ,Class<T>  clazz){
+    public < T > MongoCollection< T > withConcern( MongoCollection< T > collection, Class< T > clazz ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(clazz);
 
-        Concern annotation = (Concern)entityModel.getAnnotation(Concern.class);
+        Concern annotation = (Concern) entityModel.getAnnotation(Concern.class);
 
-        if(annotation!=null){
+        if (annotation != null) {
 
-            if( WriteConcern.valueOf(annotation.writeConcern()) != null){
+            if (WriteConcern.valueOf(annotation.writeConcern()) != null) {
                 collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.writeConcern()));
             }
 
-            if(ReadPreference.valueOf(annotation.readPreference())!=null){
+            if (ReadPreference.valueOf(annotation.readPreference()) != null) {
                 collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.writeConcern()));
 
             }
 
-            //todo  ReadConcern
+            ReadConcernLevel readConcernLevel = ReadConcernLevel.fromString(annotation.readConcern());
 
+            if (readConcernLevel != null) {
+                collection.withReadConcern(new ReadConcern(readConcernLevel));
+            }
         }
-        
-        return collection ;
-        
+        return collection;
+
     }
 
+    private CollectionOptions getCollectionOptions( Class< ? > entity ) {
+
+        EntityModel entityModel = this.mapper.getEntityModel(entity);
+        Precondition.notNull(entity, "EntityClass must not be null!");
+        CollectionOptions options = CollectionOptions.empty();
+
+
+        //TODO it may contains some bug，so please use it carefully.
+        CappedAt capped = (CappedAt) entityModel.getAnnotation(CappedAt.class);
+
+        if (!ObjectUtil.isEmpty(capped)) {
+
+            options = options.capped();
+            options = options.size(capped.value());
+            options = options.maxDocuments(capped.count());
+        }
+
+        Language language = (Language) entityModel.getAnnotation(Language.class);
+
+        if (!ObjectUtil.isEmpty(language)) {
+            Collation locale = Collation.of(language.value());
+            options = options.collation(locale);
+        }
+
+
+        TimeSeries timeSeries = (TimeSeries) entityModel.getAnnotation(TimeSeries.class);
+
+        if (!ObjectUtil.isEmpty(timeSeries)) {
+            CollectionOptions.TimeSeriesOptions toptions = CollectionOptions.TimeSeriesOptions.timeSeries(timeSeries.timeField());
+            if (StrUtil.hasText(timeSeries.metaField())) {
+
+                if (entityModel.getPropertyModel(timeSeries.metaField()) == null) {
+                    throw new MarsOrmException(
+                            String.format("Meta field '%s' does not exist in type %s", timeSeries.metaField(), entity.getName()));
+                }
+
+                toptions = toptions.metaField(timeSeries.metaField());
+            }
+            if (!ObjectUtil.isNull(timeSeries.granularity())) {
+                toptions = toptions.granularity(timeSeries.granularity());
+
+            }
+
+            options = options.timeSeries(toptions);
+
+        }
+
+
+        return options;
+    }
 }
