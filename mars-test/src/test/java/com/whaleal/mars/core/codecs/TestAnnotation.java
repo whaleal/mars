@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class TestMongId {
+public class TestAnnotation {
 
 
         private EntityModel entityEntityModel;

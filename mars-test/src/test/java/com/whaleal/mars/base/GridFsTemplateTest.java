@@ -26,8 +26,6 @@ public class GridFsTemplateTest {
     @Autowired
     Mars mars;
 
-
-
     @Test
     public void testFindAll() {
         GridFSBucket bucket = GridFSBuckets.create(mars.getDatabase());

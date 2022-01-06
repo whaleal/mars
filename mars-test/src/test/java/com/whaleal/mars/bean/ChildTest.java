@@ -252,7 +252,7 @@ public class ChildTest {
         Assert.assertEquals(p.getAge(),first.getAge());
         Assert.assertEquals(p.getName(),first.getName());
         Assert.assertEquals(p.getWeight(),first.getWeight());
-        
+
     }
 
 
