@@ -92,7 +92,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         MongoOperations, GridFsOperations, Statistic {
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
-    protected static Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
     private final MongoClient mongoClient;
     private final MongoMappingContext mapper;
     private final GridFSBucket defaultGridFSBucket;
@@ -100,21 +100,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     private final Map< String, String > collectionNameCache = new HashMap< String, String >();
     private MongoDatabase database;
 
-    public DatastoreImpl( MongoClient mongoClient, String dbName ) {
-        this(mongoClient.getDatabase(dbName), mongoClient);
+    public DatastoreImpl( MongoClient mongoClient, String databaseName ) {
+        this( mongoClient,mongoClient.getDatabase(databaseName));
     }
 
     /**
      * Copy constructor for a datastore
+     * 构造方法
      */
-    public DatastoreImpl( MongoDatabase database, MongoClient mongoClient ) {
+    public DatastoreImpl( MongoClient mongoClient , MongoDatabase database) {
 
         super(database);
 
         this.mongoClient = mongoClient;
         this.mapper = new MongoMappingContext(database);
         this.database = database.withCodecRegistry(mapper.getCodecRegistry());
-
         defaultGridFSBucket = GridFSBuckets.create(database);
 
     }
@@ -129,7 +129,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     }
 
     public MongoClient getMongoClient() {
-        return mongoClient;
+        return this.mongoClient;
     }
 
     public MongoDatabase getDatabase() {
@@ -165,7 +165,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         MongoCursor< T > iterator = crudExecutor.execute(session, collection, query, null, null);
 
-
         return new QueryCursor< T >(iterator, entityClass);
 
     }
@@ -178,7 +177,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
-
 
         T result = crudExecutor.execute(session, collection, query, null, null);
         if (log.isDebugEnabled()) {
