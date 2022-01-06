@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
  * 将 索引 部分的接口单独拿出来
  */
 
-public interface Datastore extends IndexOperations {
+public interface Datastore extends IndexOperations,MongoOperations {
 
     default <T> UpdateResult replace(Query query, T entity) {
         return replace(query, entity, new ReplaceOptions());

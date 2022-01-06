@@ -69,6 +69,7 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.util.BsonUtil;
+import com.whaleal.mars.util.SerializationUtil;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
@@ -80,7 +81,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import static com.whaleal.mars.util.SerializationUtil.serializeToJsonSafely;
 
 /**
  * 关于数据操作的数据操作的一些具体实现
@@ -88,36 +88,24 @@ import static com.whaleal.mars.util.SerializationUtil.serializeToJsonSafely;
  * @Date 2020-12-03
  */
 
-public class DatastoreImpl extends AggregationImpl implements Datastore,
-        MongoOperations, GridFsOperations, Statistic {
+public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
     private final Lock lock = new ReentrantLock();
     private final MongoClient mongoClient;
-    private final MongoMappingContext mapper;
+
     private final GridFSBucket defaultGridFSBucket;
     //缓存 collectionName
     private final Map< String, String > collectionNameCache = new HashMap< String, String >();
-    private MongoDatabase database;
+
 
     public DatastoreImpl( MongoClient mongoClient, String databaseName ) {
-        this( mongoClient,mongoClient.getDatabase(databaseName));
-    }
-
-    /**
-     * Copy constructor for a datastore
-     * 构造方法
-     */
-    public DatastoreImpl( MongoClient mongoClient , MongoDatabase database) {
-
-        super(database);
-
+        super(mongoClient.getDatabase(databaseName));
         this.mongoClient = mongoClient;
-        this.mapper = new MongoMappingContext(database);
-        this.database = database.withCodecRegistry(mapper.getCodecRegistry());
-        defaultGridFSBucket = GridFSBuckets.create(database);
-
+        defaultGridFSBucket = GridFSBuckets.create(this.database);
     }
+
+
 
     protected static com.mongodb.client.model.Collation fromDocument( Document source ) {
 
@@ -180,7 +168,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         T result = crudExecutor.execute(session, collection, query, null, null);
         if (log.isDebugEnabled()) {
-            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", serializeToJsonSafely(query.getQueryObject()),
+            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", SerializationUtil.serializeToJsonSafely(query.getQueryObject()),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
         }
 
@@ -406,7 +394,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
     public void setWriteConcern( WriteConcern writeConcern ) {
         this.database = database.withWriteConcern(writeConcern);
-
     }
 
     public void setReadConcern( ReadConcern readConcern ) {
@@ -635,7 +622,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", serializeToJsonSafely(query.getQueryObject()), collectionName);
+            log.debug("Executing count: {} in collection: {}", SerializationUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
@@ -657,7 +644,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
     @Override
     public < T > long countById( Query query, String collectionName, CountOptions countOptions ) {
         if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", serializeToJsonSafely(query.getQueryObject()), collectionName);
+            log.debug("Executing count: {} in collection: {}", SerializationUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
