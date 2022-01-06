@@ -54,7 +54,7 @@ import org.bson.BsonType;
 public class Student {
 
     @Id()
-    @Representation(BsonType.OBJECT_ID)
+    @Representation(BsonType.STRING)
     private String stuNo;
 
     private String classNo;

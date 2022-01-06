@@ -13,8 +13,10 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,6 +30,7 @@ import java.util.Optional;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChildTest {
 
     @Autowired
@@ -197,7 +200,7 @@ public class ChildTest {
     }
 
     @Test
-    public void test07Save1(){
+    public void test09Save1(){
         Child p = new Child();
         p.setAge(18);
         p.setName("child");
@@ -216,4 +219,42 @@ public class ChildTest {
         Assert.assertEquals(p.getAge(),first.getAge());
         Assert.assertEquals(p.getName(),first.getName());
     }
+
+    @Test
+    public void test10field(){
+
+        Child p = new Child();
+        p.setAge(18);
+        p.setName("child");
+        p.setId("10");
+        p.setWeight(3.3);
+        Child first = mars.save(p);
+
+
+        Assert.assertEquals(p.getId(),first.getId());
+        Assert.assertEquals(p.getAge(),first.getAge());
+        Assert.assertEquals(p.getName(),first.getName());
+        Assert.assertEquals(p.getWeight(),first.getWeight());
+    }
+
+    @Test
+    public void test11field(){
+
+        Child p = new Child();
+        p.setAge(18);
+        p.setName("child");
+        p.setId("10");
+        p.setWeight(3.3);
+        mars.insert(p);
+        Child first = mars.findOne(new Query(), Child.class).get();
+
+        Assert.assertEquals(p.getId(),first.getId());
+        Assert.assertEquals(p.getAge(),first.getAge());
+        Assert.assertEquals(p.getName(),first.getName());
+        Assert.assertEquals(p.getWeight(),first.getWeight());
+        
+    }
+
+
+
 }

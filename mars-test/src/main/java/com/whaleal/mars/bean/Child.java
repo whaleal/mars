@@ -8,4 +8,15 @@ import com.whaleal.mars.codecs.pojo.annotations.Entity;
 @Entity("chi")
 public class Child  extends Parent{
 
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight( Double weight ) {
+        this.weight = weight;
+    }
+
+    private Double weight ;
+
+
 }

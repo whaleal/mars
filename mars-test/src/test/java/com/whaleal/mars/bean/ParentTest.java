@@ -13,8 +13,10 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,6 +30,7 @@ import java.util.Optional;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ParentTest {
 
 
@@ -53,7 +56,7 @@ public class ParentTest {
 
         MongoCollection< Parent > collection = mars.getCollection(Parent.class);
         String collectionName = collection.getNamespace().getCollectionName();
-        Assert.assertEquals("pare",collectionName);
+        Assert.assertEquals("parent",collectionName);
     }
     @Test
     public void test01Insert(){
