@@ -100,13 +100,13 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-core</artifactId>
-    <version>0.4.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
 ### 🍐Gradle
 ```
-implementation 'com.whaleal.mars:mars-core:0.4.0'
+implementation 'com.whaleal.mars:mars-core:x.x.x'
 ```
 
 ### 📥下载jar
