@@ -1,6 +1,8 @@
 package com.whaleal.mars.base;
 
+import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.mars.bean.Student;
+import com.whaleal.mars.session.option.InsertManyOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.junit.Before;
@@ -17,6 +19,7 @@ import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,48 +30,55 @@ import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 @Slf4j
 public class StudentTest {
 
-    Mars mars;
-    private static Integer defStuNo = 1800;
-    private static Integer initStuCount = 1000;
+    private static Mars mars = new Mars(Constant.connectingStr);
+    private static Integer defStuNo = 1000;
+    private static Integer initStuCount = 10;
     private static Integer initClsCount = 10;
     private static List<Student> stuList = new LinkedList<>();
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server100);
+
         for (int i = 1; i < initClsCount; i++) {
             for (int j = 0; j < initStuCount; j++) {
-                Student student = StudentGenerator.getInstance(i * 1000 + j);
+                Student student = StudentGenerator.getInstance(i * defStuNo + j);
                 stuList.add(student);
             }
         }
+        try{
+            mars.dropCollection(Student.class);
+        }catch (Exception e){
+        }
     }
 
-    @Test
-    public void testCRUD() {
-        testInsertOne();
-        testFind();
-        testDelete();
-        testInsertMany();
-        testFind();
-        testDelMany();
-    }
 
     @Test
-    public void testDelMany() {
+    public void test01del() {
+
+        mars.insert(stuList ,new InsertManyOptions().ordered(false));
         DeleteResult deleteResult = mars.delete(new Query(), Student.class, new DeleteOptions().multi(true));
-        Assert.assertEquals("删除异常", 9000, deleteResult.getDeletedCount());
+        Assert.assertEquals("删除异常", stuList.size(), deleteResult.getDeletedCount());
+
     }
 
     @Test
     public void testInsertMany() {
-        InsertManyResult result = mars.insert(stuList);
-        Assert.assertEquals("insert exception", 9000, result.getOriginInsertManyResult().getInsertedIds().size());
+        Student instance1 = StudentGenerator.getInstance(defStuNo);
+        Student instance2 = StudentGenerator.getInstance(defStuNo+1);
+        Student instance3 = StudentGenerator.getInstance(defStuNo+2);
+
+        ArrayList< Student > students = CollUtil.newArrayList(instance1, instance2, instance3);
+
+        InsertManyResult result = mars.insert(students);
+        Assert.assertEquals("insert exception", students.size(), result.getOriginInsertManyResult().getInsertedIds().size());
     }
 
     @Test
     public void testDelete() {
+        Student instance = StudentGenerator.getInstance(defStuNo);
+        mars.insert(instance);
         DeleteResult deleteResult = mars.delete(new Query(), Student.class);
+
         Assert.assertEquals("delete Exception", 1, deleteResult.getDeletedCount());
     }
 
@@ -81,8 +91,10 @@ public class StudentTest {
     @Test
     public void testInsertOne() {
         Student student = StudentGenerator.getInstance(defStuNo);
+
         InsertOneResult insert = mars.insert(student,"stu");
         Assert.assertNotNull("insert exception",insert);
+
     }
 
 

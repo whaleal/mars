@@ -32,12 +32,15 @@ package com.whaleal.mars.config;
 import com.mongodb.ConnectionString;
 import org.bson.UuidRepresentation;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+
 import java.util.Arrays;
 
 /**
  * @author cx
  * @Date 2020/12/18
  */
+
 @ConfigurationProperties(prefix = MongoProperties.MARS_PREFIX)
 public class MongoProperties {
 
@@ -79,10 +82,6 @@ public class MongoProperties {
      */
     private String authenticationDatabase;
 
-    /**
-     * GridFS database name.
-     */
-    private String bucket;
 
     /**
      * Login user of the mongo server. Cannot be set with URI.
@@ -99,10 +98,6 @@ public class MongoProperties {
      */
     private String replicaSetName;
 
-    /**
-     * Fully qualified name of the FieldNamingStrategy to use.
-     */
-    private Class<?> fieldNamingStrategy;
 
     /**
      * Representation to use when converting a UUID to a BSON binary value.
@@ -162,13 +157,6 @@ public class MongoProperties {
         this.replicaSetName = replicaSetName;
     }
 
-    public Class<?> getFieldNamingStrategy() {
-        return this.fieldNamingStrategy;
-    }
-
-    public void setFieldNamingStrategy(Class<?> fieldNamingStrategy) {
-        this.fieldNamingStrategy = fieldNamingStrategy;
-    }
 
     public UuidRepresentation getUuidRepresentation() {
         return this.uuidRepresentation;
@@ -198,13 +186,6 @@ public class MongoProperties {
         this.port = port;
     }
 
-    public String getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
 
     public String getMongoClientDatabase() {
         if (this.database != null) {
@@ -229,11 +210,9 @@ public class MongoProperties {
                 ", uri='" + uri + '\'' +
                 ", database='" + database + '\'' +
                 ", authenticationDatabase='" + authenticationDatabase + '\'' +
-                ", bucket='" + bucket + '\'' +
                 ", username='" + username + '\'' +
                 ", password=" + Arrays.toString(password) +
                 ", replicaSetName='" + replicaSetName + '\'' +
-                ", fieldNamingStrategy=" + fieldNamingStrategy +
                 ", autoIndexCreation=" + autoIndexCreation +
                 '}';
     }

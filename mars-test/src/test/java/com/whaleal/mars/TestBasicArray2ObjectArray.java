@@ -42,14 +42,4 @@ public class TestBasicArray2ObjectArray {
         System.out.println(ret1);
     }
 
-
-
-
-    public void test02(){
-       // Filters.geoWithinPolygon();
-    }
-
-
-
-
 }

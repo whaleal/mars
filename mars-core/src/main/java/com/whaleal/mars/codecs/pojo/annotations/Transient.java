@@ -29,26 +29,22 @@
  */
 package com.whaleal.mars.codecs.pojo.annotations;
 
-import com.whaleal.mars.codecs.pojo.StorageType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import static java.lang.annotation.ElementType.*;
 
 /**
- * 蒙戈财产
- * An annotation that configures a property.
+ * Marks a field to be transient for the mapping framework. Thus the property will not be persisted and not further
+ * inspected by the mapping framework.
+ * <p>
+ * 标记一个字段的是 transient 修饰的。
+ * 属性不会被持久化，也不会进一步由框架检查。
  *
- * <p>Note: Requires the {@link org.bson.codecs.pojo.Conventions#ANNOTATION_CONVENTION}</p>
+ * @author wh
  */
-@Documented
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MongoProperty {
-
-    String value() default "";
-
-
-    boolean useDiscriminator() default false;
-
-
-    StorageType storageType() default StorageType.IMPLICIT;
+@Target(value = {FIELD, METHOD, ANNOTATION_TYPE})
+public @interface Transient {
 }

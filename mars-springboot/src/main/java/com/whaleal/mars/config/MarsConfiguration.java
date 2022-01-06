@@ -36,6 +36,7 @@ import com.whaleal.mars.core.Mars;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * @author cx
@@ -44,7 +45,7 @@ import org.springframework.context.annotation.Configuration;
  * 原生的配置了许多Bean，涉及到mars的有
  *
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MongoProperties.class)
 public class MarsConfiguration {
 
@@ -56,18 +57,10 @@ public class MarsConfiguration {
     private MongoClient mongoClient(MongoProperties properties) {
 
         MongoClientSettings.Builder builder = MongoClientSettings.builder();
-
-        Customizer customizer = new
-
-                CustomerMongoClientSettings(properties);
-
+        CustomerMongoClientSettings customizer = new CustomerMongoClientSettings(properties);
         customizer.customize(builder);
-
         MongoClientSettings build = builder.build();
-
-        MongoClient mongoClient = MongoClients.create(build);
-
-        return mongoClient;
+        return MongoClients.create(build);
     }
 
 }

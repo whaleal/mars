@@ -44,8 +44,8 @@ public class MarsGridFsTest {
 
     private static String bucketName = "xx";
 
-    private static String m1 = "/Users/cs/Documents/back.jpeg";
-    private static String m300 = "/usr/local/tmp/软工1645-201612211515-单卫东.rar";
+    private static String m1 = "/Users/cs/Documents/xxxx.jpeg";
+    private static String m300 = "/usr/local/tmp/xxx.rar";
     private static String g2 = "";
 
     private static String m300Id = "6080dd5e878eb9205b437f7f";

@@ -36,14 +36,16 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.codecs.GridFSFileCodecProvider;
+import com.mongodb.client.model.geojson.codecs.GeoJsonCodecProvider;
 import com.whaleal.mars.codecs.internal.JsonObjectCodecProvider;
 import com.whaleal.mars.codecs.pojo.*;
 import com.whaleal.mars.codecs.pojo.annotations.Concern;
+import com.whaleal.mars.codecs.pojo.annotations.Discriminator;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.reader.DocumentReader;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.AggregationCodecProvider;
-import com.whaleal.mars.codecs.geo.GeoJsonCodecProvider;
+
 import com.whaleal.mars.core.internal.NotMappableException;
 import org.bson.Document;
 import org.bson.codecs.*;
@@ -316,7 +318,7 @@ public class MongoMappingContext {
 
 
     public void updateQueryWithDiscriminators(EntityModel model, Document query) {
-        Entity annotation = (Entity) model.getAnnotation(Entity.class);
+        Discriminator annotation = (Discriminator) model.getAnnotation(Discriminator.class);
         if (annotation != null && annotation.useDiscriminator()
                 && !query.containsKey("_id")
                 && !query.containsKey(model.getDiscriminatorKey())) {

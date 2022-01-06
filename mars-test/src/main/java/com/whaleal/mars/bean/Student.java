@@ -29,6 +29,8 @@
  */
 package com.whaleal.mars.bean;
 
+import com.whaleal.mars.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.codecs.pojo.annotations.Representation;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.index.annotation.Field;
 import com.whaleal.mars.core.index.annotation.Index;
@@ -38,20 +40,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.whaleal.mars.codecs.pojo.StorageType;
-import com.whaleal.mars.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.codecs.pojo.annotations.MongoId;
-import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
+import org.bson.BsonType;
 
-@Entity(value = "stu")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Indexes({@Index( fields = {@Field(value = "salary", type = IndexDirection.ASC), @Field(value = "name", type = IndexDirection.DESC)},options=@IndexOptions(background = true ,name = "salary"))
         ,@Index(fields = {@Field(value = "idcc",type = IndexDirection.HASHED)})
         ,@Index(fields = {@Field(value = "idcc",type = IndexDirection.ASC)},options = @IndexOptions(background = false,name = "ccdi",unique = true,expireAfterSeconds = 10))})
+@Entity("stu")
 public class Student {
 
-    @MongoId(value = StorageType.STRING)
+    @Id()
+    @Representation(BsonType.STRING)
     private String stuNo;
 
     private String classNo;
@@ -60,19 +63,20 @@ public class Student {
 
     private Integer stuAge;
 
-    @MongoProperty(value = "height", storageType = StorageType.STRING)
+    @Property(value = "height")
+    @Representation(BsonType.STRING)
     private Double stuHeight;
 
-    @MongoProperty(value = "sex")
+    @Property(value = "sex")
     private Gender stuSex;
 
-    @MongoProperty(value = "cscore")
+    @Property(value = "cscore")
     private Double chineseScore;
 
-    @MongoProperty(value = "mscore")
+    @Property(value = "mscore")
     private Double mathScore;
 
-    @MongoProperty(value = "escore")
+    @Property(value = "escore")
     private Double englishScore;
 
 }

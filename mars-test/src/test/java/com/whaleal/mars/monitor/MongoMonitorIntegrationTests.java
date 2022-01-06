@@ -28,7 +28,7 @@ public class MongoMonitorIntegrationTests {
     @Before
     public void init(){
         System.out.println(1111);
-        mongoClient = MongoClients.create(Constant.server100);
+        mongoClient = MongoClients.create(Constant.connectingStr);
         Assert.assertNotNull(mongoClient);
     }
 

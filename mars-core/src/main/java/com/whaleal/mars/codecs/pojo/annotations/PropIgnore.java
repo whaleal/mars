@@ -27,25 +27,26 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.codecs.geo;
+package com.whaleal.mars.codecs.pojo.annotations;
 
-import org.bson.codecs.configuration.CodecRegistry;
-import org.locationtech.jts.geom.Polygon;
+import java.lang.annotation.*;
 
 /**
- * A Codec for a GeoJSON polygon.
+ * An annotation that configures a property to be ignored when reading and writing to BSON
  *
+ * <p>Note: Requires the {@link org.bson.codecs.pojo.Conventions#ANNOTATION_CONVENTION}</p>
  *
-
+ * @see org.bson.codecs.pojo.Conventions#ANNOTATION_CONVENTION
+ * <p>
+ * 如果被此修饰
+ * <p>
+ * 那么writeName  为空
+ * 直接序列化传值
+ *
+ * <p>Note: A null means this property will not be serialized.</p>
  */
-public class PolygonCodec extends AbstractGeometryCodec<Polygon> {
-
-    /**
-     * Constructs an instance.
-     *
-     * @param registry the registry
-     */
-    public PolygonCodec(final CodecRegistry registry) {
-        super(registry, Polygon.class);
-    }
+@Documented
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PropIgnore {
 }

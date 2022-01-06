@@ -30,11 +30,8 @@
 package com.whaleal.mars.bean;
 
 
-import com.whaleal.mars.codecs.pojo.annotations.Entity;
-
 import java.util.Set;
 
-@Entity
 public class State {
 
     private String name;

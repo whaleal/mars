@@ -27,7 +27,7 @@ public class EntityBuilderTest {
 
     @Before
     public void init(){
-        MongoClient  client = MongoClients.create(Constant.server100);
+        MongoClient  client = MongoClients.create(Constant.connectingStr);
         context = new MongoMappingContext(client.getDatabase("mars"));
         Assert.assertNotNull(context);
     }

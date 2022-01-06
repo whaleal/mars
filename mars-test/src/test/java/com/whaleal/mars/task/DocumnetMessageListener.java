@@ -27,24 +27,22 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
+package com.whaleal.mars.task;
 
-package com.whaleal.mars.codecs.geo;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
-import org.bson.codecs.configuration.CodecRegistry;
-import org.locationtech.jts.geom.LineString;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import com.whaleal.mars.core.messaging.Message;
+import com.whaleal.mars.core.messaging.MessageListener;
+import org.springframework.stereotype.Component;
 
-/**
- * A Codec for a GeoJSON LineString.
- *
- *
- */
-public class LineStringCodec extends AbstractGeometryCodec<LineString> {
-
-    /**
-     * Construct a new instance
-     * @param registry the CodecRegistry
-     */
-    public LineStringCodec(final CodecRegistry registry) {
-        super(registry, LineString.class);
+@Component
+@Slf4j
+public class DocumnetMessageListener implements MessageListener<ChangeStreamDocument<Document>, Document> {
+    @Override
+    public void onMessage(Message<ChangeStreamDocument<Document>, Document> message) {
+        log.info("Received Message in collection: {},message raw: {}, message body:{}",
+                message.getProperties().getCollectionName(), message.getRaw(), message.getBody());
     }
 }

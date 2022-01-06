@@ -27,7 +27,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.message;
+package com.whaleal.mars.task;
 
 
 import com.mongodb.client.model.changestream.FullDocument;

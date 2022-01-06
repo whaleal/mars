@@ -27,26 +27,18 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
+package com.whaleal.mars.codecs.pojo.annotations;
 
-package com.whaleal.mars.codecs.geo;
+import org.bson.BsonType;
 
-import org.bson.codecs.configuration.CodecRegistry;
-import org.locationtech.jts.geom.MultiPoint;
+import java.lang.annotation.*;
 
 /**
- * A Codec for a GeoJSON MultiPoint.
- *
- *
-
+ * @author wh
  */
-public class MultiPointCodec extends AbstractGeometryCodec<MultiPoint> {
-
-    /**
-     * Constructs an instance.
-     *
-     * @param registry the registry
-     */
-    public MultiPointCodec(final CodecRegistry registry) {
-        super(registry, MultiPoint.class);
-    }
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
+public @interface Representation {
+    BsonType value();
 }

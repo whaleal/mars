@@ -27,26 +27,20 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
+package com.whaleal.mars.codecs.pojo.annotations;
 
-package com.whaleal.mars.codecs.geo;
-
-import org.bson.codecs.configuration.CodecRegistry;
-import org.locationtech.jts.geom.GeometryCollection;
+import java.lang.annotation.*;
 
 /**
- * A Codec for a GeoJSON GeometryCollection.
+ * 用于标记一个中的构造方法
+ * 只能作用于方法 或构造方法
  *
  *
-
+ * @author wh
+ *
  */
-public class GeometryCollectionCodec extends AbstractGeometryCodec<GeometryCollection> {
-
-    /**
-     * Constructs an instance.
-     *
-     * @param registry the registry
-     */
-    public GeometryCollectionCodec(final CodecRegistry registry) {
-        super(registry, GeometryCollection.class);
-    }
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+public @interface Constructor {
 }

@@ -9,6 +9,8 @@ import com.whaleal.mars.session.QueryCursor;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
+
 
 /**
  * 对查询操作中的排序功能进行测试
@@ -21,14 +23,14 @@ public class SortTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server101);
+        mars = new Mars(Constant.connectingStr);
         //准备数据准备一次就足够了，不能准备多次
-        /*LinkedList<Student> list = new LinkedList<>();
+        LinkedList<Student> list = new LinkedList<>();
         for (int i = 1001; i < 1010; i++) {
             Student student = StudentGenerator.getInstance(i);
             list.add(student);
         }
-        mars.insert(list);*/
+        mars.insert(list);
     }
 
 

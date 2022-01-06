@@ -13,7 +13,7 @@
 > 我们希望 `Mars` 框架将来可以整合多个数据库，对不同的数据平台提供统一的驱动操作。让用户能够达到只用Mars就可以对多种不同类型数据库进行操作
 
 ##  版本信息 
-目前已发布至 0.4.0
+版本信息详见 [releases](https://github.com/whaleal/mars/releases)
 请修改相关pom  文件 
 
 
@@ -71,7 +71,7 @@
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-core</artifactId>
-    <version>0.1.2</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
@@ -79,7 +79,7 @@
 
 ```java
 //mongodb://用户名：密码@mongoDB服务器1的IP：端口，mongoDB服务器1的IP：端口/数据库?附带拼接字符串
-Mars mars = new Mars("mongodb://root:123456@server100:37017,server100:37018,server100:37019/myrepo?authSource=admin");
+Mars mars = new Mars("mongodb://root:123456@localhost:27017/mydb?authSource=admin");
 ```
 
 `SpringBoot`项目中引入最新版本的`Mars`：
@@ -88,7 +88,7 @@ Mars mars = new Mars("mongodb://root:123456@server100:37017,server100:37018,serv
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-springboot</artifactId>
-    <version>0.4.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
@@ -96,7 +96,7 @@ Mars mars = new Mars("mongodb://root:123456@server100:37017,server100:37018,serv
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-core</artifactId>
-    <version>0.4.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
@@ -129,29 +129,31 @@ public class Application {
 @NoArgsConstructor
 public class Student {
 
-    @MongoId(value = StorageType.STRING)
-    private String stuNo;
-
-    private String classNo;
-
-    private String stuName;
-
-    private Integer stuAge;
-
-    @MongoProperty(value = "height", storageType = StorageType.STRING)
-    private Double stuHeight;
-
-    @MongoProperty(value = "sex")
-    private Sex stuSex;
-
-    @MongoProperty(value = "cscore")
-    private Double chineseScore;
-
-    @MongoProperty(value = "mscore")
-    private Double mathScore;
-
-    @MongoProperty(value = "escore")
-    private Double englishScore;
+        @Id()
+        @Representation(BsonType.OBJECT_ID)
+        private String stuNo;
+    
+        private String classNo;
+    
+        private String stuName;
+    
+        private Integer stuAge;
+    
+        @Property(value = "height")
+        @Representation(BsonType.STRING)
+        private Double stuHeight;
+    
+        @Property(value = "sex")
+        private Gender stuSex;
+    
+        @Property(value = "cscore")
+        private Double chineseScore;
+    
+        @Property(value = "mscore")
+        private Double mathScore;
+    
+        @Property(value = "escore")
+        private Double englishScore;
 
 }
 
@@ -171,22 +173,28 @@ public enum Sex {
 
 
 ## 注解
-### @MongoId
+### @Id
 
 - 描述：文档主键注解
 
 | 属性  | 类型    | 必须指定 | 默认值              | 描述         |
 | ----- | ------- | -------- | ------------------- | ------------ |
-| value | StorageType | 否       | StorageType._OBJECT_ID_ | 主键数据类型 |
+| value | Class<?> | 否       | Object.class | 用于读取值映射类型 |
 
-### @MongoProperty
+### @Property
 
 - 描述：文档字段注解
 
 | 属性    | 类型    | 必须指定 | 默认值                               | 描述                   |
 | ------- | ------- | -------- | ------------------------------------ | ---------------------- |
-| value   | String  | 否       | ""如果不声明，会以字段名字存入数据库 | 存入数据库中字段的名字 |
-| storageType | StorageType | 否       | StorageType.*IMPLICIT*                   | 字段的数据类型         |
+| value   | String  | 否       | Object.class | 用于读取值映射类型 |
+
+### @Representation(BsonType.OBJECT_ID)
+- 描述：文档类型注解 如使用该注解必须指定值
+
+| 属性    | 类型    | 必须指定 | 默认值                               | 描述                   |
+| ------- | ------- | -------- | ------------------------------------ | ---------------------- |
+| value   | BsonType  |是      | null  | 用于类型映射 |
 
 # 核心操作
 

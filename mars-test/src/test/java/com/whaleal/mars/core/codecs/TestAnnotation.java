@@ -3,9 +3,8 @@ package com.whaleal.mars.core.codecs;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
-import com.whaleal.mars.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.codecs.pojo.annotations.MongoId;
-import com.whaleal.mars.codecs.pojo.annotations.MongoProperty;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.codecs.pojo.EntityModelBuilder;
 
@@ -16,7 +15,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class TestMongId {
+public class TestAnnotation {
 
 
         private EntityModel entityEntityModel;
@@ -70,11 +69,74 @@ public class TestMongId {
             return new ArrayList<>(Arrays.asList(values));
         }
 
-        @Entity
         private static class TestEntity {
-            @MongoId
+            public String getId() {
+                return id;
+            }
+
+            public void setId( String id ) {
+                this.id = id;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName( String name ) {
+                this.name = name;
+            }
+
+            public List< String > getListOfString() {
+                return listOfString;
+            }
+
+            public void setListOfString( List< String > listOfString ) {
+                this.listOfString = listOfString;
+            }
+
+            public List< List< String > > getListOfListOfString() {
+                return listOfListOfString;
+            }
+
+            public void setListOfListOfString( List< List< String > > listOfListOfString ) {
+                this.listOfListOfString = listOfListOfString;
+            }
+
+            public int[] getArrayOfInt() {
+                return arrayOfInt;
+            }
+
+            public void setArrayOfInt( int[] arrayOfInt ) {
+                this.arrayOfInt = arrayOfInt;
+            }
+
+            public Map< String, Integer > getMapOfInts() {
+                return mapOfInts;
+            }
+
+            public void setMapOfInts( Map< String, Integer > mapOfInts ) {
+                this.mapOfInts = mapOfInts;
+            }
+
+            public List< Embed > getListOfEmbeds() {
+                return listOfEmbeds;
+            }
+
+            public void setListOfEmbeds( List< Embed > listOfEmbeds ) {
+                this.listOfEmbeds = listOfEmbeds;
+            }
+
+            public Embed getEmbed() {
+                return embed;
+            }
+
+            public void setEmbed( Embed embed ) {
+                this.embed = embed;
+            }
+
+            @Id
             private String id;
-            @MongoProperty("n")
+            @Property("n")
             private String name;
             private List<String> listOfString;
             private List<List<String>> listOfListOfString;
@@ -84,8 +146,23 @@ public class TestMongId {
             private Embed  embed ;
         }
 
-        @Entity
         private static class Embed {
+            public String getEmbedName() {
+                return embedName;
+            }
+
+            public void setEmbedName( String embedName ) {
+                this.embedName = embedName;
+            }
+
+            public List< Embed > getEmbeddeds() {
+                return embeddeds;
+            }
+
+            public void setEmbeddeds( List< Embed > embeddeds ) {
+                this.embeddeds = embeddeds;
+            }
+
             private String embedName;
             private List<Embed> embeddeds;
         }

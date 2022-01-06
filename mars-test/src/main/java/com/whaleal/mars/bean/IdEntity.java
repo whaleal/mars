@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.bean;
 
-import com.whaleal.mars.codecs.pojo.annotations.MongoId;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
 
 public class IdEntity {
     public String get_id() {
@@ -40,7 +40,7 @@ public class IdEntity {
         this._id = _id;
     }
 
-    @MongoId
+    @Id
     private String _id;
 
     public String getName() {

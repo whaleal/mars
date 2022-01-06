@@ -65,7 +65,7 @@ import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
-import com.whaleal.mars.util.BsonUtils;
+import com.whaleal.mars.util.BsonUtil;
 
 import org.bson.Document;
 import org.bson.codecs.Codec;
@@ -484,7 +484,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
             return (T) getGridFsBucket(bucketName).uploadFromStream(upload.getFilename(), upload.getContent(), uploadOptions);
         }
 
-        getGridFsBucket(bucketName).uploadFromStream(BsonUtils.simpleToBsonValue(upload.getFileId()), upload.getFilename(),
+        getGridFsBucket(bucketName).uploadFromStream(BsonUtil.simpleToBsonValue(upload.getFileId()), upload.getFilename(),
                 upload.getContent(), uploadOptions);
         log.info("{} execute end", getClass() + ".storeGridFs()");
         return upload.getFileId();
@@ -726,6 +726,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore,
 
     @Override
     public <T> void dropCollection(Class<T> entityClass) {
+        String collectionName = this.mapper.getEntityModel(entityClass).getCollectionName();
+        System.out.println(collectionName);
         dropCollection(this.mapper.getEntityModel(entityClass).getCollectionName());
     }
 
