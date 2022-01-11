@@ -177,6 +177,8 @@ mars欢迎任何人为mars添砖加瓦，贡献代码，不过维护者是一个
 
 ![whaleal](https://github.com/whaleal/whaleal.github.io/blob/main/images/logo1.png)
 
+## 其他相关项目 
+[Project](https://docs.whaleal.com/project)
 
 ## What is Mars
 
