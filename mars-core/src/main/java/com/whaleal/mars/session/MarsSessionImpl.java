@@ -44,8 +44,8 @@ public class MarsSessionImpl extends BaseMarsSesssion {
     /**
      * Creates a new session.
      */
-    public MarsSessionImpl(ClientSession session, MongoClient mongoClient, MongoDatabase database) {
-        super(session, mongoClient, database);
+    public MarsSessionImpl(ClientSession session, MongoClient mongoClient, String databaseName) {
+        super(session, mongoClient, databaseName);
     }
 
 

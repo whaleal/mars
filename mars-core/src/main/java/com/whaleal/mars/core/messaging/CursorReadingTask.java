@@ -33,7 +33,7 @@ import com.mongodb.client.MongoCursor;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.ErrorHandler;
+import com.whaleal.mars.core.internal.ErrorHandler;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;

@@ -53,7 +53,8 @@ public class MarsConfiguration {
 
     @Bean
     public Mars mars(MongoProperties properties) {
-        return new Mars(mongoClient(properties), properties.getMongoClientDatabase());
+        MongoProperties mongoProperties = properties ;
+        return new Mars(mongoClient(mongoProperties), mongoProperties.getMongoClientDatabase());
     }
 
     private MongoClient mongoClient(MongoProperties properties) {

@@ -31,7 +31,7 @@ package com.whaleal.mars.core.validation;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.mars.util.SerializationUtil;
+import com.whaleal.mars.util.DocumentUtil;
 import org.bson.Document;
 
 
@@ -68,7 +68,7 @@ class DocumentValidator implements Validator {
      */
     @Override
     public String toString() {
-        return SerializationUtil.serializeToJsonSafely(validatorObject);
+        return DocumentUtil.serializeToJsonSafely(validatorObject);
     }
 
     @Override

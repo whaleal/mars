@@ -59,7 +59,6 @@ import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.UpdateDefinition;
 import com.whaleal.mars.gridfs.GridFsObject;
-import com.whaleal.mars.gridfs.GridFsOperations;
 import com.whaleal.mars.gridfs.GridFsResource;
 import com.whaleal.mars.session.executor.CrudExecutor;
 import com.whaleal.mars.session.executor.CrudExecutorFactory;
@@ -69,7 +68,7 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.util.BsonUtil;
-import com.whaleal.mars.util.SerializationUtil;
+import com.whaleal.mars.util.DocumentUtil;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
@@ -91,6 +90,7 @@ import java.util.stream.Collectors;
 public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
+
     private final Lock lock = new ReentrantLock();
     private final MongoClient mongoClient;
 
@@ -122,6 +122,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     public MongoDatabase getDatabase() {
         return this.database;
+    }
+
+    public MongoDatabase getDatabase(String databaseName){
+        if (StrUtil.isBlank(databaseName)) {
+            throw new IllegalArgumentException("databaseName in getDatabase can't be null or empty ");
+        }
+        return this.mongoClient.getDatabase(databaseName);
     }
 
     @Override
@@ -168,7 +175,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         T result = crudExecutor.execute(session, collection, query, null, null);
         if (log.isDebugEnabled()) {
-            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", SerializationUtil.serializeToJsonSafely(query.getQueryObject()),
+            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", DocumentUtil.serializeToJsonSafely(query.getQueryObject()),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
         }
 
@@ -268,7 +275,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
             return null;
         }
-        return new MarsSessionImpl(clientSession, mongoClient, database);
+        return new MarsSessionImpl(clientSession, mongoClient, database.getName());
     }
 
 
@@ -282,7 +289,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
             return null;
         }
 
-        return new MarsSessionImpl(clientSession, mongoClient, database);
+        return new MarsSessionImpl(clientSession, mongoClient, database.getName());
     }
 
     @Override
@@ -622,7 +629,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", SerializationUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
+            log.debug("Executing count: {} in collection: {}", DocumentUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
@@ -644,7 +651,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > long countById( Query query, String collectionName, CountOptions countOptions ) {
         if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", SerializationUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
+            log.debug("Executing count: {} in collection: {}", DocumentUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
