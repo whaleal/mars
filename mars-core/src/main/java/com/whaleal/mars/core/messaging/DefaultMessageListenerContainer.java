@@ -36,9 +36,8 @@ import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.session.DatastoreImpl;
 import com.whaleal.mars.task.SimpleAsyncTaskExecutor;
-import com.whaleal.mars.util.ErrorHandler;
+import com.whaleal.mars.core.internal.ErrorHandler;
 
 
 import java.time.Duration;

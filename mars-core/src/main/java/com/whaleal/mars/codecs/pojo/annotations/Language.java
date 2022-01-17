@@ -1,4 +1,3 @@
-
 /**
  *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
  *
@@ -31,11 +30,14 @@
 package com.whaleal.mars.codecs.pojo.annotations;
 
 import java.lang.annotation.*;
+import java.util.Locale;
 
 
 @Documented
-@Target({ElementType.FIELD})
+@Inherited
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
 public @interface Language {
 
+    String value();
 }

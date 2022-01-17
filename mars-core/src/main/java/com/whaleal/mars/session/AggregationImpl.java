@@ -46,8 +46,8 @@ import java.util.stream.Collectors;
 
 public class AggregationImpl {
 
-    private final MongoMappingContext mapper;
-    private final MongoDatabase database;
+    protected  MongoMappingContext mapper;
+    protected  MongoDatabase database;
 
 
     public AggregationImpl(MongoDatabase database) {

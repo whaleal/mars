@@ -30,9 +30,10 @@
 package com.whaleal.mars.gridfs;
 
 
+import com.whaleal.icefrog.core.exceptions.UtilException;
+import com.whaleal.icefrog.core.util.URLUtil;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
-import com.whaleal.mars.util.ResourceUtil;
 
 
 import java.io.File;
@@ -120,8 +121,8 @@ public abstract class AbstractResource implements Resource {
     public URI getURI() throws IOException {
         URL url = getURL();
         try {
-            return ResourceUtil.toURI(url);
-        } catch (URISyntaxException ex) {
+            return URLUtil.toURI(url);
+        } catch (UtilException ex) {
             throw new IOException("Invalid URI [" + url + "]", ex);
         }
     }

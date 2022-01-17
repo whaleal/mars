@@ -109,6 +109,60 @@ public class MongoProperties {
      */
     private Boolean autoIndexCreation;
 
+    public Boolean getEnableVersionApi() {
+        return enableVersionApi;
+    }
+
+    public void setEnableVersionApi( Boolean enableVersionApi ) {
+        this.enableVersionApi = enableVersionApi;
+    }
+
+    public Boolean getStrict() {
+        return strict;
+    }
+
+    public void setStrict( Boolean strict ) {
+        this.strict = strict;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion( String version ) {
+        this.version = version;
+    }
+
+    public Boolean getDeprecationErrors() {
+        return deprecationErrors;
+    }
+
+    public void setDeprecationErrors( Boolean deprecationErrors ) {
+        this.deprecationErrors = deprecationErrors;
+    }
+
+    /**
+     * 是否启用 versionApi
+     * 默认为 false
+     */
+    private Boolean enableVersionApi = false ;
+
+    /**
+     * 是否启用严格模式
+     */
+    private Boolean strict ;
+
+    /**
+     * 版本
+     */
+    private String version;
+
+    /**
+     * 是否 deprecationErrors
+     */
+    private  Boolean deprecationErrors ;
+
+
     public String getHost() {
         return this.host;
     }

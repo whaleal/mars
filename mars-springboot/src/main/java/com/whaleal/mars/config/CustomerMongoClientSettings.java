@@ -29,10 +29,7 @@
  */
  package com.whaleal.mars.config;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import org.springframework.context.annotation.Configuration;
@@ -60,6 +57,18 @@ public class CustomerMongoClientSettings implements Customizer {
         applyHostAndPort(settingsBuilder);
         applyCredentials(settingsBuilder);
         applyReplicaSet(settingsBuilder);
+        applyVersionApi(settingsBuilder);
+    }
+
+    private void applyVersionApi( MongoClientSettings.Builder settingsBuilder ) {
+        if(properties.getEnableVersionApi()){
+
+            ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.valueOf(properties.getVersion()))
+                    .deprecationErrors(properties.getDeprecationErrors())
+                    .strict(properties.getStrict()).build();
+
+            settingsBuilder.serverApi(serverApi);
+        }
     }
 
     private void validateConfiguration() {

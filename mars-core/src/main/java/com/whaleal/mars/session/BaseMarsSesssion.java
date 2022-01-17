@@ -59,8 +59,8 @@ public class BaseMarsSesssion extends DatastoreImpl implements MarsSession {
 
     BaseMarsSesssion(ClientSession session,
                      MongoClient mongoClient,
-                     MongoDatabase database) {
-        super(database, mongoClient);
+                     String databaseName) {
+        super(mongoClient,databaseName);
         this.session = session;
     }
     @Override

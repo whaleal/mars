@@ -30,6 +30,8 @@
 package com.whaleal.mars.config;
 
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.whaleal.mars.core.Mars;
@@ -51,7 +53,8 @@ public class MarsConfiguration {
 
     @Bean
     public Mars mars(MongoProperties properties) {
-        return new Mars(mongoClient(properties), properties.getMongoClientDatabase());
+        MongoProperties mongoProperties = properties ;
+        return new Mars(mongoClient(mongoProperties), mongoProperties.getMongoClientDatabase());
     }
 
     private MongoClient mongoClient(MongoProperties properties) {

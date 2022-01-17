@@ -27,12 +27,20 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.codecs.pojo.annotations;
-
+package com.whaleal.mars.core.internal;
 
 /**
- * @Date 2021-06-29
- * 暂时未启用
+ * A strategy for handling errors. This is especially useful for handling
+ * errors that occur during asynchronous execution of tasks that have been
+ * submitted to a TaskScheduler. In such cases, it may not be possible to
+ * throw the error to the original caller.
  */
-public @interface Collation {
+@FunctionalInterface
+public interface ErrorHandler {
+
+    /**
+     * Handle the given error, possibly rethrowing it as a fatal exception.
+     */
+    void handleError(Throwable t);
+
 }

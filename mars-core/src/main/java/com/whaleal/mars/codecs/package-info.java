@@ -1,4 +1,4 @@
-@NonNullApi
+
 /**
  *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
  *
@@ -28,6 +28,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-        package com.whaleal.mars.codecs;
 
+@NonNullApi
+package com.whaleal.mars.codecs;
 import com.mongodb.lang.NonNullApi;

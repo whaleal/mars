@@ -100,13 +100,13 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 <dependency>
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars-core</artifactId>
-    <version>0.4.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
 ### 🍐Gradle
 ```
-implementation 'com.whaleal.mars:mars-core:0.4.0'
+implementation 'com.whaleal.mars:mars-core:x.x.x'
 ```
 
 ### 📥下载jar
@@ -150,7 +150,7 @@ mars的源码分为两个分支，功能如下：
 
 
 ### 🧬贡献代码的步骤
-1.在github issues 上找到需要修复的问题，或提出要贡献的特性内容  
+1. 在github issues 上找到需要修复的问题，或提出要贡献的特性内容  
 2. 在github或者Github上fork项目到自己的repo  
 3. 把fork过去的项目也就是你的项目clone到你的本地  
 4. 修改代码（记得一定要修改v1-dev分支）并进行相关测试  
@@ -177,6 +177,8 @@ mars欢迎任何人为mars添砖加瓦，贡献代码，不过维护者是一个
 
 ![whaleal](https://github.com/whaleal/whaleal.github.io/blob/main/images/logo1.png)
 
+## 其他相关项目 
+[Project](https://docs.whaleal.com/project)
 
 ## What is Mars
 

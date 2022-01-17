@@ -29,10 +29,7 @@
  */
 package com.whaleal.mars.core;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.ReadConcern;
-import com.mongodb.ReadPreference;
-import com.mongodb.WriteConcern;
+import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.whaleal.mars.session.DatastoreImpl;
@@ -68,6 +65,10 @@ public class Mars extends DatastoreImpl {
 
     public Mars(ConnectionString connectionString) {
         this(MongoClients.create(connectionString), connectionString.getDatabase());
+    }
+
+    public Mars( MongoClientSettings clientSettings ,String databaseName){
+        this(MongoClients.create(clientSettings),databaseName);
     }
 
 

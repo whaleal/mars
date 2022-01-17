@@ -31,7 +31,7 @@ package com.whaleal.mars.core.messaging;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.util.ErrorHandler;
+import com.whaleal.mars.core.internal.ErrorHandler;
 
 class TaskFactory {
 
