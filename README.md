@@ -33,9 +33,6 @@
 	<a target="_blank" href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html">
 		<img src="https://img.shields.io/badge/JDK-8+-green.svg" />
 	</a>
-      <a href="https://codecov.io/gh/whaleal/mars">
-        <img src="https://codecov.io/gh/whaleal/mars/branch/v1-dev/graph/badge.svg?token=U0TP3K1915"/>
-      </a>
 	<a target="_blank" href='https://github.com/whaleal/mars'>
 		<img src="https://img.shields.io/github/stars/whaleal/mars.svg?style=social" alt="github star"/>
 	</a>
