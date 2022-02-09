@@ -142,6 +142,7 @@ public final class EntityModel<T> {
             if(StrUtil.equalsIgnoreCase(propertyModel.getName(),"id") && ObjectUtil.isNull(idPropertyName)){
                 idPropertyName = propertyModel.getName();
                 IdProperty = propertyModel;
+                break;
             }
         }
 
