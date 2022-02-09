@@ -34,6 +34,27 @@ public class EntityBuilderTest {
 
 
     @Test
+    public void test01(){
+        EntityModelBuilder< Person > personEntityModelBuilder = new EntityModelBuilder<>(Person.class);
+
+        String idPropertyName = personEntityModelBuilder.getIdPropertyName();
+
+        System.out.println(idPropertyName);
+
+
+        EntityModel< Person > build = personEntityModelBuilder.build();
+
+        System.out.println(build.getIdProperty());
+
+    }
+
+
+    public void test02(){
+
+    }
+
+
+    @Test
     public void checkRegister(){
         CodecRegistry codecRegistry = context.getCodecRegistry();
 

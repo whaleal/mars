@@ -31,6 +31,8 @@ package com.whaleal.mars.codecs.pojo;
 
 
 
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.codecs.Convention;
 import org.bson.codecs.configuration.CodecConfigurationException;
 
@@ -105,6 +107,11 @@ public final class EntityModel<T> {
                 IdProperty = model;
             }
         }
+        //  在这个阶段过后  仍然会存在以下情况
+        //  实体对象异常   例如没有 @Id 注解 没有这个字段
+        //  需要针对该Id  字段进行额外处理
+
+
 
         validatePropertyModels(entityModelBuilder.getType().getSimpleName(), propertyModels);
 
@@ -118,17 +125,31 @@ public final class EntityModel<T> {
         this.discriminatorEnabled = entityModelBuilder.useDiscriminator();
         this.discriminatorKey = entityModelBuilder.getDiscriminatorKey();
         this.discriminator = entityModelBuilder.getDiscriminator();
-        this.idPropertyModelHolder = IdPropertyModelHolder.create(entityModelBuilder.getType(), IdProperty, entityModelBuilder.getIdGenerator());
+
         this.propertyModels = unmodifiableList(new ArrayList<PropertyModel<?>>(unmodifiableList(unmodifiableList(propertyModels))));
 
         this.collectionName = entityModelBuilder.getCollectionName();
         this.annotations = entityModelBuilder.getAnnotations();
+        //基于对象生成的要放在后面
+        this.idPropertyModelHolder = IdPropertyModelHolder.create(entityModelBuilder.getType(), IdProperty, entityModelBuilder.getIdGenerator());
 
+
+    }
+
+    private void validateIdPropertyModel( final List<PropertyModel<?>> propertyModels){
+
+        for (PropertyModel<?> propertyModel : propertyModels) {
+            if(StrUtil.equalsIgnoreCase(propertyModel.getName(),"id") && ObjectUtil.isNull(idPropertyName)){
+                idPropertyName = propertyModel.getName();
+                IdProperty = propertyModel;
+            }
+        }
 
     }
 
 
     private void validatePropertyModels(final String declaringClass, final List<PropertyModel<?>> propertyModels) {
+        validateIdPropertyModel(propertyModels);
         Map<String, Integer> propertyNameMap = new HashMap<String, Integer>();
         Map<String, Integer> propertyReadNameMap = new HashMap<String, Integer>();
         Map<String, Integer> propertyWriteNameMap = new HashMap<String, Integer>();
@@ -347,4 +368,7 @@ public final class EntityModel<T> {
         return null;
 
     }
+
+
+
 }

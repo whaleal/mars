@@ -53,11 +53,14 @@ final class MarsBuilderHelper {
 
     @SuppressWarnings("unchecked")
     static <T> void configureClassModelBuilder(final EntityModelBuilder<T> entityModelBuilder, final Class<T> clazz) {
+        // 断言 非空并封装 type
         entityModelBuilder.type(notNull("clazz", clazz));
 
+        //  类对象上的 注解保存
         ArrayList<Annotation> annotations = new ArrayList<Annotation>();
         Set<String> propertyNames = new TreeSet<String>();
         Map<String, TypeParameterMap> propertyTypeParameterMap = new HashMap<String, TypeParameterMap>();
+        // 针对当前类赋值
         Class<? super T> currentClass = clazz;
         String declaringClassName = clazz.getSimpleName();
         TypeData<?> parentClassTypeData = null;
@@ -68,9 +71,9 @@ final class MarsBuilderHelper {
         //  不停地 获取 该类的父类 currentClass = currentClass.getSuperclass();
         //  并迭代  获取getter  setter  field
         while (!currentClass.isEnum() && currentClass.getSuperclass() != null) {
-            //  将该类的 注解放到 annotations 这个List  中去
+            //  将该类的/父类 注解放到 annotations 这个List  中去
             annotations.addAll(asList(currentClass.getDeclaredAnnotations()));
-            //  这个是这个类的泛型参数  getTypeParameters
+            //  这个是当前类的泛型参数  getTypeParameters
             List<String> genericTypeNames = new ArrayList<String>();
             for (TypeVariable<? extends Class<? super T>> classTypeVariable : currentClass.getTypeParameters()) {
                 genericTypeNames.add(classTypeVariable.getName());

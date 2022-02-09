@@ -50,6 +50,7 @@ public class CrudTest {
 
     @Before
     public void isNull() {
+
         Assert.assertNotNull(mars);
 
         System.out.println(mars);

@@ -49,7 +49,7 @@ public class Person
         this.id = _id;
     }
 
-    @Id
+
     @Representation(BsonType.OBJECT_ID)
     private String id;
 
