@@ -102,11 +102,34 @@ public final class EntityModel<T> {
             }
 
             PropertyModel<?> model = propertyModelBuilder.build();
+
             propertyModels.add(model);
             if (isIdProperty) {
                 IdProperty = model;
             }
         }
+
+        if(IdProperty == null){
+            //  重新处理 所有的 Models
+            propertyModels = new ArrayList<>();
+            for (PropertyModelBuilder<?> propertyModelBuilder : entityModelBuilder.getPropertyModelBuilders()) {
+                boolean isIdProperty = propertyModelBuilder.getWriteName().equals(entityModelBuilder.getIdPropertyName()) && propertyModelBuilder.getReadName().equals(entityModelBuilder.getIdPropertyName());
+                if (isIdProperty) {
+                    propertyModelBuilder.readName(EntityModelBuilder.ID_PROPERTY_NAME).writeName(EntityModelBuilder.ID_PROPERTY_NAME);
+                }
+
+                PropertyModel<?> model = propertyModelBuilder.build();
+
+
+                propertyModels.add(model);
+                if (isIdProperty) {
+                    IdProperty = model;
+                }
+            }
+        }
+
+
+
         //  在这个阶段过后  仍然会存在以下情况
         //  实体对象异常   例如没有 @Id 注解 没有这个字段
         //  需要针对该Id  字段进行额外处理
@@ -136,21 +159,11 @@ public final class EntityModel<T> {
 
     }
 
-    private void validateIdPropertyModel( final List<PropertyModel<?>> propertyModels){
 
-        for (PropertyModel<?> propertyModel : propertyModels) {
-            if(StrUtil.equalsIgnoreCase(propertyModel.getName(),"id") && ObjectUtil.isNull(idPropertyName)){
-                idPropertyName = propertyModel.getName();
-                IdProperty = propertyModel;
-                break;
-            }
-        }
-
-    }
 
 
     private void validatePropertyModels(final String declaringClass, final List<PropertyModel<?>> propertyModels) {
-        validateIdPropertyModel(propertyModels);
+
         Map<String, Integer> propertyNameMap = new HashMap<String, Integer>();
         Map<String, Integer> propertyReadNameMap = new HashMap<String, Integer>();
         Map<String, Integer> propertyWriteNameMap = new HashMap<String, Integer>();

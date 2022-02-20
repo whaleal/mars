@@ -33,7 +33,6 @@ package com.whaleal.mars.codecs.pojo;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.codecs.Convention;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
-import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bson.codecs.pojo.IdGenerator;
 
 import java.lang.annotation.Annotation;
@@ -44,21 +43,29 @@ import static java.lang.String.format;
 import static java.util.Collections.*;
 
 
-
 public class EntityModelBuilder<T> {
+    //  _id 的常量表示
     static final String ID_PROPERTY_NAME = "_id";
+    //  实体属性
     private final List<PropertyModelBuilder<?>> propertyModelBuilders = new ArrayList<PropertyModelBuilder<?>>();
+    //  id 生成器 如自定义的规则等
     private IdGenerator<?> idGenerator;
     private InstanceCreatorFactory<T> instanceCreatorFactory;
+    //  type
     private Class<T> type;
     private Map<String, TypeParameterMap> propertyNameToTypeParameterMap = emptyMap();
     private List<Convention> conventions = Conventions.DEFAULT_CONVENTIONS;
+    //  与类相关的注解
     private List<Annotation> annotations = emptyList();
+    //discriminator  相关属性
     private boolean discriminatorEnabled;
     private String discriminator;
     private String discriminatorKey;
+
+    //  id  字段的名称
     private String idPropertyName;
 
+    //  实体绑定的表名
     private String collectionName;
 
 
@@ -73,6 +80,11 @@ public class EntityModelBuilder<T> {
     }
 
 
+    /**
+     * 配置 与实体相关的Id 生成策略
+     * @param idGenerator
+     * @return EntityModelBuilder  this
+     */
     public EntityModelBuilder<T> idGenerator(final IdGenerator<?> idGenerator) {
         this.idGenerator = idGenerator;
         return this;
@@ -95,6 +107,11 @@ public class EntityModelBuilder<T> {
     }
 
 
+    /**
+     * type  设置
+     * @param type
+     * @return
+     */
     public EntityModelBuilder<T> type(final Class<T> type) {
         this.type = notNull("type", type);
         return this;
@@ -191,9 +208,7 @@ public class EntityModelBuilder<T> {
 
     public EntityModel<T> build() {
 
-
         return new EntityModel<T>(this);
-
     }
 
     @Override
@@ -215,15 +230,6 @@ public class EntityModelBuilder<T> {
         return this;
     }
 
-
-    private void checkForDuplicates(final String propertyType, final String propertyName, final Map<String, Integer> propertyNameMap,
-                                    final String declaringClass) {
-        if (propertyNameMap.containsKey(propertyName)) {
-            throw new CodecConfigurationException(format("Duplicate %s named '%s' found in %s.", propertyType, propertyName,
-                    declaringClass));
-        }
-        propertyNameMap.put(propertyName, 1);
-    }
 
     private void initColelctionName() {
 

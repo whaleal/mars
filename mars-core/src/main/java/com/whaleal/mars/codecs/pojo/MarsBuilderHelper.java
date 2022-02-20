@@ -30,6 +30,9 @@
 package com.whaleal.mars.codecs.pojo;
 
 
+
+import com.whaleal.icefrog.core.util.ClassUtil;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -48,6 +51,11 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  * 字段
  * 方法等
  * 封装到Builder  中去
+ *
+ * 基本上与实体相关的信息 都在这里封装
+ *
+ * @author wh
+ * @since 0.1
  */
 final class MarsBuilderHelper {
 
@@ -57,12 +65,12 @@ final class MarsBuilderHelper {
         entityModelBuilder.type(notNull("clazz", clazz));
 
         //  类对象上的 注解保存
-        ArrayList<Annotation> annotations = new ArrayList<Annotation>();
+        List<Annotation> annotations = new ArrayList<Annotation>();
         Set<String> propertyNames = new TreeSet<String>();
         Map<String, TypeParameterMap> propertyTypeParameterMap = new HashMap<String, TypeParameterMap>();
         // 针对当前类赋值
         Class<? super T> currentClass = clazz;
-        String declaringClassName = clazz.getSimpleName();
+        String declaringClassName = ClassUtil.getSimpleClassName(clazz);
         TypeData<?> parentClassTypeData = null;
 
         Map<String, PropertyMetadata<?>> propertyNameMap = new HashMap<String, PropertyMetadata<?>>();
@@ -71,6 +79,7 @@ final class MarsBuilderHelper {
         //  不停地 获取 该类的父类 currentClass = currentClass.getSuperclass();
         //  并迭代  获取getter  setter  field
         while (!currentClass.isEnum() && currentClass.getSuperclass() != null) {
+
             //  将该类的/父类 注解放到 annotations 这个List  中去
             annotations.addAll(asList(currentClass.getDeclaredAnnotations()));
             //  这个是当前类的泛型参数  getTypeParameters
@@ -80,13 +89,33 @@ final class MarsBuilderHelper {
             }
 
             //  获取声明的 开放的 getter  && setter
-            PropertyReflectionUtils.PropertyMethods propertyMethods = PropertyReflectionUtils.getPropertyMethods(currentClass);
+            PropertyReflectionUtil.PropertyMethods propertyMethods = PropertyReflectionUtil.getPropertyMethods(currentClass);
+
+        /*    // 优先针对 Field  字段进行处理
+            for (Field field : currentClass.getDeclaredFields()) {
+
+                // 针对声明的字段进行基础的过滤
+                // 去除  static   transient 相关修饰符的字段
+
+                propertyNames.add(field.getName());
+                // Note if properties are present and types don't match, the underlying field is treated as an implementation detail.
+                PropertyMetadata<?> propertyMetadata = getOrCreateFieldPropertyMetadata(field.getName(), declaringClassName,
+                        propertyNameMap, TypeData.newInstance(field), propertyTypeParameterMap, parentClassTypeData, genericTypeNames,
+                        field.getGenericType());
+                if (propertyMetadata != null && propertyMetadata.getField() == null) {
+                    propertyMetadata.field(field);
+                    for (Annotation annotation : field.getDeclaredAnnotations()) {
+                        propertyMetadata.addReadAnnotation(annotation);
+                        propertyMetadata.addWriteAnnotation(annotation);
+                    }
+                }
+            }*/
 
             // Note that we're processing setters before getters. It's typical for setters to have more general types
             // than getters (e.g.: getter returning ImmutableList, but setter accepting Collection), so by evaluating
             // setters first, we'll initialize the PropertyMetadata with the more general type
             for (Method method : propertyMethods.getSetterMethods()) {
-                String propertyName = PropertyReflectionUtils.toPropertyName(method);
+                String propertyName = PropertyReflectionUtil.toPropertyName(method);
                 propertyNames.add(propertyName);
                 PropertyMetadata<?> propertyMetadata = getOrCreateMethodPropertyMetadata(propertyName, declaringClassName, propertyNameMap,
                         TypeData.newInstance(method), propertyTypeParameterMap, parentClassTypeData, genericTypeNames,
@@ -101,7 +130,7 @@ final class MarsBuilderHelper {
             }
 
             for (Method method : propertyMethods.getGetterMethods()) {
-                String propertyName = PropertyReflectionUtils.toPropertyName(method);
+                String propertyName = PropertyReflectionUtil.toPropertyName(method);
                 propertyNames.add(propertyName);
                 // If the getter is overridden in a subclass, we only want to process that property, and ignore
                 // potentially less specific methods from super classes
@@ -121,6 +150,7 @@ final class MarsBuilderHelper {
             }
 
 
+            //  处理相关 field
             for (Field field : currentClass.getDeclaredFields()) {
 
                 propertyNames.add(field.getName());
@@ -166,6 +196,7 @@ final class MarsBuilderHelper {
         }
 
         entityModelBuilder.instanceCreatorFactory(new InstanceCreatorFactoryImpl<T>(new CreatorExecutable<T>(clazz, noArgsConstructor)));
+
     }
 
     private static <T, S> PropertyMetadata<T> getOrCreateMethodPropertyMetadata(final String propertyName,
@@ -231,7 +262,7 @@ final class MarsBuilderHelper {
     }
 
     private static Type getGenericType(final Method method) {
-        return PropertyReflectionUtils.isGetter(method) ? method.getGenericReturnType() : method.getGenericParameterTypes()[0];
+        return PropertyReflectionUtil.isGetter(method) ? method.getGenericReturnType() : method.getGenericParameterTypes()[0];
     }
 
     @SuppressWarnings("unchecked")

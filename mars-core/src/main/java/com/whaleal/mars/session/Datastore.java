@@ -30,10 +30,11 @@
 package com.whaleal.mars.session;
 
 import com.mongodb.ClientSessionOptions;
+import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.core.query.UpdateDefinition;
+import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
@@ -45,6 +46,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 /**
  * 数据操作的顶级接口
@@ -71,6 +74,8 @@ import java.util.stream.Collectors;
  */
 
 public interface Datastore extends IndexOperations,MongoOperations {
+
+
 
     default <T> UpdateResult replace(Query query, T entity) {
         return replace(query, entity, new ReplaceOptions());
@@ -123,7 +128,7 @@ public interface Datastore extends IndexOperations,MongoOperations {
 
     default DeleteResult delete(Query query, Class<?> entityClass, String collectionName) {
 
-        Precondition.notNull(entityClass, "EntityClass must not be null!");
+        notNull(entityClass, "EntityClass must not be null!");
         return delete(query, entityClass, new DeleteOptions(), collectionName);
     }
 
@@ -240,7 +245,7 @@ public interface Datastore extends IndexOperations,MongoOperations {
     }
 
     /**
-     * todo
+     *
      * 修改更新的定义
      */
 
@@ -311,4 +316,317 @@ public interface Datastore extends IndexOperations,MongoOperations {
 
     MongoMappingContext getMapper();
 
+
+    /**
+     * Triggers <a href="https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/">findAndModify </a>
+     * to apply provided {@link Update} on documents matching {@link Criteria} of given {@link Query}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param update the {@link UpdateDefinition} to apply on matching documents. Must not be {@literal null}.
+     * @param entityClass the parametrized type. Must not be {@literal null}.
+     * @return the converted object that was updated before it was updated or {@literal null}, if not found.
+     * 
+     * @see Update
+     * 
+     */
+    
+    default <T> T findAndModify(Query query, UpdateDefinition update, Class<T> entityClass){
+        return findAndModify(query,update,new FindOneAndUpdateOptions(),entityClass);
+    }
+
+    /**
+     * Triggers <a href="https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/">findAndModify </a>
+     * to apply provided {@link Update} on documents matching {@link Criteria} of given {@link Query}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param update the {@link UpdateDefinition} to apply on matching documents. Must not be {@literal null}.
+     * @param entityClass the parametrized type. Must not be {@literal null}.
+     * @param collectionName the collection to query. Must not be {@literal null}.
+     * @return the converted object that was updated before it was updated or {@literal null}, if not found.
+     * 
+     * @see Update
+     * 
+     */
+    
+    default <T> T findAndModify(Query query, UpdateDefinition update, Class<T> entityClass, String collectionName){
+        return findAndModify(query, update, new FindOneAndUpdateOptions(), entityClass, collectionName);
+    }
+
+    /**
+     * Triggers <a href="https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/">findAndModify </a>
+     * to apply provided {@link Update} on documents matching {@link Criteria} of given {@link Query} taking
+     * {@link FindOneAndUpdateOptions} into account.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification.
+     * @param update the {@link UpdateDefinition} to apply on matching documents.
+     * @param options the {@link FindOneAndUpdateOptions} holding additional information.
+     * @param entityClass the parametrized type.
+     * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
+     *         {@link FindOneAndUpdateOptions#getReturnDocument()} this will either be the object as it was before the update or as
+     *         it is after the update.
+     * 
+     * @see Update
+     * 
+     */
+    
+    default <T> T findAndModify(Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class<T> entityClass){
+        return findAndModify(query, update, options, entityClass, getCollectionName(entityClass));
+    }
+
+    /**
+     * Triggers <a href="https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/">findAndModify </a>
+     * to apply provided {@link Update} on documents matching {@link Criteria} of given {@link Query} taking
+     * {@link FindOneAndUpdateOptions} into account.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param update the {@link UpdateDefinition} to apply on matching documents. Must not be {@literal null}.
+     * @param options the {@link FindOneAndUpdateOptions} holding additional information. Must not be {@literal null}.
+     * @param entityClass the parametrized type. Must not be {@literal null}.
+     * @param collectionName the collection to query. Must not be {@literal null}.
+     * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
+     *         {@link FindOneAndUpdateOptions#getReturnDocument()} this will either be the object as it was before the update or as
+     *         it is after the update.
+     * 
+     * @see Update
+     * 
+     */
+    
+    <T> T findAndModify(Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class<T> entityClass,
+                        String collectionName);
+
+
+
+    /**
+     * Triggers
+     * <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/">findOneAndReplace</a>
+     * to replace a single document matching {@link Criteria} of given {@link Query} with the {@code replacement}
+     * document. <br />
+     * The collection name is derived from the {@literal replacement} type. <br />
+     * Options are defaulted to {@link FindOneAndReplaceOptions}. <br />
+     * <strong>NOTE:</strong> The replacement entity must not hold an {@literal id}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param replacement the replacement document. Must not be {@literal null}.
+     * @return the converted object that was updated or {@literal null}, if not found.
+     *
+     */
+    @Nullable
+    default <T> T findAndReplace(Query query, T replacement) {
+        return findAndReplace(query, replacement, new FindOneAndReplaceOptions());
+    }
+
+    /**
+     * Triggers
+     * <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/">findOneAndReplace</a>
+     * to replace a single document matching {@link Criteria} of given {@link Query} with the {@code replacement}
+     * document.<br />
+     * Options are defaulted to {@link FindOneAndReplaceOptions}. <br />
+     * <strong>NOTE:</strong> The replacement entity must not hold an {@literal id}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param replacement the replacement document. Must not be {@literal null}.
+     * @param collectionName the collection to query. Must not be {@literal null}.
+     * @return the converted object that was updated or {@literal null}, if not found.
+     *
+     */
+    @Nullable
+    default <T> T findAndReplace(Query query, T replacement, String collectionName) {
+        return findAndReplace(query, replacement, new FindOneAndReplaceOptions(), collectionName);
+    }
+
+    /**
+     * Triggers
+     * <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/">findOneAndReplace</a>
+     * to replace a single document matching {@link Criteria} of given {@link Query} with the {@code replacement} document
+     * taking {@link FindOneAndReplaceOptions} into account.<br />
+     * <strong>NOTE:</strong> The replacement entity must not hold an {@literal id}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param replacement the replacement document. Must not be {@literal null}.
+     * @param options the {@link FindOneAndUpdateOptions} holding additional information. Must not be {@literal null}.
+     * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
+     *         {@link FindOneAndReplaceOptions#getReturnDocument()} this will either be the object as it was before the update or
+     *         as it is after the update.
+     *
+     */
+    @Nullable
+    default <T> T findAndReplace(Query query, T replacement, FindOneAndReplaceOptions options) {
+        return findAndReplace(query, replacement, options, getCollectionName(ClassUtil.getClass(replacement)));
+    }
+
+    /**
+     * Triggers
+     * <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/">findOneAndReplace</a>
+     * to replace a single document matching {@link Criteria} of given {@link Query} with the {@code replacement} document
+     * taking {@link FindOneAndReplaceOptions} into account.<br />
+     * <strong>NOTE:</strong> The replacement entity must not hold an {@literal id}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param replacement the replacement document. Must not be {@literal null}.
+     * @param options the {@link FindOneAndUpdateOptions} holding additional information. Must not be {@literal null}.
+     * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
+     *         {@link FindOneAndReplaceOptions#getReturnDocument()} this will either be the object as it was before the update or
+     *         as it is after the update.
+     *
+     */
+    @Nullable
+    default <T> T findAndReplace(Query query, T replacement, FindOneAndReplaceOptions options, String collectionName) {
+
+        notNull(replacement, "Replacement must not be null!");
+        return findAndReplace(query, replacement, options, (Class<T>) ClassUtil.getClass(replacement), collectionName);
+    }
+
+    /**
+     * Triggers
+     * <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/">findOneAndReplace</a>
+     * to replace a single document matching {@link Criteria} of given {@link Query} with the {@code replacement} document
+     * taking {@link FindOneAndReplaceOptions} into account.<br />
+     * <strong>NOTE:</strong> The replacement entity must not hold an {@literal id}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param replacement the replacement document. Must not be {@literal null}.
+     * @param options the {@link FindOneAndUpdateOptions} holding additional information. Must not be {@literal null}.
+     * @param entityType the parametrized type. Must not be {@literal null}.
+     * @param collectionName the collection to query. Must not be {@literal null}.
+     * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
+     *         {@link FindOneAndReplaceOptions#getReturnDocument()} this will either be the object as it was before the update or
+     *         as it is after the update.
+     *
+     */
+    @Nullable
+    default <T> T findAndReplace(Query query, T replacement, FindOneAndReplaceOptions options, Class<T> entityType,
+                                 String collectionName) {
+
+        return findAndReplace(query, replacement, options, entityType, collectionName, entityType);
+    }
+
+    /**
+     * Triggers
+     * <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/">findOneAndReplace</a>
+     * to replace a single document matching {@link Criteria} of given {@link Query} with the {@code replacement} document
+     * taking {@link FindOneAndReplaceOptions} into account.<br />
+     * <strong>NOTE:</strong> The replacement entity must not hold an {@literal id}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param replacement the replacement document. Must not be {@literal null}.
+     * @param options the {@link FindOneAndUpdateOptions} holding additional information. Must not be {@literal null}.
+     * @param entityType the type used for mapping the {@link Query} to domain type fields and deriving the collection
+     *          from. Must not be {@literal null}.
+     * @param resultType the parametrized type projection return type. Must not be {@literal null}, use the domain type of
+     *          {@code Object.class} instead.
+     * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
+     *         {@link FindOneAndReplaceOptions#getReturnDocument()} this will either be the object as it was before the update or
+     *         as it is after the update.
+     *
+     */
+    @Nullable
+    default <S, T> T findAndReplace(Query query, S replacement, FindOneAndReplaceOptions options, Class<S> entityType,
+                                    Class<T> resultType) {
+
+        return findAndReplace(query, replacement, options, entityType,
+                getCollectionName(entityType), resultType);
+    }
+
+    /**
+     * Triggers
+     * <a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndReplace/">findOneAndReplace</a>
+     * to replace a single document matching {@link Criteria} of given {@link Query} with the {@code replacement} document
+     * taking {@link FindOneAndReplaceOptions} into account.<br />
+     * <strong>NOTE:</strong> The replacement entity must not hold an {@literal id}.
+     *
+     * @param query the {@link Query} class that specifies the {@link Criteria} used to find a record and also an optional
+     *          fields specification. Must not be {@literal null}.
+     * @param replacement the replacement document. Must not be {@literal null}.
+     * @param options the {@link FindOneAndUpdateOptions} holding additional information. Must not be {@literal null}.
+     * @param entityType the type used for mapping the {@link Query} to domain type fields. Must not be {@literal null}.
+     * @param collectionName the collection to query. Must not be {@literal null}.
+     * @param resultType the parametrized type projection return type. Must not be {@literal null}, use the domain type of
+     *          {@code Object.class} instead.
+     * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
+     *         {@link FindOneAndReplaceOptions#getReturnDocument()} this will either be the object as it was before the update or
+     *         as it is after the update.
+     *
+     */
+    @Nullable
+    <S, T> T findAndReplace(Query query, S replacement, FindOneAndReplaceOptions options, Class<S> entityType,
+                            String collectionName, Class<T> resultType);
+
+    /**
+     * Map the results of an ad-hoc query on the collection for the entity type to a single instance of an object of the
+     * specified type. The first document that matches the query is returned and also removed from the collection in the
+     * database.
+     * <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}.
+     * <br />
+     * The query is specified as a {@link Query} which can be created either using the {@link BasicQuery} or the more
+     * feature rich {@link Query}.
+     *
+     * @param query the query class that specifies the criteria used to find a record and also an optional fields
+     *          specification.
+     * @param entityClass the parametrized type of the returned list.
+     * @return the converted object
+     */
+    
+    default <T> T findAndDelete(Query query, Class<T> entityClass){
+        return findAndDelete(query,entityClass,getCollectionName(entityClass));
+    }
+
+    /**
+     * Map the results of an ad-hoc query on the specified collection to a single instance of an object of the specified
+     * type. The first document that matches the query is returned and also removed from the collection in the database.
+     * <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used.
+     * <br />
+     * The query is specified as a {@link Query} which can be created either using the {@link BasicQuery} or the more
+     * feature rich {@link Query}.
+     *
+     * @param query the query class that specifies the criteria used to find a record and also an optional fields
+     *          specification.
+     * @param entityClass the parametrized type of the returned list.
+     * @param collectionName name of the collection to retrieve the objects from.
+     * @return the converted object.
+     */
+    
+    default <T> T findAndDelete(Query query, Class<T> entityClass, String collectionName){
+        return findAndDelete(query,entityClass,collectionName,new FindOneAndDeleteOptions());
+    }
+
+
+    /**
+     * Map the results of an ad-hoc query on the specified collection to a single instance of an object of the specified
+     * type. The first document that matches the query is returned and also removed from the collection in the database.
+     * <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used.
+     * <br />
+     * The query is specified as a {@link Query} which can be created either using the {@link BasicQuery} or the more
+     * feature rich {@link Query}.
+     *
+     * @param query the query class that specifies the criteria used to find a record and also an optional fields
+     *          specification.
+     * @param entityClass the parametrized type of the returned list.
+     * @param collectionName name of the collection to retrieve the objects from.
+     * @param options  FindOneAndDeleteOptions
+     * @return the converted object.
+     */
+    <T> T findAndDelete(Query query ,Class<T> entityClass, String collectionName,FindOneAndDeleteOptions options);
+
+    /**
+     * 根据类型 获取实体对应的表名
+     *
+     * @param entityClass must not be {@literal null}.
+     * @return never {@literal null}.
+     */
+    String getCollectionName(Class<?> entityClass);
 }

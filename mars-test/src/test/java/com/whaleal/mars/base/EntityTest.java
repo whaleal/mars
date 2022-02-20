@@ -24,7 +24,8 @@ public class EntityTest {
     public void testCreateCollection() {
         CollectionOptions options = CollectionOptions.empty().capped().size(2000L).maxDocuments(2000L);
 
-        mars.createCollection(Student.class);
+        mars.createCollection(Student.class,options);
+
     }
 
 }

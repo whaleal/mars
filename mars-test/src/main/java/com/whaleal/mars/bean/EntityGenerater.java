@@ -52,6 +52,7 @@ public class EntityGenerater {
     public static Address getAddress(){
         Address address =new Address();
         address.setStreetName("street"+random.nextInt(max));
+        address.setStreetNumber(random.nextLong());
         address.setCity(getCity());
         return address ;
     }

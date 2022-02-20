@@ -7,6 +7,8 @@ import org.junit.Test;
 import com.whaleal.mars.bean.IdEntity;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Collection;
 
 import static com.whaleal.mars.Constant.connectingStr;
 
@@ -26,10 +28,18 @@ public class IdEntityTest {
 
     @Test
     public void testGetterSetter(){
-        PropertyReflectionUtils.PropertyMethods propertyMethods = PropertyReflectionUtils.getPropertyMethods(IdEntity.class);
+        PropertyReflectionUtil.PropertyMethods propertyMethods = PropertyReflectionUtil.getPropertyMethods(IdEntity.class);
 
+        Collection< Method > getterMethods = propertyMethods.getGetterMethods();
 
-        System.out.println(propertyMethods);
+        Collection< Method > setterMethods = propertyMethods.getSetterMethods();
+
+        System.out.println(getterMethods);
+        System.out.println(setterMethods);
+
+        for (Method method :getterMethods){
+            System.out.println(PropertyReflectionUtil.toPropertyName(method));
+        }
 
     }
 

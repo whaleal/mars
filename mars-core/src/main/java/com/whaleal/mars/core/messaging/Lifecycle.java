@@ -55,7 +55,7 @@ public interface Lifecycle {
      * that apply.
      *
      * @see SmartLifecycle#stop(Runnable)
-     * @see org.springframework.beans.factory.DisposableBean#destroy()
+     *
      */
     void stop();
 

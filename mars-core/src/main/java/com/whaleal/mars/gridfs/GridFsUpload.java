@@ -30,6 +30,7 @@
 package com.whaleal.mars.gridfs;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.whaleal.icefrog.core.lang.Lazy;
 import com.whaleal.icefrog.core.lang.Precondition;
 
 import org.bson.Document;
@@ -48,8 +49,7 @@ import java.util.function.Supplier;
 
 public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
 
-    private final
-    ID id;
+    private final ID id;
     private final Lazy<InputStream> dataStream;
     private final String filename;
     private final Options options;

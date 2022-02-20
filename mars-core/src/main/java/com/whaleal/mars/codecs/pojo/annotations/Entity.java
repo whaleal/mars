@@ -1,6 +1,8 @@
 package com.whaleal.mars.codecs.pojo.annotations;
 
 
+import com.whaleal.icefrog.core.util.StrUtil;
+
 import java.lang.annotation.*;
 
 /**
@@ -19,7 +21,7 @@ public @interface Entity {
      * 表名 标记 用于对象和实体之间的差异
      * @return tableName
      */
-    String value() default "";
+    String value() default StrUtil.EMPTY;
 
 
 }

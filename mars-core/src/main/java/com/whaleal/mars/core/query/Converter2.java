@@ -27,19 +27,22 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.codecs.pojo;
+package com.whaleal.mars.core.query;
 
 
-/**
- * 工具类
- * 用于帮助查询者
- *
- * 主要解析 MongoId  及 MongoProperty
- *
- * 底层可以使用   Conversions  实现
- *
- * @Date 2021-07-02
- *
- */
-public class StorageTypeConverter {
+import com.whaleal.icefrog.core.lang.Precondition;
+
+@FunctionalInterface
+@Deprecated
+public interface Converter2<S, T> {
+
+    T convert(S var1);
+
+    default <U> Converter2<S, U> andThen( Converter2<? super T, ? extends U> after) {
+        Precondition.notNull(after, "After Converter must not be null");
+        return (s) -> {
+            T initialResult = this.convert(s);
+            return initialResult != null ? after.convert(initialResult) : null;
+        };
+    }
 }

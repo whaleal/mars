@@ -49,6 +49,8 @@ import java.util.Optional;
  * <strong>NOTE:</strong> Please keep in mind that queries will only make use of an index with collation settings if the
  * query itself specifies the same collation.
  */
+
+@Deprecated
 public class Collation {
 
     private static final Collation SIMPLE = of("simple");
@@ -178,7 +180,7 @@ public class Collation {
         return collation;
     }
 
-    private static Converter<Collation, Document> toMongoDocumentConverter() {
+    private static Converter2<Collation, Document> toMongoDocumentConverter() {
 
         return source -> {
 
@@ -208,7 +210,7 @@ public class Collation {
         };
     }
 
-    private static Converter<Collation, com.mongodb.client.model.Collation> toMongoCollationConverter() {
+    private static Converter2<Collation, com.mongodb.client.model.Collation> toMongoCollationConverter() {
 
         return source -> {
 
@@ -449,13 +451,13 @@ public class Collation {
     }
 
     /**
-     * Transform {@code this} {@link Collation} by applying a {@link Converter}.
+     * Transform {@code this} {@link Collation} by applying a {@link Converter2}.
      *
      * @param mapper must not be {@literal null}.
      * @param <R>
      * @return the converted result.
      */
-    public <R> R map(Converter<? super Collation, ? extends R> mapper) {
+    public <R> R map( Converter2<? super Collation, ? extends R> mapper) {
         return mapper.convert(this);
     }
 

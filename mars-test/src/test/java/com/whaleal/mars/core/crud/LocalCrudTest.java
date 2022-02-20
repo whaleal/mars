@@ -105,7 +105,10 @@ public class LocalCrudTest {
         mars.dropCollection(Person.class);
         InsertManyResult insert = mars.insert(people);
 
-        System.out.println(insert.getInsertedIds());
+        int size = insert.getInsertedIds().size();
+
+
+        Assert.assertEquals(size ,people.size());
 
     }
 

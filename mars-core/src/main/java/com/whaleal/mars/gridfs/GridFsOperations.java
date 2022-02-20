@@ -156,11 +156,9 @@ public interface GridFsOperations extends ResourcePatternResolver {
             return new GridFsResource[0];
         }
 
-        AntPath path = new AntPath(filenamePattern);
+        if (ReUtil.isPattern(filenamePattern)) {
 
-        if (path.isPattern()) {
-
-            GridFSFindIterable files = findGridFs(Query.query(Criteria.where("filename").regex(path.toRegex())));
+            GridFSFindIterable files = findGridFs(Query.query(Criteria.where("filename").regex(ReUtil.toRegex(filenamePattern))));
             List<GridFsResource> resources = new ArrayList<>();
 
             for (GridFSFile file : files) {
