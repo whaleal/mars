@@ -29,6 +29,9 @@
  */
 package com.whaleal.mars.codecs.pojo;
 
+
+
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,48 +39,86 @@ import java.util.List;
 
 import static java.lang.reflect.Modifier.isPublic;
 
-final class PropertyReflectionUtils {
-    private PropertyReflectionUtils() {
+final class PropertyReflectionUtil {
+    private PropertyReflectionUtil() {
     }
 
+
+    /**
+     * 一些解析方法
+     */
     private static final String IS_PREFIX = "is";
     private static final String GET_PREFIX = "get";
     private static final String SET_PREFIX = "set";
 
+    /**
+     * 判断一个方法 是否是一个 Getter  方法
+     * @param method
+     * @return
+     */
     static boolean isGetter(final Method method) {
+
         if (method.getParameterTypes().length > 0) {
             return false;
-        } else if (method.getName().startsWith(GET_PREFIX) && method.getName().length() > GET_PREFIX.length()) {
-            return Character.isUpperCase(method.getName().charAt(GET_PREFIX.length()));
+        }else if (method.getName().startsWith(GET_PREFIX) && method.getName().length() > GET_PREFIX.length()) {
+            char c = method.getName().charAt(GET_PREFIX.length());
+            return Character.isUpperCase(c) || (!Character.isUpperCase(c) && !Character.isLowerCase(c));
         } else if (method.getName().startsWith(IS_PREFIX) && method.getName().length() > IS_PREFIX.length()) {
-            return Character.isUpperCase(method.getName().charAt(IS_PREFIX.length()));
+
+            char c = method.getName().charAt(IS_PREFIX.length());
+            return Character.isUpperCase(c)||(!Character.isUpperCase(c) && !Character.isLowerCase(c));
         }
         return false;
     }
 
+
+    /**
+     * 判断一个方法 是否属于 Setter
+     * @param method
+     * @return
+     */
     static boolean isSetter(final Method method) {
+
+
         if (method.getName().startsWith(SET_PREFIX) && method.getName().length() > SET_PREFIX.length()
                 && method.getParameterTypes().length == 1) {
-            return Character.isUpperCase(method.getName().charAt(SET_PREFIX.length()));
+
+            char c = method.getName().charAt(SET_PREFIX.length());
+            return Character.isUpperCase(c)||(!Character.isUpperCase(c) && !Character.isLowerCase(c));
+
         }
+
         return false;
     }
 
+    /**
+     * 根据 getter setter 方法 名称
+     * 来获取他的属性字段名称
+     * @param method
+     * @return
+     */
     static String toPropertyName(final Method method) {
         String name = method.getName();
         String propertyName = name.substring(name.startsWith(IS_PREFIX) ? 2 : 3, name.length());
         char[] chars = propertyName.toCharArray();
+        //  这里将 首字母 转为 小写
         chars[0] = Character.toLowerCase(chars[0]);
         return new String(chars);
     }
 
     /**
      * 获取该类内部属性的相关方法  方法
+     * 调用过程 先添加 继承的接口的
+     * 如有多个则迭代
+     * 再添加本类对象自身的方法
+     *
      *
      * @param clazz
      * @return
      */
     static PropertyMethods getPropertyMethods(final Class<?> clazz) {
+
+        //  分为 两组 分别为 getter  && setter
         List<Method> setters = new ArrayList<Method>();
         List<Method> getters = new ArrayList<Method>();
 
@@ -109,6 +150,7 @@ final class PropertyReflectionUtils {
                 // Setters are a bit more tricky - don't do anything fancy here
                 setters.add(method);
             }
+
         }
     }
 

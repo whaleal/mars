@@ -72,7 +72,8 @@ public class AggreationCodecTest {
         AggregationPipeline  pipeline = new AggregationPipeline();
         pipeline.group(Group.of(id("address.city.name"))
                 .field("counter", sum(field("age"))));
-        QueryCursor<Document> aggregate = mars.aggregate(pipeline, Document.class);
+        QueryCursor<Document> aggregate = mars.aggregate(pipeline, "person");
+
 
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());

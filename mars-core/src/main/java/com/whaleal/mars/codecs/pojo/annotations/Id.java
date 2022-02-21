@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.codecs.pojo.annotations;
 
-import com.whaleal.mars.codecs.pojo.StorageType;
+
 
 import java.lang.annotation.*;
 

@@ -40,6 +40,7 @@ import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
@@ -54,10 +55,7 @@ import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexHelper;
-import com.whaleal.mars.core.query.Collation;
-import com.whaleal.mars.core.query.Criteria;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.core.query.UpdateDefinition;
+import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.gridfs.GridFsObject;
 import com.whaleal.mars.gridfs.GridFsResource;
 import com.whaleal.mars.session.executor.CrudExecutor;
@@ -80,13 +78,16 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+import static com.whaleal.icefrog.core.lang.Precondition.isTrue;
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+
 
 /**
  * 关于数据操作的数据操作的一些具体实现
  *
  * @Date 2020-12-03
+ *
  */
-
 public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
@@ -96,7 +97,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     private final GridFSBucket defaultGridFSBucket;
     //缓存 collectionName
-    private final Map< String, String > collectionNameCache = new HashMap< String, String >();
+    private final Map< Class<?> , String > collectionNameCache = new HashMap< Class<?>, String >();
 
 
     public DatastoreImpl( MongoClient mongoClient, String databaseName ) {
@@ -295,6 +296,95 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public MongoMappingContext getMapper() {
         return mapper;
+    }
+
+    @Override
+    public < T > T findAndModify( Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class< T > entityClass, String collectionName ) {
+        notNull(query, "Query must not be null!");
+        notNull(update, "Update must not be null!");
+        notNull(options, "Options must not be null!");
+        notNull(entityClass, "EntityClass must not be null!");
+        notNull(collectionName, "CollectionName must not be null!");
+
+        //  do with collation
+        OptionalUtil.ifAllPresent(query.getCollation(), Optional.of(options.getCollation()), (l, r) -> {
+            throw new IllegalArgumentException(
+                    "Both Query and FindOneAndModifyOptions define a collation. Please provide the collation only via one of the two.");
+        });
+
+
+        return doFindAndModify(collectionName, query, entityClass, update, options);
+    }
+
+    @Override
+    public < S, T > T findAndReplace( Query query, S replacement, FindOneAndReplaceOptions options, Class< S > entityType, String collectionName, Class< T > resultType ) {
+        notNull(query, "Query must not be null!");
+        notNull(replacement, "Replacement must not be null!");
+        notNull(options, "Options must not be null! Use FindOneAndReplaceOptions#new() instead.");
+        notNull(entityType, "EntityType must not be null!");
+        notNull(collectionName, "CollectionName must not be null!");
+        notNull(resultType, "ResultType must not be null! Use Object.class instead.");
+
+        isTrue(query.getLimit() <= 1, "Query must not define a limit other than 1 ore none!");
+        isTrue(query.getSkip() <= 0, "Query must not define skip.");
+
+
+        MarsSession marsSession = this.startSession();
+
+        if(entityType == resultType){
+            S oneAndReplace = this.database.getCollection(collectionName, entityType).findOneAndReplace(marsSession, query.getQueryObject(), replacement, options.getOriginOptions());
+
+            return (T) oneAndReplace;
+        }
+
+        Document document = this.toDocument(replacement);
+        Document oneAndReplace = this.database.getCollection(collectionName).findOneAndReplace(marsSession, query.getQueryObject(), document, options.getOriginOptions());
+        if(oneAndReplace == null){
+            return null ;
+        }
+
+        T first = this.database.getCollection(collectionName, resultType).find(marsSession, new Document("_id", oneAndReplace.get("_id"))).limit(1).first();
+
+        return first ;
+
+
+    }
+
+    @Override
+    public < T > T findAndDelete( Query query, Class< T > entityClass, String collectionName, FindOneAndDeleteOptions options ) {
+        notNull(query, "Query must not be null!");
+        notNull(entityClass, "EntityClass must not be null!");
+        notNull(collectionName, "CollectionName must not be null!");
+
+        MarsSession marsSession = this.startSession();
+
+        T oneAndDelete = this.database.getCollection(collectionName, entityClass).findOneAndDelete(marsSession,query.getQueryObject(), options.getOriginOptions());
+
+
+        return oneAndDelete;
+    }
+
+
+
+
+
+
+    @Override
+    public String getCollectionName( Class< ? > entityClass ) {
+        
+      return this.mapper.getEntityModel(entityClass).getCollectionName();
+        
+    }
+
+    private < T > T doFindAndModify( String collectionName, Query query, Class<T> entityClass, UpdateDefinition update, FindOneAndUpdateOptions optionsToUse ) {
+        MongoCollection< T > collection = getCollection(entityClass, collectionName);
+
+        Document updateObject = update.getUpdateObject();
+        MarsSession marsSession = this.startSession();
+
+
+        T oneAndUpdate = collection.findOneAndUpdate(marsSession,query.getQueryObject(), updateObject, optionsToUse.getOriginOptions());
+        return oneAndUpdate;
     }
 
 
@@ -503,7 +593,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public GridFSFindIterable findGridFs( Query query, String bucketName ) {
 
-        Precondition.notNull(query, "Query must not be null!");
+        notNull(query, "Query must not be null!");
 
         Document queryObject = query.getQueryObject();
         Document sortObject = query.getSortObject();
@@ -518,7 +608,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         }
 
         MongoCursor< GridFSFile > iterator = iterable.iterator();
-        Precondition.notNull(iterator.tryNext(), "No file found with the query");
+        notNull(iterator.tryNext(), "No file found with the query");
 
         return iterable;
     }
@@ -542,7 +632,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         GridFSFindIterable iterable = findGridFs(query);
         MongoCursor< GridFSFile > iterator = iterable.iterator();
-        Precondition.notNull(iterator.tryNext(), "no file found to delete");
+        notNull(iterator.tryNext(), "no file found to delete");
         while (iterator.hasNext()) {
             getGridFsBucket(bucketName).delete(iterator.next().getObjectId());
         }
@@ -557,7 +647,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public GridFsResource getResource( GridFSFile file, String bucketName ) {
 
-        Precondition.notNull(file, "GridFSFile must not be null!");
+        notNull(file, "GridFSFile must not be null!");
 
         return new GridFsResource(file, getGridFsBucket(bucketName).openDownloadStream(file.getId()));
     }
@@ -573,38 +663,40 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return writer.getDocument();
     }
 
-    /**
-     * @param type the type look up
-     * @param <T>  the class type
-     * @return the collection mapped for this class
-     */
+
     public < T > MongoCollection< T > getCollection( Class< T > type ) {
+
+        String nameCache =null ;
+        if( (nameCache = collectionNameCache.get(type) ) !=null){
+
+            MongoCollection< T > collection = this.database.getCollection(nameCache, type);
+            this.withConcern(collection,type);
+            return collection ;
+        }
+
+
         EntityModel entityModel = mapper.getEntityModel(type);
         String collectionName = entityModel.getCollectionName();
 
+        collectionNameCache.put(type,collectionName);
+
         MongoCollection< T > collection = this.database.getCollection(collectionName, type);
 
-        Concern annotation = (Concern) entityModel.getAnnotation(Concern.class);
-        if (annotation != null) {
-
-
-        }
+        this.withConcern(collection,type);
         return collection;
     }
 
 
-    /**
-     * @param type the type look up
-     * @param <T>  the class type
-     * @return the collection mapped for this class
-     */
+
     public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
 
-        EntityModel entityModel = this.mapper.getEntityModel(type);
-        String collName = this.mapper.determineCollectionName(entityModel, collectionName);
-        MongoCollection< T > collection = this.database.getCollection(collName, type);
+        if (collectionName != null) {
+            MongoCollection< T > collection = this.database.getCollection(collectionName, type);
+            return this.withConcern(collection, type);
+        } else {
 
-        return this.withConcern(collection, type);
+            return getCollection(type);
+        }
 
     }
 
@@ -659,7 +751,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public < T > MongoCollection< Document > createCollection( Class< T > entityClass ) {
-        Precondition.notNull(entityClass, "EntityClass must not be null!");
+        notNull(entityClass, "EntityClass must not be null!");
         return createCollection(entityClass, getCollectionOptions(entityClass));
     }
 
@@ -693,7 +785,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public < T > MongoCollection< Document > createCollection( Class< T > entityClass,
                                                                CollectionOptions collectionOptions ) {
 
-        Precondition.notNull(entityClass, "EntityClass must not be null!");
+        notNull(entityClass, "EntityClass must not be null!");
 
         CollectionOptions options = collectionOptions != null ? collectionOptions : CollectionOptions.empty();
 
@@ -704,7 +796,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public MongoCollection< Document > createCollection( String collectionName ) {
-        Precondition.notNull(collectionName, "CollectionName must not be null!");
+        notNull(collectionName, "CollectionName must not be null!");
 
         return doCreateCollection(collectionName, new Document());
     }
@@ -717,13 +809,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public MongoCollection< Document > createCollection( String collectionName, CollectionOptions collectionOptions ) {
 
-        Precondition.notNull(collectionName, "CollectionName must not be null!");
+        notNull(collectionName, "CollectionName must not be null!");
         return doCreateCollection(collectionName, convertToDocument(collectionOptions));
     }
 
     @Override
     public void dropCollection( String collectionName ) {
-        Precondition.notNull(collectionName, "CollectionName must not be null!");
+        notNull(collectionName, "CollectionName must not be null!");
         lock.lock();
         try {
             MongoCollection< Document > collection = this.database.getCollection(collectionName);
@@ -830,7 +922,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     private CollectionOptions getCollectionOptions( Class< ? > entity ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(entity);
-        Precondition.notNull(entity, "EntityClass must not be null!");
+        notNull(entity, "EntityClass must not be null!");
         CollectionOptions options = CollectionOptions.empty();
 
 

@@ -30,14 +30,16 @@
 package com.whaleal.mars.codecs.pojo;
 
 
+import com.whaleal.icefrog.core.lang.Pair;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.util.Collections.unmodifiableMap;
 
 
 final class TypeParameterMap {
-    private final Map<Integer, Either<Integer, TypeParameterMap>> propertyToClassParamIndexMap;
+    private final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap;
 
 
     static Builder builder() {
@@ -45,7 +47,7 @@ final class TypeParameterMap {
     }
 
 
-    Map<Integer, Either<Integer, TypeParameterMap>> getPropertyToClassParamIndexMap() {
+    Map<Integer, Pair<Integer, TypeParameterMap> > getPropertyToClassParamIndexMap() {
         return propertyToClassParamIndexMap;
     }
 
@@ -54,27 +56,27 @@ final class TypeParameterMap {
     }
 
 
-    static final class Builder {
-        private final Map<Integer, Either<Integer, TypeParameterMap>> propertyToClassParamIndexMap = new HashMap<>();
+    static final class Builder  {
+        private final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap = new HashMap<>();
 
         private Builder() {
         }
 
 
         Builder addIndex(final int classTypeParameterIndex) {
-            propertyToClassParamIndexMap.put(-1, Either.left(classTypeParameterIndex));
+            propertyToClassParamIndexMap.put(-1,  new Pair<>(notNull("value", classTypeParameterIndex), null));
             return this;
         }
 
 
         Builder addIndex(final int propertyTypeParameterIndex, final int classTypeParameterIndex) {
-            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, Either.left(classTypeParameterIndex));
+            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, new Pair<>(notNull("value", classTypeParameterIndex), null));
             return this;
         }
 
 
         Builder addIndex(final int propertyTypeParameterIndex, final TypeParameterMap typeParameterMap) {
-            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, Either.right(typeParameterMap));
+            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, new Pair<>(null, notNull("value", typeParameterMap)));
             return this;
         }
 
@@ -117,7 +119,7 @@ final class TypeParameterMap {
         return getPropertyToClassParamIndexMap().hashCode();
     }
 
-    private TypeParameterMap(final Map<Integer, Either<Integer, TypeParameterMap>> propertyToClassParamIndexMap) {
+    private TypeParameterMap(final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap) {
         this.propertyToClassParamIndexMap = unmodifiableMap(propertyToClassParamIndexMap);
     }
 }

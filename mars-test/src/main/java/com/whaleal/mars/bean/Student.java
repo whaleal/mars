@@ -39,7 +39,7 @@ import com.whaleal.mars.core.index.annotation.Indexes;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.whaleal.mars.codecs.pojo.StorageType;
+
 import com.whaleal.mars.codecs.pojo.annotations.Id;
 import com.whaleal.mars.codecs.pojo.annotations.Property;
 import org.bson.BsonType;

@@ -30,8 +30,6 @@
 package com.whaleal.mars.gridfs;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,33 +38,25 @@ import java.util.regex.Pattern;
  *
  * @author cs
  * @date 2021/04/21
+ *
+ *
  */
-public class AntPath {
+
+@Deprecated
+public class ReUtil {
 
     private static final String PREFIX_DELIMITER = ":";
     private static final Pattern WILDCARD_PATTERN = Pattern.compile("\\?|\\*\\*|\\*");
 
-    private final String path;
 
-    /**
-     * Creates a new {@link AntPath} from the given path.
-     *
-     * @param path must not be {@literal null}.
-     */
-    public AntPath(String path) {
-
-        Precondition.notNull(path, "Path must not be null!");
-
-        this.path = path;
-    }
 
     /**
      * Returns whether the path is a pattern.
      *
      * @return
      */
-    public boolean isPattern() {
-        String path = stripPrefix(this.path);
+    public static boolean isPattern(String path1) {
+        String path = stripPrefix(path1);
         return (path.indexOf('*') != -1 || path.indexOf('?') != -1);
     }
 
@@ -80,7 +70,7 @@ public class AntPath {
      *
      * @return
      */
-    public String toRegex() {
+    public static String toRegex(String path) {
 
         StringBuilder patternBuilder = new StringBuilder();
         Matcher m = WILDCARD_PATTERN.matcher(path);
@@ -113,8 +103,4 @@ public class AntPath {
         return Pattern.quote(s.substring(start, end));
     }
 
-    @Override
-    public String toString() {
-        return path;
-    }
 }

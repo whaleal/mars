@@ -30,8 +30,8 @@
 package com.whaleal.mars.bean;
 
 
-import com.whaleal.mars.codecs.pojo.annotations.Property;
 import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
 import com.whaleal.mars.codecs.pojo.annotations.Representation;
 import org.bson.BsonType;
 
@@ -41,13 +41,16 @@ import java.time.LocalDate;
 
 public class Person
         implements Comparable<Person> {
+
+
     public String getId() {
         return id;
     }
 
-    public void setId(String _id) {
-        this.id = _id;
+    public void setId( String id ) {
+        this.id = id;
     }
+
 
     @Id
     @Representation(BsonType.OBJECT_ID)
@@ -57,7 +60,9 @@ public class Person
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+
+
+    public void setBirthDate( LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -193,7 +198,7 @@ public class Person
     @Override
     public String toString() {
         return "Person{" +
-                "id='" + id + '\'' +
+
                 ", birthDate=" + birthDate +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

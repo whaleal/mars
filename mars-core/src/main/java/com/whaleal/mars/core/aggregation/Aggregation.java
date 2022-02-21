@@ -37,7 +37,7 @@ import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.AggregationOptions;
 
 
-public interface Aggregation<T> {
+public interface Aggregation<T>  {
 
     Aggregation<T> addFields(AddFields fields);
 

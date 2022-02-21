@@ -32,10 +32,8 @@ package com.whaleal.mars.util;
 
 
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.json.JSONUtil;
-import com.whaleal.mars.core.query.Converter;
 import org.bson.Document;
 
 import java.util.*;
@@ -46,9 +44,7 @@ import java.util.*;
 public abstract class DocumentUtil {
 
     private DocumentUtil() {
-
     }
-
 
     /**
      * Serializes the given object into pseudo-JSON meaning it's trying to create a JSON representation as far as possible

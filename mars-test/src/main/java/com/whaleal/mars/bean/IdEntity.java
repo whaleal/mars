@@ -40,7 +40,7 @@ public class IdEntity {
         this._id = _id;
     }
 
-    @Id
+
     private String _id;
 
     public String getName() {

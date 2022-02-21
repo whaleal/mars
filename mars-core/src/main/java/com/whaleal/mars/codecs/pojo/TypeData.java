@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.codecs.pojo;
 
+
 import org.bson.codecs.pojo.TypeWithTypeParameters;
 
 import java.lang.reflect.*;
@@ -48,7 +49,8 @@ public final class TypeData<T> implements TypeWithTypeParameters<T> {
     }
 
     public static TypeData<?> newInstance(final Method method) {
-        if (PropertyReflectionUtils.isGetter(method)) {
+
+        if (PropertyReflectionUtil.isGetter(method)) {
             return newInstance(method.getGenericReturnType(), method.getReturnType());
         } else {
             return newInstance(method.getGenericParameterTypes()[0], method.getParameterTypes()[0]);
@@ -60,6 +62,7 @@ public final class TypeData<T> implements TypeWithTypeParameters<T> {
     }
 
     public static <T> TypeData<T> newInstance(final Type genericType, final Class<T> clazz) {
+
         Builder<T> builder = TypeData.builder(clazz);
         if (genericType instanceof ParameterizedType) {
             ParameterizedType pType = (ParameterizedType) genericType;

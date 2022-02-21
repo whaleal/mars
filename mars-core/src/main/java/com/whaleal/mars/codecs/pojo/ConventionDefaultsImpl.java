@@ -30,10 +30,12 @@
 package com.whaleal.mars.codecs.pojo;
 
 
+import com.whaleal.mars.codecs.BsonTypeMap;
 import com.whaleal.mars.codecs.Convention;
 import com.whaleal.mars.codecs.pojo.annotations.*;
 import org.bson.BsonType;
 import org.bson.codecs.configuration.CodecConfigurationException;
+import org.bson.types.ObjectId;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -45,11 +47,18 @@ import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 
+/**
+ * @author wh
+ *
+ *
+ * todo  修改相关的读写识别顺序 ,同时需要微调相关的 注解顺序 ，涉及到基本的默认值影响
+ *
+ */
 final class ConventionDefaultsImpl implements Convention {
     @Override
     public void apply(final EntityModelBuilder<?> entityModelBuilder) {
         processClassAnnotation(entityModelBuilder);
-
+        //
 
         for (PropertyModelBuilder<?> propertyModelBuilder : entityModelBuilder.getPropertyModelBuilders()) {
             processPropertyAnnotations(entityModelBuilder, propertyModelBuilder);
@@ -61,6 +70,8 @@ final class ConventionDefaultsImpl implements Convention {
 
 
     }
+
+
 
 
     @SuppressWarnings("unchecked")
@@ -200,9 +211,38 @@ final class ConventionDefaultsImpl implements Convention {
 
     /**
      * 设置 字段级别的 读写参数
+     * @param entityModelBuilder
+     * @param propertyModelBuilder
      */
     private void processPropertyAnnotations(final EntityModelBuilder<?> entityModelBuilder,
                                             final PropertyModelBuilder<?> propertyModelBuilder) {
+        String propertyName = propertyModelBuilder.getName();
+        if (propertyName.equals("_id")) {
+            entityModelBuilder.idPropertyName(propertyName);
+            propertyModelBuilder.writeName("_id");
+            propertyModelBuilder.readName("_id");
+
+            // 当为 String或者 ObjectId  默认 存储为ObjectId
+            // 这个时候应该先查看是否有标识为其他类型 如有则为其他类型 如字符串等
+            // 逻辑应当修改为 当  全部的 propertyModelBuilder 都处理完成时
+            // builder  需要生成时 若无值  则赋予一些默认值
+            Class< ? > type = propertyModelBuilder.getTypeData().getType();
+            if( type == String.class ||type == ObjectId.class){
+
+                //List< Annotation > writeAnnotations = propertyModelBuilder.getWriteAnnotations();
+                // propertyModelBuilder.bsonRepresentation(BsonType.OBJECT_ID);
+            }else {
+                BsonTypeMap bsonTypeMap = new BsonTypeMap();
+                BsonType bsonType = bsonTypeMap.get(type);
+
+                if(bsonType !=null){
+                    propertyModelBuilder.bsonRepresentation(bsonType);
+                }
+
+            }
+
+        }
+
         for (Annotation annotation : propertyModelBuilder.getReadAnnotations()) {
 
             if (annotation instanceof Property) {
@@ -215,19 +255,31 @@ final class ConventionDefaultsImpl implements Convention {
                     entityModelBuilder.idPropertyName(null);
                 }
 
+            } else if (annotation instanceof Id) {
+
+                entityModelBuilder.idPropertyName(propertyModelBuilder.getName());
+                propertyModelBuilder.readName("_id");
+                // 当为 String或者 ObjectId  默认 存储为ObjectId  否则 为其他类型
+
+                Class< ? > type = propertyModelBuilder.getTypeData().getType();
+                if( type == String.class ||type == ObjectId.class){
+
+                    //propertyModelBuilder.bsonRepresentation(BsonType.OBJECT_ID);
+                }else {
+                    BsonTypeMap bsonTypeMap = new BsonTypeMap();
+                    BsonType bsonType = bsonTypeMap.get(type);
+
+                    if(bsonType !=null){
+                        propertyModelBuilder.bsonRepresentation(bsonType);
+                    }
+
+                }
+
             } else if(annotation instanceof Representation){
                 BsonType bsonRep = ((Representation) annotation).value();
                 propertyModelBuilder.bsonRepresentation(bsonRep);
-            }else if (annotation instanceof Id) {
-
-                entityModelBuilder.idPropertyName(propertyModelBuilder.getName());
-                propertyModelBuilder.readName(null);
-
-            }  else {
-                String propertyName = propertyModelBuilder.getName();
-                if (propertyName.equals("_id")) {
-                    entityModelBuilder.idPropertyName(propertyName);
-                }
+            } else {
+                //todo
             }
         }
 
@@ -239,10 +291,8 @@ final class ConventionDefaultsImpl implements Convention {
                 }
 
             } else if (annotation instanceof Id) {
-                Id mongoProperty = (Id) annotation;
 
                 propertyModelBuilder.writeName("_id");
-
 
             } else if (annotation instanceof PropIgnore) {
                 propertyModelBuilder.writeName(null);

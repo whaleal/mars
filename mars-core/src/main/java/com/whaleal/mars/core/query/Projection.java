@@ -53,10 +53,13 @@ import java.util.Map.Entry;
  * Limits the number of elements projected from an array. Supports skip and limit slices.
  *
  * 其实就是一个projection
+ * 官方文档链接
+ * https://docs.mongodb.com/manual/reference/operator/projection/
  */
 public class Projection {
 
     // 普通操作 用这 例如:{ item: 1, status: 1, "size.uom": 1 }
+    // 这一块功能可以与 聚合框架匹配进行整合
     private final Map<String, Integer> criteria = new HashMap<>();
     //以下示例使用 $slice 投影运算符返回 instock 数组中的最后一个元素：
     // { item: 1, status: 1, instock: { $slice: -1 } }

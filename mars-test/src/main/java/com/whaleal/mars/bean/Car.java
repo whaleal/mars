@@ -38,7 +38,7 @@ import java.util.List;
 
 
 public class Car {
-    @Id
+
     public String id;
     @Property()
     public Long carNum;

@@ -37,7 +37,6 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.mapping.CodecRegistryProvider;
-import com.whaleal.mars.core.query.Converter;
 import org.bson.*;
 import org.bson.codecs.DocumentCodec;
 import org.bson.conversions.Bson;
@@ -52,7 +51,6 @@ import java.util.stream.StreamSupport;
 public class BsonUtil {
 
     @SuppressWarnings("unchecked")
-
     public static <T> T get(Bson bson, String key) {
         return (T) asMap(bson).get(key);
     }
@@ -208,45 +206,8 @@ public class BsonUtil {
         return orElse.apply(source);
     }
 
-    /**
-     * Serialize the given {@link Document} as Json applying default codecs if necessary.
-     *
-     * @param source
-     * @return
-     */
 
-    public static String toJson( Document source ) {
 
-        if (source == null) {
-            return null;
-        }
-
-        try {
-            return source.toJson();
-        } catch (Exception e) {
-            return toJson((Object) source);
-        }
-    }
-
-    /**
-     * Check if a given String looks like {@link Document#parse(String) parsable} json.
-     *
-     * @param value can be {@literal null}.
-     * @return {@literal true} if the given value looks like a json document.
-     */
-    public static boolean isJsonDocument( String value ) {
-        return StrUtil.hasText(value) && (value.startsWith("{") && value.endsWith("}"));
-    }
-
-    /**
-     * Check if a given String looks like {@link BsonArray#parse(String) parsable} json array.
-     *
-     * @param value can be {@literal null}.
-     * @return {@literal true} if the given value looks like a json array.
-     */
-    public static boolean isJsonArray( String value ) {
-        return StrUtil.hasText(value) && (value.startsWith("[") && value.endsWith("]"));
-    }
 
     /**
      * Parse the given {@literal json} to {@link Document} applying transformations as specified by a potentially given
@@ -316,11 +277,11 @@ public class BsonUtil {
     }
 
     private static <T> String iterableToDelimitedString(Iterable<T> source, String prefix, String suffix,
-                                                        Converter<? super T, String> transformer) {
+                                                        Function<T ,String> transformer) {
 
         StringJoiner joiner = new StringJoiner(", ", prefix, suffix);
 
-        StreamSupport.stream(source.spliterator(), false).map(transformer::convert).forEach(joiner::add);
+        StreamSupport.stream(source.spliterator(), false).map(transformer).forEach(joiner::add);
 
         return joiner.toString();
     }
