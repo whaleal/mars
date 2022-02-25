@@ -30,15 +30,14 @@
 package com.whaleal.mars.config;
 
 import com.mongodb.MongoClientSettings;
-import com.mongodb.ServerApi;
-import com.mongodb.ServerApiVersion;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.whaleal.mars.core.Mars;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+
 
 /**
  * @author cx
@@ -54,7 +53,9 @@ public class MarsConfiguration {
     @Bean
     public Mars mars(MongoProperties properties) {
         MongoProperties mongoProperties = properties ;
-        return new Mars(mongoClient(mongoProperties), mongoProperties.getMongoClientDatabase());
+        Mars mars = new Mars(mongoClient(mongoProperties), mongoProperties.getMongoClientDatabase());
+
+        return mars;
     }
 
     private MongoClient mongoClient(MongoProperties properties) {
@@ -63,7 +64,8 @@ public class MarsConfiguration {
         CustomerMongoClientSettings customizer = new CustomerMongoClientSettings(properties);
         customizer.customize(builder);
         MongoClientSettings build = builder.build();
-        return MongoClients.create(build);
+        MongoClient client = MongoClients.create(build);
+        return client;
     }
 
 }
