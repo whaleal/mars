@@ -29,9 +29,10 @@
  */
 package com.whaleal.mars.codecs;
 
+
 import com.whaleal.mars.codecs.pojo.EntityModelBuilder;
 
-public interface Convention {
+public interface Convention  {
 
     void apply( EntityModelBuilder<?> var1);
 }
