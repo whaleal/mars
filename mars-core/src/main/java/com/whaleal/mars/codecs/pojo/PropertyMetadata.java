@@ -43,16 +43,24 @@ import static java.lang.String.format;
 import static java.lang.reflect.Modifier.*;
 
 final class PropertyMetadata<T> {
+    // 属性 名称  一般通过 field #getName()  获取
     private final String name;
+    // 字段所在的声明类
     private final String declaringClassName;
+    // 类型
     private final TypeData<T> typeData;
+    //  readAnnotations  && writeAnnotations 的内容元素是一样的
+    //  注解 读取注解
     private final Map<Class<? extends Annotation>, Annotation> readAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
+    //  注解 写注解
     private final Map<Class<? extends Annotation>, Annotation> writeAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
     private TypeParameterMap typeParameterMap;
     private List<TypeData<?>> typeParameters;
 
     private String error;
+    //  field  属性
     private Field field;
+    //  与 该 field 直接关联的 getter  和 setter
     private Method getter;
     private Method setter;
 
@@ -155,6 +163,13 @@ final class PropertyMetadata<T> {
         this.error = error;
     }
 
+    /**
+     *  可序列化
+     *  条件一： 当 拥有 getter 方法 且 该 field 为空 或 为非静态修饰的
+     *  条件二：无getter  ，字段本身是public  修饰的，并且不是静态的
+     *
+     * @return
+     */
     public boolean isSerializable() {
         if (getter != null) {
             return field == null || notStaticOrTransient(field.getModifiers());
@@ -163,6 +178,11 @@ final class PropertyMetadata<T> {
         }
     }
 
+    /**
+     * 可反序列化
+     *
+     * @return
+     */
     public boolean isDeserializable() {
         if (setter != null) {
             return field == null || !isFinal(field.getModifiers()) && notStaticOrTransient(field.getModifiers());
@@ -171,10 +191,25 @@ final class PropertyMetadata<T> {
         }
     }
 
+    /**
+     * 判断 是否是 static  或者 transient  修饰
+     * 这两个修饰的 一般 会在序列化的过程中被抛弃
+     *
+     *
+     * @param modifiers
+     * @return
+     */
     private boolean notStaticOrTransient(final int modifiers) {
         return !(isTransient(modifiers) || isStatic(modifiers));
     }
 
+    /**
+     * 非 静态修饰 非 transient  修饰 且 是 public  修饰的
+     *
+     *
+     * @param modifiers
+     * @return  满足 所有条件时  返回true  否则 为 false
+     */
     private boolean isPublicAndNotStaticOrTransient(final int modifiers) {
         return isPublic(modifiers) && notStaticOrTransient(modifiers);
     }

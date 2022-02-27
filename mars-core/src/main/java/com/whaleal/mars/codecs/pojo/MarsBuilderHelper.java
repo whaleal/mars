@@ -54,6 +54,11 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  *
  * 基本上与实体相关的信息 都在这里封装
  *
+ * 字段  1 字段名称 当前类型 注解
+ * 方法  1 获取所有方法 ，分析 构造  getter  Setter 等 。
+ *
+ *
+ *
  * @author wh
  * @since 0.1
  */
@@ -67,6 +72,7 @@ final class MarsBuilderHelper {
         //  类对象上的 注解保存
         List<Annotation> annotations = new ArrayList<Annotation>();
         Set<String> propertyNames = new TreeSet<String>();
+        //Set<String> fieldNames = new TreeSet<String>();
         Map<String, TypeParameterMap> propertyTypeParameterMap = new HashMap<String, TypeParameterMap>();
         // 针对当前类赋值
         Class<? super T> currentClass = clazz;
@@ -91,19 +97,22 @@ final class MarsBuilderHelper {
             //  获取声明的 开放的 getter  && setter
             PropertyReflectionUtil.PropertyMethods propertyMethods = PropertyReflectionUtil.getPropertyMethods(currentClass);
 
-        /*    // 优先针对 Field  字段进行处理
+          /* // 优先针对 Field  字段进行处理
             for (Field field : currentClass.getDeclaredFields()) {
 
                 // 针对声明的字段进行基础的过滤
                 // 去除  static   transient 相关修饰符的字段
-
+                // 加入到 字段名称列表中
                 propertyNames.add(field.getName());
+                fieldNames.add(field.getName());
                 // Note if properties are present and types don't match, the underlying field is treated as an implementation detail.
                 PropertyMetadata<?> propertyMetadata = getOrCreateFieldPropertyMetadata(field.getName(), declaringClassName,
                         propertyNameMap, TypeData.newInstance(field), propertyTypeParameterMap, parentClassTypeData, genericTypeNames,
                         field.getGenericType());
+                // 设置相关  field 值 及 字段上相关注解
                 if (propertyMetadata != null && propertyMetadata.getField() == null) {
                     propertyMetadata.field(field);
+                    // 获取 field 上所有的注解
                     for (Annotation annotation : field.getDeclaredAnnotations()) {
                         propertyMetadata.addReadAnnotation(annotation);
                         propertyMetadata.addWriteAnnotation(annotation);
@@ -115,6 +124,7 @@ final class MarsBuilderHelper {
             // than getters (e.g.: getter returning ImmutableList, but setter accepting Collection), so by evaluating
             // setters first, we'll initialize the PropertyMetadata with the more general type
             for (Method method : propertyMethods.getSetterMethods()) {
+                // 获取 相关的 method 名称 并同时 截取 ，解析到 field Name
                 String propertyName = PropertyReflectionUtil.toPropertyName(method);
                 propertyNames.add(propertyName);
                 PropertyMetadata<?> propertyMetadata = getOrCreateMethodPropertyMetadata(propertyName, declaringClassName, propertyNameMap,
@@ -130,6 +140,7 @@ final class MarsBuilderHelper {
             }
 
             for (Method method : propertyMethods.getGetterMethods()) {
+
                 String propertyName = PropertyReflectionUtil.toPropertyName(method);
                 propertyNames.add(propertyName);
                 // If the getter is overridden in a subclass, we only want to process that property, and ignore
