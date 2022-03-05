@@ -44,6 +44,11 @@ import java.util.List;
 public class AggregationPipeline<T> implements Aggregation<T> {
 
     private final List<Stage> stages = new ArrayList<>();
+
+    public Class< T > getOutputType() {
+        return outputType;
+    }
+
     //todo  计划后续使用该参数来封装 聚合返回类型 ；
     // 泛型绑定
     private final Class<T>  outputType ;
