@@ -27,7 +27,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.gridfs;
+package com.whaleal.mars.core.gridfs;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
 

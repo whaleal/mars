@@ -1,45 +1,41 @@
 /**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
+ * Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Server Side Public License, version 1,
+ * as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
+ * <p>
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Server Side Public License for more details.
+ * <p>
+ * You should have received a copy of the Server Side Public License
+ * along with this program. If not, see
+ * <http://www.whaleal.com/licensing/server-side-public-license>.
+ * <p>
+ * As a special exception, the copyright holders give permission to link the
+ * code of portions of this program with the OpenSSL library under certain
+ * conditions as described in each individual source file and distribute
+ * linked combinations including the program with the OpenSSL library. You
+ * must comply with the Server Side Public License in all respects for
+ * all of the code used other than as permitted herein. If you modify file(s)
+ * with this exception, you may extend this exception to your version of the
+ * file(s), but you are not obligated to do so. If you do not wish to do so,
+ * delete this exception statement from your version. If you delete this
+ * exception statement from all source files in the program, then also delete
+ * it in the license file.
  */
-package com.whaleal.mars.util;
+package com.whaleal.mars.core.query;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.MongoClientSettings;
-import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ArrayUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
-import com.whaleal.mars.core.mapping.CodecRegistryProvider;
 import org.bson.*;
-import org.bson.codecs.DocumentCodec;
 import org.bson.conversions.Bson;
 import org.bson.json.JsonParseException;
 import org.bson.types.ObjectId;
@@ -52,11 +48,11 @@ import java.util.stream.StreamSupport;
 public class BsonUtil {
 
     @SuppressWarnings("unchecked")
-    public static <T> T get(Bson bson, String key) {
+    public static < T > T get( Bson bson, String key ) {
         return (T) asMap(bson).get(key);
     }
 
-    public static Map<String, Object> asMap(Bson bson) {
+    public static Map< String, Object > asMap( Bson bson ) {
 
         if (bson instanceof Document) {
             return (Document) bson;
@@ -88,7 +84,7 @@ public class BsonUtil {
      * @param value must not be {@literal null}.
      * @return
      */
-    public static Object toJavaType(BsonValue value) {
+    public static Object toJavaType( BsonValue value ) {
 
         switch (value.getBsonType()) {
             case INT32:
@@ -129,7 +125,7 @@ public class BsonUtil {
      * @return the corresponding {@link BsonValue} representation.
      * @throws IllegalArgumentException if {@literal source} does not correspond to a {@link BsonValue} type.
      */
-    public static BsonValue simpleToBsonValue(Object source) {
+    public static BsonValue simpleToBsonValue( Object source ) {
 
         if (source instanceof BsonValue) {
             return (BsonValue) source;
@@ -178,7 +174,7 @@ public class BsonUtil {
      * @param documents must not be {@literal null}. Can be empty.
      * @return the document containing all key value pairs.
      */
-    public static Document merge(Document... documents) {
+    public static Document merge( Document... documents ) {
 
         if (ObjectUtil.isEmpty(documents)) {
             return new Document();
@@ -191,44 +187,6 @@ public class BsonUtil {
         Document target = new Document();
         Arrays.asList(documents).forEach(target::putAll);
         return target;
-    }
-
-    /**
-     * @param source
-     * @param orElse
-     * @return
-     */
-    public static Document toDocumentOrElse(String source, Function<String, Document> orElse) {
-
-        if (StrUtil.trimLeadingWhitespace(source).startsWith("{")) {
-            return Document.parse(source);
-        }
-
-        return orElse.apply(source);
-    }
-
-
-
-
-    /**
-     * Parse the given {@literal json} to {@link Document} applying transformations as specified by a potentially given
-     * {@link org.bson.codecs.Codec}.
-     *
-     * @param json                  must not be {@literal null}.
-     * @param codecRegistryProvider can be {@literal null}. In that case the default {@link DocumentCodec} is used.
-     * @return never {@literal null}.
-     * @throws IllegalArgumentException if the required argument is {@literal null}.
-     */
-    public static Document parse( String json, CodecRegistryProvider codecRegistryProvider ) {
-
-        Precondition.notNull(json, "Json must not be null!");
-
-        if (codecRegistryProvider == null) {
-            return Document.parse(json);
-        }
-
-        return Document.parse(json, codecRegistryProvider.getCodecFor(Document.class)
-                .orElseGet(() -> new DocumentCodec(codecRegistryProvider.getCodecRegistry())));
     }
 
 
@@ -246,9 +204,9 @@ public class BsonUtil {
         } catch (Exception e) {
 
             if (value instanceof Collection) {
-                return toString((Collection<?>) value);
+                return toString((Collection< ? >) value);
             } else if (value instanceof Map) {
-                return toString((Map<?, ?>) value);
+                return toString((Map< ?, ? >) value);
             } else if (ObjectUtil.isArray(value)) {
                 return toString(Arrays.asList(ArrayUtil.toArray(value)));
             }
@@ -267,18 +225,18 @@ public class BsonUtil {
         return documentJson.substring(documentJson.indexOf(':') + 1, documentJson.length() - 1).trim();
     }
 
-    private static String toString(Map<?, ?> source) {
+    private static String toString( Map< ?, ? > source ) {
 
         return iterableToDelimitedString(source.entrySet(), "{ ", " }",
                 entry -> String.format("\"%s\" : %s", entry.getKey(), toJson(entry.getValue())));
     }
 
-    private static String toString(Collection<?> source) {
+    private static String toString( Collection< ? > source ) {
         return iterableToDelimitedString(source, "[ ", " ]", BsonUtil::toJson);
     }
 
-    private static <T> String iterableToDelimitedString(Iterable<T> source, String prefix, String suffix,
-                                                        Function<T ,String> transformer) {
+    private static < T > String iterableToDelimitedString( Iterable< T > source, String prefix, String suffix,
+                                                           Function< T, String > transformer ) {
 
         StringJoiner joiner = new StringJoiner(", ", prefix, suffix);
 

@@ -35,7 +35,7 @@ import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.icefrog.json.JSONUtil;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.DocumentUtil;
+
 import org.bson.Document;
 
 import java.util.*;
@@ -526,7 +526,7 @@ public class Update implements UpdateDefinition {
             doc.append("$isolated", 1);
         }
 
-        return DocumentUtil.serializeToJsonSafely(doc);
+        return doc.toJson();
     }
 
     public enum Position {

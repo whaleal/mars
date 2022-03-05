@@ -56,8 +56,8 @@ import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexHelper;
 import com.whaleal.mars.core.query.*;
-import com.whaleal.mars.gridfs.GridFsObject;
-import com.whaleal.mars.gridfs.GridFsResource;
+import com.whaleal.mars.core.gridfs.GridFsObject;
+import com.whaleal.mars.core.gridfs.GridFsResource;
 import com.whaleal.mars.session.executor.CrudExecutor;
 import com.whaleal.mars.session.executor.CrudExecutorFactory;
 import com.whaleal.mars.session.option.*;
@@ -65,8 +65,8 @@ import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
-import com.whaleal.mars.util.BsonUtil;
-import com.whaleal.mars.util.DocumentUtil;
+import com.whaleal.mars.core.query.BsonUtil;
+
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
@@ -176,7 +176,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         T result = crudExecutor.execute(session, collection, query, null, null);
         if (log.isDebugEnabled()) {
-            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", DocumentUtil.serializeToJsonSafely(query.getQueryObject()),
+            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
         }
 
@@ -721,7 +721,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", DocumentUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
+            log.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
@@ -743,7 +743,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > long countById( Query query, String collectionName, CountOptions countOptions ) {
         if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", DocumentUtil.serializeToJsonSafely(query.getQueryObject()), collectionName);
+            log.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
     }
