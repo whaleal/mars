@@ -82,7 +82,7 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 
 ## 📝文档 
 
-* [See the docs](https://docs.whaleal.com/marsdocs/)
+* [See the usage docs](Usage.md)
 * [Download Latest](https://github.com/whaleal/mars/releases)
 
 

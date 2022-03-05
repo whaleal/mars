@@ -30,7 +30,6 @@
 package com.whaleal.mars.bean;
 
 
-import com.whaleal.mars.codecs.pojo.annotations.Id;
 import com.whaleal.mars.codecs.pojo.annotations.Property;
 
 import java.util.ArrayList;

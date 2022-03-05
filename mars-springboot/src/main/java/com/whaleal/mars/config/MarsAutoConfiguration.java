@@ -30,42 +30,68 @@
 package com.whaleal.mars.config;
 
 import com.mongodb.MongoClientSettings;
-
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.whaleal.mars.core.Mars;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.mongo.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+
+import java.util.stream.Collectors;
 
 
 /**
  * @author cx
+ * @author wh
  * @Date 2020/12/18
  * 配置类，MongoProperties都是在这里获取的
  * 原生的配置了许多Bean，涉及到mars的有
- *
  */
+
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnClass({MongoClient.class, Mars.class})
 @EnableConfigurationProperties(MongoProperties.class)
-public class MarsConfiguration {
+@AutoConfigureBefore(MongoAutoConfiguration.class)
+@ConditionalOnMissingBean(Mars.class)
+public class MarsAutoConfiguration {
 
     @Bean
-    public Mars mars(MongoProperties properties) {
-        MongoProperties mongoProperties = properties ;
-        Mars mars = new Mars(mongoClient(mongoProperties), mongoProperties.getMongoClientDatabase());
+    @ConditionalOnMissingBean({Mars.class})
+    public Mars mars( MongoClient client, MongoProperties properties ) {
 
-        return mars;
+        return new Mars(client, properties.getMongoClientDatabase());
+
     }
 
-    private MongoClient mongoClient(MongoProperties properties) {
 
-        MongoClientSettings.Builder builder = MongoClientSettings.builder();
-        CustomerMongoClientSettings customizer = new CustomerMongoClientSettings(properties);
-        customizer.customize(builder);
-        MongoClientSettings build = builder.build();
-        MongoClient client = MongoClients.create(build);
-        return client;
+    @Bean
+    @ConditionalOnMissingBean({MongoClient.class})
+    public MongoClient mongo( ObjectProvider< MongoClientSettingsBuilderCustomizer > builderCustomizers, MongoClientSettings settings ) {
+        return (MongoClient) (new MongoClientFactory(builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
+    }
+
+    @Configuration(
+            proxyBeanMethods = false
+    )
+    @ConditionalOnMissingBean({MongoClientSettings.class})
+    static class MongoClientSettingsConfiguration {
+        MongoClientSettingsConfiguration() {
+        }
+
+        @Bean
+        MongoClientSettings mongoClientSettings() {
+            return MongoClientSettings.builder().build();
+        }
+
+        @Bean
+        MongoPropertiesClientSettingsBuilderCustomizer mongoPropertiesCustomizer( org.springframework.boot.autoconfigure.mongo.MongoProperties properties, Environment environment ) {
+            return new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
+        }
     }
 
 }

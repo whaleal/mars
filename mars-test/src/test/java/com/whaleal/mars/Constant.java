@@ -2,6 +2,6 @@ package com.whaleal.mars;
 
 public class Constant {
 
-    public final static String connectingStr = "mongodb://root:123456@192.168.3.190:27015/mars?authSource=admin&replicaSet=myReplicaSet";
+    public final static String connectionStr = "mongodb://root:123456@192.168.3.100:27016/mars?authSource=admin&replicaSet=repset1";
 
 }

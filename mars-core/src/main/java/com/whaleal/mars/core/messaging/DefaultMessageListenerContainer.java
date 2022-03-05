@@ -31,12 +31,13 @@ package com.whaleal.mars.core.messaging;
 
 
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.thread.ExecutorBuilder;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.task.SimpleAsyncTaskExecutor;
+
 import com.whaleal.mars.core.internal.ErrorHandler;
 
 
@@ -63,7 +64,7 @@ public class DefaultMessageListenerContainer implements MessageListenerContainer
 
 
     public DefaultMessageListenerContainer(Mars mars) {
-        this(mars, new SimpleAsyncTaskExecutor());
+        this(mars, ExecutorBuilder.create().build());
     }
 
 

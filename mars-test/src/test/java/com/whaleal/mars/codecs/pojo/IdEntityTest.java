@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import static com.whaleal.mars.Constant.connectingStr;
+import static com.whaleal.mars.Constant.connectionStr;
 
 public class IdEntityTest {
 
@@ -62,7 +62,7 @@ public class IdEntityTest {
     @Test
     public void testMarsCodec(){
 
-        MongoMappingContext context = new MongoMappingContext(MongoClients.create(connectingStr).getDatabase("mars"));
+        MongoMappingContext context = new MongoMappingContext(MongoClients.create(connectionStr).getDatabase("mars"));
 
         Codec<IdEntity> idEntityCodec = context.getCodecRegistry().get(IdEntity.class);
 

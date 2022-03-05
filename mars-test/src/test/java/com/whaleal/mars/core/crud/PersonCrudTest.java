@@ -1,7 +1,9 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.base.SerializationUtil;
+
 import com.whaleal.mars.bean.*;
+import com.whaleal.mars.core.bean.*;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
@@ -42,7 +44,7 @@ public class PersonCrudTest {
     @Before
     public void init() {
         //  创建连接
-        mars = new Mars(Constant.connectingStr);
+        mars = new Mars(Constant.connectionStr);
 
         // 清空需要的表
         mars.dropCollection(Person.class);
@@ -60,7 +62,7 @@ public class PersonCrudTest {
         person.setLastName("LastIsMars");
         person.setFirstName("FirstIsMars");
         person.setId("60dc738ffbd0bf3f4f7bc04c");
-        Address  address = new Address();
+        Address address = new Address();
         address.setStreetName( "南京路");
         address.setStreetNumber( 1228L);
         City city  = new City();

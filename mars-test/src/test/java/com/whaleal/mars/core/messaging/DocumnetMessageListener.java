@@ -27,32 +27,21 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.task;
+package com.whaleal.mars.core.messaging;
 
-@SuppressWarnings("serial")
-public class TaskTimeoutException extends TaskRejectedException {
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
-    /**
-     * Create a new {@code TaskTimeoutException}
-     * with the specified detail message and no root cause.
-     *
-     * @param msg the detail message
-     */
-    public TaskTimeoutException(String msg) {
-        super(msg);
+import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+
+import org.springframework.stereotype.Component;
+
+@Component
+@Slf4j
+public class DocumnetMessageListener implements MessageListener<ChangeStreamDocument<Document>, Document> {
+    @Override
+    public void onMessage(Message<ChangeStreamDocument<Document>, Document> message) {
+        log.info("Received Message in collection: {},message raw: {}, message body:{}",
+                message.getProperties().getCollectionName(), message.getRaw(), message.getBody());
     }
-
-    /**
-     * Create a new {@code TaskTimeoutException}
-     * with the specified detail message and the given root cause.
-     *
-     * @param msg   the detail message
-     * @param cause the root cause (usually from using an underlying
-     *              API such as the {@code java.util.concurrent} package)
-     * @see java.util.concurrent.RejectedExecutionException
-     */
-    public TaskTimeoutException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
-
 }

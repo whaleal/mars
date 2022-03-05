@@ -13,10 +13,9 @@ import java.util.List;
 public class SerializationUtil {
 
 
-    private static List<Document> getThousandDocuments() throws IOException, ClassNotFoundException {
+    private static List< Document > getThousandDocuments() throws IOException, ClassNotFoundException {
 
         File file = new File("src/test/resources/person");
-
 
 
         ObjectInputStream ois = null;
@@ -29,18 +28,16 @@ public class SerializationUtil {
         }
 
 
-
-        List<Document> docs = new ArrayList<>();
-        int i = 1000 ;
+        List< Document > docs = new ArrayList<>();
+        int i = 1000;
         Document doc = null;
-        while ((doc =(Document)ois.readObject())!=null ){
-
+        while ((doc = (Document) ois.readObject()) != null) {
 
 
             docs.add(doc);
-            i -- ;
+            i--;
 
-           if(i <=0){
+            if (i <= 0) {
                 break;
 
             }
@@ -55,16 +52,13 @@ public class SerializationUtil {
         }
 
 
-        return docs ;
+        return docs;
 
     }
 
 
-
-
-
-    public static List<Document>   getDocuments()  {
-        List<Document> thousandDocuments = null;
+    public static List< Document > getDocuments() {
+        List< Document > thousandDocuments = null;
         try {
             thousandDocuments = SerializationUtil.getThousandDocuments();
         } catch (IOException e) {
@@ -77,34 +71,23 @@ public class SerializationUtil {
 
     }
 
-    @Test
-    public void test1(){
-        try {
-            SerializationUtil.getThousandDocuments();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static  void saveObjToFile( ){
+    public static void saveObjToFile() {
         try {
             //写对象流的对象
             File file = new File("src/test/resources/person");
-            ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream(file));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
 
-            Mars mars = new Mars(Constant.connectingStr);
+            Mars mars = new Mars(Constant.connectionStr);
 
-            MongoCursor<Document> person = mars.getCollection(Document.class, "person").find(new Document()).iterator();
+            MongoCursor< Document > person = mars.getCollection(Document.class, "person").find(new Document()).iterator();
 
-            while (person.hasNext()){
+            while (person.hasNext()) {
 
                 oos.writeObject(person.next());
 
             }
 
-             //将Person对象p写入到oos中
+            //将Person对象p写入到oos中
 
             oos.close();                        //关闭文件流
         } catch (FileNotFoundException e) {
@@ -116,8 +99,16 @@ public class SerializationUtil {
         }
     }
 
-
-
+    @Test
+    public void test1() {
+        try {
+            SerializationUtil.getThousandDocuments();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

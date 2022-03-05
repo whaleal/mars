@@ -1,6 +1,9 @@
 package com.whaleal.mars.core.index;
 
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.whaleal.mars.bean.Address;
 import com.whaleal.mars.bean.Student;
 import org.bson.Document;
 import org.junit.*;
@@ -98,6 +101,50 @@ public class IndexTest {
         mars.dropIndexes(coll);
 
 
+    }
+
+
+    @Test
+    public void test() {
+
+        Assert.assertNotNull(mars);
+
+
+    }
+
+
+    @Test
+    public void testDBAndCollection(){
+        MongoDatabase database = mars.getDatabase();
+        MongoCollection<Document> tables = database.getCollection("tables");
+
+        tables.insertOne(new Document());
+
+    }
+
+
+    @Test
+    public void testEnsureIndexes() {
+
+        mars.ensureIndexes(Address.class, "addr");
+
+    }
+
+    @Test
+    public void testEnsureIndexesWithBigData() {
+
+        System.out.println(System.currentTimeMillis());
+        mars.ensureIndexes(Address.class, "POCCOLL");
+        System.out.println(System.currentTimeMillis());
+
+    }
+
+    @Test
+    public void testGetIndexes() {
+
+        List<Index> addr = mars.getIndexes("cc");
+
+        System.out.println(addr);
     }
 }
 

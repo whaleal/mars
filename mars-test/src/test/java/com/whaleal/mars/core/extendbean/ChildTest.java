@@ -1,8 +1,9 @@
-package com.whaleal.mars.bean;
+package com.whaleal.mars.core.extendbean;
 
 import com.mongodb.client.MongoCollection;
 import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.bean.Child;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;

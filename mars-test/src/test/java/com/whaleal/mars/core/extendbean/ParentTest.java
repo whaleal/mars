@@ -1,8 +1,9 @@
-package com.whaleal.mars.bean;
+package com.whaleal.mars.core.extendbean;
 
 import com.mongodb.client.MongoCollection;
 import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.bean.Parent;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
@@ -11,10 +12,7 @@ import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +37,19 @@ public class ParentTest {
     
     @Before
     public void init(){
+
+
+    }
+
+
+    @After
+    public void destory(){
+
         try {
             mars.dropCollection(Parent.class);
         }catch (Exception e){
-           // e.printStackTrace();
+            // e.printStackTrace();
         }
-
     }
 
 
