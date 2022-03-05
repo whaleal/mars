@@ -29,35 +29,40 @@
  */
 package com.whaleal.mars.bean;
 
-import com.whaleal.mars.bson.codecs.pojo.StorageType;
-import com.whaleal.mars.bson.codecs.pojo.annotations.CappedAt;
-import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoProperty;
-import com.whaleal.mars.bson.codecs.pojo.annotations.MongoId;
+
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
+import com.whaleal.mars.codecs.pojo.annotations.Representation;
+import org.bson.BsonType;
 
 import java.time.LocalDate;
 
 
 
-@Entity("person")
 public class Person
         implements Comparable<Person> {
+
+
     public String getId() {
         return id;
     }
 
-    public void setId(String _id) {
-        this.id = _id;
+    public void setId( String id ) {
+        this.id = id;
     }
 
-    @MongoId
+
+    @Id
+    @Representation(BsonType.OBJECT_ID)
     private String id;
 
     public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+
+
+    public void setBirthDate( LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -74,7 +79,7 @@ public class Person
     private Car[] cars = new Car[]{new Car(),new Car()};
 
 
-    @MongoProperty("fName")
+    @Property("fName")
     private String firstName;
     private String lastName;
     private Address address;
@@ -87,7 +92,7 @@ public class Person
         this.age = age;
     }
 
-    //@MongoProperty(mgoType = MgoType.INT32)
+    @Representation(BsonType.INT32)
     private String age = "18";
 
 
@@ -99,7 +104,8 @@ public class Person
         this.height = height;
     }
 
-    @MongoProperty(value = "tall",storageType = StorageType.STRING)
+    @Property(value = "tall")
+    @Representation(BsonType.STRING)
     private Double  height = 1.8D ;
 
 
@@ -192,7 +198,7 @@ public class Person
     @Override
     public String toString() {
         return "Person{" +
-                "id='" + id + '\'' +
+
                 ", birthDate=" + birthDate +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

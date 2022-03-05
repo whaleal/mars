@@ -29,20 +29,20 @@
  */
 package com.whaleal.mars.core.messaging;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ErrorHandler;
+import com.whaleal.mars.core.internal.ErrorHandler;
 
 class TaskFactory {
 
     private final Mars mars;
 
     /**
-     * @param template must not be {@literal null}.
+     * @param mars must not be {@literal null}.
      */
     TaskFactory(Mars mars) {
 
-        Assert.notNull(mars, "Mars must not be null!");
+        Precondition.notNull(mars, "Mars must not be null!");
 
         this.mars = mars;
     }
@@ -59,8 +59,8 @@ class TaskFactory {
     <S, T> Task forRequest(SubscriptionRequest<S, ? super T, ? extends SubscriptionRequest.RequestOptions> request, Class<T> targetType,
                            ErrorHandler errorHandler) {
 
-        Assert.notNull(request, "Request must not be null!");
-        Assert.notNull(targetType, "TargetType must not be null!");
+        Precondition.notNull(request, "Request must not be null!");
+        Precondition.notNull(targetType, "TargetType must not be null!");
 
         if (request instanceof ChangeStreamRequest) {
             return new ChangeStreamTask(mars, (ChangeStreamRequest) request, targetType, errorHandler);

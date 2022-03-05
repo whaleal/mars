@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.whaleal.mars</groupId>
         <artifactId>mars</artifactId>
-        <version>0.3.0</version>
+        <version>0.7.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,22 +20,9 @@
 
         <dependency>
             <groupId>com.whaleal.mars</groupId>
-            <artifactId>mars-core</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.whaleal.mars</groupId>
             <artifactId>mars-springboot</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
-       <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.9.1</version>
-        </dependency>
-
 
         <!--测试依赖包  by cx-->
         <dependency>
@@ -49,6 +36,13 @@
             <version>2.4.1</version>
         </dependency>
         <!--end-->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.1</version>
+        </dependency>
+
+
 
 
         <dependency>
@@ -56,6 +50,7 @@
             <artifactId>spring-boot-starter</artifactId>
             <version>2.4.1</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -84,6 +79,7 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+
 
     </dependencies>
 

@@ -29,9 +29,9 @@
  */
 package com.whaleal.mars.core.messaging;
 
-import com.mongodb.lang.Nullable;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 
 import java.util.Optional;
@@ -50,8 +50,8 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
      */
     public TailableCursorRequest(MessageListener<Document, ? super T> messageListener, RequestOptions options) {
 
-        Assert.notNull(messageListener, "MessageListener must not be null!");
-        Assert.notNull(options, "Options must not be null!");
+        Precondition.notNull(messageListener, "MessageListener must not be null!");
+        Precondition.notNull(options, "Options must not be null!");
 
         this.messageListener = messageListener;
         this.options = options instanceof TailableCursorRequestOptions ? (TailableCursorRequestOptions) options
@@ -97,9 +97,9 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
      */
     public static class TailableCursorRequestOptions implements RequestOptions {
 
-        private @Nullable
+        private
         String collectionName;
-        private @Nullable
+        private
         Query query;
 
         TailableCursorRequestOptions() {
@@ -133,9 +133,9 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
          */
         public static class TailableCursorRequestOptionsBuilder {
 
-            private @Nullable
+            private
             String collectionName;
-            private @Nullable
+            private
             Query query;
 
             private TailableCursorRequestOptionsBuilder() {
@@ -149,7 +149,7 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
              */
             public TailableCursorRequestOptionsBuilder collection(String collection) {
 
-                Assert.hasText(collection, "Collection must not be null nor empty!");
+                Precondition.hasText(collection, "Collection must not be null nor empty!");
 
                 this.collectionName = collection;
                 return this;
@@ -163,7 +163,7 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
              */
             public TailableCursorRequestOptionsBuilder filter(Query filter) {
 
-                Assert.notNull(filter, "Filter must not be null!");
+                Precondition.notNull(filter, "Filter must not be null!");
 
                 this.query = filter;
                 return this;
@@ -191,7 +191,7 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
      */
     public static class TailableCursorRequestBuilder<T> {
 
-        private @Nullable
+        private
         MessageListener<Document, ? super T> listener;
         private TailableCursorRequestOptions.TailableCursorRequestOptionsBuilder delegate = TailableCursorRequestOptions.builder();
 
@@ -206,7 +206,7 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
          */
         public TailableCursorRequestBuilder<T> collection(String collectionName) {
 
-            Assert.hasText(collectionName, "CollectionName must not be null!");
+            Precondition.hasText(collectionName, "CollectionName must not be null!");
 
             delegate.collection(collectionName);
             return this;
@@ -220,7 +220,7 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
          */
         public TailableCursorRequestBuilder<T> publishTo(MessageListener<Document, ? super T> messageListener) {
 
-            Assert.notNull(messageListener, "MessageListener must not be null!");
+            Precondition.notNull(messageListener, "MessageListener must not be null!");
 
             this.listener = messageListener;
             return this;
@@ -234,7 +234,7 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
          */
         public TailableCursorRequestBuilder<T> filter(Query filter) {
 
-            Assert.notNull(filter, "Filter must not be null!");
+            Precondition.notNull(filter, "Filter must not be null!");
 
             delegate.filter(filter);
             return this;
@@ -245,7 +245,7 @@ public class TailableCursorRequest<T> implements SubscriptionRequest<Document, T
          */
         public TailableCursorRequest<T> build() {
 
-            Assert.notNull(listener, "MessageListener must not be null!");
+            Precondition.notNull(listener, "MessageListener must not be null!");
 
             return new TailableCursorRequest<>(listener, delegate.build());
         }

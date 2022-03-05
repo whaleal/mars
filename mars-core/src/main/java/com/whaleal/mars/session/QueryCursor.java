@@ -40,8 +40,8 @@ import java.util.NoSuchElementException;
 /**
  * 该 方法 需要重新设计
  *
- * @param <T> todo  基于原生的 MongoCursor  生成 当前的 QueryCursor
- *            <p>
+ * @param <T>
+ *
  *            基于Document 的 进行转换
  */
 

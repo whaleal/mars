@@ -34,8 +34,9 @@ import com.mongodb.client.model.CollationAlternate;
 import com.mongodb.client.model.CollationCaseFirst;
 import com.mongodb.client.model.CollationMaxVariable;
 import com.mongodb.client.model.CollationStrength;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.StringUtils;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.icefrog.core.convert.Converter2;
 import org.bson.Document;
 
 import java.util.Locale;
@@ -49,6 +50,8 @@ import java.util.Optional;
  * <strong>NOTE:</strong> Please keep in mind that queries will only make use of an index with collation settings if the
  * query itself specifies the same collation.
  */
+
+@Deprecated
 public class Collation {
 
     private static final Collation SIMPLE = of("simple");
@@ -64,7 +67,7 @@ public class Collation {
 
     private Collation(CollationLocale locale) {
 
-        Assert.notNull(locale, "ICULocale must not be null!");
+        Precondition.notNull(locale, "ICULocale must not be null!");
         this.locale = locale;
     }
 
@@ -86,11 +89,11 @@ public class Collation {
      */
     public static Collation of(Locale locale) {
 
-        Assert.notNull(locale, "Locale must not be null!");
+        Precondition.notNull(locale, "Locale must not be null!");
 
         String format;
 
-        if (StringUtils.hasText(locale.getCountry())) {
+        if (StrUtil.hasText(locale.getCountry())) {
             format = String.format("%s_%s", locale.getLanguage(), locale.getCountry());
         } else {
             format = locale.getLanguage();
@@ -129,9 +132,9 @@ public class Collation {
      */
     public static Collation parse(String collation) {
 
-        Assert.notNull(collation, "Collation must not be null!");
+        Precondition.notNull(collation, "Collation must not be null!");
 
-        return StringUtils.trimLeadingWhitespace(collation).startsWith("{") ? from(Document.parse(collation))
+        return StrUtil.trimLeadingWhitespace(collation).startsWith("{") ? from(Document.parse(collation))
                 : of(collation);
     }
 
@@ -145,7 +148,7 @@ public class Collation {
      */
     public static Collation from(Document source) {
 
-        Assert.notNull(source, "Source must not be null!");
+        Precondition.notNull(source, "Source must not be null!");
 
         Collation collation = Collation.of(source.getString("locale"));
         if (source.containsKey("strength")) {
@@ -178,7 +181,7 @@ public class Collation {
         return collation;
     }
 
-    private static Converter<Collation, Document> toMongoDocumentConverter() {
+    private static Converter2<Collation, Document> toMongoDocumentConverter() {
 
         return source -> {
 
@@ -208,7 +211,7 @@ public class Collation {
         };
     }
 
-    private static Converter<Collation, com.mongodb.client.model.Collation> toMongoCollationConverter() {
+    private static Converter2<Collation, com.mongodb.client.model.Collation> toMongoCollationConverter() {
 
         return source -> {
 
@@ -449,13 +452,13 @@ public class Collation {
     }
 
     /**
-     * Transform {@code this} {@link Collation} by applying a {@link Converter}.
+     * Transform {@code this} {@link Collation} by applying a {@link Converter2}.
      *
      * @param mapper must not be {@literal null}.
      * @param <R>
      * @return the converted result.
      */
-    public <R> R map(Converter<? super Collation, ? extends R> mapper) {
+    public <R> R map( Converter2<? super Collation, ? extends R> mapper) {
         return mapper.convert(this);
     }
 
@@ -715,7 +718,7 @@ public class Collation {
          */
         public ComparisonLevel caseFirst(CaseFirst caseFirst) {
 
-            Assert.notNull(caseFirst, "CaseFirst must not be null!");
+            Precondition.notNull(caseFirst, "CaseFirst must not be null!");
             return new TertiaryICUComparisonLevel(caseFirst);
         }
     }
@@ -853,7 +856,7 @@ public class Collation {
          */
         public static CollationLocale of(String language) {
 
-            Assert.notNull(language, "Code must not be null!");
+            Precondition.notNull(language, "Code must not be null!");
             return new CollationLocale(language, Optional.empty());
         }
 
@@ -865,7 +868,7 @@ public class Collation {
          */
         public CollationLocale variant(String variant) {
 
-            Assert.notNull(variant, "Variant must not be null!");
+            Precondition.notNull(variant, "Variant must not be null!");
             return new CollationLocale(language, Optional.of(variant));
         }
 

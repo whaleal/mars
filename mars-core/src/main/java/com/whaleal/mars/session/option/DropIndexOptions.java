@@ -30,7 +30,6 @@
 package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
-import com.mongodb.lang.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +51,7 @@ public class DropIndexOptions implements WriteConfigurable<DropIndexOptions> {
         this.originDropIndexOptions = originDropIndexOptions;
     }
 
-    @Nullable
+
     public long getMaxTime(final TimeUnit timeUnit) {
         return originDropIndexOptions.getMaxTime(timeUnit);
     }

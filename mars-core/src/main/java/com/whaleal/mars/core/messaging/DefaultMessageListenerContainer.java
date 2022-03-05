@@ -29,14 +29,17 @@
  */
 package com.whaleal.mars.core.messaging;
 
-import com.mongodb.lang.Nullable;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.thread.ExecutorBuilder;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.task.SimpleAsyncTaskExecutor;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ErrorHandler;
-import com.whaleal.mars.util.ObjectUtils;
-import lombok.extern.slf4j.Slf4j;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+
+import com.whaleal.mars.core.internal.ErrorHandler;
+
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
@@ -47,8 +50,9 @@ import java.util.concurrent.Executor;
 /**
  * 消息监听者的容器，里面有好多消息监听
  */
-@Slf4j
+
 public class DefaultMessageListenerContainer implements MessageListenerContainer {
+    private static final Log log = LogFactory.get(DefaultMessageListenerContainer.class);
     private final Executor taskExecutor;
     private final TaskFactory taskFactory;
     private final Optional<ErrorHandler> errorHandler;
@@ -60,7 +64,7 @@ public class DefaultMessageListenerContainer implements MessageListenerContainer
 
 
     public DefaultMessageListenerContainer(Mars mars) {
-        this(mars, new SimpleAsyncTaskExecutor());
+        this(mars, ExecutorBuilder.create().build());
     }
 
 
@@ -69,10 +73,10 @@ public class DefaultMessageListenerContainer implements MessageListenerContainer
     }
 
 
-    public DefaultMessageListenerContainer(Mars mars, Executor taskExecutor,
-                                           @Nullable ErrorHandler errorHandler) {
-        Assert.notNull(mars, "Mars must not be null!");
-        Assert.notNull(taskExecutor, "TaskExecutor must not be null!");
+    public DefaultMessageListenerContainer( Mars mars, Executor taskExecutor,
+                                            ErrorHandler errorHandler ) {
+        Precondition.notNull(mars, "Mars must not be null!");
+        Precondition.notNull(taskExecutor, "TaskExecutor must not be null!");
 
         this.taskExecutor = taskExecutor;
         this.taskFactory = new TaskFactory(mars);
@@ -242,12 +246,12 @@ public class DefaultMessageListenerContainer implements MessageListenerContainer
 
             TaskSubscription that = (TaskSubscription) o;
 
-            return ObjectUtils.nullSafeEquals(this.task, that.task);
+            return ObjectUtil.nullSafeEquals(this.task, that.task);
         }
 
         @Override
         public int hashCode() {
-            return ObjectUtils.nullSafeHashCode(task);
+            return ObjectUtil.nullSafeHashCode(task);
         }
     }
 

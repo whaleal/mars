@@ -30,7 +30,7 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
-import com.whaleal.mars.util.StringUtils;
+import com.whaleal.icefrog.core.util.StrUtil;
 
 import java.net.UnknownHostException;
 
@@ -40,7 +40,7 @@ import java.net.UnknownHostException;
 public class ServerInfo extends AbstractMonitor {
 
 
-    protected ServerInfo(MongoClient mongoClient) {
+    public ServerInfo(MongoClient mongoClient) {
         super(mongoClient);
     }
 
@@ -56,7 +56,7 @@ public class ServerInfo extends AbstractMonitor {
          * UnknownHostException is not necessary anymore, but clients could have
          * called this method in a try..catch(UnknownHostException) already
          */
-        return StringUtils.collectionToDelimitedString(hosts(), ",");
+        return StrUtil.collectionToDelimitedString(hosts(), ",");
     }
 
     public double getUptimeEstimate() {

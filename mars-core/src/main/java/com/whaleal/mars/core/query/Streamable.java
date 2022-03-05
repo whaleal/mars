@@ -29,8 +29,9 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.StreamUtils;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.stream.StreamUtil;
+
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -76,7 +77,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      */
     static <T> Streamable<T> of(Iterable<T> iterable) {
 
-        Assert.notNull(iterable, "Iterable must not be null!");
+        Precondition.notNull(iterable, "Iterable must not be null!");
 
         return iterable::iterator;
     }
@@ -89,6 +90,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      * Creates a non-parallel {@link Stream} of the underlying {@link Iterable}.
      *
      * @return will never be {@literal null}.
+     * 本质方法
      */
     default Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
@@ -103,7 +105,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      */
     default <R> Streamable<R> map(Function<? super T, ? extends R> mapper) {
 
-        Assert.notNull(mapper, "Mapping function must not be null!");
+        Precondition.notNull(mapper, "Mapping function must not be null!");
 
         return Streamable.of(() -> stream().map(mapper));
     }
@@ -117,7 +119,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      */
     default <R> Streamable<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
 
-        Assert.notNull(mapper, "Mapping function must not be null!");
+        Precondition.notNull(mapper, "Mapping function must not be null!");
 
         return Streamable.of(() -> stream().flatMap(mapper));
     }
@@ -131,7 +133,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      */
     default Streamable<T> filter(Predicate<? super T> predicate) {
 
-        Assert.notNull(predicate, "Filter predicate must not be null!");
+        Precondition.notNull(predicate, "Filter predicate must not be null!");
 
         return Streamable.of(() -> stream().filter(predicate));
     }
@@ -154,7 +156,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      */
     default Streamable<T> and(Supplier<? extends Stream<? extends T>> stream) {
 
-        Assert.notNull(stream, "Stream must not be null!");
+        Precondition.notNull(stream, "Stream must not be null!");
 
         return Streamable.of(() -> Stream.concat(this.stream(), stream.get()));
     }
@@ -164,12 +166,12 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @param others must not be {@literal null}.
      * @return will never be {@literal null}.
-     *  2.2
+     *
      */
     @SuppressWarnings("unchecked")
     default Streamable<T> and(T... others) {
 
-        Assert.notNull(others, "Other values must not be null!");
+        Precondition.notNull(others, "Other values must not be null!");
 
         return Streamable.of(() -> Stream.concat(this.stream(), Arrays.stream(others)));
     }
@@ -179,11 +181,11 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @param iterable must not be {@literal null}.
      * @return will never be {@literal null}.
-     *  2.2
+     *
      */
     default Streamable<T> and(Iterable<? extends T> iterable) {
 
-        Assert.notNull(iterable, "Iterable must not be null!");
+        Precondition.notNull(iterable, "Iterable must not be null!");
 
         return Streamable.of(() -> Stream.concat(this.stream(), StreamSupport.stream(iterable.spliterator(), false)));
     }
@@ -194,7 +196,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @param streamable must not be {@literal null}.
      * @return will never be {@literal null}.
-     *  2.2
+     *
      */
     default Streamable<T> and(Streamable<? extends T> streamable) {
         return and((Supplier<? extends Stream<? extends T>>) streamable);
@@ -204,20 +206,20 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      * Creates a new, unmodifiable {@link List}.
      *
      * @return will never be {@literal null}.
-     *  2.2
+     *
      */
     default List<T> toList() {
-        return stream().collect(StreamUtils.toUnmodifiableList());
+        return stream().collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
     /**
      * Creates a new, unmodifiable {@link Set}.
      *
      * @return will never be {@literal null}.
-     *  2.2
+     *
      */
     default Set<T> toSet() {
-        return stream().collect(StreamUtils.toUnmodifiableSet());
+        return stream().collect(Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet));
     }
 
     /*
@@ -234,7 +236,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      *
      * @return
      * @see #toStreamable(Collector)
-     *  2.2
+     *
      */
     public static <S> Collector<S, ?, Streamable<S>> toStreamable() {
         return toStreamable(Collectors.toList());
@@ -244,7 +246,7 @@ public interface Streamable<T> extends Iterable<T>, Supplier<Stream<T>> {
      * A collector to easily produce a {@link Streamable} from a {@link Stream} and the given intermediate collector.
      *
      * @return
-     *  2.2
+     *
      */
     @SuppressWarnings("unchecked")
     public static <S, T extends Iterable<S>> Collector<S, ?, Streamable<S>> toStreamable(

@@ -29,9 +29,9 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.StringUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.StrUtil;
 
 import java.io.Serializable;
 import java.util.*;
@@ -81,7 +81,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      */
     public static Sort by(String... properties) {
 
-        Assert.notNull(properties, "Properties must not be null!");
+        Precondition.notNull(properties, "Properties must not be null!");
 
         return properties.length == 0 //
                 ? Sort.unsorted() //
@@ -96,7 +96,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      */
     public static Sort by(List<Order> orders) {
 
-        Assert.notNull(orders, "Orders must not be null!");
+        Precondition.notNull(orders, "Orders must not be null!");
 
         return orders.isEmpty() ? Sort.unsorted() : new Sort(orders);
     }
@@ -109,7 +109,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      */
     public static Sort by(Order... orders) {
 
-        Assert.notNull(orders, "Orders must not be null!");
+        Precondition.notNull(orders, "Orders must not be null!");
 
         return new Sort(Arrays.asList(orders));
     }
@@ -123,9 +123,9 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      */
     public static Sort by(Direction direction, String... properties) {
 
-        Assert.notNull(direction, "Direction must not be null!");
-        Assert.notNull(properties, "Properties must not be null!");
-        Assert.isTrue(properties.length > 0, "At least one property must be given!");
+        Precondition.notNull(direction, "Direction must not be null!");
+        Precondition.notNull(properties, "Properties must not be null!");
+        Precondition.isTrue(properties.length > 0, "At least one property must be given!");
 
         return Sort.by(Arrays.stream(properties)//
                 .map(it -> new Order(direction, it))//
@@ -177,7 +177,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      */
     public Sort and(Sort sort) {
 
-        Assert.notNull(sort, "Sort must not be null!");
+        Precondition.notNull(sort, "Sort must not be null!");
 
         ArrayList<Order> these = new ArrayList<>(this.toList());
 
@@ -194,7 +194,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      * @param property
      * @return
      */
-    @Nullable
+
     public Order getOrderFor(String property) {
 
         for (Order order : this) {
@@ -219,7 +219,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(@Nullable Object obj) {
+    public boolean equals( Object obj ) {
 
         if (this == obj) {
             return true;
@@ -252,7 +252,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
      */
     @Override
     public String toString() {
-        return isEmpty() ? "UNSORTED" : StringUtils.collectionToCommaDelimitedString(orders);
+        return isEmpty() ? "UNSORTED" : StrUtil.collectionToCommaDelimitedString(orders);
     }
 
     /**
@@ -371,7 +371,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * @param direction can be {@literal null}, will default to {@link Sort#DEFAULT_DIRECTION}
          * @param property  must not be {@literal null} or empty.
          */
-        public Order(@Nullable Direction direction, String property) {
+        public Order( Direction direction, String property ) {
             this(direction, property, DEFAULT_IGNORE_CASE, DEFAULT_NULL_HANDLING);
         }
 
@@ -382,7 +382,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * @param direction can be {@literal null}, will default to {@link Sort#DEFAULT_DIRECTION}
          * @param property  must not be {@literal null} or empty.
          */
-        public Order(@Nullable Direction direction, String property, NullHandling nullHandlingHint) {
+        public Order( Direction direction, String property, NullHandling nullHandlingHint ) {
             this(direction, property, DEFAULT_IGNORE_CASE, nullHandlingHint);
         }
 
@@ -427,11 +427,10 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * @param property     must not be {@literal null} or empty.
          * @param ignoreCase   true if sorting should be case insensitive. false if sorting should be case sensitive.
          * @param nullHandling must not be {@literal null}.
-         * 
          */
-        private Order(@Nullable Direction direction, String property, boolean ignoreCase, NullHandling nullHandling) {
+        private Order( Direction direction, String property, boolean ignoreCase, NullHandling nullHandling ) {
 
-            if (!StringUtils.hasText(property)) {
+            if (!StrUtil.hasText(property)) {
                 throw new IllegalArgumentException("Property must not null or empty!");
             }
 
@@ -600,7 +599,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
          * @see java.lang.Object#equals(java.lang.Object)
          */
         @Override
-        public boolean equals(@Nullable Object obj) {
+        public boolean equals( Object obj ) {
 
             if (this == obj) {
                 return true;

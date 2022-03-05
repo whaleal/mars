@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.ObjectUtils;
+
+import com.whaleal.icefrog.core.util.ObjectUtil;
 
 /**
  * A {@link Term} defines one or multiple words {@link Type#WORD} or phrases {@link Type#PHRASE} to be used in the
@@ -57,7 +57,7 @@ public class Term {
      * @param raw
      * @param type defaulted to {@link Type#WORD} if {@literal null}.
      */
-    public Term(String raw, @Nullable Type type) {
+    public Term( String raw, Type type ) {
         this.raw = raw;
         this.type = type == null ? Type.WORD : type;
     }
@@ -114,8 +114,8 @@ public class Term {
 
         Term term = (Term) o;
 
-        return ObjectUtils.nullSafeEquals(negated, term.negated) && ObjectUtils.nullSafeEquals(type, term.type)
-                && ObjectUtils.nullSafeEquals(raw, term.raw);
+        return ObjectUtil.nullSafeEquals(negated, term.negated) && ObjectUtil.nullSafeEquals(type, term.type)
+                && ObjectUtil.nullSafeEquals(raw, term.raw);
     }
 
     /*
@@ -127,9 +127,9 @@ public class Term {
 
         int result = 17;
 
-        result += ObjectUtils.nullSafeHashCode(type);
-        result += ObjectUtils.nullSafeHashCode(raw);
-        result += ObjectUtils.nullSafeHashCode(negated);
+        result += ObjectUtil.nullSafeHashCode(type);
+        result += ObjectUtil.nullSafeHashCode(raw);
+        result += ObjectUtil.nullSafeHashCode(negated);
 
         return result;
     }

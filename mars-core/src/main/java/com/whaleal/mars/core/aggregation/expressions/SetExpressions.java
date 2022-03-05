@@ -44,7 +44,7 @@ public final class SetExpressions {
      * @param first      an expression to evaluate
      * @param additional any additional expressions
      * @return the new expression
-     * @aggregation.expression $allElementsTrue
+     *  $allElementsTrue
      */
     public static Expression allElementsTrue(Expression first, Expression... additional) {
         return new Expression("$allElementsTrue", Expressions.toList(first, additional));
@@ -56,7 +56,7 @@ public final class SetExpressions {
      * @param first      an expression to evaluate
      * @param additional any additional expressions
      * @return the new expression
-     * @aggregation.expression $anyElementTrue
+     *  $anyElementTrue
      */
     public static Expression anyElementTrue(Expression first, Expression... additional) {
         return new Expression("$anyElementTrue", Expressions.toList(first, additional));
@@ -69,7 +69,7 @@ public final class SetExpressions {
      * @param first  the first array expression
      * @param second the second expression
      * @return the new expression
-     * @aggregation.expression $setDifference
+     *  $setDifference
      */
     public static Expression setDifference(Expression first, Expression second) {
         return new Expression("$setDifference", Arrays.asList(first, second));
@@ -81,7 +81,7 @@ public final class SetExpressions {
      * @param first      the first array expression
      * @param additional additional expressions
      * @return the new expression
-     * @aggregation.expression $setEquals
+     *  $setEquals
      */
     public static Expression setEquals(Expression first, Expression... additional) {
         return new Expression("$setEquals", Expressions.toList(first, additional));
@@ -93,7 +93,7 @@ public final class SetExpressions {
      * @param first      the first array expression
      * @param additional additional expressions
      * @return the new expression
-     * @aggregation.expression $setIntersection
+     *  $setIntersection
      */
     public static Expression setIntersection(Expression first, Expression... additional) {
         return new Expression("$setIntersection", Expressions.toList(first, additional));
@@ -106,7 +106,7 @@ public final class SetExpressions {
      * @param first  the first array expression
      * @param second the second expression
      * @return the new expression
-     * @aggregation.expression $setIsSubset
+     *  $setIsSubset
      */
     public static Expression setIsSubset(Expression first, Expression second) {
         return new Expression("$setIsSubset", Arrays.asList(first, second));
@@ -118,7 +118,7 @@ public final class SetExpressions {
      * @param first      the first array expression
      * @param additional additional expressions
      * @return the new expression
-     * @aggregation.expression $setUnion
+     *  $setUnion
      */
     public static Expression setUnion(Expression first, Expression... additional) {
         return new Expression("$setUnion", Expressions.toList(first, additional));

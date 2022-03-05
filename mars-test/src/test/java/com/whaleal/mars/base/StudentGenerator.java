@@ -5,8 +5,6 @@ import com.whaleal.mars.bean.Student;
 
 public class StudentGenerator {
 
-    public static Integer counter = 1000;
-
     public static Student getInstance(Integer stuNo) {
         Integer classNo = stuNo / 1000;
         Integer sNo = stuNo - 1000;

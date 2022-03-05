@@ -29,50 +29,53 @@
  */
 package com.whaleal.mars.session.option;
 
+import com.mongodb.client.model.TimeSeriesGranularity;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.OptionalUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.query.Collation;
 import com.whaleal.mars.core.validation.Validator;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.Optionals;
 
+
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class CollectionOptions {
 
-    private @Nullable
-    Long maxDocuments;
-    private @Nullable
-    Long size;
-    private @Nullable
-    Boolean capped;
-    private @Nullable
-    Collation collation;
+
+    private @Nullable Long maxDocuments;
+    private @Nullable Long size;
+    private @Nullable Boolean capped;
+    private @Nullable Collation collation;
     private ValidationOptions validationOptions;
+    private @Nullable TimeSeriesOptions timeSeriesOptions;
 
     /**
      * Constructs a new <code>CollectionOptions</code> instance.
      *
-     * @param size         the collection size in bytes, this data space is preallocated. Can be {@literal null}.
+     * @param size the collection size in bytes, this data space is preallocated. Can be {@literal null}.
      * @param maxDocuments the maximum number of documents in the collection. Can be {@literal null}.
-     * @param capped       true to created a "capped" collection (fixed size with auto-FIFO behavior based on insertion order),
-     *                     false otherwise. Can be {@literal null}.
-     * @deprecated please use {@link CollectionOptions#empty()} as entry point.
+     * @param capped true to created a "capped" collection (fixed size with auto-FIFO behavior based on insertion order),
+     *          false otherwise. Can be {@literal null}.
+     *
      */
-    @Deprecated
+
     public CollectionOptions(@Nullable Long size, @Nullable Long maxDocuments, @Nullable Boolean capped) {
-        this(size, maxDocuments, capped, null, ValidationOptions.none());
+        this(size, maxDocuments, capped, null, ValidationOptions.none(), null);
     }
 
     private CollectionOptions(@Nullable Long size, @Nullable Long maxDocuments, @Nullable Boolean capped,
-                              @Nullable Collation collation, ValidationOptions validationOptions) {
+                              @Nullable Collation collation, ValidationOptions validationOptions,
+                              @Nullable TimeSeriesOptions timeSeriesOptions) {
 
         this.maxDocuments = maxDocuments;
         this.size = size;
         this.capped = capped;
         this.collation = collation;
         this.validationOptions = validationOptions;
+        this.timeSeriesOptions = timeSeriesOptions;
     }
 
     /**
@@ -80,21 +83,37 @@ public class CollectionOptions {
      *
      * @param collation must not be {@literal null}.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public static CollectionOptions just(Collation collation) {
 
-        Assert.notNull(collation, "Collation must not be null!");
+        Precondition.notNull(collation, "Collation must not be null!");
 
-        return new CollectionOptions(null, null, null, collation, ValidationOptions.none());
+        return new CollectionOptions(null, null, null, collation, ValidationOptions.none(), null);
     }
 
     /**
      * Create new empty {@link CollectionOptions}.
      *
      * @return new {@link CollectionOptions}.
+     * 
      */
     public static CollectionOptions empty() {
-        return new CollectionOptions(null, null, null, null, ValidationOptions.none());
+        return new CollectionOptions(null, null, null, null, ValidationOptions.none(), null);
+    }
+
+    /**
+     * Quick way to set up {@link CollectionOptions} for a Time Series collection. For more advanced settings use
+     * {@link #timeSeries(TimeSeriesOptions)}.
+     *
+     * @param timeField The name of the property which contains the date in each time series document. Must not be
+     *          {@literal null}.
+     * @return new instance of {@link CollectionOptions}.
+     * @see #timeSeries(TimeSeriesOptions)
+     * 
+     */
+    public static CollectionOptions timeSeries(String timeField) {
+        return empty().timeSeries(TimeSeriesOptions.timeSeries(timeField));
     }
 
     /**
@@ -102,9 +121,10 @@ public class CollectionOptions {
      * <strong>NOTE</strong> Using capped collections requires defining {@link #size(long)}.
      *
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions capped() {
-        return new CollectionOptions(size, maxDocuments, true, collation, validationOptions);
+        return new CollectionOptions(size, maxDocuments, true, collation, validationOptions, null);
     }
 
     /**
@@ -112,9 +132,10 @@ public class CollectionOptions {
      *
      * @param maxDocuments can be {@literal null}.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions maxDocuments(long maxDocuments) {
-        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions);
+        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions, timeSeriesOptions);
     }
 
     /**
@@ -122,9 +143,10 @@ public class CollectionOptions {
      *
      * @param size can be {@literal null}.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions size(long size) {
-        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions);
+        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions, timeSeriesOptions);
     }
 
     /**
@@ -132,18 +154,20 @@ public class CollectionOptions {
      *
      * @param collation can be {@literal null}.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions collation(@Nullable Collation collation) {
-        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions);
+        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions, timeSeriesOptions);
     }
 
-
+ 
     /**
      * Create new {@link CollectionOptions} with already given settings and {@code validationOptions} set to given
      * {@link Validator}.
      *
      * @param validator can be {@literal null}.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions validator(@Nullable Validator validator) {
         return validation(validationOptions.validator(validator));
@@ -154,6 +178,7 @@ public class CollectionOptions {
      * {@link ValidationLevel#OFF}.
      *
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions disableValidation() {
         return schemaValidationLevel(ValidationLevel.OFF);
@@ -164,6 +189,7 @@ public class CollectionOptions {
      * {@link ValidationLevel#STRICT}.
      *
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions strictValidation() {
         return schemaValidationLevel(ValidationLevel.STRICT);
@@ -174,6 +200,7 @@ public class CollectionOptions {
      * {@link ValidationLevel#MODERATE}.
      *
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions moderateValidation() {
         return schemaValidationLevel(ValidationLevel.MODERATE);
@@ -184,6 +211,7 @@ public class CollectionOptions {
      * {@link ValidationAction#WARN}.
      *
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions warnOnValidationError() {
         return schemaValidationAction(ValidationAction.WARN);
@@ -194,6 +222,7 @@ public class CollectionOptions {
      * {@link ValidationAction#ERROR}.
      *
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions failOnValidationError() {
         return schemaValidationAction(ValidationAction.ERROR);
@@ -205,10 +234,11 @@ public class CollectionOptions {
      *
      * @param validationLevel must not be {@literal null}.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions schemaValidationLevel(ValidationLevel validationLevel) {
 
-        Assert.notNull(validationLevel, "ValidationLevel must not be null!");
+        Precondition.notNull(validationLevel, "ValidationLevel must not be null!");
         return validation(validationOptions.validationLevel(validationLevel));
     }
 
@@ -218,10 +248,11 @@ public class CollectionOptions {
      *
      * @param validationAction must not be {@literal null}.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions schemaValidationAction(ValidationAction validationAction) {
 
-        Assert.notNull(validationAction, "ValidationAction must not be null!");
+        Precondition.notNull(validationAction, "ValidationAction must not be null!");
         return validation(validationOptions.validationAction(validationAction));
     }
 
@@ -230,11 +261,25 @@ public class CollectionOptions {
      *
      * @param validationOptions must not be {@literal null}. Use {@link ValidationOptions#none()} to remove validation.
      * @return new {@link CollectionOptions}.
+     * 
      */
     public CollectionOptions validation(ValidationOptions validationOptions) {
 
-        Assert.notNull(validationOptions, "ValidationOptions must not be null!");
-        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions);
+        Precondition.notNull(validationOptions, "ValidationOptions must not be null!");
+        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions, timeSeriesOptions);
+    }
+
+    /**
+     * Create new {@link CollectionOptions} with the given {@link TimeSeriesOptions}.
+     *
+     * @param timeSeriesOptions must not be {@literal null}.
+     * @return new instance of {@link CollectionOptions}.
+     * 
+     */
+    public CollectionOptions timeSeries(TimeSeriesOptions timeSeriesOptions) {
+
+        Precondition.notNull(timeSeriesOptions, "TimeSeriesOptions must not be null!");
+        return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions, timeSeriesOptions);
     }
 
     /**
@@ -259,6 +304,7 @@ public class CollectionOptions {
      * Get if the collection should be capped.
      *
      * @return {@link Optional#empty()} if not set.
+     * 
      */
     public Optional<Boolean> getCapped() {
         return Optional.ofNullable(capped);
@@ -268,31 +314,46 @@ public class CollectionOptions {
      * Get the {@link Collation} settings.
      *
      * @return {@link Optional#empty()} if not set.
+     * 
      */
     public Optional<Collation> getCollation() {
         return Optional.ofNullable(collation);
     }
 
     /**
+     * Get the {@link ValidationOptions} for the collection.
+     *
      * @return {@link Optional#empty()} if not set.
+     * 
      */
     public Optional<ValidationOptions> getValidationOptions() {
         return validationOptions.isEmpty() ? Optional.empty() : Optional.of(validationOptions);
     }
 
     /**
+     * Get the {@link TimeSeriesOptions} if available.
+     *
+     * @return {@link Optional#empty()} if not specified.
+     * 
+     */
+    public Optional<TimeSeriesOptions> getTimeSeriesOptions() {
+        return Optional.ofNullable(timeSeriesOptions);
+    }
+
+    /**
      * Encapsulation of ValidationOptions options.
+     *
+     * 
+     * 
+     * 
      */
     public static class ValidationOptions {
 
         private static final ValidationOptions NONE = new ValidationOptions(null, null, null);
 
-        private final @Nullable
-        Validator validator;
-        private final @Nullable
-        ValidationLevel validationLevel;
-        private final @Nullable
-        ValidationAction validationAction;
+        private final @Nullable Validator validator;
+        private final @Nullable ValidationLevel validationLevel;
+        private final @Nullable ValidationAction validationAction;
 
         public ValidationOptions(Validator validator, ValidationLevel validationLevel, ValidationAction validationAction) {
 
@@ -361,19 +422,103 @@ public class CollectionOptions {
         /**
          * Get the {@code validationAction} to perform.
          *
-         * @return @return {@link Optional#empty()} if not set.
+         * @return {@link Optional#empty()} if not set.
          */
         public Optional<ValidationAction> getValidationAction() {
             return Optional.ofNullable(validationAction);
         }
 
         /**
-         * s
-         *
          * @return {@literal true} if no arguments set.
          */
         boolean isEmpty() {
-            return !Optionals.isAnyPresent(getValidator(), getValidationAction(), getValidationLevel());
+            return !OptionalUtil.isAnyPresent(getValidator(), getValidationAction(), getValidationLevel());
         }
     }
+
+    /**
+     * Options applicable to Time Series collections.
+     *
+     * 
+     * 
+     * @see <a href=
+     *      "https://docs.mongodb.com/manual/core/timeseries-collections">https://docs.mongodb.com/manual/core/timeseries-collections</a>
+     */
+    public static class TimeSeriesOptions {
+
+        private final String timeField;
+
+        private @Nullable final String metaField;
+
+        private final TimeSeriesGranularity granularity;
+
+        private TimeSeriesOptions(String timeField, @Nullable String metaField, TimeSeriesGranularity granularity) {
+
+            Precondition.hasText(timeField, "Time field must not be empty or null!");
+
+            this.timeField = timeField;
+            this.metaField = metaField;
+            this.granularity = granularity;
+        }
+
+        /**
+         * Create a new instance of {@link TimeSeriesOptions} using the given field as its {@literal timeField}. The one,
+         * that contains the date in each time series document. <br />
+         *  will be considered during the mapping process.
+         *
+         * @param timeField must not be {@literal null}.
+         * @return new instance of {@link TimeSeriesOptions}.
+         */
+        public static TimeSeriesOptions timeSeries(String timeField) {
+            return new TimeSeriesOptions(timeField, null, null);
+        }
+
+        /**
+         * Set the name of the field which contains metadata in each time series document. Should not be the {@literal id}
+         * nor {@link TimeSeriesOptions#timeSeries(String)} timeField} nor point to an {@literal array} or
+         * {@link java.util.Collection}. <br />
+         *  will be considered during the mapping process.
+         *
+         * @param metaField must not be {@literal null}.
+         * @return new instance of {@link TimeSeriesOptions}.
+         */
+        public TimeSeriesOptions metaField(String metaField) {
+            return new TimeSeriesOptions(timeField, metaField, granularity);
+        }
+
+        /**
+         * Select the {@link TimeSeriesGranularity} parameter to define how data in the time series collection is organized.
+         * Select one that is closest to the time span between incoming measurements.
+         *
+         * @return new instance of {@link TimeSeriesOptions}.
+         * @see TimeSeriesGranularity
+         */
+        public TimeSeriesOptions granularity(TimeSeriesGranularity granularity) {
+            return new TimeSeriesOptions(timeField, metaField, granularity);
+        }
+
+        /**
+         * @return never {@literal null}.
+         */
+        public String getTimeField() {
+            return timeField;
+        }
+
+        /**
+         * @return can be {@literal null}. Might be an {@literal empty} {@link String} as well, so maybe check via
+         *         {@link StrUtil#hasText(String)}.
+         */
+        @Nullable
+        public String getMetaField() {
+            return metaField;
+        }
+
+        /**
+         * @return never {@literal null}.
+         */
+        public TimeSeriesGranularity getGranularity() {
+            return granularity;
+        }
+    }
+
 }

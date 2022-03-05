@@ -29,13 +29,9 @@
  */
 package com.whaleal.mars.core;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.ReadConcern;
-import com.mongodb.ReadPreference;
-import com.mongodb.WriteConcern;
+import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.lang.Nullable;
 import com.whaleal.mars.session.DatastoreImpl;
 
 /**
@@ -45,6 +41,9 @@ import com.whaleal.mars.session.DatastoreImpl;
  * 对外开放的 操作 类
  * 可以自动在 容器中获取
  * 或者通过 uri  参数 来创建该对象
+ *
+ * 操作相关实现全部详见  DataStoreImpl
+ * @see com.whaleal.mars.session.DatastoreImpl
  */
 public class Mars extends DatastoreImpl {
 
@@ -53,13 +52,10 @@ public class Mars extends DatastoreImpl {
      * 这个是连接级别的写关注
      * 或者理解为 库级别的读写关注
      */
-    private @Nullable
-    WriteConcern writeConcern;
-    private @Nullable
-    ReadPreference readPreference;
+    private WriteConcern writeConcern;
+    private ReadPreference readPreference;
 
-    private @Nullable
-    ReadConcern readConcern;
+    private ReadConcern readConcern;
 
 
     public Mars(String connectionString) {
@@ -67,31 +63,48 @@ public class Mars extends DatastoreImpl {
     }
 
     public Mars(MongoClient mongoClient, String databaseName) {
-        super(mongoClient, databaseName);
+        super(mongoClient, databaseName ==null ?"test":databaseName);
     }
 
     public Mars(ConnectionString connectionString) {
         this(MongoClients.create(connectionString), connectionString.getDatabase());
     }
 
+    public Mars( MongoClientSettings clientSettings ,String databaseName){
+        this(MongoClients.create(clientSettings),databaseName);
+    }
+
 
     @Override
-    public void setWriteConcern(@Nullable WriteConcern writeConcern) {
+    public void setWriteConcern( WriteConcern writeConcern ) {
         super.setWriteConcern(writeConcern);
         this.writeConcern = writeConcern;
     }
 
 
-    public void setReadPreference(@Nullable ReadPreference readPreference) {
-        super.setReadPerference(readPreference);
-        this.readPreference = readPreference;
-    }
 
     @Override
-    public void setReadConcern(@Nullable ReadConcern readConcern) {
+    public void setReadConcern( ReadConcern readConcern ) {
         super.setReadConcern(readConcern);
         this.readConcern = readConcern;
     }
 
+    @Override
+    public void setReadPreference( ReadPreference readPerference ) {
+        super.setReadPreference(readPerference);
+        this.readPreference = readPerference ;
+    }
 
+
+    public WriteConcern getWriteConcern() {
+        return writeConcern;
+    }
+
+    public ReadPreference getReadPreference() {
+        return readPreference;
+    }
+
+    public ReadConcern getReadConcern() {
+        return readConcern;
+    }
 }

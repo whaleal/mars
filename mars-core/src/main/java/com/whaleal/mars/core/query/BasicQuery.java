@@ -29,12 +29,13 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 import org.bson.Document;
 
-import static com.whaleal.mars.util.ObjectUtils.nullSafeEquals;
-import static com.whaleal.mars.util.ObjectUtils.nullSafeHashCode;
+import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeEquals;
+import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
+
 
 /**
  * Custom {@link Query} implementation to setup a basic query from some arbitrary JSON query string.
@@ -50,7 +51,7 @@ public class BasicQuery extends Query {
      *
      * @param query may be {@literal null}.
      */
-    public BasicQuery(@Nullable String query) {
+    public BasicQuery( String query ) {
         this(query, null);
     }
 
@@ -69,7 +70,7 @@ public class BasicQuery extends Query {
      * @param query  may be {@literal null}.
      * @param fields may be {@literal null}.
      */
-    public BasicQuery(@Nullable String query, @Nullable String fields) {
+    public BasicQuery( String query, String fields ) {
 
         this(query != null ? Document.parse(query) : new Document(),
                 fields != null ? Document.parse(fields) : new Document());
@@ -84,8 +85,8 @@ public class BasicQuery extends Query {
      */
     public BasicQuery(Document queryObject, Document fieldsObject) {
 
-        Assert.notNull(queryObject, "Query document must not be null");
-        Assert.notNull(fieldsObject, "Projection document must not be null");
+        Precondition.notNull(queryObject, "Query document must not be null");
+        Precondition.notNull(fieldsObject, "Projection document must not be null");
 
         this.queryObject = queryObject;
         this.fieldsObject = fieldsObject;
@@ -125,7 +126,7 @@ public class BasicQuery extends Query {
      */
     protected void setFieldsObject(Document fieldsObject) {
 
-        Assert.notNull(sortObject, "Projection document must not be null");
+        Precondition.notNull(sortObject, "Projection document must not be null");
 
         this.fieldsObject = fieldsObject;
     }
@@ -151,7 +152,7 @@ public class BasicQuery extends Query {
      */
     public void setSortObject(Document sortObject) {
 
-        Assert.notNull(sortObject, "Sort document must not be null");
+        Precondition.notNull(sortObject, "Sort document must not be null");
 
         this.sortObject = sortObject;
     }
@@ -159,7 +160,7 @@ public class BasicQuery extends Query {
 
     public void setSortObject(String sortObject) {
 
-        Assert.notNull(sortObject, "Sort String must not be null");
+        Precondition.notNull(sortObject, "Sort String must not be null");
 
         this.sortObject = Document.parse(sortObject);
     }

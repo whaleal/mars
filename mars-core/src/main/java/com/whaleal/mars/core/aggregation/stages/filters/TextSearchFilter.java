@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.aggregation.stages.filters;
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 

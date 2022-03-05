@@ -31,7 +31,6 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 import java.util.List;
@@ -68,17 +67,17 @@ public class UpdateOptions implements WriteConfigurable<UpdateOptions> {
         return this;
     }
 
-    @Nullable
+
     public List getArrayFilters() {
         return originUpdateOptions.getArrayFilters();
     }
 
-    @Nullable
+
     public Boolean getBypassDocumentValidation() {
         return originUpdateOptions.getBypassDocumentValidation();
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originUpdateOptions.getCollation();
     }

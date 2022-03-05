@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.messaging;
 
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.util.ErrorHandler;
+import com.whaleal.mars.core.internal.ErrorHandler;
 
 import java.util.Optional;
 

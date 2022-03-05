@@ -31,7 +31,6 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
-import com.mongodb.lang.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +54,7 @@ public class EstimatedDocumentCountOptions implements ReadConfigurable<Estimated
         this.originEstimatedDocumentCountOptions = originEstimatedDocumentCountOptions;
     }
 
-    @Nullable
+
     public long getMaxTime(final TimeUnit timeUnit) {
         return originEstimatedDocumentCountOptions.getMaxTime(timeUnit);
     }

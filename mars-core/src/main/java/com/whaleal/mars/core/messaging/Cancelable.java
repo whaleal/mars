@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.messaging;
 
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
 /**
  * 删除总接口

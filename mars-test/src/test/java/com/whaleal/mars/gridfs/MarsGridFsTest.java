@@ -9,7 +9,8 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -38,13 +39,11 @@ import java.util.regex.Pattern;
 public class MarsGridFsTest {
     @Autowired
     Mars mars;
-    //@Autowired
-    private GridFSBucket bucket;
 
     private static String bucketName = "xx";
 
-    private static String m1 = "/Users/cs/Documents/back.jpeg";
-    private static String m300 = "/usr/local/tmp/软工1645-201612211515-单卫东.rar";
+    private static String m1 = "/Users/cs/Documents/xxxx.jpeg";
+    private static String m300 = "/usr/local/tmp/xxx.rar";
     private static String g2 = "";
 
     private static String m300Id = "6080dd5e878eb9205b437f7f";
@@ -57,7 +56,7 @@ public class MarsGridFsTest {
         Matcher m = r.matcher("str123");
         System.out.println(m.matches());
         String str = "1";
-        Assert.state(str == null || Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]{0,15}$").matcher(str).matches(), "匹配错误");
+        Precondition.state(str == null || Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]{0,15}$").matcher(str).matches(), "匹配错误");
     }
 
     @Test

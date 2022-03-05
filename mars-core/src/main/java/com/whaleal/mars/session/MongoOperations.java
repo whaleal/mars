@@ -30,11 +30,11 @@
 package com.whaleal.mars.session;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.lang.Nullable;
+import com.whaleal.mars.gridfs.GridFsOperations;
 import com.whaleal.mars.session.option.CollectionOptions;
 import org.bson.Document;
 
-public interface MongoOperations {
+public interface MongoOperations extends GridFsOperations, Statistic{
 
     /**
      * 传递一个类对象，根据对象创建集合
@@ -51,7 +51,7 @@ public interface MongoOperations {
      * @param collectionOptions 收集选项
      * @return {@link MongoCollection<Document>}
      */
-    <T> MongoCollection<Document> createCollection(Class<T> entityClass, @Nullable CollectionOptions collectionOptions);
+    <T> MongoCollection<Document> createCollection( Class<T> entityClass, CollectionOptions collectionOptions );
 
     /**
      * 根据名字创建集合，使用一些默认的参数
@@ -68,7 +68,7 @@ public interface MongoOperations {
      * @param collectionOptions 收集选项
      * @return {@link MongoCollection<Document>}
      */
-    MongoCollection<Document> createCollection(String collectionName, @Nullable CollectionOptions collectionOptions);
+    MongoCollection<Document> createCollection( String collectionName, CollectionOptions collectionOptions );
 
     /**
      * 根据类对象删除对应的集合

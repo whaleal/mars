@@ -1,8 +1,9 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.base.SerializationUtil;
+
 import com.whaleal.mars.bean.*;
-import com.whaleal.mars.bson.codecs.pojo.annotations.Entity;
+
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
@@ -12,7 +13,7 @@ import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -29,15 +30,25 @@ import java.util.Optional;
 public class PersonCrudTest {
     Mars mars;
 
+    //
+
+    /**
+     * 关于注解的模式
+     * 0 ：无注解 ；或 id  注解 ;
+     * 1 ：
+     */
+    int model = 0 ;
+
 
 
     @Before
     public void init() {
         //  创建连接
-        mars = new Mars(Constant.server101);
+        mars = new Mars(Constant.connectionStr);
 
         // 清空需要的表
         mars.dropCollection(Person.class);
+
 
     }
 
@@ -51,7 +62,7 @@ public class PersonCrudTest {
         person.setLastName("LastIsMars");
         person.setFirstName("FirstIsMars");
         person.setId("60dc738ffbd0bf3f4f7bc04c");
-        Address  address = new Address();
+        Address address = new Address();
         address.setStreetName( "南京路");
         address.setStreetNumber( 1228L);
         City city  = new City();
@@ -72,24 +83,28 @@ public class PersonCrudTest {
         InsertOneResult insertResult = mars.insert(person);
 
         Assert.assertTrue(insertResult.wasAcknowledged());
-        Assert.assertEquals(insertResult.getInsertedId().asObjectId().getValue().toHexString(),"60dc738ffbd0bf3f4f7bc04c");
+        Assert.assertEquals(insertResult.getInsertedId().isObjectId() ? insertResult.getInsertedId().asObjectId().getValue().toHexString():insertResult.getInsertedId().asString().getValue(),"60dc738ffbd0bf3f4f7bc04c");
 
-        Optional<Person> personFromDB = mars.findOne(Query.query(Criteria.where("_id").is(new ObjectId("60dc738ffbd0bf3f4f7bc04c"))), Person.class);
+        if(model ==0){
 
-        Assert.assertNotNull(personFromDB.get());
+            Optional<Person> personFromDB = mars.findOne(Query.query(Criteria.where("_id").is(new ObjectId("60dc738ffbd0bf3f4f7bc04c"))), Person.class);
 
-        Person person1 = personFromDB.get();
+            Assert.assertNotNull(personFromDB.get());
 
-        Assert.assertEquals(person.getAge(),person1.getAge());
+            Person person1 = personFromDB.get();
 
-        Assert.assertEquals(person.getId(),person1.getId());
-        Assert.assertEquals(person.getFirstName(),person1.getFirstName());
-        Assert.assertEquals(person.getLastName(),person1.getLastName());
-        Assert.assertEquals(person.getHeight(),person1.getHeight());
-        Assert.assertEquals(person.getBirthDate(),person1.getBirthDate());
-        Assert.assertEquals(person.getAddress(),person1.getAddress());
-        Assert.assertEquals(person.getCars().length,person1.getCars().length);
-        Assert.assertEquals(person.getCars()[0].id,person1.getCars()[0].id);
+            Assert.assertEquals(person.getAge(),person1.getAge());
+
+            Assert.assertEquals(person.getId(),person1.getId());
+            Assert.assertEquals(person.getFirstName(),person1.getFirstName());
+            Assert.assertEquals(person.getLastName(),person1.getLastName());
+            Assert.assertEquals(person.getHeight(),person1.getHeight());
+            Assert.assertEquals(person.getBirthDate(),person1.getBirthDate());
+            Assert.assertEquals(person.getAddress(),person1.getAddress());
+            Assert.assertEquals(person.getCars().length,person1.getCars().length);
+            Assert.assertEquals(person.getCars()[0].id,person1.getCars()[0].id);
+        }
+
 
     }
 
@@ -114,6 +129,37 @@ public class PersonCrudTest {
         long count = mars.count(Person.class);
 
         Assert.assertEquals(number, count);
+
+        QueryCursor< Person > all = mars.findAll(new Query(), Person.class);
+
+        while (all.hasNext()){
+            Person next = all.next();
+
+            Assert.assertNotNull(next);
+            Assert.assertNotNull(next.getId());
+            Assert.assertNotNull(next.getAge());
+            Assert.assertNotNull(next.getAddress());
+            Assert.assertNotNull(next.getBirthDate());
+            Assert.assertNotNull(next.getFirstName());
+            Assert.assertNotNull(next.getLastName());
+            Assert.assertNotNull(next.getHeight());
+
+            Address address = next.getAddress();
+
+            Assert.assertNotNull(address.getCity());
+            Assert.assertNotNull(address.getStreetName());
+            Assert.assertNotNull(address.getStreetNumber());
+
+            City city = address.getCity();
+
+            Assert.assertNotNull(city.getId());
+            Assert.assertNotNull(city.getLat());
+            Assert.assertNotNull(city.getLon());
+            Assert.assertNotNull(city.getName());
+
+            Assert.assertNotNull(city.getZipCodes());
+        }
+
 
     }
 
@@ -170,17 +216,23 @@ public class PersonCrudTest {
 
         Assert.assertTrue(insert.wasAcknowledged());
 
-        Assert.assertNotNull(insert.getInsertedId().asObjectId().getValue().toHexString());
+        if(model ==0){
 
-        String  id = insert.getInsertedId().asObjectId().getValue().toHexString() ;
+            Assert.assertNotNull(insert.getInsertedId().asObjectId().getValue().toHexString());
 
-        long count1 = mars.count(Person.class);
-        Assert.assertEquals(count1 ,1);
+            String  id = insert.getInsertedId().asObjectId().getValue().toHexString() ;
 
-        Query query = new Query().addCriteria(Criteria.where("_id").is(new ObjectId(id)));
-        DeleteResult deleteResult = mars.delete(query, Person.class);
+            long count1 = mars.count(Person.class);
+            Assert.assertEquals(count1 ,1);
 
-        Assert.assertEquals(deleteResult.getDeletedCount(),1);
+            Query query = new Query().addCriteria(Criteria.where("_id").is(new ObjectId(id)));
+            DeleteResult deleteResult = mars.delete(query, Person.class);
+
+            Assert.assertEquals(deleteResult.getDeletedCount(),1);
+        }
+
+
+
 
 
     }
@@ -223,6 +275,7 @@ public class PersonCrudTest {
     public void test07(){
 
 
+
         Person person = EntityGenerater.getPerson();
         mars.insert(person);
 
@@ -232,7 +285,7 @@ public class PersonCrudTest {
 
         DeleteOptions options = new DeleteOptions();
 
-        DeleteResult result = mars.delete(query, Car.class,options,"person");
+        DeleteResult result = mars.delete(query, Person.class,options,"person");
 
         long deletedCount = result.getDeletedCount();
 
@@ -438,8 +491,12 @@ public class PersonCrudTest {
         List<Person> personList = all.toList();
 
 
-
         Assert.assertEquals(personList.size() , 1000);
+
+
+        Person p = personList.get(0);
+
+        Assert.assertNotNull(p.getId());
 
 
     }

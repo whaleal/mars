@@ -32,7 +32,6 @@ package com.whaleal.mars.session.option;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.ReturnDocument;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 import java.util.List;
@@ -56,37 +55,37 @@ public class FindOneAndUpdateOptions implements WriteConfigurable<FindOneAndUpda
         this.originFindOneAndUpdateOptions = originFindOneAndUpdateOptions;
     }
 
-    @Nullable
+
     public List getArrayFilters() {
         return originFindOneAndUpdateOptions.getArrayFilters();
     }
 
-    @Nullable
+
     public Boolean getBypassDocumentValidation() {
         return originFindOneAndUpdateOptions.getBypassDocumentValidation();
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originFindOneAndUpdateOptions.getCollation();
     }
 
-    @Nullable
+
     public long getMaxTime(TimeUnit timeUnit) {
         return originFindOneAndUpdateOptions.getMaxTime(timeUnit);
     }
 
-    @Nullable
+
     public Bson getSort() {
         return originFindOneAndUpdateOptions.getSort();
     }
 
-    @Nullable
+
     public Bson getProjection() {
         return originFindOneAndUpdateOptions.getProjection();
     }
 
-    @Nullable
+
     public ReturnDocument getReturnDocument() {
         return originFindOneAndUpdateOptions.getReturnDocument();
     }

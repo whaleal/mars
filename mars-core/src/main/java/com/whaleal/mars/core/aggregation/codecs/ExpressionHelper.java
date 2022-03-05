@@ -29,9 +29,9 @@
  */
 package com.whaleal.mars.core.aggregation.codecs;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
-import com.whaleal.mars.bson.codecs.writer.DocumentWriter;
+
+import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import org.bson.BsonWriter;
 import org.bson.Document;
@@ -78,8 +78,8 @@ public final class ExpressionHelper {
     }
 
 
-    public static void expression(MongoMappingContext mapper, BsonWriter writer, String name, @Nullable Expression expression,
-                                  EncoderContext encoderContext) {
+    public static void expression( MongoMappingContext mapper, BsonWriter writer, String name, Expression expression,
+                                   EncoderContext encoderContext ) {
         if (expression != null) {
             writer.writeName(name);
             expression.encode(mapper, writer, encoderContext);
@@ -87,14 +87,14 @@ public final class ExpressionHelper {
     }
 
 
-    public static void expression(MongoMappingContext mapper, BsonWriter writer, @Nullable Expression expression, EncoderContext encoderContext) {
+    public static void expression( MongoMappingContext mapper, BsonWriter writer, Expression expression, EncoderContext encoderContext ) {
         if (expression != null) {
             expression.encode(mapper, writer, encoderContext);
         }
     }
 
 
-    public static void value(MongoMappingContext mapper, BsonWriter writer, String name, @Nullable Object value, EncoderContext encoderContext) {
+    public static void value( MongoMappingContext mapper, BsonWriter writer, String name, Object value, EncoderContext encoderContext ) {
         if (value != null) {
             writer.writeName(name);
             Codec codec = mapper.getCodecRegistry().get(value.getClass());
@@ -103,7 +103,7 @@ public final class ExpressionHelper {
     }
 
 
-    public static void value(MongoMappingContext mapper, BsonWriter writer, @Nullable Object value, EncoderContext encoderContext) {
+    public static void value( MongoMappingContext mapper, BsonWriter writer, Object value, EncoderContext encoderContext ) {
         if (value != null) {
             Codec codec = mapper.getCodecRegistry().get(value.getClass());
             encoderContext.encodeWithChildContext(codec, writer, value);

@@ -32,7 +32,6 @@ package com.whaleal.mars.session.option;
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.model.Variable;
-import com.mongodb.lang.Nullable;
 import org.bson.conversions.Bson;
 
 import java.util.List;
@@ -57,27 +56,27 @@ public class MergeOptions implements ReadConfigurable<MergeOptions> {
         this.originMergeOptions = originMergeOptions;
     }
 
-    @Nullable
+
     public List<String> getUniqueIdentifier() {
         return originMergeOptions.getUniqueIdentifier();
     }
 
-    @Nullable
+
     public List<Variable<?>> getVariables() {
         return originMergeOptions.getVariables();
     }
 
-    @Nullable
+
     public com.mongodb.client.model.MergeOptions.WhenMatched getWhenMatched() {
         return originMergeOptions.getWhenMatched();
     }
 
-    @Nullable
+
     public List<Bson> getWhenMatchedPipeline() {
         return originMergeOptions.getWhenMatchedPipeline();
     }
 
-    @Nullable
+
     public com.mongodb.client.model.MergeOptions.WhenNotMatched getWhenNotMatched() {
         return originMergeOptions.getWhenNotMatched();
     }

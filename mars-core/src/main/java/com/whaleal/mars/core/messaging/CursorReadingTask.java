@@ -30,11 +30,10 @@
 package com.whaleal.mars.core.messaging;
 
 import com.mongodb.client.MongoCursor;
-import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ErrorHandler;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.core.internal.ErrorHandler;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
@@ -138,6 +137,7 @@ abstract class CursorReadingTask<T, R> implements Task {
                 if (State.STARTING.equals(state)) {
 
                     MongoCursor<T> cursor = execute(() -> initCursor(mars, request.getRequestOptions(), targetType));
+
                     valid = isValidCursor(cursor);
                     if (valid) {
                         this.cursor = cursor;
@@ -199,13 +199,17 @@ abstract class CursorReadingTask<T, R> implements Task {
     }
 
 
-    @Override
-    public boolean awaitStart(Duration timeout) throws InterruptedException {
+    private static boolean isValidCursor( MongoCursor<?> cursor ) {
 
-        Assert.notNull(timeout, "Timeout must not be null!");
-        Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative!");
+        if (cursor == null) {
+            return false;
+        }
 
-        return awaitStart.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
+        if (cursor.getServerCursor() == null || cursor.getServerCursor().getId() == 0) {
+            return false;
+        }
+
+        return true;
     }
 
     protected Message<T, R> createMessage(T source, Class<R> targetType, SubscriptionRequest.RequestOptions options) {
@@ -229,7 +233,7 @@ abstract class CursorReadingTask<T, R> implements Task {
         }
     }
 
-    @Nullable
+
     private T getNext() {
 
         synchronized (lifecycleMonitor) {
@@ -241,17 +245,13 @@ abstract class CursorReadingTask<T, R> implements Task {
         throw new IllegalStateException(String.format("Cursor %s is not longer open.", cursor));
     }
 
-    private static boolean isValidCursor(@Nullable MongoCursor<?> cursor) {
+    @Override
+    public boolean awaitStart(Duration timeout) throws InterruptedException {
 
-        if (cursor == null) {
-            return false;
-        }
+        Precondition.notNull(timeout, "Timeout must not be null!");
+        Precondition.isTrue(!timeout.isNegative(), "Timeout must not be negative!");
 
-        if (cursor.getServerCursor() == null || cursor.getServerCursor().getId() == 0) {
-            return false;
-        }
-
-        return true;
+        return awaitStart.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 
     /**
@@ -264,7 +264,7 @@ abstract class CursorReadingTask<T, R> implements Task {
      * @return can be {@literal null}.
      * @throws RuntimeException The potentially translated exception.
      */
-    @Nullable
+
     private <V> V execute(Supplier<V> callback) {
 
         try {

@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
+
 import org.bson.Document;
 
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class BasicUpdate extends Update {
     }
 
     @Override
-    public Update set(String key, @Nullable Object value) {
+    public Update set( String key, Object value ) {
         updateObject.put("$set", Collections.singletonMap(key, value));
         return this;
     }
@@ -69,7 +69,7 @@ public class BasicUpdate extends Update {
     }
 
     @Override
-    public Update push(String key, @Nullable Object value) {
+    public Update push( String key, Object value ) {
         updateObject.put("$push", Collections.singletonMap(key, value));
         return this;
     }
@@ -84,7 +84,7 @@ public class BasicUpdate extends Update {
     }
 
     @Override
-    public Update addToSet(String key, @Nullable Object value) {
+    public Update addToSet( String key, Object value ) {
         updateObject.put("$addToSet", Collections.singletonMap(key, value));
         return this;
     }
@@ -96,7 +96,7 @@ public class BasicUpdate extends Update {
     }
 
     @Override
-    public Update pull(String key, @Nullable Object value) {
+    public Update pull( String key, Object value ) {
         updateObject.put("$pull", Collections.singletonMap(key, value));
         return this;
     }

@@ -30,7 +30,6 @@
 package com.whaleal.mars.gridfs;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.lang.Nullable;
 import org.bson.Document;
 
 /**
@@ -42,7 +41,6 @@ import org.bson.Document;
 public interface GridFsObject<ID, CONTENT> {
 
 
-    @Nullable
     ID getFileId();
 
 
@@ -111,7 +109,7 @@ public interface GridFsObject<ID, CONTENT> {
          * @param gridFSFile
          * @return {@link Options}
          */
-        public static Options from(@Nullable GridFSFile gridFSFile) {
+        public static Options from( GridFSFile gridFSFile ) {
             return gridFSFile != null ? new Options(gridFSFile.getMetadata(), gridFSFile.getChunkSize()) : none();
         }
 
@@ -177,7 +175,7 @@ public interface GridFsObject<ID, CONTENT> {
          *
          * @return {@link String}
          */
-        @Nullable
+
         public String getContentType() {
             return (String) metadata.get("_contentType");
         }

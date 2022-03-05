@@ -31,7 +31,6 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.CreateIndexCommitQuorum;
 import com.mongodb.WriteConcern;
-import com.mongodb.lang.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -53,12 +52,12 @@ public class CreateIndexOptions implements WriteConfigurable<CreateIndexOptions>
         this.originCreateIndexOptions = originCreateIndexOptions;
     }
 
-    @Nullable
+
     public long getMaxTime(final TimeUnit timeUnit) {
         return originCreateIndexOptions.getMaxTime(timeUnit);
     }
 
-    @Nullable
+
     public CreateIndexCommitQuorum getCommitQuorum() {
         return originCreateIndexOptions.getCommitQuorum();
     }

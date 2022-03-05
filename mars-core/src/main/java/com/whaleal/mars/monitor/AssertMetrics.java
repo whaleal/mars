@@ -39,7 +39,7 @@ public class AssertMetrics extends AbstractMonitor {
     /**
      * @param mongoClient must not be {@literal null}.
      */
-    public AssertMetrics(MongoClient mongoClient) {
+    public AssertMetrics( MongoClient mongoClient ) {
         super(mongoClient);
     }
 
@@ -64,9 +64,9 @@ public class AssertMetrics extends AbstractMonitor {
     }
 
     private int getBtree(String key) {
-        Document asserts = (Document) getServerStatus().get("asserts");
+        Document Preconditions = (Document) getServerStatus().get("Preconditions");
         // Class c = btree.get(key).getClass();
-        return (Integer) asserts.get(key);
+        return (Integer) Preconditions.get(key);
     }
 
 }

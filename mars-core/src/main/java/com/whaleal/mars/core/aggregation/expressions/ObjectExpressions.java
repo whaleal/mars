@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.aggregation.expressions;
 
-import com.whaleal.mars.bson.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
@@ -50,7 +50,7 @@ public final class ObjectExpressions {
      * Combines multiple documents into a single document.
      *
      * @return the new expression
-     * @aggregation.expression $mergeObjects
+     *  $mergeObjects
      */
     public static MergeObjects mergeObjects() {
         return new MergeObjects();

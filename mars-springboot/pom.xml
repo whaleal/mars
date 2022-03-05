@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.whaleal.mars</groupId>
         <artifactId>mars</artifactId>
-        <version>0.3.0</version>
+        <version>0.7.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,13 +16,13 @@
             <groupId>com.whaleal.mars</groupId>
             <artifactId>mars-core</artifactId>
             <version>${project.parent.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
             <version>${spring.version}</version>
             <scope>provided</scope>
         </dependency>

@@ -29,38 +29,38 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.BsonUtils;
+
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.util.BsonUtil;
+import com.whaleal.mars.util.DocumentUtil;
 import org.bson.Document;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.whaleal.mars.util.ObjectUtils.nullSafeEquals;
-import static com.whaleal.mars.util.ObjectUtils.nullSafeHashCode;
+import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeEquals;
+import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
+
 
 /**
  * MongoDB Query object representing criteria, projection, sorting and query hints.
  */
 public class Query {
 
-    private static final String RESTRICTED_TYPES_KEY = "_$RESTRICTED_TYPES";
-
-    private final Set<Class<?>> restrictedTypes = new HashSet<>();
+    // 主要查询 criteria 可以拼接多个,这里是有序存储 。
     private final Map<String, CriteriaDefinition> criteria = new LinkedHashMap<>();
-    private @Nullable
-    Projection projectionSpec = null;
+    // projection
+    private Projection projectionSpec = null;
+    // sorting
     private Sort sort = Sort.unsorted();
     private long skip;
     private int limit;
-    private @Nullable
-    String hint;
+    private String hint;
 
     private Meta meta = new Meta();
-
+    // collation
     private Optional<Collation> collation = Optional.empty();
 
     public Query() {
@@ -95,7 +95,7 @@ public class Query {
      */
     public static Query of(Query source) {
 
-        Assert.notNull(source, "Source must not be null!");
+        Precondition.notNull(source, "Source must not be null!");
 
         Document sourceFields = source.getFieldsObject();
         Document sourceSort = source.getSortObject();
@@ -105,17 +105,17 @@ public class Query {
 
             @Override
             public Document getFieldsObject() {
-                return BsonUtils.merge(sourceFields, super.getFieldsObject());
+                return BsonUtil.merge(sourceFields, super.getFieldsObject());
             }
 
             @Override
             public Document getSortObject() {
-                return BsonUtils.merge(sourceSort, super.getSortObject());
+                return BsonUtil.merge(sourceSort, super.getSortObject());
             }
 
             @Override
             public Document getQueryObject() {
-                return BsonUtils.merge(sourceQuery, super.getQueryObject());
+                return BsonUtil.merge(sourceQuery, super.getQueryObject());
             }
 
             @Override
@@ -128,26 +128,13 @@ public class Query {
         target.limit = source.getLimit();
         target.hint = source.getHint();
         target.collation = source.getCollation();
-        target.restrictedTypes.addAll(source.getRestrictedTypes());
+
 
         if (source.getMeta().hasValues()) {
             target.setMeta(new Meta(source.getMeta()));
         }
 
         return target;
-    }
-
-    /**
-     * Returns whether the given key is the one used to hold the type restriction information.
-     *
-     * @param key
-     * @return
-     * @deprecated don't call this method as the restricted type handling will undergo some significant changes going
-     * forward.
-     */
-    @Deprecated
-    public static boolean isRestrictedTypeKey(String key) {
-        return RESTRICTED_TYPES_KEY.equals(key);
     }
 
     /**
@@ -158,7 +145,7 @@ public class Query {
      */
     public Query addCriteria(CriteriaDefinition criteriaDefinition) {
 
-        Assert.notNull(criteriaDefinition, "CriteriaDefinition must not be null!");
+        Precondition.notNull(criteriaDefinition, "CriteriaDefinition must not be null!");
 
         CriteriaDefinition existing = this.criteria.get(criteriaDefinition.getKey());
         String key = criteriaDefinition.getKey();
@@ -168,7 +155,7 @@ public class Query {
         } else {
             throw new InvalidMongoDbApiUsageException(
                     String.format("Due to limitations of the com.mongodb.BasicDocument, you can't add a second '%s' criteria. "
-                            + "Query already contains '%s'", key, SerializationUtils.serializeToJsonSafely(existing.getCriteriaObject())));
+                            + "Query already contains '%s'", key, DocumentUtil.serializeToJsonSafely(existing.getCriteriaObject())));
         }
 
         return this;
@@ -185,7 +172,7 @@ public class Query {
 
     public Query withProjection(Projection projection) {
 
-        Assert.notNull(projection, "projection must not be empty or null!");
+        Precondition.notNull(projection, "projection must not be empty or null!");
         this.projectionSpec = projection;
         return this;
     }
@@ -222,7 +209,7 @@ public class Query {
      */
     public Query withHint(String hint) {
 
-        Assert.hasText(hint, "Hint must not be empty or null!");
+        Precondition.hasText(hint, "Hint must not be empty or null!");
         this.hint = hint;
         return this;
     }
@@ -235,7 +222,7 @@ public class Query {
      */
     public Query withHint(Document hint) {
 
-        Assert.notNull(hint, "Hint must not be null!");
+        Precondition.notNull(hint, "Hint must not be null!");
         this.hint = hint.toJson();
         return this;
     }
@@ -249,7 +236,7 @@ public class Query {
      */
     public Query with(Sort sort) {
 
-        Assert.notNull(sort, "Sort must not be null!");
+        Precondition.notNull(sort, "Sort must not be null!");
 
         if (sort.isUnsorted()) {
             return this;
@@ -266,30 +253,7 @@ public class Query {
         return this;
     }
 
-    /**
-     * @return the restrictedTypes
-     */
-    public Set<Class<?>> getRestrictedTypes() {
-        return restrictedTypes;
-    }
 
-    /**
-     * Restricts the query to only return documents instances that are exactly of the given types.
-     *
-     * @param type            may not be {@literal null}
-     * @param additionalTypes may not be {@literal null}
-     * @return this.
-     */
-    public Query restrict(Class<?> type, Class<?>... additionalTypes) {
-
-        Assert.notNull(type, "Type must not be null!");
-        Assert.notNull(additionalTypes, "AdditionalTypes must not be null");
-
-        restrictedTypes.add(type);
-        restrictedTypes.addAll(Arrays.asList(additionalTypes));
-
-        return this;
-    }
 
     /**
      * @return the query {@link Document}.
@@ -300,10 +264,6 @@ public class Query {
 
         for (CriteriaDefinition definition : criteria.values()) {
             document.putAll(definition.getCriteriaObject());
-        }
-
-        if (!restrictedTypes.isEmpty()) {
-            document.put(RESTRICTED_TYPES_KEY, getRestrictedTypes());
         }
 
         return document;
@@ -364,7 +324,7 @@ public class Query {
     /**
      * @return can be {@literal null}.
      */
-    @Nullable
+
     public String getHint() {
         return hint;
     }
@@ -453,19 +413,6 @@ public class Query {
         return this;
     }
 
-    /**
-     * Allows querying of a replica.
-     *
-     * @return this.
-     * @see Meta.CursorOption#SLAVE_OK
-     * @deprecated since 3.0.2, use {@link #allowSecondaryReads()}.
-     */
-    @Deprecated
-    public Query slaveOk() {
-
-        meta.addFlag(Meta.CursorOption.SLAVE_OK);
-        return this;
-    }
 
     /**
      * Allows querying of a replica.
@@ -502,7 +449,7 @@ public class Query {
      */
     public void setMeta(Meta meta) {
 
-        Assert.notNull(meta, "Query meta might be empty but must not be null.");
+        Precondition.notNull(meta, "Query meta might be empty but must not be null.");
         this.meta = meta;
     }
 
@@ -512,7 +459,7 @@ public class Query {
      * @param collation can be {@literal null}.
      * @return this.
      */
-    public Query collation(@Nullable Collation collation) {
+    public Query collation( Collation collation ) {
 
         this.collation = Optional.ofNullable(collation);
         return this;
@@ -537,8 +484,8 @@ public class Query {
      */
     @Override
     public String toString() {
-        return String.format("Query: %s, Fields: %s, Sort: %s", SerializationUtils.serializeToJsonSafely(getQueryObject()),
-                SerializationUtils.serializeToJsonSafely(getFieldsObject()), SerializationUtils.serializeToJsonSafely(getSortObject()));
+        return String.format("Query: %s, Fields: %s, Sort: %s", DocumentUtil.serializeToJsonSafely(getQueryObject()),
+                DocumentUtil.serializeToJsonSafely(getFieldsObject()), DocumentUtil.serializeToJsonSafely(getSortObject()));
     }
 
     /*

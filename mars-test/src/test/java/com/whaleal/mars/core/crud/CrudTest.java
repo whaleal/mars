@@ -6,7 +6,7 @@ import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.bean.Person;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +50,7 @@ public class CrudTest {
 
     @Before
     public void isNull() {
+
         Assert.assertNotNull(mars);
 
         System.out.println(mars);
@@ -85,13 +86,16 @@ public class CrudTest {
 
        Student student = StudentGenerator.getInstance(stuNo);
 
+        mars.dropCollection(Student.class);
         mars.insert(student);
+        mars.dropCollection(Student.class);
 
     }
 
     @Test
     public void insertMany() {
         System.out.println("getTime: " +System.currentTimeMillis());
+        mars.dropCollection(Student.class);
         mars.insert(student);
         System.out.println("endTime: " +System.currentTimeMillis());
     }

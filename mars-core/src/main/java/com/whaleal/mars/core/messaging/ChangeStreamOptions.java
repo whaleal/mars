@@ -31,11 +31,10 @@ package com.whaleal.mars.core.messaging;
 
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.changestream.FullDocument;
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.core.aggregation.Aggregation;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ClassUtils;
-import com.whaleal.mars.util.ObjectUtils;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+
+import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import org.bson.BsonTimestamp;
 import org.bson.BsonValue;
 import org.bson.Document;
@@ -43,6 +42,8 @@ import org.bson.Document;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
+
+import static com.whaleal.icefrog.core.util.ClassUtil.isAssignable;
 
 /**
  * 改变流选项
@@ -52,15 +53,15 @@ import java.util.Optional;
  */
 public class ChangeStreamOptions {
 
-    private @Nullable
+    private
     Object filter;
-    private @Nullable
+    private
     BsonValue resumeToken;
-    private @Nullable
+    private
     FullDocument fullDocumentLookup;
-    private @Nullable
+    private
     Collation collation;
-    private @Nullable
+    private
     Object resumeTimestamp;
     private Resume resume = Resume.UNDEFINED;
 
@@ -180,7 +181,7 @@ public class ChangeStreamOptions {
 
     private static <T> Object doGetTimestamp(Object timestamp, Class<T> targetType) {
 
-        if (ClassUtils.isAssignableValue(targetType, timestamp)) {
+        if (targetType != null ? isAssignable(targetType, timestamp.getClass()) : !targetType.isPrimitive()) {
             return timestamp;
         }
 
@@ -194,7 +195,7 @@ public class ChangeStreamOptions {
 
         throw new IllegalArgumentException(
                 "o_O that should actually not happen. The timestamp should be an Instant or a BsonTimestamp but was "
-                        + ObjectUtils.nullSafeClassName(timestamp));
+                        + ObjectUtil.nullSafeClassName(timestamp));
     }
 
     @Override
@@ -208,19 +209,19 @@ public class ChangeStreamOptions {
 
         ChangeStreamOptions that = (ChangeStreamOptions) o;
 
-        if (!ObjectUtils.nullSafeEquals(this.filter, that.filter)) {
+        if (!ObjectUtil.nullSafeEquals(this.filter, that.filter)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(this.resumeToken, that.resumeToken)) {
+        if (!ObjectUtil.nullSafeEquals(this.resumeToken, that.resumeToken)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(this.fullDocumentLookup, that.fullDocumentLookup)) {
+        if (!ObjectUtil.nullSafeEquals(this.fullDocumentLookup, that.fullDocumentLookup)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(this.collation, that.collation)) {
+        if (!ObjectUtil.nullSafeEquals(this.collation, that.collation)) {
             return false;
         }
-        if (!ObjectUtils.nullSafeEquals(this.resumeTimestamp, that.resumeTimestamp)) {
+        if (!ObjectUtil.nullSafeEquals(this.resumeTimestamp, that.resumeTimestamp)) {
             return false;
         }
         return resume == that.resume;
@@ -228,12 +229,12 @@ public class ChangeStreamOptions {
 
     @Override
     public int hashCode() {
-        int result = ObjectUtils.nullSafeHashCode(filter);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(resumeToken);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(fullDocumentLookup);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(collation);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(resumeTimestamp);
-        result = 31 * result + ObjectUtils.nullSafeHashCode(resume);
+        int result = ObjectUtil.nullSafeHashCode(filter);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(resumeToken);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(fullDocumentLookup);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(collation);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(resumeTimestamp);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(resume);
         return result;
     }
 
@@ -260,15 +261,15 @@ public class ChangeStreamOptions {
      */
     public static class ChangeStreamOptionsBuilder {
 
-        private @Nullable
+        private
         Object filter;
-        private @Nullable
+        private
         BsonValue resumeToken;
-        private @Nullable
+        private
         FullDocument fullDocumentLookup;
-        private @Nullable
+        private
         Collation collation;
-        private @Nullable
+        private
         Object resumeTimestamp;
         private Resume resume = Resume.UNDEFINED;
 
@@ -283,7 +284,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder collation(Collation collation) {
 
-            Assert.notNull(collation, "Collation must not be null nor empty!");
+            Precondition.notNull(collation, "Collation must not be null nor empty!");
 
             this.collation = collation;
             return this;
@@ -295,9 +296,9 @@ public class ChangeStreamOptions {
          *
          * @return this.
          */
-        public ChangeStreamOptionsBuilder filter(Aggregation filter) {
+        public ChangeStreamOptionsBuilder filter( AggregationPipeline filter) {
 
-            Assert.notNull(filter, "Filter must not be null!");
+            Precondition.notNull(filter, "Filter must not be null!");
 
             this.filter = filter;
             return this;
@@ -311,7 +312,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder filter(Document... filter) {
 
-            Assert.noNullElements(filter, "Filter must not contain null values");
+            Precondition.noNullElements(filter, "Filter must not contain null values");
 
             this.filter = Arrays.asList(filter);
             return this;
@@ -326,7 +327,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder resumeToken(BsonValue resumeToken) {
 
-            Assert.notNull(resumeToken, "ResumeToken must not be null!");
+            Precondition.notNull(resumeToken, "ResumeToken must not be null!");
 
             this.resumeToken = resumeToken;
 
@@ -355,7 +356,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder fullDocumentLookup(FullDocument lookup) {
 
-            Assert.notNull(lookup, "Lookup must not be null!");
+            Precondition.notNull(lookup, "Lookup must not be null!");
 
             this.fullDocumentLookup = lookup;
             return this;
@@ -369,7 +370,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder resumeAt(Instant resumeTimestamp) {
 
-            Assert.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
+            Precondition.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
 
             this.resumeTimestamp = resumeTimestamp;
             return this;
@@ -383,7 +384,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder resumeAt(BsonTimestamp resumeTimestamp) {
 
-            Assert.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
+            Precondition.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
 
             this.resumeTimestamp = resumeTimestamp;
             return this;

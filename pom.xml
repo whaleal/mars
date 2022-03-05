@@ -7,7 +7,7 @@
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.0</version>
+    <version>0.7.1</version>
     <name>Mars</name>
     <description>MongoDB driver framework</description>
     <!--我们项目的git地址-->
@@ -20,10 +20,13 @@
     </modules>
 
     <properties>
-        <mongo.driver.version>4.2.3</mongo.driver.version>
+        <mongo.driver.version>4.5.0</mongo.driver.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring.version>2.5.1</spring.version>
+        <!-- spring boot 版本 当前以次新版本为主 , spring boot 3 也将要求最低 java 版本为 17-->
+        <!-- 需要考虑到 spring 6 以后的兼容性版本,最低java版本要求改为17-->
+        <spring.version>2.5.10</spring.version>
+        <icefrog.version>1.1.7</icefrog.version>
     </properties>
 
     <!--发布的标准，这个是按照mongodb的标准来做的-->
@@ -51,9 +54,9 @@
     <!--开发者：这里我们注册的时候写的名字和邮箱准确填写 ，id尽量和上面的id对应-->
     <developers>
         <developer>
-            <name>caoshuai</name>
+            <name>wangheng</name>
             <id>mars</id>
-            <email>shuai.cao@jinmuinfo.com</email>
+            <email>heng.wang@jinmuinfo.com</email>
         </developer>
     </developers>
 
@@ -102,6 +105,19 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- 测试覆盖度 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <check />
+                </configuration>
             </plugin>
 
             <!--部署-->

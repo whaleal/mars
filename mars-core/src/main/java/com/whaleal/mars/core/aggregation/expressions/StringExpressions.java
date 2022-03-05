@@ -49,7 +49,7 @@ public final class StringExpressions {
      * @param first      the first array expression
      * @param additional additional expressions
      * @return the new expression
-     * @aggregation.expression $concat
+     *  $concat
      */
     public static Expression concat(Expression first, Expression... additional) {
         return new Expression("$concat", Expressions.toList(first, additional));
@@ -62,7 +62,7 @@ public final class StringExpressions {
      * @param string    the string to search
      * @param substring the target string
      * @return the new expression
-     * @aggregation.expression $indexOfBytes
+     *  $indexOfBytes
      */
     public static IndexExpression indexOfBytes(Expression string, Expression substring) {
         return new IndexExpression("$indexOfBytes", string, substring);
@@ -75,7 +75,7 @@ public final class StringExpressions {
      * @param string    the string to search
      * @param substring the target string
      * @return the new expression
-     * @aggregation.expression $indexOfCP
+     *  $indexOfCP
      */
     public static IndexExpression indexOfCP(Expression string, Expression substring) {
         return new IndexExpression("$indexOfCP", string, substring);
@@ -86,7 +86,7 @@ public final class StringExpressions {
      *
      * @param input The string to trim. The argument can be any valid expression that resolves to a string.
      * @return the new expression
-     * @aggregation.expression $ltrim
+     *  $ltrim
      */
     public static TrimExpression ltrim(Expression input) {
         return new TrimExpression("$ltrim", input);
@@ -97,7 +97,7 @@ public final class StringExpressions {
      *
      * @param input the string to evaluate
      * @return the new expression
-     * @aggregation.expression $regexFind
+     *  $regexFind
      */
     public static RegexExpression regexFind(Expression input) {
         return new RegexExpression("$regexFind", input);
@@ -108,7 +108,7 @@ public final class StringExpressions {
      *
      * @param input the string to evaluate
      * @return the new expression
-     * @aggregation.expression $regexFindAll
+     *  $regexFindAll
      */
     public static RegexExpression regexFindAll(Expression input) {
         return new RegexExpression("$regexFindAll", input);
@@ -119,7 +119,7 @@ public final class StringExpressions {
      *
      * @param input the string to process
      * @return the new expression
-     * @aggregation.expression $regexMatch
+     *  $regexMatch
      */
     public static RegexExpression regexMatch(Expression input) {
         return new RegexExpression("$regexMatch", input);
@@ -132,7 +132,7 @@ public final class StringExpressions {
      * @param find        the search expression
      * @param replacement the replacement value
      * @return the new expression
-     * @aggregation.expression $replaceAll
+     *  $replaceAll
      */
     public static Expression replaceAll(Expression input, Expression find, Expression replacement) {
         return new ReplaceExpression("$replaceAll", input, find, replacement);
@@ -145,7 +145,7 @@ public final class StringExpressions {
      * @param find        the search expression
      * @param replacement the replacement value
      * @return the new expression
-     * @aggregation.expression $replaceOne
+     *  $replaceOne
      */
     public static Expression replaceOne(Expression input, Expression find, Expression replacement) {
         return new ReplaceExpression("$replaceOne", input, find, replacement);
@@ -156,7 +156,7 @@ public final class StringExpressions {
      *
      * @param input The string to trim. The argument can be any valid expression that resolves to a string.
      * @return the new expression
-     * @aggregation.expression $rtrim
+     *  $rtrim
      */
     public static TrimExpression rtrim(Expression input) {
         return new TrimExpression("$rtrim", input);
@@ -171,7 +171,7 @@ public final class StringExpressions {
      * @param delimiter The delimiter to use when splitting the string expression. delimiter can be any valid expression as long as it
      *                  resolves to a string.
      * @return the new expression
-     * @aggregation.expression $split
+     *  $split
      */
     public static Expression split(Expression input, Expression delimiter) {
         return new Expression("$split", asList(input, delimiter));
@@ -182,7 +182,7 @@ public final class StringExpressions {
      *
      * @param input the string to process
      * @return the new expression
-     * @aggregation.expression $strLenBytes
+     *  $strLenBytes
      */
     public static Expression strLenBytes(Expression input) {
         return new Expression("$strLenBytes", input);
@@ -193,7 +193,7 @@ public final class StringExpressions {
      *
      * @param input the string to process
      * @return the new expression
-     * @aggregation.expression $strLenCP
+     *  $strLenCP
      */
     public static Expression strLenCP(Expression input) {
         return new Expression("$strLenCP", input);
@@ -206,7 +206,7 @@ public final class StringExpressions {
      * @param first  the first string to compare
      * @param second the first string to second
      * @return the new expression
-     * @aggregation.expression $strcasecmp
+     *  $strcasecmp
      */
     public static Expression strcasecmp(Expression first, Expression second) {
         return new Expression("$strcasecmp", asList(first, second));
@@ -221,7 +221,7 @@ public final class StringExpressions {
      * @param start  the starting position
      * @param length the number of characters
      * @return the new expression
-     * @aggregation.expression $substr
+     *  $substr
      * @deprecated Deprecated since version 3.4: $substr is now an alias for {@link #substrBytes(Expression, int, int)}
      */
     @Deprecated
@@ -238,7 +238,7 @@ public final class StringExpressions {
      * @param start  Indicates the starting point of the substring
      * @param length the byte count to include.  Can not result in an ending index that is in the middle of a UTF-8 character.
      * @return the new expression
-     * @aggregation.expression $substrBytes
+     *  $substrBytes
      */
     public static Expression substrBytes(Expression input, int start, int length) {
         return new Expression("$substrBytes", asList(input, start, length));
@@ -252,7 +252,7 @@ public final class StringExpressions {
      * @param start  Indicates the starting point of the substring
      * @param length the code points to include.
      * @return the new expression
-     * @aggregation.expression $substrCP
+     *  $substrCP
      */
     public static Expression substrCP(Expression input, int start, int length) {
         return new Expression("$substrCP", asList(input, start, length));
@@ -263,7 +263,7 @@ public final class StringExpressions {
      *
      * @param input the string to process
      * @return the new expression
-     * @aggregation.expression $toLower
+     *  $toLower
      */
     public static Expression toLower(Expression input) {
         return new Expression("$toLower", input);
@@ -274,7 +274,7 @@ public final class StringExpressions {
      *
      * @param input the value to process
      * @return the new expression
-     * @aggregation.expression $toString
+     *  $toString
      */
     public static Expression toString(Expression input) {
         return new Expression("$toString", input);
@@ -285,7 +285,7 @@ public final class StringExpressions {
      *
      * @param input the string to process
      * @return the new expression
-     * @aggregation.expression $toUpper
+     *  $toUpper
      */
     public static Expression toUpper(Expression input) {
         return new Expression("$toUpper", input);
@@ -296,7 +296,7 @@ public final class StringExpressions {
      *
      * @param input the string to process
      * @return the new expression
-     * @aggregation.expression $trim
+     *  $trim
      */
     public static TrimExpression trim(Expression input) {
         return new TrimExpression("$trim", input);

@@ -29,7 +29,7 @@
  */
 package com.whaleal.mars.core.query;
 
-import com.mongodb.lang.Nullable;
+
 import org.bson.Document;
 
 import java.util.Locale;
@@ -66,7 +66,7 @@ public class TextQuery extends Query {
      * @see TextCriteria#forLanguage(String)
      * @see TextCriteria#matching(String)
      */
-    public TextQuery(String wordsAndPhrases, @Nullable String language) {
+    public TextQuery( String wordsAndPhrases, String language ) {
         super(TextCriteria.forLanguage(language).matching(wordsAndPhrases));
     }
 
@@ -78,7 +78,7 @@ public class TextQuery extends Query {
      * @param wordsAndPhrases must not be {@literal null}.
      * @param locale          can be {@literal null}.
      */
-    public TextQuery(String wordsAndPhrases, @Nullable Locale locale) {
+    public TextQuery( String wordsAndPhrases, Locale locale ) {
         this(wordsAndPhrases, locale != null ? locale.getLanguage() : (String) null);
     }
 

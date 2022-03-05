@@ -31,7 +31,7 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -53,32 +53,32 @@ public class TextSearchOptions implements ReadConfigurable<TextSearchOptions> {
         this.originTextSearchOptions = originTextSearchOptions;
     }
 
-    @Nullable
+
     public String getLanguage() {
         return originTextSearchOptions.getLanguage();
     }
 
-    @Nullable
+
     public Boolean getCaseSensitive() {
         return originTextSearchOptions.getCaseSensitive();
     }
 
-    @Nullable
+
     public Boolean getDiacriticSensitive() {
         return originTextSearchOptions.getDiacriticSensitive();
     }
 
-    public TextSearchOptions language(@Nullable String language) {
+    public TextSearchOptions language( String language ) {
         this.originTextSearchOptions.language(language);
         return this;
     }
 
-    public TextSearchOptions caseSensitive(@Nullable Boolean caseSensitive) {
+    public TextSearchOptions caseSensitive( Boolean caseSensitive ) {
         this.originTextSearchOptions.caseSensitive(caseSensitive);
         return this;
     }
 
-    public TextSearchOptions diacriticSensitive(@Nullable Boolean diacriticSensitive) {
+    public TextSearchOptions diacriticSensitive( Boolean diacriticSensitive ) {
         this.originTextSearchOptions.diacriticSensitive(diacriticSensitive);
         return this;
     }

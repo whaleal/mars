@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.index;
 
 
-import com.whaleal.mars.bson.codecs.MarsOrmException;
+import com.whaleal.mars.codecs.MarsOrmException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

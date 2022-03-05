@@ -29,15 +29,16 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.ResourceUtils;
+
+import com.whaleal.icefrog.core.util.URLUtil;
+
 
 public interface ResourceLoader {
 
     /**
      * Pseudo URL prefix for loading from the class path: "classpath:".
      */
-    String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
+    String CLASSPATH_URL_PREFIX = URLUtil.CLASSPATH_URL_PREFIX;
 
 
     /**
@@ -67,7 +68,7 @@ public interface ResourceLoader {
      * @return the {@code ClassLoader}
      * (only {@code null} if even the system {@code ClassLoader} isn't accessible)
      */
-    @Nullable
+
     ClassLoader getClassLoader();
 
 }

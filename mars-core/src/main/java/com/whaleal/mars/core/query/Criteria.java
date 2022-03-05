@@ -30,19 +30,24 @@
 package com.whaleal.mars.core.query;
 
 import com.mongodb.BasicDBList;
-
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.*;
+import com.mongodb.client.model.geojson.Geometry;
+import com.mongodb.client.model.geojson.Point;
+import com.whaleal.icefrog.core.collection.CollectionUtil;
+import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.icefrog.core.codec.Base64 ;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.bson.types.Binary;
-import org.locationtech.jts.geom.*;
+
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import static com.whaleal.mars.util.ObjectUtils.nullSafeHashCode;
+import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
 
 /**
  * Central class for creating queries. It follows a fluent API style so that you can easily chain together multiple
@@ -72,7 +77,7 @@ public class Criteria implements CriteriaDefinition {
     }
 
     // key  is used  to  decorate  itself
-    private @Nullable
+    private
     String key;
 
     // criteriaChain  is used  to  decorate  it innerData
@@ -84,7 +89,7 @@ public class Criteria implements CriteriaDefinition {
     private LinkedHashMap<String, Object> criteria = new LinkedHashMap<String, Object>();
 
     //  默认值 为 空对象 ，可以使用is() 设置
-    private @Nullable
+    private
     Object isValue = NOT_SET;
 
 
@@ -133,7 +138,7 @@ public class Criteria implements CriteriaDefinition {
      * @param s the Regex option/flag to look up. Can be {@literal null}.
      * @return zero if given {@link String} is {@literal null} or empty.
      */
-    private static int regexFlags(@Nullable String s) {
+    private static int regexFlags( String s ) {
 
         int flags = 0;
 
@@ -180,9 +185,9 @@ public class Criteria implements CriteriaDefinition {
      *
      * @param value can be {@literal null}.
      * @return this.
-     *  where  的 key  即为 本类对象的key
+     * where  的 key  即为 本类对象的key
      */
-    public Criteria is(@Nullable Object value) {
+    public Criteria is( Object value ) {
 
         if (!isValue.equals(NOT_SET)) {
             throw new InvalidMongoDbApiUsageException(
@@ -208,7 +213,7 @@ public class Criteria implements CriteriaDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/ne/">MongoDB Query operator: $ne</a>
      */
-    public Criteria ne(@Nullable Object value) {
+    public Criteria ne( Object value ) {
         criteria.put("$ne", value);
         return this;
     }
@@ -405,7 +410,7 @@ public class Criteria implements CriteriaDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/not/">MongoDB Query operator: $not</a>
      */
-    private Criteria not(@Nullable Object value) {
+    private Criteria not( Object value ) {
         criteria.put("$not", value);
         return this;
     }
@@ -429,7 +434,7 @@ public class Criteria implements CriteriaDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/regex/">MongoDB Query operator: $regex</a>
      */
-    public Criteria regex(String regex, @Nullable String options) {
+    public Criteria regex( String regex, String options ) {
         return regex(toPattern(regex, options));
     }
 
@@ -441,7 +446,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria regex(Pattern pattern) {
 
-        Assert.notNull(pattern, "Pattern must not be null!");
+        Precondition.notNull(pattern, "Pattern must not be null!");
 
         if (lastOperatorWasNot()) {
             return not(pattern);
@@ -467,9 +472,9 @@ public class Criteria implements CriteriaDefinition {
         return this;
     }
 
-    private Pattern toPattern(String regex, @Nullable String options) {
+    private Pattern toPattern( String regex, String options ) {
 
-        Assert.notNull(regex, "Regex string must not be null!");
+        Precondition.notNull(regex, "Regex string must not be null!");
 
         return Pattern.compile(regex, regexFlags(options));
     }
@@ -487,7 +492,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria geowithin(Geometry geometry) {
 
-        Assert.notNull(geometry, "geometry must not be null!");
+        Precondition.notNull(geometry, "geometry must not be null!");
 
         criteria.put("$geoWithin", geometry);
         return this;
@@ -504,7 +509,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria near(Point point) {
 
-        Assert.notNull(point, "Point must not be null!");
+        Precondition.notNull(point, "Point must not be null!");
 
         criteria.put("$near", point);
         return this;
@@ -519,9 +524,9 @@ public class Criteria implements CriteriaDefinition {
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/nearSphere/">MongoDB Query operator:
      * $nearSphere</a>
      */
-    public Criteria nearSphere(Point point) {
+    public Criteria nearSphere( Point point) {
 
-        Assert.notNull(point, "Point must not be null!");
+        Precondition.notNull(point, "Point must not be null!");
 
         criteria.put("$nearSphere", point);
         return this;
@@ -534,9 +539,9 @@ public class Criteria implements CriteriaDefinition {
      * @return this.
      */
     @SuppressWarnings("rawtypes")
-    public Criteria geointersects(Geometry geometry) {
+    public Criteria geointersects( Geometry geometry) {
 
-        Assert.notNull(geometry, "geometry must not be null!");
+        Precondition.notNull(geometry, "geometry must not be null!");
         criteria.put("$geoIntersects", geometry);
         return this;
     }
@@ -663,7 +668,7 @@ public class Criteria implements CriteriaDefinition {
      * @see CriteriaDefinition#getKey()
      */
     @Override
-    @Nullable
+
     public String getKey() {
         return this.key;
     }
@@ -691,7 +696,7 @@ public class Criteria implements CriteriaDefinition {
 
         if (this.criteriaChain.size() == 1) {
             return criteriaChain.get(0).getSingleCriteriaObject();
-        } else if (CollectionUtils.isEmpty(this.criteriaChain) && !CollectionUtils.isEmpty(this.criteria)) {
+        } else if (CollectionUtil.isEmpty(this.criteriaChain) && !CollectionUtil.isEmpty(this.criteria)) {
             return getSingleCriteriaObject();
         } else {
 
@@ -766,7 +771,7 @@ public class Criteria implements CriteriaDefinition {
             }
         }
 
-        if (!StringUtils.hasText(this.key)) {
+        if (!StrUtil.hasText(this.key)) {
             if (not) {
                 return new Document("$not", document);
             }
@@ -892,7 +897,7 @@ public class Criteria implements CriteriaDefinition {
                     && leftPattern.flags() == rightPattern.flags();
         }
 
-        return ObjectUtils.nullSafeEquals(left, right);
+        return ObjectUtil.nullSafeEquals(left, right);
     }
 
     /*
@@ -1194,8 +1199,8 @@ public class Criteria implements CriteriaDefinition {
 
         private Criteria positions(String operator, List<Integer> positions) {
 
-            Assert.notNull(positions, "Positions must not be null!");
-            Assert.noNullElements(positions.toArray(), "Positions must not contain null values.");
+            Precondition.notNull(positions, "Positions must not be null!");
+            Precondition.noNullElements(positions.toArray(), "Positions must not contain null values.");
 
             target.criteria.put(operator, positions);
             return target;
@@ -1203,9 +1208,9 @@ public class Criteria implements CriteriaDefinition {
 
         private Criteria stringBitmask(String operator, String bitmask) {
 
-            Assert.hasText(bitmask, "Bitmask must not be null!");
+            Precondition.hasText(bitmask, "Bitmask must not be null!");
 
-            target.criteria.put(operator, new Binary(Base64Utils.decodeFromString(bitmask)));
+            target.criteria.put(operator, new Binary(Base64.decode(bitmask)));
             return target;
         }
 

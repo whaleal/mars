@@ -5,7 +5,7 @@ import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.EntityGenerater;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.junit.Assert;
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.whaleal.mars.Constant;
@@ -38,7 +38,7 @@ public class LocalCrudTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.server101);
+        mars = new Mars(Constant.connectionStr);
 
         Assert.assertNotNull(mars);
 
@@ -102,9 +102,13 @@ public class LocalCrudTest {
     @Test
     public void insertMany() {
 
+        mars.dropCollection(Person.class);
         InsertManyResult insert = mars.insert(people);
 
-        System.out.println(insert.getInsertedIds());
+        int size = insert.getInsertedIds().size();
+
+
+        Assert.assertEquals(size ,people.size());
 
     }
 

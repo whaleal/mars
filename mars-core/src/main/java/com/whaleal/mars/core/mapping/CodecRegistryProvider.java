@@ -29,7 +29,8 @@
  */
 package com.whaleal.mars.core.mapping;
 
-import com.whaleal.mars.util.Assert;
+
+import com.whaleal.icefrog.core.lang.Precondition;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -72,7 +73,7 @@ public interface CodecRegistryProvider {
      */
     default <T> Optional<Codec<T>> getCodecFor(Class<T> type) {
 
-        Assert.notNull(type, "Type must not be null!");
+        Precondition.notNull(type, "Type must not be null!");
 
         try {
             return Optional.of(getCodecRegistry().get(type));

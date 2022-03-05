@@ -31,8 +31,7 @@ package com.whaleal.mars.core.messaging;
 
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.OperationType;
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.ObjectUtils;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import org.bson.BsonTimestamp;
 import org.bson.BsonValue;
 import org.bson.Document;
@@ -52,14 +51,13 @@ public class ChangeStreamEvent<T> {
     private static final AtomicReferenceFieldUpdater<ChangeStreamEvent, Object> CONVERTED_UPDATER = AtomicReferenceFieldUpdater
             .newUpdater(ChangeStreamEvent.class, Object.class, "converted");
 
-    private final @Nullable
+    private final
     ChangeStreamDocument<Document> raw;
 
     private final Class<T> targetType;
 
     // accessed through CONVERTED_UPDATER.
-    private volatile @Nullable
-    T converted;
+    private volatile T converted;
 
 
     /**
@@ -68,7 +66,7 @@ public class ChangeStreamEvent<T> {
      * @param raw        行内容
      * @param targetType 目标类型
      */
-    public ChangeStreamEvent(@Nullable ChangeStreamDocument<Document> raw, Class<T> targetType) {
+    public ChangeStreamEvent( ChangeStreamDocument<Document> raw, Class<T> targetType ) {
 
         this.raw = raw;
         this.targetType = targetType;
@@ -80,7 +78,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link ChangeStreamDocument<Document>}
      */
-    @Nullable
+
     public ChangeStreamDocument<Document> getRaw() {
         return raw;
     }
@@ -91,7 +89,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link Instant}
      */
-    @Nullable
+
     public Instant getTimestamp() {
         return getBsonTimestamp() != null ? Instant.ofEpochSecond(Long.valueOf(getBsonTimestamp().toString()))
                 : null;
@@ -103,7 +101,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link BsonTimestamp}
      */
-    @Nullable
+
     public BsonTimestamp getBsonTimestamp() {
         return raw != null ? raw.getClusterTime() : null;
     }
@@ -114,7 +112,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link BsonValue}
      */
-    @Nullable
+
     public BsonValue getResumeToken() {
         return raw != null ? raw.getResumeToken() : null;
     }
@@ -125,7 +123,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link OperationType}
      */
-    @Nullable
+
     public OperationType getOperationType() {
         return raw != null ? raw.getOperationType() : null;
     }
@@ -136,7 +134,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link String}
      */
-    @Nullable
+
     public String getDatabaseName() {
         return raw != null ? raw.getNamespace().getDatabaseName() : null;
     }
@@ -147,7 +145,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link String}
      */
-    @Nullable
+
     public String getCollectionName() {
         return raw != null ? raw.getNamespace().getCollectionName() : null;
     }
@@ -158,7 +156,7 @@ public class ChangeStreamEvent<T> {
      *
      * @return {@link T}
      */
-    @Nullable
+
     public T getBody() {
 
         if (raw == null) {
@@ -202,16 +200,16 @@ public class ChangeStreamEvent<T> {
 
         ChangeStreamEvent<?> that = (ChangeStreamEvent<?>) o;
 
-        if (!ObjectUtils.nullSafeEquals(this.raw, that.raw)) {
+        if (!ObjectUtil.nullSafeEquals(this.raw, that.raw)) {
             return false;
         }
-        return ObjectUtils.nullSafeEquals(this.targetType, that.targetType);
+        return ObjectUtil.nullSafeEquals(this.targetType, that.targetType);
     }
 
     @Override
     public int hashCode() {
         int result = raw != null ? raw.hashCode() : 0;
-        result = 31 * result + ObjectUtils.nullSafeHashCode(targetType);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(targetType);
         return result;
     }
 }

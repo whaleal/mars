@@ -29,22 +29,25 @@
  */
 package com.whaleal.mars.gridfs;
 
-import com.mongodb.lang.Nullable;
-import com.whaleal.mars.util.ResourceUtils;
-import lombok.extern.slf4j.Slf4j;
+
+import com.whaleal.icefrog.core.exceptions.UtilException;
+import com.whaleal.icefrog.core.util.URLUtil;
+import com.whaleal.icefrog.log.Log;
+import com.whaleal.icefrog.log.LogFactory;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-@Slf4j
+
 public abstract class AbstractResource implements Resource {
+    private static final Log log = LogFactory.get(AbstractResource.class);
 
     /**
      * This implementation checks whether a File can be opened,
@@ -117,8 +120,8 @@ public abstract class AbstractResource implements Resource {
     public URI getURI() throws IOException {
         URL url = getURL();
         try {
-            return ResourceUtils.toURI(url);
-        } catch (URISyntaxException ex) {
+            return URLUtil.toURI(url);
+        } catch (UtilException ex) {
             throw new IOException("Invalid URI [" + url + "]", ex);
         }
     }
@@ -217,7 +220,7 @@ public abstract class AbstractResource implements Resource {
      * assuming that this resource type does not have a filename.
      */
     @Override
-    @Nullable
+    
     public String getFilename() {
         return null;
     }
@@ -229,7 +232,7 @@ public abstract class AbstractResource implements Resource {
      * @see #getDescription()
      */
     @Override
-    public boolean equals(@Nullable Object other) {
+    public boolean equals( Object other) {
         return (this == other || (other instanceof Resource &&
                 ((Resource) other).getDescription().equals(getDescription())));
     }

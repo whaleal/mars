@@ -31,7 +31,7 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -51,7 +51,7 @@ public class CreateViewOptions implements WriteConfigurable<CreateViewOptions> {
         this.originCreateViewOptions = originCreateViewOptions;
     }
 
-    @Nullable
+
     public Collation getCollation() {
         return originCreateViewOptions.getCollation();
     }

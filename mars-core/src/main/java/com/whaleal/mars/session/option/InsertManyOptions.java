@@ -30,7 +30,7 @@
 package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
-import com.mongodb.lang.Nullable;
+
 
 /**
  * @author cx
@@ -50,7 +50,7 @@ public class InsertManyOptions implements WriteConfigurable<InsertManyOptions> {
         this.originInsertManyOptions = originInsertManyOptions;
     }
 
-    @Nullable
+
     public Boolean getBypassDocumentValidation() {
         return this.originInsertManyOptions.getBypassDocumentValidation();
     }
@@ -60,7 +60,7 @@ public class InsertManyOptions implements WriteConfigurable<InsertManyOptions> {
         return this;
     }
 
-    public InsertManyOptions bypassDocumentValidation(@Nullable Boolean bypassDocumentValidation) {
+    public InsertManyOptions bypassDocumentValidation( Boolean bypassDocumentValidation ) {
         originInsertManyOptions.bypassDocumentValidation(bypassDocumentValidation);
         return this;
     }

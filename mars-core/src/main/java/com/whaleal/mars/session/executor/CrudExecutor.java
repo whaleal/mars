@@ -31,7 +31,6 @@ package com.whaleal.mars.session.executor;
 
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.lang.Nullable;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.option.Option;
 
@@ -42,10 +41,10 @@ import com.whaleal.mars.session.option.Option;
 public interface CrudExecutor {
 
     <T> T execute(
-            @Nullable ClientSession session,
-            @Nullable MongoCollection collection,
-            @Nullable Query query,
-            @Nullable Option options,
-            @Nullable Object data
+            ClientSession session,
+            MongoCollection collection,
+            Query query,
+            Option options,
+            Object data
     );
 }
