@@ -38,7 +38,7 @@ import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.query.Collation;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.option.IndexOptions;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class FindIndexesExecutor implements CrudExecutor {
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         ListIndexesIterable indexIterable = null;
 

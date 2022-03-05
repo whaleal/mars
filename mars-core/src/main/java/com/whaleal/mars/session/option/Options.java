@@ -37,7 +37,7 @@ import com.mongodb.client.MongoCollection;
  *            比如 读写偏好
  *            读写关注
  */
-public interface Option<T> {
+public interface Options<T> {
 
 
     /**

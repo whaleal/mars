@@ -32,7 +32,7 @@ package com.whaleal.mars.session.executor;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.UpdateResult;
 import org.bson.Document;
@@ -46,7 +46,7 @@ import java.util.Map;
 public class UpdateExecutor implements CrudExecutor {
 
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         if (!(options instanceof UpdateOptions)) {
             throw new ClassCastException();

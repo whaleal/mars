@@ -33,7 +33,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.option.DeleteOptions;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 import com.whaleal.mars.session.result.DeleteResult;
 
 /**
@@ -43,7 +43,7 @@ import com.whaleal.mars.session.result.DeleteResult;
 public class DeleteExecutor implements CrudExecutor {
 
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         if (!(options instanceof DeleteOptions)) {
             throw new ClassCastException();

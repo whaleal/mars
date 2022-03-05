@@ -33,7 +33,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.option.InsertManyOptions;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 import com.whaleal.mars.session.result.InsertManyResult;
 
 import java.util.List;
@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class InsertManyExecutor implements CrudExecutor {
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         InsertManyResult insertManyResult = new InsertManyResult();
 
