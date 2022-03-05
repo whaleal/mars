@@ -30,7 +30,7 @@
 package com.whaleal.mars.session;
 
 import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.gridfs.GridFsOperations;
+import com.whaleal.mars.core.gridfs.GridFsOperations;
 import com.whaleal.mars.session.option.CollectionOptions;
 import org.bson.Document;
 

@@ -27,14 +27,14 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.gridfs;
+package com.whaleal.mars.core.gridfs;
 
 import com.mongodb.MongoGridFSException;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
-import com.whaleal.mars.util.BsonUtil;
+import com.whaleal.mars.core.query.BsonUtil;
 
 
 import java.io.ByteArrayInputStream;

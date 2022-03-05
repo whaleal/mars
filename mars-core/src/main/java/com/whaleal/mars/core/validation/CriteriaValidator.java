@@ -32,7 +32,7 @@ package com.whaleal.mars.core.validation;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.core.query.CriteriaDefinition;
-import com.whaleal.mars.util.DocumentUtil;
+
 import org.bson.Document;
 
 /**
@@ -73,7 +73,7 @@ class CriteriaValidator implements Validator {
      */
     @Override
     public String toString() {
-        return DocumentUtil.serializeToJsonSafely(toDocument());
+        return toDocument() ==null ? "null":toDocument().toJson();
     }
 
     @Override

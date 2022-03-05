@@ -1,4 +1,3 @@
-
 /**
  *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
  *
@@ -28,5 +27,29 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.mapping;
+package com.whaleal.mars.core.gridfs;
 
+import java.io.IOException;
+
+public interface ResourcePatternResolver extends ResourceLoader {
+
+    /**
+     * Pseudo URL prefix for all matching resources from the class path: "classpath*:"
+     * <p>This differs from ResourceLoader's classpath URL prefix in that it
+     * retrieves all matching resources for a given name (e.g. "/beans.xml"),
+     * for example in the root of all deployed JAR files.
+     */
+    String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
+
+    /**
+     * Resolve the given location pattern into {@code Resource} objects.
+     * <p>Overlapping resource entries that point to the same physical
+     * resource should be avoided, as far as possible. The result should
+     * have set semantics.
+     *
+     * @param locationPattern the location pattern to resolve
+     * @return the corresponding {@code Resource} objects
+     */
+    Resource[] getResources(String locationPattern) throws IOException;
+
+}
