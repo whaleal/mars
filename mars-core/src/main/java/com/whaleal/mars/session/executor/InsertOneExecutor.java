@@ -33,7 +33,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.option.InsertOneOptions;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 import com.whaleal.mars.session.result.InsertOneResult;
 
 /**
@@ -42,7 +42,7 @@ import com.whaleal.mars.session.result.InsertOneResult;
  */
 public class InsertOneExecutor implements CrudExecutor {
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         InsertOneResult insertOneResult = new InsertOneResult();
 

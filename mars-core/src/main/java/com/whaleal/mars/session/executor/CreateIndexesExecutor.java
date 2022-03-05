@@ -33,7 +33,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class CreateIndexesExecutor implements CrudExecutor {
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         List<Index> indexes = (List) data;
 

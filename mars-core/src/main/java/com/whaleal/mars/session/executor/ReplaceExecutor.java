@@ -32,7 +32,7 @@ package com.whaleal.mars.session.executor;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 import com.whaleal.mars.session.option.ReplaceOptions;
 import com.whaleal.mars.session.result.UpdateResult;
 
@@ -43,7 +43,7 @@ import com.whaleal.mars.session.result.UpdateResult;
 public class ReplaceExecutor implements CrudExecutor {
 
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         UpdateResult updateResult = new UpdateResult();
 

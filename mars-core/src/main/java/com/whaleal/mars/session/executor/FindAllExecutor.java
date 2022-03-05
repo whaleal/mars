@@ -33,7 +33,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 
 /*
  * @author cx
@@ -42,7 +42,7 @@ import com.whaleal.mars.session.option.Option;
 public class FindAllExecutor implements CrudExecutor {
 
     @Override
-    public <T> T execute(ClientSession session, MongoCollection collection, Query query, Option options, Object data) {
+    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         FindIterable findIterable;
 

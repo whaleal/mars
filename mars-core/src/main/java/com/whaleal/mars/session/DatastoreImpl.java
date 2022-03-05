@@ -484,8 +484,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
 
-    private < T > MongoCollection< T > prepareConcern( MongoCollection< T > collection, Option option ) {
-        return option.prepare(collection);
+    private < T > MongoCollection< T > prepareConcern( MongoCollection< T > collection, Options options ) {
+        return options.prepare(collection);
 
     }
 

@@ -32,7 +32,7 @@ package com.whaleal.mars.session.executor;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Option;
+import com.whaleal.mars.session.option.Options;
 
 /**
  * @author cx
@@ -44,7 +44,7 @@ public interface CrudExecutor {
             ClientSession session,
             MongoCollection collection,
             Query query,
-            Option options,
+            Options options,
             Object data
     );
 }
