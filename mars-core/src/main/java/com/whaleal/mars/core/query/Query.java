@@ -32,8 +32,7 @@ package com.whaleal.mars.core.query;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.util.BsonUtil;
-import com.whaleal.mars.util.DocumentUtil;
+
 import org.bson.Document;
 
 import java.time.Duration;
@@ -155,7 +154,7 @@ public class Query {
         } else {
             throw new InvalidMongoDbApiUsageException(
                     String.format("Due to limitations of the com.mongodb.BasicDocument, you can't add a second '%s' criteria. "
-                            + "Query already contains '%s'", key, DocumentUtil.serializeToJsonSafely(existing.getCriteriaObject())));
+                            + "Query already contains '%s'", key, existing.getCriteriaObject() ==null ? "null": existing.getCriteriaObject().toJson()));
         }
 
         return this;
@@ -484,8 +483,8 @@ public class Query {
      */
     @Override
     public String toString() {
-        return String.format("Query: %s, Fields: %s, Sort: %s", DocumentUtil.serializeToJsonSafely(getQueryObject()),
-                DocumentUtil.serializeToJsonSafely(getFieldsObject()), DocumentUtil.serializeToJsonSafely(getSortObject()));
+        return String.format("Query: %s, Fields: %s, Sort: %s", getQueryObject() ==null ? "null": getQueryObject().toJson(),
+                getFieldsObject()== null ? "null":getFieldsObject().toJson(), getSortObject()==null ? "null":getSortObject().toJson() );
     }
 
     /*

@@ -28,7 +28,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.util;
+package com.whaleal.mars.session;
 
 
 

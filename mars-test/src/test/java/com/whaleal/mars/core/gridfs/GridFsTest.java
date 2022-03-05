@@ -1,4 +1,4 @@
-package com.whaleal.mars.gridfs;
+package com.whaleal.mars.core.gridfs;
 
 import com.mongodb.client.gridfs.*;
 import com.mongodb.client.gridfs.model.GridFSFile;
