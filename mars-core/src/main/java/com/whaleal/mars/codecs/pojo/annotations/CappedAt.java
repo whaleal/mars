@@ -36,7 +36,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CappedAt {
 
-    //  count mean  max  ，    number of documents.
+
     //  count mean  max  ，即为条数上线即为条数上线
     long count() default 0;
 
