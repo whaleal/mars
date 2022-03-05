@@ -37,10 +37,10 @@ public class AggreationCodecTest {
     @Test
     public void testAggFilters(){
 
-        AggregationPipeline pipeline = new AggregationPipeline();
+        AggregationPipeline<Student> pipeline = AggregationPipeline.create(Student.class);
         pipeline.match(Filters.eq("stuName","6"));
 
-        MarsCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
+        MarsCursor<Student> aggregate = mars.aggregate(pipeline);
 
         while (aggregate.hasNext()){
             System.out.println("得到的结果");
@@ -53,12 +53,12 @@ public class AggreationCodecTest {
     @Test
     public void testAggPtoject(){
 
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline<Person>  pipeline = AggregationPipeline.create(Person.class);
 
 
         pipeline.project(Projection.of().exclude("age"));
 
-        QueryCursor<Person> aggregate = mars.aggregate(pipeline, Person.class);
+        QueryCursor<Person> aggregate = mars.aggregate(pipeline);
 
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());
@@ -69,7 +69,7 @@ public class AggreationCodecTest {
 
     @Test
     public void testGroupCount(){
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline  pipeline = AggregationPipeline.create();
         pipeline.group(Group.of(id("address.city.name"))
                 .field("counter", sum(field("age"))));
         QueryCursor<Document> aggregate = mars.aggregate(pipeline, "person");

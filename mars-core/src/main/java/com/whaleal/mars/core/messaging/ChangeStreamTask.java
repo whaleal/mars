@@ -39,7 +39,8 @@ import com.mongodb.client.model.changestream.FullDocument;
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.aggregation.Aggregation;
+
+import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.session.option.AggregationOptions;
 import com.whaleal.mars.core.internal.ErrorHandler;
 import org.bson.BsonDocument;
@@ -83,7 +84,7 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
             if (changeStreamOptions.getFilter().isPresent()) {
 
                 Object val = changeStreamOptions.getFilter().get();
-                if (val instanceof Aggregation) {
+                if (val instanceof AggregationPipeline) {
                     collation = new AggregationOptions().getCollation();
                 }
             }

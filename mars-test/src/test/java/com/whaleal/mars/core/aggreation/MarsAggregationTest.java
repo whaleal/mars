@@ -27,10 +27,10 @@ public class MarsAggregationTest {
     @Test
     public void testAggFilters(){
 
-        AggregationPipeline pipeline = new AggregationPipeline();
+        AggregationPipeline<Student> pipeline = AggregationPipeline.create(Student.class);
         pipeline.match(Filters.eq("stuName","6"));
 
-        MarsCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
+        MarsCursor<Student> aggregate = mars.aggregate(pipeline);
 
         while (aggregate.hasNext()){
             System.out.println("得到的结果");
@@ -43,9 +43,9 @@ public class MarsAggregationTest {
     @Test
     public void testAggProject(){
 
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline<Student>  pipeline = AggregationPipeline.create( Student.class);
         pipeline.project(Projection.of().exclude("_id").include("stuAge").include("classNo"));
-        QueryCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
+        QueryCursor<Student> aggregate = mars.aggregate(pipeline);
 
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());
@@ -55,10 +55,10 @@ public class MarsAggregationTest {
 
     @Test
     public void testGroupCount(){
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline<Student>  pipeline = AggregationPipeline.create( Student.class);
         pipeline.group(Group.of(id("stuName"))
                 .field("counter", sum(field("age"))));
-        QueryCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
+        QueryCursor<Student> aggregate = mars.aggregate(pipeline);
 
 
         while (aggregate.hasNext()){

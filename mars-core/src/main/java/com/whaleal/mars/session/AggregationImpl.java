@@ -62,52 +62,50 @@ public class AggregationImpl {
      * 如有类型 需要定义需要在这里传参
      * 这个  outputType  主要为 返回类型
      *
-     * @param outputType
+     *
      * @param <T>
      * @return
      */
-    public <T> QueryCursor<T> aggregate(AggregationPipeline pipeline, Class<T> outputType) {
+    public <T> QueryCursor<T> aggregate(AggregationPipeline<T> pipeline) {
 
 
-        return this.aggregate(pipeline, outputType, null, null);
+        return this.aggregate(pipeline, null, null);
     }
 
-    public <T> QueryCursor<T> aggregate(AggregationPipeline pipeline, Class<T> outputType, AggregationOptions options) {
-
-
-        return this.aggregate(pipeline, outputType, null, options);
+    public <T> QueryCursor<T> aggregate(AggregationPipeline<T> pipeline, AggregationOptions options) {
+        
+        return this.aggregate(pipeline, null, options);
     }
-
-
-    /**
-     *
-     */
-    public <T> QueryCursor<T> aggregate(AggregationPipeline pipeline, Class<T> outputType, String collectionName, AggregationOptions options) {
-
-
-        return this.execute(pipeline, outputType, collectionName, options);
-    }
-
 
     /**
      * 默认情况下 直接进行转换
      *
      * @return
      */
-    public QueryCursor<Document> aggregate(AggregationPipeline pipeline, String collectName) {
-        return this.aggregate(pipeline, Document.class, collectName, null);
+    public <T> QueryCursor<T> aggregate(AggregationPipeline<T> pipeline, String collectName) {
+        return this.aggregate(pipeline, collectName, new AggregationOptions());
+    }
+
+    /**
+     *
+     */
+    public <T> QueryCursor<T> aggregate(AggregationPipeline<T> pipeline, String collectionName, AggregationOptions options) {
+
+
+        return this.execute(pipeline,  collectionName, options);
     }
 
 
-    public MarsCursor<Document> aggregate(AggregationPipeline pipeline, String collectName, AggregationOptions options) {
-        return this.aggregate(pipeline, Document.class, collectName, options);
-    }
 
 
-    public <R> QueryCursor<R> execute(AggregationPipeline pipeline, Class<R> resultType, String collectionName, AggregationOptions options) {
 
 
-        MongoCollection<R> collection;
+
+    public <T> QueryCursor<T> execute(AggregationPipeline<T> pipeline, String collectionName, AggregationOptions options) {
+
+        Class< T > resultType = pipeline.getOutputType();
+
+        MongoCollection<T> collection;
         if (resultType.isAssignableFrom(Document.class)) {
 
             if (collectionName == null) {
@@ -127,9 +125,9 @@ public class AggregationImpl {
             collection = options.prepare(collection);
         }
 
-        MongoCursor<R> cursor = collection.aggregate(getDocuments(pipeline.getInnerStage()), resultType).iterator();
+        MongoCursor<T> cursor = collection.aggregate(getDocuments(pipeline.getInnerStage()), resultType).iterator();
 
-        return new QueryCursor<>(cursor);
+        return new QueryCursor<T>(cursor);
 
 
     }

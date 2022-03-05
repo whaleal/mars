@@ -33,7 +33,8 @@ import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.FullDocument;
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.mars.core.aggregation.Aggregation;
+
+import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import org.bson.BsonValue;
 import org.bson.Document;
 
@@ -255,7 +256,7 @@ public class ChangeStreamRequest<T>
          * @return this.
          * @see ChangeStreamOptions#getFilter()
          */
-        public ChangeStreamRequestBuilder<T> filter(Aggregation aggregation) {
+        public ChangeStreamRequestBuilder<T> filter( AggregationPipeline aggregation) {
 
             Precondition.notNull(aggregation, "Aggregation must not be null!");
             this.delegate.filter(aggregation);
