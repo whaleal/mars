@@ -30,12 +30,11 @@
 package com.whaleal.mars.core.aggregation;
 
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
 import com.whaleal.mars.core.aggregation.stages.filters.Filter;
-import com.whaleal.mars.session.MarsCursor;
-import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.AggregationOptions;
 import org.bson.Document;
 
@@ -45,122 +44,105 @@ import java.util.List;
 public class AggregationPipeline<T> implements Aggregation<T> {
 
     private final List<Stage> stages = new ArrayList<>();
+    //todo  计划后续使用该参数来封装 聚合返回类型 ；
+    // 泛型绑定
+    private final Class<T>  outputType ;
+
+    private AggregationPipeline(Class<T> outputType ){
+        this.outputType = outputType ;
+    }
+
+
+    public static <T> AggregationPipeline<T> create(Class<T> outputType){
+        Precondition.checkNotNull(outputType,"outputType can't be null in AggregationPipeline") ;
+        return new AggregationPipeline<T>(outputType);
+    }
+
+    public static AggregationPipeline<Document> create() {
+        return new AggregationPipeline<Document>(Document.class);
+    }
 
     @Override
-    public Aggregation<T> addFields(AddFields fields) {
+    public AggregationPipeline<T> addFields(AddFields fields) {
         stages.add(fields);
         return this;
     }
 
     @Override
-    public Aggregation<T> autoBucket(AutoBucket bucket) {
+    public AggregationPipeline<T> autoBucket(AutoBucket bucket) {
         stages.add(bucket);
         return this;
     }
 
     @Override
-    public Aggregation<T> bucket(Bucket bucket) {
+    public AggregationPipeline<T> bucket(Bucket bucket) {
         stages.add(bucket);
         return this;
     }
 
     @Override
-    public Aggregation<T> collStats(CollectionStats stats) {
+    public AggregationPipeline<T> collStats(CollectionStats stats) {
         stages.add(stats);
         return this;
     }
 
     @Override
-    public Aggregation<T> count(String name) {
+    public AggregationPipeline<T> count(String name) {
         stages.add(new Count(name));
         return this;
     }
 
     @Override
-    public Aggregation<T> currentOp(CurrentOp currentOp) {
+    public AggregationPipeline<T> currentOp(CurrentOp currentOp) {
         stages.add(currentOp);
         return this;
     }
 
-    /**
-     * 如有类型 需要定义需要在这里传参
-     *
-     * @param outputType
-     * @param <T>
-     * @return
-     */
-    public <T> MarsCursor<T> aggregate(Class<T> outputType) {
-        return this.execute(outputType);
-
-    }
-
-
-    /**
-     * 默认情况下 直接进行转换
-     *
-     * @return
-     */
-    public MarsCursor<Document> aggregate() {
-        return this.aggregate(Document.class);
-    }
-
 
     @Override
-    public <R> QueryCursor<R> execute(Class<R> resultType) {
-
-        return null;
-    }
-
-    @Override
-    public <R> QueryCursor<R> execute(Class<R> resultType, AggregationOptions options) {
-
-        return null;
-    }
-
-    @Override
-    public Aggregation<T> facet(Facet facet) {
+    public AggregationPipeline<T> facet(Facet facet) {
         stages.add(facet);
         return this;
     }
 
     @Override
-    public Aggregation<T> geoNear(GeoNear near) {
+    public AggregationPipeline<T> geoNear(GeoNear near) {
         stages.add(near);
         return this;
     }
 
     @Override
-    public Aggregation<T> graphLookup(GraphLookup lookup) {
+    public AggregationPipeline<T> graphLookup(GraphLookup lookup) {
         stages.add(lookup);
         return this;
     }
 
     @Override
-    public Aggregation<T> group(Group group) {
+    public AggregationPipeline<T> group(Group group) {
         stages.add(group);
         return this;
     }
 
     @Override
-    public Aggregation<T> indexStats() {
+    public AggregationPipeline<T> indexStats() {
         stages.add(IndexStats.of());
         return this;
     }
 
     @Override
-    public Aggregation<T> limit(long limit) {
+    public AggregationPipeline<T> limit(long limit) {
         stages.add(Limit.of(limit));
         return this;
     }
 
     @Override
-    public Aggregation<T> lookup(Lookup lookup) {
+    public AggregationPipeline<T> lookup(Lookup lookup) {
         stages.add(lookup);
         return this;
     }
 
     @Override
-    public Aggregation<T> match(Filter... filters) {
+    public AggregationPipeline<T> match(Filter... filters) {
         stages.add(Match.on(filters));
         return this;
     }
@@ -190,79 +172,79 @@ public class AggregationPipeline<T> implements Aggregation<T> {
     }
 
     @Override
-    public Aggregation<T> planCacheStats() {
+    public AggregationPipeline<T> planCacheStats() {
         stages.add(PlanCacheStats.of());
         return this;
     }
 
     @Override
-    public Aggregation<T> project(Projection projection) {
+    public AggregationPipeline<T> project(Projection projection) {
         stages.add(projection);
         return this;
     }
 
     @Override
-    public Aggregation<T> redact(Redact redact) {
+    public AggregationPipeline<T> redact(Redact redact) {
         stages.add(redact);
         return this;
     }
 
     @Override
-    public Aggregation<T> replaceRoot(ReplaceRoot root) {
+    public AggregationPipeline<T> replaceRoot(ReplaceRoot root) {
         stages.add(root);
         return this;
     }
 
     @Override
-    public Aggregation<T> replaceWith(ReplaceWith with) {
+    public AggregationPipeline<T> replaceWith(ReplaceWith with) {
         stages.add(with);
         return this;
     }
 
     @Override
-    public Aggregation<T> sample(long sample) {
+    public AggregationPipeline<T> sample(long sample) {
         stages.add(Sample.of(sample));
         return this;
     }
 
     @Override
-    public Aggregation<T> skip(long skip) {
+    public AggregationPipeline<T> skip(long skip) {
         stages.add(Skip.of(skip));
         return this;
     }
 
     @Override
-    public Aggregation<T> sort(Sort sort) {
+    public AggregationPipeline<T> sort(Sort sort) {
         stages.add(sort);
         return this;
     }
 
     @Override
-    public Aggregation<T> sortByCount(Expression sort) {
+    public AggregationPipeline<T> sortByCount(Expression sort) {
         stages.add(SortByCount.on(sort));
         return this;
     }
 
     @Override
-    public Aggregation<T> unionWith(Class<?> type, Stage first, Stage... others) {
+    public AggregationPipeline<T> unionWith(Class<?> type, Stage first, Stage... others) {
         stages.add(new UnionWith(type, Expressions.toList(first, others)));
         return this;
     }
 
     @Override
-    public Aggregation<T> unionWith(String collection, Stage first, Stage... others) {
+    public AggregationPipeline<T> unionWith(String collection, Stage first, Stage... others) {
         stages.add(new UnionWith(collection, Expressions.toList(first, others)));
         return this;
     }
 
     @Override
-    public Aggregation<T> unset(Unset unset) {
+    public AggregationPipeline<T> unset(Unset unset) {
         stages.add(unset);
         return this;
     }
 
     @Override
-    public Aggregation<T> unwind(Unwind unwind) {
+    public AggregationPipeline<T> unwind(Unwind unwind) {
         stages.add(unwind);
         return this;
     }

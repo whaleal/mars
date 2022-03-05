@@ -37,7 +37,7 @@ public class AggreationCodecTest {
     @Test
     public void testAggFilters(){
 
-        AggregationPipeline pipeline = new AggregationPipeline();
+        AggregationPipeline pipeline = AggregationPipeline.create();
         pipeline.match(Filters.eq("stuName","6"));
 
         MarsCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
@@ -53,7 +53,7 @@ public class AggreationCodecTest {
     @Test
     public void testAggPtoject(){
 
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline  pipeline = AggregationPipeline.create();
 
 
         pipeline.project(Projection.of().exclude("age"));
@@ -69,7 +69,7 @@ public class AggreationCodecTest {
 
     @Test
     public void testGroupCount(){
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline  pipeline = AggregationPipeline.create();
         pipeline.group(Group.of(id("address.city.name"))
                 .field("counter", sum(field("age"))));
         QueryCursor<Document> aggregate = mars.aggregate(pipeline, "person");

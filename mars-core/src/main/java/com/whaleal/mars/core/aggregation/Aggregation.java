@@ -33,11 +33,23 @@ package com.whaleal.mars.core.aggregation;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
 import com.whaleal.mars.core.aggregation.stages.filters.Filter;
-import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.AggregationOptions;
 
-
-public interface Aggregation<T>  {
+/**
+ *
+ * 聚合操作的上层接口
+ * 目前 本接口只对包内可见
+ * 对外展示 全部使用 其具体实现 AggregationPipeline
+ *
+ * 其他方面 需要考虑 updatePipeLine
+ *
+ *
+ *
+ * @author wh
+ *
+ * @param <T>  返回类型
+ */
+interface Aggregation<T>  {
 
     Aggregation<T> addFields(AddFields fields);
 
@@ -56,11 +68,6 @@ public interface Aggregation<T>  {
 
     Aggregation<T> currentOp(CurrentOp currentOp);
 
-
-    <S> QueryCursor<S> execute(Class<S> resultType);
-
-
-    <S> QueryCursor<S> execute(Class<S> resultType, AggregationOptions options);
 
 
     Aggregation<T> facet(Facet facet);

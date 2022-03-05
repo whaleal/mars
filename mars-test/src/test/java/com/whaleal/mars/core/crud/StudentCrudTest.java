@@ -103,7 +103,7 @@ public class StudentCrudTest {
     public void testGroupBy(){
         //  求各班语文的平均成绩并排序
 
-        AggregationPipeline pipeline = new AggregationPipeline();
+        AggregationPipeline pipeline =  AggregationPipeline.create();
         pipeline.group(Group.of(Group.id("classNo")).field("cscore",sum(field("cscore"))).field("mscore",avg(field("cscore"))));
         pipeline.sort(Sort.on().ascending("_id"));
 

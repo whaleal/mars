@@ -27,7 +27,7 @@ public class MarsAggregationTest {
     @Test
     public void testAggFilters(){
 
-        AggregationPipeline pipeline = new AggregationPipeline();
+        AggregationPipeline pipeline = AggregationPipeline.create();
         pipeline.match(Filters.eq("stuName","6"));
 
         MarsCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
@@ -43,7 +43,7 @@ public class MarsAggregationTest {
     @Test
     public void testAggProject(){
 
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline  pipeline = AggregationPipeline.create();
         pipeline.project(Projection.of().exclude("_id").include("stuAge").include("classNo"));
         QueryCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
 
@@ -55,7 +55,7 @@ public class MarsAggregationTest {
 
     @Test
     public void testGroupCount(){
-        AggregationPipeline  pipeline = new AggregationPipeline();
+        AggregationPipeline  pipeline = AggregationPipeline.create();
         pipeline.group(Group.of(id("stuName"))
                 .field("counter", sum(field("age"))));
         QueryCursor<Student> aggregate = mars.aggregate(pipeline, Student.class);
