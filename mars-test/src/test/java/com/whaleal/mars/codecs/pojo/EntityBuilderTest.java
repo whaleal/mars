@@ -27,7 +27,7 @@ public class EntityBuilderTest {
 
     @Before
     public void init(){
-        MongoClient  client = MongoClients.create(Constant.connectingStr);
+        MongoClient  client = MongoClients.create(Constant.connectionStr);
         context = new MongoMappingContext(client.getDatabase("mars"));
         Assert.assertNotNull(context);
     }
@@ -38,10 +38,7 @@ public class EntityBuilderTest {
         EntityModelBuilder< Person > personEntityModelBuilder = new EntityModelBuilder<>(Person.class);
 
         String idPropertyName = personEntityModelBuilder.getIdPropertyName();
-
         System.out.println(idPropertyName);
-
-
         EntityModel< Person > build = personEntityModelBuilder.build();
 
         System.out.println(build.getIdProperty());
@@ -49,9 +46,7 @@ public class EntityBuilderTest {
     }
 
 
-    public void test02(){
 
-    }
 
 
     @Test

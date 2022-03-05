@@ -63,7 +63,7 @@ public class Mars extends DatastoreImpl {
     }
 
     public Mars(MongoClient mongoClient, String databaseName) {
-        super(mongoClient, databaseName);
+        super(mongoClient, databaseName ==null ?"test":databaseName);
     }
 
     public Mars(ConnectionString connectionString) {

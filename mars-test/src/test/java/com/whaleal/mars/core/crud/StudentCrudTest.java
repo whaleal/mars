@@ -1,6 +1,7 @@
-package com.whaleal.mars.base;
+package com.whaleal.mars.core.crud;
 
 import com.whaleal.icefrog.core.collection.CollUtil;
+import com.whaleal.mars.base.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.session.option.InsertManyOptions;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +29,9 @@ import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressio
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 
 @Slf4j
-public class StudentTest {
+public class StudentCrudTest {
 
-    private static Mars mars = new Mars(Constant.connectingStr);
+    private static Mars mars = new Mars(Constant.connectionStr);
     private static Integer defStuNo = 1000;
     private static Integer initStuCount = 10;
     private static Integer initClsCount = 10;
@@ -110,6 +111,24 @@ public class StudentTest {
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());
         }
+    }
+
+
+
+    @Test
+    public void testInsertAndDrop(){
+        LinkedList<Student> list = new LinkedList<>();
+        int i  ;
+        for (i =0; i <1000; i++) {
+            Student student = StudentGenerator.getInstance(i);
+            list.add(student);
+        }
+        mars.dropCollection(Student.class);
+        InsertManyResult insert = mars.insert(list);
+        long count = mars.count(Student.class);
+        Assert.assertEquals(i,count);
+        mars.dropCollection(Student.class);
+
     }
 
 

@@ -34,7 +34,6 @@ import com.mongodb.ServerAddress;
 import com.mongodb.TransactionOptions;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.TransactionBody;
 import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;

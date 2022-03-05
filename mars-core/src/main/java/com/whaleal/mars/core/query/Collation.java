@@ -36,6 +36,7 @@ import com.mongodb.client.model.CollationMaxVariable;
 import com.mongodb.client.model.CollationStrength;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.icefrog.core.convert.Converter2;
 import org.bson.Document;
 
 import java.util.Locale;

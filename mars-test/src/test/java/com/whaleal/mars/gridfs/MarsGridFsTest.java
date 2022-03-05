@@ -39,8 +39,6 @@ import java.util.regex.Pattern;
 public class MarsGridFsTest {
     @Autowired
     Mars mars;
-    //@Autowired
-    private GridFSBucket bucket;
 
     private static String bucketName = "xx";
 

@@ -8,7 +8,6 @@ import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import com.whaleal.mars.session.MarsCursor;
 import com.whaleal.mars.session.QueryCursor;
-import org.bson.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

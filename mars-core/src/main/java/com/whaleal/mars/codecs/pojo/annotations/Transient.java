@@ -36,9 +36,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 /**
- * Marks a field to be transient for the mapping framework. Thus the property will not be persisted and not further
- * inspected by the mapping framework.
- * <p>
+ *
  * 标记一个字段的是 transient 修饰的。
  * 属性不会被持久化，也不会进一步由框架检查。
  *

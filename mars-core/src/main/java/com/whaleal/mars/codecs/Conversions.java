@@ -34,7 +34,6 @@ import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.internal.NotMappableException;
 
-import com.whaleal.mars.core.messaging.DefaultMessageListenerContainer;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
@@ -178,6 +177,7 @@ public final class Conversions {
     }
 
     private static boolean isNumber(Class<?> type) {
+
         return type.isPrimitive() && !type.equals(boolean.class);
     }
 

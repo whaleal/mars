@@ -102,12 +102,14 @@ Mars mars = new Mars("mongodb://root:123456@localhost:27017/mydb?authSource=admi
 
 ## 配置Entity
 在 `application.properties` 配置文件中添加Mars框架的配置信息：
-```shell
-mars.data.mongodb.uri= #你的连接字符串，集群和单机模式均可，如果没有配置，那么默认就是localhost的27017端口 
-mars.data.mongodb.database=myrepo #数据库的名字，
+这里可以直接复用 spring 的配置文件
 
-mars.data.mongodb.uri=mongodb://root:123456@server100:37017,server100:37018,server100:37019/mars?authSource=admin
-mars.data.mongodb.database=test
+```shell
+spring.data.mongodb.uri= #你的连接字符串，集群和单机模式均可，如果没有配置，那么默认就是localhost的27017端口 
+spring.data.mongodb.database=myrepo #数据库的名字，
+
+spring.data.mongodb.uri=mongodb://root:123456@server100:37017,server100:37018,server100:37019/mars?authSource=admin
+spring.data.mongodb.database=test
 ```
 创建 Spring Boot 启动类：
 ```java

@@ -27,10 +27,12 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.task;
+
+package com.whaleal.mars.core.messaging;
 
 
 import com.mongodb.client.model.changestream.FullDocument;
+import com.whaleal.mars.core.messaging.DocumnetMessageListener;
 import org.bson.Document;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.messaging.ChangeStreamRequest;

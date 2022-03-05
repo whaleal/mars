@@ -32,6 +32,7 @@ package com.whaleal.mars.util;
 
 
 import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.util.ArrayUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.json.JSONUtil;
 import org.bson.Document;
@@ -71,7 +72,7 @@ public abstract class DocumentUtil {
             } else if (value instanceof Map) {
                 return JSONUtil.toJsonStr((Map<?, ?>) value);
             } else if (ObjectUtil.isArray(value)) {
-                return JSONUtil.toJsonStr(Arrays.asList(ObjectUtil.toArray(value)));
+                return JSONUtil.toJsonStr(Arrays.asList(ArrayUtil.toArray(value)));
             } else {
                 return String.format("{ \"$java\" : %s }", value.toString());
             }

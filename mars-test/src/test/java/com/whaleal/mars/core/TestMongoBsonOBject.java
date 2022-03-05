@@ -16,7 +16,7 @@ import java.util.Map;
  * <p>
  * 并测试类型的 通用 父类型
  */
-public class TestMongoBsonOBject {
+public class TestMongoBsonObject {
 
     @Test
     public void testMongoObject() {

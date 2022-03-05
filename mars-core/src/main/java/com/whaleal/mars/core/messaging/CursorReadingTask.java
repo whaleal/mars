@@ -137,6 +137,7 @@ abstract class CursorReadingTask<T, R> implements Task {
                 if (State.STARTING.equals(state)) {
 
                     MongoCursor<T> cursor = execute(() -> initCursor(mars, request.getRequestOptions(), targetType));
+
                     valid = isValidCursor(cursor);
                     if (valid) {
                         this.cursor = cursor;

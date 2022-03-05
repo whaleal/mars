@@ -38,7 +38,7 @@ public class LocalCrudTest {
 
     @Before
     public void init() {
-        mars = new Mars(Constant.connectingStr);
+        mars = new Mars(Constant.connectionStr);
 
         Assert.assertNotNull(mars);
 

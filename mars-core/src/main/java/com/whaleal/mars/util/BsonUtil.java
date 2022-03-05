@@ -34,6 +34,7 @@ import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.MongoClientSettings;
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ArrayUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.mapping.CodecRegistryProvider;
@@ -249,7 +250,7 @@ public class BsonUtil {
             } else if (value instanceof Map) {
                 return toString((Map<?, ?>) value);
             } else if (ObjectUtil.isArray(value)) {
-                return toString(Arrays.asList(ObjectUtil.toArray(value)));
+                return toString(Arrays.asList(ArrayUtil.toArray(value)));
             }
 
             throw e instanceof JsonParseException ? (JsonParseException) e : new JsonParseException(e);

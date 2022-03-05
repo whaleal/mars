@@ -7,7 +7,7 @@
     <groupId>com.whaleal.mars</groupId>
     <artifactId>mars</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <name>Mars</name>
     <description>MongoDB driver framework</description>
     <!--我们项目的git地址-->
@@ -26,7 +26,7 @@
         <!-- spring boot 版本 当前以次新版本为主 , spring boot 3 也将要求最低 java 版本为 17-->
         <!-- 需要考虑到 spring 6 以后的兼容性版本,最低java版本要求改为17-->
         <spring.version>2.5.9</spring.version>
-        <icefrog.version>1.1.6</icefrog.version>
+        <icefrog.version>1.1.7</icefrog.version>
     </properties>
 
     <!--发布的标准，这个是按照mongodb的标准来做的-->
@@ -54,9 +54,9 @@
     <!--开发者：这里我们注册的时候写的名字和邮箱准确填写 ，id尽量和上面的id对应-->
     <developers>
         <developer>
-            <name>caoshuai</name>
+            <name>wangheng</name>
             <id>mars</id>
-            <email>shuai.cao@jinmuinfo.com</email>
+            <email>heng.wang@jinmuinfo.com</email>
         </developer>
     </developers>
 

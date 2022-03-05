@@ -110,7 +110,6 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
         if (StrUtil.hasText(options.getCollectionName())) {
             iterable = filter.isEmpty() ? db.getCollection(options.getCollectionName()).watch(Document.class)
                     : db.getCollection(options.getCollectionName()).watch(filter, Document.class);
-
         } else {
             iterable = filter.isEmpty() ? db.watch(Document.class) : db.watch(filter, Document.class);
         }

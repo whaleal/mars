@@ -27,22 +27,21 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query;
+package com.whaleal.mars.core.messaging;
 
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
-import com.whaleal.icefrog.core.lang.Precondition;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 
-@FunctionalInterface
-@Deprecated
-public interface Converter2<S, T> {
+import org.springframework.stereotype.Component;
 
-    T convert(S var1);
-
-    default <U> Converter2<S, U> andThen( Converter2<? super T, ? extends U> after) {
-        Precondition.notNull(after, "After Converter must not be null");
-        return (s) -> {
-            T initialResult = this.convert(s);
-            return initialResult != null ? after.convert(initialResult) : null;
-        };
+@Component
+@Slf4j
+public class DocumnetMessageListener implements MessageListener<ChangeStreamDocument<Document>, Document> {
+    @Override
+    public void onMessage(Message<ChangeStreamDocument<Document>, Document> message) {
+        log.info("Received Message in collection: {},message raw: {}, message body:{}",
+                message.getProperties().getCollectionName(), message.getRaw(), message.getBody());
     }
 }

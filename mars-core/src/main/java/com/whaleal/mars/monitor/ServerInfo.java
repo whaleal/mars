@@ -40,7 +40,7 @@ import java.net.UnknownHostException;
 public class ServerInfo extends AbstractMonitor {
 
 
-    protected ServerInfo(MongoClient mongoClient) {
+    public ServerInfo(MongoClient mongoClient) {
         super(mongoClient);
     }
 

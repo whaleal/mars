@@ -35,6 +35,7 @@ import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
+import com.whaleal.icefrog.core.util.ReUtil ;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -156,7 +157,9 @@ public interface GridFsOperations extends ResourcePatternResolver {
             return new GridFsResource[0];
         }
 
-        if (ReUtil.isPattern(filenamePattern)) {
+        ReUtil reUtil = new ReUtil();
+
+        if (reUtil.isPattern(filenamePattern)) {
 
             GridFSFindIterable files = findGridFs(Query.query(Criteria.where("filename").regex(ReUtil.toRegex(filenamePattern))));
             List<GridFsResource> resources = new ArrayList<>();

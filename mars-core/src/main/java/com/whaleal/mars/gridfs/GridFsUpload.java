@@ -30,9 +30,10 @@
 package com.whaleal.mars.gridfs;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.whaleal.icefrog.core.lang.Lazy;
+
 import com.whaleal.icefrog.core.lang.Precondition;
 
+import com.whaleal.icefrog.core.lang.loader.Lazy;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

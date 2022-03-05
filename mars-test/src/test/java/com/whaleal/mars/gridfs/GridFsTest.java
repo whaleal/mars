@@ -2,6 +2,10 @@ package com.whaleal.mars.gridfs;
 
 import com.mongodb.client.gridfs.*;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.whaleal.icefrog.core.collection.LineIter;
+import com.whaleal.icefrog.core.io.IoUtil;
+import com.whaleal.mars.core.query.Criteria;
+import com.whaleal.mars.core.query.Query;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -9,6 +13,8 @@ import com.whaleal.mars.core.Mars;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
@@ -19,18 +25,15 @@ import java.util.function.Consumer;
  */
 @SpringBootTest
 @Slf4j
-public class GridFsTemplateTest {
+public class GridFsTest {
     @Autowired
     Mars mars;
-    //@Autowired
-    //private GridFsTemplate gridFsTemplate;
-    //@Autowired
-    //private MongoDatabaseFactory factory;
-    @Autowired  // 这个是之前在config里配置的
+
     private GridFSBucket gridFSBucket;
 
     @Test
     public void testBucketFind() {
+
         GridFSDownloadStream stream = gridFSBucket.openDownloadStream(new ObjectId("606e967aa64fc91968c4cca4"));
         int fileLength = (int) stream.getGridFSFile().getLength();
         byte[] bytesToWriteTo = new byte[fileLength];
@@ -43,6 +46,7 @@ public class GridFsTemplateTest {
     @Test
     public void testBucket() {
         byte[] data = "Data to upload into GridFS".getBytes(StandardCharsets.UTF_8);
+
         GridFSUploadStream uploadStream = gridFSBucket.openUploadStream("simpleData");
         uploadStream.write(data);
         uploadStream.close();
@@ -74,13 +78,14 @@ public class GridFsTemplateTest {
         System.out.println(new String(bytesToWriteTo, StandardCharsets.UTF_8));
     }
 
-    /*@Test
+
+    @Test
     public void testGridFSBucket() throws IOException {
 
-        GridFsTemplate personDocument = new GridFsTemplate(mars);
+
         String id = "606d762ce3b6d03a7bf11860";
         //根据id查找文件
-        GridFSFile gridFSFile = personDocument.findOneGridFs(Query.query(Criteria.where("_id").is(id)));
+        GridFSFile gridFSFile = mars.findOneGridFs(Query.query(Criteria.where("_id").is(id)));
         System.out.println("获取到到gridFsFile");
         System.out.println(gridFSFile);
         //打开下载流对象
@@ -88,71 +93,14 @@ public class GridFsTemplateTest {
         //创建gridFsSource，用于获取流对象
         GridFsResource gridFsResource = new GridFsResource(gridFSFile,gridFS);
         //获取流中的数据
-        String string = IOUtil.Inputstr2Str_Reader(gridFsResource.getInputStream(),"UTF-8");
-        System.out.println(string);
-    }*/
-
-    /*@Test
-    public void testMarsGrid(){
-        GridFsTemplate personDocument = new GridFsTemplate(mars);
-        System.out.println("两个template的相等性");
-        System.out.println(personDocument == mars.getGridFsTemplate());
-        String fieldId = "606d762ce3b6d03a7bf11860";
-        GridFSFindIterable iterable = mars.getGridFsTemplate().find(Query.query(Criteria.where("_id").is(fieldId)));
-        System.out.println("找到的数据");
-        iterable.forEach(item -> {
-            System.out.println(item);
-        });
-    }*/
-
-    /*@Test
-    public void testMars() {
-        MongoDatabase database = mars.getDatabase();
-        System.out.println("取得的数据库名字");
-        System.out.println(database.getName());
-        GridFsTemplate personDocument = mars.getGridFsTemplate();
-        System.out.println(personDocument);
-    }*/
-
-    /*@Test
-    public void testFactory() {
-        MongoDatabase database = factory.getMongoDatabase();
-        System.out.println("取得的数据库名字");
-        System.out.println(database.getName());
-    }*/
-
-    @Test
-    public void testFind() {
+        LineIter strings = IoUtil.lineIter(gridFsResource.getInputStream(), Charset.forName("UTF-8"));
+        while (strings.hasNext()){
+            System.out.println(strings.nextLine());
+        }
 
     }
 
 
-    /*@Test
-    public void testFindOne() {
-        //GridFsTemplate gridFsTemplate = new GridFsTemplate(mars);
-        *//*String field = "606d710644887a378486e962";
-        GridFSFindIterable iterable = gridFsTemplate.find(query(Criteria.where("_id").is(field)));
-        iterable.forEach(item-> {
-            System.out.println(item);
-        });*//*
-        //String fieldId = "606d6f2f35f9b56f331c80cf";
-        String fieldId = "606d762ce3b6d03a7bf11860";
-        GridFSFindIterable iterable = gridFsTemplate.find(Query.query(Criteria.where("_id").is(fieldId)));
-        System.out.println("找到的数据");
-        iterable.forEach(item -> {
-            System.out.println(item);
-        });
-    }*/
 
-    /*@Test
-    public void testInsert() throws FileNotFoundException {
-        File file = new File("/Users/cs/Documents/back.jpeg");
-        FileInputStream fileInputStream = new FileInputStream(file);
-        //参数 content=fileInputStream  filename="测试用例2"  contentType="", 返回fileID
-        System.out.println(gridFsTemplate);
-        ObjectId objectId = gridFsTemplate.storeGridFs(fileInputStream, "xiaohei", "");
-        String fileId = objectId.toString();
-        System.out.println(fileId);
-    }*/
 
 }
