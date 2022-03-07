@@ -424,8 +424,104 @@ public class Update implements UpdateDefinition {
 
 
     public Document getUpdateObject() {
-        return new Document(modifierOps);
+        Document docs = new Document();
+
+        for (Map.Entry<String,Object> entry :modifierOps.entrySet()){
+
+            if(entry.getValue() instanceof Modifier){
+                Document value = modifier2Doc((Modifier) entry.getValue());
+                docs.put(entry.getKey() ,value);
+            }else if(entry.getValue() instanceof Modifiers){
+                Document value = modifiers2Doc((Modifiers) entry.getValue());
+                docs.put(entry.getKey() ,value);
+            }else if(entry.getValue() instanceof Map){
+
+                Object o = modifyObject(entry.getValue());
+                docs.put(entry.getKey(),o);
+
+
+            }
+            else {
+                docs.put(entry.getKey() ,entry.getValue());
+            }
+
+        }
+
+        return docs;
+        //return new Document(modifierOps);
     }
+
+
+    private Object modifyObject(Object obj){
+
+        if(obj instanceof Modifier){
+            return modifier2Doc((Modifier) obj);
+
+        }else if(obj instanceof Modifiers){
+           return modifiers2Doc((Modifiers) obj);
+
+        }else if(obj instanceof Map){
+            Document doc = new Document();
+            for(Map.Entry<String,Object> data :((Map<String, Object>) obj).entrySet()){
+                doc.put(data.getKey(),modifyObject(data.getValue()));
+
+            }
+            return doc ;
+
+        }
+        else {
+           return obj;
+        }
+
+
+
+
+    }
+
+
+
+
+
+    public Document modifier2Doc(Modifier modifier){
+        if(modifier.getValue() instanceof Modifier){
+            Document docInner = modifier2Doc((Modifier) modifier.getValue());
+
+            return new Document(modifier.getKey(),docInner);
+        }else if(modifier.getValue() instanceof Modifiers){
+            Document docInner = modifiers2Doc((Modifiers) modifier.getValue());
+            return new Document(modifier.getKey(),docInner);
+
+        }   else {
+            return new Document(modifier.getKey(),modifier.getValue());
+        }
+    }
+
+    public Document modifiers2Doc(Modifiers modifiers){
+        Document docs = new Document();
+        for(Modifier modifier :modifiers.getModifiers()){
+
+            Object value = modifier.getValue();
+
+            if(value instanceof Modifier){
+                Document value1 = modifier2Doc((Modifier)value);
+                docs.put(modifier.getKey(),value1);
+
+            }else if(value instanceof Modifiers){
+
+                Document value1 = modifiers2Doc((Modifiers) value);
+                docs.put(modifier.getKey(),value1);
+
+            }else {
+                docs.put(modifier.getKey(),value);
+            }
+
+        }
+        return docs;
+
+    }
+
+
+
 
 
     public List<ArrayFilter> getArrayFilters() {
