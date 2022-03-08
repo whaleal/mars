@@ -633,7 +633,7 @@ public class Update1 implements UpdateDefinition {
 
             //this.addModifier(new EachStage(values));
             this.modifiers.put("$each",values);
-            return Update1.this.push(key, new Document("$each",values));
+            return Update1.this.push(key, this.modifiers);
         }
 
        /* public void addModifier(Stage modifier) {
@@ -700,7 +700,6 @@ public class Update1 implements UpdateDefinition {
          */
         public PushOperatorBuilder atPosition(int position) {
             PositionStage positionStage = new PositionStage(position);
-
 
             this.modifiers.put(positionStage.getKey(),positionStage.getValue());
             //this.addModifier(positionStage);

@@ -274,6 +274,7 @@ public class Sort implements Streamable<Sort.Order>, Serializable {
 
         ASC, DESC;
 
+
         /**
          * Returns whether the direction is ascending.
          *
