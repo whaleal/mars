@@ -122,6 +122,7 @@ public class Update1 implements UpdateDefinition {
         return this;
     }
 
+
     /**
      * Update using the {@literal $setOnInsert} update modifier
      *
@@ -630,13 +631,14 @@ public class Update1 implements UpdateDefinition {
          */
         public Update1 each(Object... values) {
 
-            this.addModifier(new EachStage(values));
-            return Update1.this.push(key, this.modifiers.get("$each"));
+            //this.addModifier(new EachStage(values));
+            this.modifiers.put("$each",values);
+            return Update1.this.push(key, new Document("$each",values));
         }
 
-        public void addModifier(Stage modifier) {
+       /* public void addModifier(Stage modifier) {
             this.modifiers.put(modifier.getStageName(), modifier);
-        }
+        }*/
 
 
 
@@ -653,7 +655,8 @@ public class Update1 implements UpdateDefinition {
          */
         public PushOperatorBuilder slice(int count) {
 
-            this.addModifier(new SliceStage(count));
+            this.modifiers.put("$slice",count);
+            //this.addModifier(new SliceStage(count));
             return this;
         }
 
@@ -667,7 +670,8 @@ public class Update1 implements UpdateDefinition {
         public PushOperatorBuilder sort(Sort.Direction direction) {
 
             Precondition.notNull(direction, "Direction must not be null.");
-            this.addModifier(new SortStage(direction));
+            this.modifiers.put("$sort",direction);
+            //this.addModifier(new SortStage(direction));
             return this;
         }
 
@@ -681,7 +685,9 @@ public class Update1 implements UpdateDefinition {
         public PushOperatorBuilder sort(Sort sort) {
 
             Precondition.notNull(sort, "Sort must not be null.");
-            this.addModifier(new SortStage(sort));
+            SortStage sortStage = new SortStage(sort);
+            this.modifiers.put(sortStage.getKey(),sortStage.getValue());
+            //this.addModifier(new SortStage(sort));
             return this;
         }
 
@@ -693,8 +699,11 @@ public class Update1 implements UpdateDefinition {
          * @return never {@literal null}.
          */
         public PushOperatorBuilder atPosition(int position) {
+            PositionStage positionStage = new PositionStage(position);
 
-            this.addModifier(new PositionStage(position));
+
+            this.modifiers.put(positionStage.getKey(),positionStage.getValue());
+            //this.addModifier(positionStage);
             return this;
         }
 
@@ -710,7 +719,8 @@ public class Update1 implements UpdateDefinition {
                 return this;
             }
 
-            this.addModifier(new PositionStage(0));
+            this.modifiers.put(new PositionStage(0).getKey(),new PositionStage(0).getValue());
+            //this.addModifier(new PositionStage(0));
 
             return this;
         }
@@ -727,7 +737,9 @@ public class Update1 implements UpdateDefinition {
                 return Update1.this.push(key, value);
             }
 
-            this.addModifier(new EachStage(Collections.singletonList(value)));
+            EachStage eachStage = new EachStage(Collections.singletonList(value));
+            this.modifiers.put(eachStage.getStageName(),eachStage.getValue());
+            //this.addModifier(new EachStage(Collections.singletonList(value)));
             return Update1.this.push(key, this.modifiers);
         }
 
