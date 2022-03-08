@@ -686,7 +686,7 @@ public class Update1 implements UpdateDefinition {
 
             Precondition.notNull(sort, "Sort must not be null.");
             //SortStage sortStage = new SortStage(sort);
-            this.modifiers.put("$sort",sort);
+            this.modifiers.put("$sort",sort.getSortObject());
             //this.addModifier(new SortStage(sort));
             return this;
         }

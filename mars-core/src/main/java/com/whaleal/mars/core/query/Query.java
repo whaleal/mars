@@ -276,16 +276,7 @@ public class Query {
      */
     public Document getSortObject() {
 
-        if (this.sort.isEmpty()) {
-            return new Document();
-        }
-
-        Document document = new Document();
-
-        this.sort.stream()//
-                .forEach(sortType -> document.put(sortType.getField(), Sort.Direction.ASCENDING.equals(sortType.getDirection() )? 1 : -1));
-
-        return document;
+       return this.sort.getSortObject();
     }
 
     /**

@@ -33,13 +33,6 @@ import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.codecs.stages.*;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
-import com.whaleal.mars.core.query.codec.EachCodec;
-import com.whaleal.mars.core.query.codec.PositionCodec;
-import com.whaleal.mars.core.query.codec.SliceCodec;
-import com.whaleal.mars.core.query.codec.stage.EachStage;
-import com.whaleal.mars.core.query.codec.stage.PositionStage;
-import com.whaleal.mars.core.query.codec.stage.SliceStage;
-import com.whaleal.mars.core.query.codec.stage.SortStage;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -104,14 +97,9 @@ public class AggregationCodecProvider implements CodecProvider {
             codecs.put(Unset.class, new UnsetCodec(mapper));
             codecs.put(Unwind.class, new UnwindCodec(mapper));
 
-            //-------------
 
 
-            // Stages
-            codecs.put(SliceStage.class,new SliceCodec(mapper));
-            codecs.put(SortStage.class,new com.whaleal.mars.core.query.codec.SortCodec(mapper));
-            codecs.put(EachStage.class,new EachCodec(mapper));
-            codecs.put(PositionStage.class,new PositionCodec(mapper));
+
         }
         return codecs;
     }

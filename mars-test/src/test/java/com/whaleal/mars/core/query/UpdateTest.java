@@ -225,4 +225,16 @@ public class UpdateTest {
 
     }
 
+    @Test
+    public void testforPush(){
+        Update1 up = new Update1();
+        up.push("cc").each("1",2,33,56);
+        up.push("cc").sort(Sort.on().ascending("name"));
+        up.push("cc").slice(3);
+
+
+        Document document = context.toDocument(up.getUpdateObject());
+        System.out.println(document);
+    }
+
 }

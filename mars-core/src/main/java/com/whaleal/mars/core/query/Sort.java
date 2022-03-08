@@ -34,6 +34,7 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.aggregation.stages.Stage;
 import org.bson.BsonWriter;
+import org.bson.Document;
 
 import java.io.Serializable;
 import java.util.*;
@@ -41,8 +42,14 @@ import java.util.*;
 
 
 /**
- * Sort option for queries. You have to provide at least a list of properties to sort for that must not include
- * {@literal null} or empty strings. The direction defaults to {@link Sort#}.
+ * stage 接口在这里只是个装饰
+ *
+ * @see com.whaleal.mars.core.aggregation.stages.Stage
+ * @see com.whaleal.mars.core.aggregation.stages.Sort
+ *
+ * @author wh
+ *
+ *
  */
 public class Sort extends Stage implements Streamable< Sort.SortType >, Serializable {
 
@@ -123,6 +130,23 @@ public class Sort extends Stage implements Streamable< Sort.SortType >, Serializ
         Precondition.notNull(orders, "Orders must not be null!");
 
         return new Sort(Arrays.asList(orders));
+    }
+
+    /**
+     * @return the sort {@link Document}.
+     */
+    public Document getSortObject() {
+
+        if (this.sorts.isEmpty()) {
+            return new Document();
+        }
+
+        Document document = new Document();
+
+        this.sorts.stream()//
+                .forEach(sortType -> document.put(sortType.getField(), Sort.Direction.ASCENDING.equals(sortType.getDirection() )? 1 : -1));
+
+        return document;
     }
 
 
