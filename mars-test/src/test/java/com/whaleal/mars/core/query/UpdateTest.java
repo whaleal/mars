@@ -59,11 +59,13 @@ public class UpdateTest {
 
         Update1 update1 = new Update1();
         update1.push("addr").each("bj","hz");
+        Document updateObject = update1.getUpdateObject();
+        System.out.println(updateObject);
 
         MongoMappingContext context = new MongoMappingContext(mars.getDatabase());
 
         CodecRegistry codecRegistry = context.getCodecRegistry();
-        mars.getDatabase("mars").withCodecRegistry(codecRegistry).getCollection("student").updateOne(new Document(),update1.getUpdateObject());
+        mars.getDatabase("mars").withCodecRegistry(codecRegistry).getCollection("student").updateOne(new Document(), updateObject);
 
 //        Document updateObject = update1.getUpdateObject();
 //        System.out.println(updateObject);

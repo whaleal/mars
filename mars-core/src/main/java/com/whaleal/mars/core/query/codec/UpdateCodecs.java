@@ -59,6 +59,7 @@ public class UpdateCodecs implements CodecProvider {
 
     @Override
     public <T> Codec<T> get(Class<T> clazz, CodecRegistry registry) {
+        System.out.println(clazz);
         Codec<T> codec = getCodecs().get(clazz);
         if (codec == null) {
 
@@ -71,6 +72,8 @@ public class UpdateCodecs implements CodecProvider {
                 return (Codec<T>) new PositionCodec(mapper);
             }else if(clazz.isAssignableFrom(SortStage.class)){
                 return (Codec<T>) new SortCodec(mapper);
+            }else {
+                return null;
             }
         }
         return codec;

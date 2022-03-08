@@ -535,28 +535,6 @@ public class Update1 implements UpdateDefinition {
         LAST, FIRST
     }
 
-    /**
-     * Marker interface of nested commands.
-     */
-    public interface Modifier {
-
-        /**
-         * @return the command to send eg. {@code $push}
-         */
-        String getKey();
-
-        /**
-         * @return value to be sent with command
-         */
-        Object getValue();
-
-        /**
-         * @return a safely serialized JSON representation.
-         */
-        default String toJsonString() {
-            return JSONUtil.toJsonStr(Collections.singletonMap(getKey(), getValue()));
-        }
-    }
 
     public static class BitwiseOperatorBuilder {
 
@@ -637,11 +615,11 @@ public class Update1 implements UpdateDefinition {
     public class PushOperatorBuilder {
 
         private final String key;
-        private final Map<String,Stage> modifiers;
+        private final Document modifiers;
 
         PushOperatorBuilder(String key) {
             this.key = key;
-            this.modifiers =new HashMap<>();
+            this.modifiers =new Document();
         }
 
         /**
@@ -653,7 +631,7 @@ public class Update1 implements UpdateDefinition {
         public Update1 each(Object... values) {
 
             this.addModifier(new EachStage(values));
-            return Update1.this.push(key, this.modifiers);
+            return Update1.this.push(key, this.modifiers.get("$each"));
         }
 
         public void addModifier(Stage modifier) {
