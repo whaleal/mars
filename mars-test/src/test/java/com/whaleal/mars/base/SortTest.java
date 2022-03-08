@@ -47,7 +47,7 @@ public class SortTest {
 
     @Test
     public void testSort() {
-        QueryCursor<Student> stuList = mars.findAll(new Query().with(Sort.by("sex").ascending().and(Sort.by("stuName").descending())), Student.class);
+        QueryCursor<Student> stuList = mars.findAll(new Query().with(Sort.on().ascending("sex").and(Sort.on().descending("stuName"))), Student.class);
         stuList.toList().forEach(System.out::println);
     }
 

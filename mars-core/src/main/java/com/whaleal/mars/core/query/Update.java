@@ -855,7 +855,7 @@ public class Update implements UpdateDefinition {
         SortModifier(Sort.Direction direction) {
 
             Precondition.notNull(direction, "Direction must not be null!");
-            this.sort = direction.isAscending() ? 1 : -1;
+            this.sort = Sort.Direction.ASCENDING.equals(direction) ? 1 : -1;
         }
 
         /**
@@ -867,13 +867,7 @@ public class Update implements UpdateDefinition {
 
             Precondition.notNull(sort, "Sort must not be null!");
 
-            for (Sort.Order order : sort) {
 
-                if (order.isIgnoreCase()) {
-                    throw new IllegalArgumentException(String.format("Given sort contained an Order for %s with ignore case! "
-                            + "MongoDB does not support sorting ignoring case currently!", order.getProperty()));
-                }
-            }
 
             this.sort = sort;
         }
