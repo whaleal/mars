@@ -103,7 +103,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public DatastoreImpl( MongoClient mongoClient, String databaseName ) {
         super(mongoClient.getDatabase(databaseName));
         this.mongoClient = mongoClient;
-        defaultGridFSBucket = GridFSBuckets.create(this.database);
+        defaultGridFSBucket = GridFSBuckets.create(super.database);
     }
 
 
@@ -122,14 +122,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     public MongoDatabase getDatabase() {
-        return this.database;
+        return super.database;
     }
 
     public MongoDatabase getDatabase(String databaseName){
         if (StrUtil.isBlank(databaseName)) {
             throw new IllegalArgumentException("databaseName in getDatabase can't be null or empty ");
         }
-        return this.mongoClient.getDatabase(databaseName);
+        return this.mongoClient.getDatabase(databaseName).withCodecRegistry(super.mapper.getCodecRegistry());
     }
 
     @Override
