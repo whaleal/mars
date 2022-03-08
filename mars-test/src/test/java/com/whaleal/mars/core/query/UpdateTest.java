@@ -229,8 +229,12 @@ public class UpdateTest {
     public void testforPush(){
         Update1 up = new Update1();
         up.push("cc").each("1",2,33,56);
+        up.push("aa").each("12",13,15);
         up.push("cc").sort(Sort.on().ascending("name"));
         up.push("cc").slice(3);
+        up.push("aa").slice(5);
+
+
 
 
         Document document = context.toDocument(up.getUpdateObject());
