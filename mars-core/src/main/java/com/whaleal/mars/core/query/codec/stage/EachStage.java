@@ -33,9 +33,6 @@ public class EachStage extends Stage {
 
 
 
-    public String getKey() {
-        return "$each";
-    }
 
 
 
