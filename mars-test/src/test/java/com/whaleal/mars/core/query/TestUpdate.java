@@ -1,22 +1,13 @@
 package com.whaleal.mars.core.query;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.print.Doc;
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @user Lyz
@@ -27,7 +18,7 @@ public class TestUpdate {
 
     private MongoMappingContext context;
 
-    private Update1 update1 = new Update1();
+    private Update update = new Update();
 
     @Before
     public void before(){
@@ -39,11 +30,11 @@ public class TestUpdate {
     @Test
     public void testForUpdateSet(){
 //        Update1 update1 = new Update1();
-        update1.set("size.uom","cm").set("status","P");
+        update.set("size.uom","cm").set("status","P");
 //        update1.currentTimestamp("lastModified");
-        update1.currentDate("lastModified");
+        update.currentDate("lastModified");
 
-        Document document = context.toDocument(update1.getUpdateObject());
+        Document document = context.toDocument(update.getUpdateObject());
         Assert.assertEquals(document,Document.parse("   {\n" +
                 "     $set: { \"size.uom\": \"cm\", status: \"P\" },\n" +
                 "     $currentDate: { lastModified: true }\n" +
@@ -54,19 +45,19 @@ public class TestUpdate {
 
     @Test
     public void testForUpdateNow(){
-        Update1 update1 = new Update1();
-        update1.set("test3",98);
+        Update update = new Update();
+        update.set("test3",98);
 //        update1.modifies("NOW");
 
-        Document document = context.toDocument(update1);
+        Document document = context.toDocument(update);
         Assert.assertEquals(document,Document.parse("{ $set: { \"test3\": 98, modified: \"$$NOW\"} }"));
     }
 
     @Test
     public void testForPush(){
-        update1.push("scores").each(90,92,85);
+        update.push("scores").each(90,92,85);
 
-        Document document = context.toDocument(update1.getUpdateObject());
+        Document document = context.toDocument(update.getUpdateObject());
         Assert.assertEquals(document,Document.parse("{ $push: { scores: { $each: [ 90, 92, 85 ] } } }"));
     }
 
@@ -75,14 +66,14 @@ public class TestUpdate {
 
         Document[] documents = new Document[]{new Document("wk",5).append("score",8),new Document("wk",6).append("score",7),new Document("wk",7).append("score",6)};
 
-        update1.push("quizzes").each(documents);
-        update1.push("quizzes").sort(Sort.on().descending("score"));
+        update.push("quizzes").each(documents);
+        update.push("quizzes").sort(Sort.on().descending("score"));
 //        update1.push("quizzes").sort(new Sort());
 
-        update1.push("quizzes").slice(3);
+        update.push("quizzes").slice(3);
         //update1.push("quizzes").value("ccc");
 
-        Document document1 = context.toDocument(update1.getUpdateObject());
+        Document document1 = context.toDocument(update.getUpdateObject());
         Assert.assertEquals(document1,Document.parse("{$push: {\n" +
                 "       quizzes: {\n" +
                 "          $each: [ { wk: 5, score: 8 }, { wk: 6, score: 7 }, { wk: 7, score: 6 } ],\n" +
@@ -96,7 +87,7 @@ public class TestUpdate {
 
     @Test
     public void testForAddToSetEach(){
-        Update1 update = new Update1();
+        Update update = new Update();
 
         update.addToSet("phone").each("110","120","119");
 
@@ -109,8 +100,8 @@ public class TestUpdate {
 
     @Test
     public void test2(){
-        Update1 update1 = new Update1();
-        Document name = update1.addToSet("name").each(1, 2, 3).getUpdateObject();
+        Update update = new Update();
+        Document name = update.addToSet("name").each(1, 2, 3).getUpdateObject();
 //        Document updateObject = new Update1().getUpdateObject();
 
         Mars mars = new Mars(Constant.connectionStr);
@@ -125,9 +116,9 @@ public class TestUpdate {
     public void test3(){
         Mars mars = new Mars(Constant.connectionStr);
 
-        Update1 update1 = new Update1();
-        update1.push("addr").each("bj","hz");
-        Document updateObject = update1.getUpdateObject();
+        Update update = new Update();
+        update.push("addr").each("bj","hz");
+        Document updateObject = update.getUpdateObject();
         System.out.println(updateObject);
 
         MongoMappingContext context = new MongoMappingContext(mars.getDatabase());
@@ -158,17 +149,17 @@ public class TestUpdate {
     public void test4(){
         Mars mars = new Mars(Constant.connectionStr);
 
-        Update1 update1 = new Update1();
-        update1.push("addr").each("lyz","yzl","zly");
+        Update update = new Update();
+        update.push("addr").each("lyz","yzl","zly");
 
-        update1.push("addr").atPosition(2);
+        update.push("addr").atPosition(2);
 
-        System.out.println(update1.getUpdateObject());
+        System.out.println(update.getUpdateObject());
 
         MongoMappingContext context = new MongoMappingContext(mars.getDatabase());
 
         CodecRegistry codecRegistry = context.getCodecRegistry();
-        mars.getDatabase().withCodecRegistry(codecRegistry).getCollection("student").updateOne(new Document(),update1.getUpdateObject());
+        mars.getDatabase().withCodecRegistry(codecRegistry).getCollection("student").updateOne(new Document(), update.getUpdateObject());
 
     }
 
@@ -190,12 +181,12 @@ public class TestUpdate {
     public void testForSlice1(){
         Mars mars = new Mars(Constant.connectionStr);
 
-        Update1 update1 = new Update1();
-        update1.push("addr").each("zz","ly","kf");
+        Update update = new Update();
+        update.push("addr").each("zz","ly","kf");
 
-        update1.push("addr").slice(2);
+        update.push("addr").slice(2);
 
-        System.out.println(update1.getUpdateObject());
+        System.out.println(update.getUpdateObject());
 
 //        MongoMappingContext context = new MongoMappingContext(mars.getDatabase());
 //
@@ -208,7 +199,7 @@ public class TestUpdate {
 
     @Test
     public void testforSort(){
-        Update1 update = new Update1();
+        Update update = new Update();
 
 
         update.push("cc").each("22",33,44);
@@ -226,7 +217,7 @@ public class TestUpdate {
 
     @Test
     public void testforPush(){
-        Update1 up = new Update1();
+        Update up = new Update();
         up.push("cc").each("1",2,33,56);
         up.push("aa").each("12",13,15);
         up.push("cc").sort(Sort.on().ascending("name"));

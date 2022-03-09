@@ -4,6 +4,7 @@ package com.whaleal.mars.core.crud;
 import com.whaleal.mars.base.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.bean.Person;
+import com.whaleal.mars.core.query.Update;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.junit.*;
@@ -22,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.core.query.Update;
 
 import java.util.ArrayList;
 import java.util.List;

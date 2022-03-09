@@ -3,6 +3,7 @@ package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.EntityGenerater;
+import com.whaleal.mars.core.query.Update;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.junit.*;
@@ -12,7 +13,6 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.ReplaceOptions;

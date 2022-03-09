@@ -238,7 +238,7 @@ public class Query {
 
         Precondition.notNull(sort, "Sort must not be null!");
 
-        if (sort.isEmpty()) {
+        if (sort.getSorts().isEmpty()) {
             return this;
         }
 
@@ -284,10 +284,10 @@ public class Query {
      * Returns {@literal true} if the {@link Query} has a sort parameter.
      *
      * @return {@literal true} if sorted.
-     * @see Sort#isEmpty() ()
+     * @see Sort#getSorts()#isEmpty() ()
      */
     public boolean isSorted() {
-        return !sort.isEmpty();
+        return !sort.getSorts().isEmpty();
     }
 
     /**
