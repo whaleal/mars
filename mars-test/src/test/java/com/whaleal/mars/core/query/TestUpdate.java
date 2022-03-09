@@ -47,9 +47,10 @@ public class TestUpdate {
     public void testForUpdateNow(){
         Update update = new Update();
         update.set("test3",98);
+        update.set("modified","$$NOW");
 //        update1.modifies("NOW");
 
-        Document document = context.toDocument(update);
+        Document document = context.toDocument(update.getUpdateObject());
         Assert.assertEquals(document,Document.parse("{ $set: { \"test3\": 98, modified: \"$$NOW\"} }"));
     }
 
