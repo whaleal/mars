@@ -27,40 +27,26 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query.updates;
 
 
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
-import org.bson.Document;
+import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 
-import java.util.Collection;
 
 /**
- * Defines the $addToSet operator
+ * Defines an operator for $pull
  *
  * 
  */
-public class AddToSetOperator extends UpdateOperator {
-    private final boolean each;
-
+public class PullOperator extends UpdateOperator {
     /**
      * @param field  the field
-     * @param values the values
+     * @param filter the filter to apply
      *
      */
-    public AddToSetOperator(String field, Object values) {
-        super("$addToSet", field, values);
-        each = values instanceof Collection;
+    public PullOperator(String field, Filter filter) {
+        super("$pull", field, filter);
     }
 
-    @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        if (each) {
-            return new OperationTarget(pathTarget, new Document("$each", value()));
-        } else {
-            return new OperationTarget(pathTarget, value());
-        }
-    }
 
 }

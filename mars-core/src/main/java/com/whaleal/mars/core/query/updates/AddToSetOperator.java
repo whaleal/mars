@@ -27,36 +27,38 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
-
-
-import com.whaleal.mars.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
+package com.whaleal.mars.core.query.updates;
 
 
 import org.bson.Document;
 
+import java.util.Collection;
+
 /**
+ * Defines the $addToSet operator
  *
  * 
  */
-public class UnsetOperator extends UpdateOperator {
+public class AddToSetOperator extends UpdateOperator {
+    private final boolean each;
+
     /**
-     * @param field the field
+     * @param field  the field
+     * @param values the values
      *
      */
-    public UnsetOperator(String field) {
-        super("$unset", field, "unused");
+    public AddToSetOperator(String field, Object values) {
+        super("$addToSet", field, values);
+        each = values instanceof Collection;
     }
 
     @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        return new OperationTarget(pathTarget, "") {
-            @Override
-            public Object encode( MongoMappingContext mapper) {
-                return new Document(field(), "");
-            }
-        };
+    public Document toDocument() {
+        if (each) {
+            return new Document("$addToSet",new Document(field(), new Document("$each", value())));
+        } else {
+            return super.toDocument();
+        }
     }
+
 }

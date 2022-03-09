@@ -27,14 +27,11 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query.updates;
 
 
 
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
 import com.whaleal.mars.core.query.Sort;
-import com.whaleal.mars.core.query.UpdateException;
 import org.bson.Document;
 
 import java.util.List;
@@ -117,7 +114,7 @@ public class PushOperator extends UpdateOperator {
     }
 
     @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
+    public Document toDocument() {
         Document document = new Document("$each", value());
         if (position != null) {
             document.put("$position", position);
@@ -132,6 +129,6 @@ public class PushOperator extends UpdateOperator {
             document.put("$sort", sortDocument);
         }
 
-        return new OperationTarget(pathTarget, document);
+        return document ;
     }
 }
