@@ -32,13 +32,9 @@ package com.whaleal.mars.core.query;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.StrUtil;
-import com.whaleal.icefrog.json.JSONUtil;
-import com.whaleal.mars.core.aggregation.stages.Stage;
+
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.core.query.codec.stage.EachStage;
-import com.whaleal.mars.core.query.codec.stage.PositionStage;
-import com.whaleal.mars.core.query.codec.stage.SliceStage;
-import com.whaleal.mars.core.query.codec.stage.SortStage;
+
 import org.bson.Document;
 
 import java.util.*;
@@ -699,9 +695,9 @@ public class Update1 implements UpdateDefinition {
          * @return never {@literal null}.
          */
         public PushOperatorBuilder atPosition(int position) {
-            PositionStage positionStage = new PositionStage(position);
 
-            this.modifiers.put(positionStage.getKey(),positionStage.getValue());
+
+            this.modifiers.put("$position",position);
             //this.addModifier(positionStage);
             return this;
         }
@@ -718,8 +714,8 @@ public class Update1 implements UpdateDefinition {
                 return this;
             }
 
-            this.modifiers.put(new PositionStage(0).getKey(),new PositionStage(0).getValue());
-            //this.addModifier(new PositionStage(0));
+            this.modifiers.put("$position",0);
+
 
             return this;
         }
@@ -736,8 +732,8 @@ public class Update1 implements UpdateDefinition {
                 return Update1.this.push(key, value);
             }
 
-            EachStage eachStage = new EachStage(Collections.singletonList(value));
-            this.modifiers.put(eachStage.getStageName(),eachStage.getValue());
+            List< Object > objects = Collections.singletonList(value);
+            this.modifiers.put("$each",objects);
             //this.addModifier(new EachStage(Collections.singletonList(value)));
             return Update1.this.push(key, this.modifiers);
         }
@@ -798,7 +794,7 @@ public class Update1 implements UpdateDefinition {
          * @return never {@literal null}.
          */
         public Update1 each(Object... values) {
-            return Update1.this.addToSet(this.key, new EachStage(values));
+            return Update1.this.addToSet(this.key, new Document("$each",values));
         }
 
         /**

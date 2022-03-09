@@ -56,6 +56,7 @@ public class Query {
     private Sort sort = Sort.on();
     private long skip;
     private int limit;
+
     private String hint;
 
     private Meta meta = new Meta();
