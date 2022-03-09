@@ -58,6 +58,7 @@ import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
  */
 public class Criteria implements CriteriaDefinition {
 
+    public static final String center = "$center";
     public static final String centerSphere = "$centerSphere";
     /**
      * Custom "not-null" object as we have to be able to work with {@literal null} values as well.
@@ -494,6 +495,14 @@ public class Criteria implements CriteriaDefinition {
         Precondition.notNull(point, "Circle must not be null!");
 
         criteria.put("$geoWithin", new Document(centerSphere,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
+        return this;
+    }
+
+    public Criteria withinCenter(Point point,Double radius) {
+
+        Precondition.notNull(point, "Circle must not be null!");
+
+        criteria.put("$geoWithin", new Document(center,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
         return this;
     }
 
