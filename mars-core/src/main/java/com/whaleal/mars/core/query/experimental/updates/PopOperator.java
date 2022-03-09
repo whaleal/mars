@@ -27,43 +27,30 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.experimental.updates;
 
-import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
-
-public class Box extends Filter {
-
-    private final Point bottomLeft;
-    private final Point upperRight;
-
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+/**
+ * Defines the $pop update operator.
+ *
+ *
+ * 
+ */
+public class PopOperator extends UpdateOperator {
+    /**
+     * @param field the field
+     *
+     */
+    public PopOperator(String field) {
+        super("$pop", field, 1);
     }
 
-    @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
-
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
-
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+    /**
+     * Remove the first element rather than the last.
+     *
+     * @return this
+     */
+    public PopOperator removeFirst() {
+        value(-1);
+        return this;
     }
 }

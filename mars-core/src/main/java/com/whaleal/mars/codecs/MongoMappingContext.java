@@ -51,7 +51,6 @@ import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.AggregationCodecProvider;
 
 import com.whaleal.mars.core.internal.NotMappableException;
-import com.whaleal.mars.core.query.codec.UpdateCodecs;
 import org.bson.Document;
 import org.bson.codecs.*;
 import org.bson.codecs.configuration.CodecRegistry;

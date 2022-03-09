@@ -57,6 +57,15 @@ public class AggregationPipeline<T> implements Aggregation<T> {
         this.outputType = outputType ;
     }
 
+    private AggregationPipeline(Class<T> outputType ,List<Stage> stages ){
+        this.outputType = outputType ;
+        this.stages.addAll(stages);
+    }
+
+    public static <T> AggregationPipeline<T> create(Class<T> outputType,List<Stage> stages){
+        Precondition.checkNotNull(outputType,"outputType can't be null in AggregationPipeline") ;
+        return new AggregationPipeline<T>(outputType,stages);
+    }
 
     public static <T> AggregationPipeline<T> create(Class<T> outputType){
         Precondition.checkNotNull(outputType,"outputType can't be null in AggregationPipeline") ;

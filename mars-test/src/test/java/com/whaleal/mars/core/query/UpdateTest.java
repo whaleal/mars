@@ -6,7 +6,6 @@ import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.query.codec.stage.EachStage;
 import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -175,16 +174,7 @@ public class UpdateTest {
 
     @Test
     public void test(){
-        MongoMappingContext context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
 
-        CodecRegistry codecRegistry = context.getCodecRegistry();
-        Codec<EachStage> eachStageCodec = codecRegistry.get(EachStage.class);
-
-        MongoClient mongoClient = MongoClients.create(Constant.connectionStr);
-        mongoClient.getDatabase("cc").withCodecRegistry(codecRegistry).getCollection("cc").updateOne(new Document(),new Document("$push",new Document("key",new EachStage("1",2,"vv"))));
-
-
-        System.out.println(eachStageCodec);
     }
 
     @Test

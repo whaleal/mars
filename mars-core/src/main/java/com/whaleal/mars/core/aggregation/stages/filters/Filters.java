@@ -29,17 +29,31 @@
  */
 package com.whaleal.mars.core.aggregation.stages.filters;
 
+
+import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.codecs.pojo.PropertyModel;
+import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
+import com.whaleal.mars.core.internal.PathTarget;
+import com.whaleal.mars.core.query.Type;
+import org.bson.BsonWriter;
+import org.bson.Document;
+import org.bson.codecs.Codec;
+import org.bson.codecs.EncoderContext;
+
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.value;
+import static java.lang.String.format;
 import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.MultiPolygon;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Polygon;
-import com.whaleal.mars.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import org.bson.BsonType;
+
 import org.bson.BsonWriter;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
+
+
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -47,7 +61,10 @@ import static org.bson.Document.parse;
 
 /**
  * Defines helper methods to generate filter operations for queries.
+ *
+ * 
  */
+@SuppressWarnings("unused")
 public final class Filters {
     private Filters() {
     }
@@ -229,8 +246,8 @@ public final class Filters {
             @Override
             public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
                 if (isNot()) {
-                    ExpressionHelper.document(writer, path(mapper), () -> {
-                        ExpressionHelper.document(writer, "$not", () -> {
+                    document(writer, path(mapper), () -> {
+                        document(writer, "$not", () -> {
                             writer.writeName(getName());
                             writeUnnamedValue(getValue(mapper), mapper, writer, context);
                         });
@@ -268,7 +285,7 @@ public final class Filters {
      * @return the filter
      * @query.filter $expr
      */
-    public static Filter expr(Expression expression) {
+    public static Filter expr( Expression expression) {
         return new Filter("$expr", null, expression) {
             @Override
             public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
@@ -392,13 +409,13 @@ public final class Filters {
      * @param schema the schema to use
      * @return the filter
      * @query.filter $jsonSchema
-     *
+     * 
      */
     public static Filter jsonSchema(Document schema) {
         return new Filter("$jsonSchema", null, schema) {
             @Override
             public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                ExpressionHelper.value(mapper, writer, "$jsonSchema", schema, context);
+                value(mapper, writer, "$jsonSchema", schema, context);
             }
         };
     }
@@ -445,7 +462,7 @@ public final class Filters {
      * @param field the field to check
      * @param val   the value to check
      * @return the filter
-     * @query.filter $minDistan  ce
+     * @query.filter $minDistance
      */
     public static Filter minDistance(String field, Object val) {
         return new Filter("$minDistance", field, val);
@@ -611,7 +628,7 @@ public final class Filters {
      * @return the filter
      * @query.filter $type
      */
-    public static Filter type(String field, BsonType val) {
+    public static Filter type(String field, Type val) {
         return new Filter("$type", field, val.toString().toLowerCase());
     }
 
