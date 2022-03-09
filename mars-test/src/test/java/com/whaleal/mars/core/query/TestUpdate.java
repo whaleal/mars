@@ -23,7 +23,7 @@ import java.util.List;
  * @description
  * @date 2022/3/8 10:50
  */
-public class UpdateTest {
+public class TestUpdate {
 
     private MongoMappingContext context;
 
