@@ -15,7 +15,7 @@ import org.junit.Test;
  * @description
  * @date 2022/3/9 10:00
  */
-public class QueryUpdate {
+public class TestQuery {
     private MongoMappingContext context;
 
     private Query query ;
@@ -195,27 +195,16 @@ public class QueryUpdate {
         Assert.assertEquals(criteria5.getCriteriaObject(),Document.parse("{ \"instock.qty\": 5, \"instock.warehouse\": \"A\" }"));
 
     }
-
     @Test
-    public void testForQueryReturn(){
-        Criteria criteria = new Criteria("status").is("A");
+    public void testForQueryNull(){
+        Criteria criteria = new Criteria("item").is(null);
 
-        query.addCriteria(criteria);
-        query.withProjection(new Projection().include("status").include("item"));
+        System.out.println(criteria.getCriteriaObject());
 
-        Document queryObject = query.getQueryObject();
-        System.out.println(queryObject);
+        Criteria item = new Criteria("item").type(10);
+        System.out.println(item.getCriteriaObject());
 
-        query.fields().exclude("item", "status");
-        Document queryObject1 = query.getQueryObject();
-        System.out.println(queryObject1);
-        //存疑     queryObject打印结果为Document{{status=A}}
-        Assert.assertEquals(queryObject,Document.parse(" { status: \"A\" }, { item: 1, status: 1 }"));
-
-
-
+        Criteria item1 = new Criteria("item").exists(false);
+        System.out.println(item1.getCriteriaObject());
     }
-
-
-
 }
