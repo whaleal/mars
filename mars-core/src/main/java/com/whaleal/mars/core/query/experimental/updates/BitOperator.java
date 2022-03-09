@@ -27,43 +27,24 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.experimental.updates;
 
-import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
 
-public class Box extends Filter {
+import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
+import com.whaleal.mars.core.internal.PathTarget;
+import org.bson.Document;
 
-    private final Point bottomLeft;
-    private final Point upperRight;
+class BitOperator extends UpdateOperator {
+    private final String operation;
 
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+    BitOperator(String operation, String field, int value) {
+        super("$bit", field, value);
+        this.operation = operation;
     }
 
     @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
-
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
-
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+    public OperationTarget toTarget( PathTarget pathTarget) {
+        return new OperationTarget(pathTarget, new Document(operation, value()));
     }
+
 }

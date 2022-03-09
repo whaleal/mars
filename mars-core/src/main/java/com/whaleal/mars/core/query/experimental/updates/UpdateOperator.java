@@ -27,8 +27,76 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query;
+package com.whaleal.mars.core.query.experimental.updates;
 
-public class GeoCriteria  extends Criteria{
+import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
+import com.whaleal.mars.core.internal.PathTarget;
+import com.whaleal.mars.core.query.UpdateException;
 
+import java.util.List;
+
+/**
+ * Defines an update operator
+ *
+ *
+ *
+ */
+public class UpdateOperator {
+    private final String operator;
+    private final String field;
+    private Object value;
+
+    protected UpdateOperator(String operator, String field, Object value) {
+        this.operator = operator;
+        this.field = field;
+        this.value = value;
+    }
+
+    protected UpdateOperator(String operator, String field, List<?> values) {
+        if (values.isEmpty()) {
+            throw new UpdateException("valuesCannotBeNullOrEmpty");
+        }
+        this.operator = operator;
+        this.field = field;
+        this.value = values;
+    }
+
+    /**
+     * @return the field
+     *
+     */
+    public String field() {
+        return field;
+    }
+
+    /**
+     * @return the operator
+     *
+     */
+    public String operator() {
+        return operator;
+    }
+
+    /**
+     * Creates the OperationTarget for serialization
+     *
+     * @param pathTarget the PathTarget
+     * @return the OperationTarget
+     *
+     */
+    public OperationTarget toTarget( PathTarget pathTarget) {
+        return new OperationTarget(pathTarget, value());
+    }
+
+    /**
+     * @return the value
+     *
+     */
+    public Object value() {
+        return value;
+    }
+
+    protected void value(Object value) {
+        this.value = value;
+    }
 }

@@ -27,43 +27,30 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query;
 
-import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
-
-public class Box extends Filter {
-
-    private final Point bottomLeft;
-    private final Point upperRight;
-
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+/**
+ * Error during update.
+ *
+ *
+ */
+public class UpdateException extends RuntimeException {
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     */
+    public UpdateException( String message) {
+        super(message);
     }
 
-    @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
-
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
-
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     * @param cause   the underlying cause
+     */
+    public UpdateException( String message, Throwable cause) {
+        super(message, cause);
     }
 }

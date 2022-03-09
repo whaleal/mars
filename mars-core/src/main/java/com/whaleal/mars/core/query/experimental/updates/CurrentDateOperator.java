@@ -27,43 +27,63 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.experimental.updates;
 
-import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
 
-public class Box extends Filter {
+import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
+import com.whaleal.mars.core.internal.PathTarget;
+import org.bson.Document;
 
-    private final Point bottomLeft;
-    private final Point upperRight;
+/**
+ * Defines the $currentDate operator
+ *
+ * 
+ */
+public class CurrentDateOperator extends UpdateOperator {
+    private TypeSpecification typeSpec = TypeSpecification.DATE;
 
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+    /**
+     * Creates an operator for a field
+     *
+     * @param field the field to update
+     */
+    protected CurrentDateOperator(String field) {
+        super("$currentDate", field, field);
     }
 
     @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
+    public OperationTarget toTarget( PathTarget pathTarget) {
+        return new OperationTarget(pathTarget, typeSpec.toTarget());
+    }
 
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
+    /**
+     * Sets the type of value to set when updating the field
+     *
+     * @param type the type to use
+     * @return this
+     */
+    public CurrentDateOperator type(TypeSpecification type) {
+        this.typeSpec = type;
+        return this;
+    }
 
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+    /**
+     * Type type options when setting the current date
+     */
+    public enum TypeSpecification {
+        DATE {
+            @Override
+            Object toTarget() {
+                return true;
+            }
+        },
+        TIMESTAMP {
+            @Override
+            Object toTarget() {
+                return new Document("$type", "timestamp");
+            }
+        };
+
+        abstract Object toTarget();
     }
 }

@@ -27,43 +27,51 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.experimental.updates;
 
-import com.mongodb.client.model.geojson.Point;
+
 import com.whaleal.mars.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
+
+import com.whaleal.mars.codecs.writer.DocumentWriter;
+import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
+import com.whaleal.mars.core.internal.PathTarget;
+
+
+
+import org.bson.Document;
+import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
-public class Box extends Filter {
-
-    private final Point bottomLeft;
-    private final Point upperRight;
-
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+/**
+ *
+ * 
+ */
+public class SetEntityOperator extends UpdateOperator {
+    /**
+     * @param value the value
+     *
+     */
+    public SetEntityOperator(Object value) {
+        super("$set", "", value);
     }
 
+
     @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
+    public OperationTarget toTarget( PathTarget pathTarget) {
+        return new OperationTarget(null, value()) {
+            @Override
+            @SuppressWarnings("unchecked")
+            public Object encode( MongoMappingContext mapper) {
+                Object value = value();
 
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
+                Codec<Object> codec = mapper.getCodecRegistry().get((Class<Object>) value.getClass());
+                DocumentWriter writer = new DocumentWriter();
 
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+                codec.encode(writer, value, EncoderContext.builder().build());
+
+                Document document = writer.getDocument();
+                return document;
+            }
+        };
     }
 }
