@@ -29,14 +29,11 @@ public class SortStage extends Stage {
         super("$sort");
         Precondition.notNull(sort, "Sort must not be null!");
         Document append = new Document();
-        for (Sort.Order order : sort) {
+        for (Sort.SortType order : sort) {
 
-            if (order.isIgnoreCase()) {
-                throw new IllegalArgumentException(String.format("Given sort contained an Order for %s with ignore case! "
-                        + "MongoDB does not support sorting ignoring case currently!", order.getProperty()));
-            }
-            int i = order.getDirection().isAscending() ? 1 : -1;
-            append = new Document().append(order.getProperty(),i);
+
+            int i = Sort.Direction.ASCENDING.equals(order.getDirection()) ? 1 : -1;
+            append = new Document().append(order.getField(),i);
 
         }
 

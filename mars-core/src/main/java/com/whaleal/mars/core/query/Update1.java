@@ -685,8 +685,8 @@ public class Update1 implements UpdateDefinition {
         public PushOperatorBuilder sort(Sort sort) {
 
             Precondition.notNull(sort, "Sort must not be null.");
-            SortStage sortStage = new SortStage(sort);
-            this.modifiers.put(sortStage.getKey(),sortStage.getValue());
+            //SortStage sortStage = new SortStage(sort);
+            this.modifiers.put("$sort",sort.getSortObject());
             //this.addModifier(new SortStage(sort));
             return this;
         }

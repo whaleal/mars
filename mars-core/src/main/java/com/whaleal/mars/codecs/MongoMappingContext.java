@@ -107,8 +107,7 @@ public class MongoMappingContext {
                 new GridFSFileCodecProvider(),
                 new Jsr310CodecProvider(),
                 new JsonObjectCodecProvider(),
-                new BsonCodecProvider(),
-                new UpdateCodecs(this)
+                new BsonCodecProvider()
         );
 
 

@@ -77,7 +77,7 @@ public class UpdateTest {
         Document[] documents = new Document[]{new Document("wk",5).append("score",8),new Document("wk",6).append("score",7),new Document("wk",7).append("score",6)};
 
         update1.push("quizzes").each(documents);
-        update1.push("quizzes").sort(Sort.by(Sort.Direction.DESC,"score"));
+        update1.push("quizzes").sort(Sort.on().descending("score"));
 //        update1.push("quizzes").sort(new Sort());
 
         update1.push("quizzes").slice(3);
@@ -204,7 +204,41 @@ public class UpdateTest {
 //        mars.getDatabase().withCodecRegistry(codecRegistry).getCollection("student").updateOne(new Document(),update1.getUpdateObject());
 
 
-        mars.getDatabase("mars").getCollection("student").updateOne(new Document(),update1.getUpdateObject());
+       // mars.getDatabase("mars").getCollection("student").updateOne(new Document(),update1.getUpdateObject());
+    }
+
+    @Test
+    public void testforSort(){
+        Update1 update = new Update1();
+
+
+        update.push("cc").each("22",33,44);
+
+        update.push("cc").sort(Sort.on().ascending("score"));
+
+        MongoMappingContext context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
+
+        Document document = context.toDocument(update.getUpdateObject());
+
+        System.out.println(document);
+
+
+    }
+
+    @Test
+    public void testforPush(){
+        Update1 up = new Update1();
+        up.push("cc").each("1",2,33,56);
+        up.push("aa").each("12",13,15);
+        up.push("cc").sort(Sort.on().ascending("name"));
+        up.push("cc").slice(3);
+        up.push("aa").slice(5);
+
+
+
+
+        Document document = context.toDocument(up.getUpdateObject());
+        System.out.println(document);
     }
 
 }

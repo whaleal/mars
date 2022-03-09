@@ -53,7 +53,7 @@ public class Query {
     // projection
     private Projection projectionSpec = null;
     // sorting
-    private Sort sort = Sort.unsorted();
+    private Sort sort = Sort.on();
     private long skip;
     private int limit;
     private String hint;
@@ -237,15 +237,11 @@ public class Query {
 
         Precondition.notNull(sort, "Sort must not be null!");
 
-        if (sort.isUnsorted()) {
+        if (sort.isEmpty()) {
             return this;
         }
 
-        sort.stream().filter(Sort.Order::isIgnoreCase).findFirst().ifPresent(it -> {
 
-            throw new IllegalArgumentException(String.format("Given sort contained an Order for %s with ignore case! "
-                    + "MongoDB does not support sorting ignoring case currently!", it.getProperty()));
-        });
 
         this.sort = this.sort.and(sort);
 
@@ -280,26 +276,17 @@ public class Query {
      */
     public Document getSortObject() {
 
-        if (this.sort.isUnsorted()) {
-            return new Document();
-        }
-
-        Document document = new Document();
-
-        this.sort.stream()//
-                .forEach(order -> document.put(order.getProperty(), order.isAscending() ? 1 : -1));
-
-        return document;
+       return this.sort.getSortObject();
     }
 
     /**
      * Returns {@literal true} if the {@link Query} has a sort parameter.
      *
      * @return {@literal true} if sorted.
-     * @see Sort#isSorted()
+     * @see Sort#isEmpty() ()
      */
     public boolean isSorted() {
-        return sort.isSorted();
+        return !sort.isEmpty();
     }
 
     /**
