@@ -27,43 +27,50 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.experimental.updates;
 
-import com.mongodb.client.model.geojson.Point;
+
+
 import com.whaleal.mars.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
+
+import com.whaleal.mars.codecs.writer.DocumentWriter;
+import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
+import com.whaleal.mars.core.internal.PathTarget;
+import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 
-public class Box extends Filter {
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 
-    private final Point bottomLeft;
-    private final Point upperRight;
 
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+/**
+ * Defines an operator for $pull
+ *
+ * 
+ */
+public class PullOperator extends UpdateOperator {
+    /**
+     * @param field  the field
+     * @param filter the filter to apply
+     *
+     */
+    public PullOperator(String field, Filter filter) {
+        super("$pull", field, filter);
     }
 
     @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
+    public OperationTarget toTarget( PathTarget pathTarget) {
+        return new OperationTarget(pathTarget, value()) {
+            @Override
+            public Object encode( MongoMappingContext mapper) {
+                DocumentWriter writer = new DocumentWriter();
+                document(writer, () -> {
+                    ((Filter) getValue())
+                        .encode(mapper, writer, EncoderContext.builder().build());
+                });
 
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
-
-        writer.writeEndDocument();
-        writer.writeEndDocument();
+                return new Document(field(), writer.getDocument());
+            }
+        };
     }
 }

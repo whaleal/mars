@@ -27,43 +27,40 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.experimental.updates;
 
-import com.mongodb.client.model.geojson.Point;
-import com.whaleal.mars.codecs.MongoMappingContext;
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
 
-public class Box extends Filter {
+import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
+import com.whaleal.mars.core.internal.PathTarget;
+import org.bson.Document;
 
-    private final Point bottomLeft;
-    private final Point upperRight;
+import java.util.Collection;
 
-    protected Box(String field, Point bottomLeft, Point upperRight) {
-        super("$box", field, null);
-        this.bottomLeft = bottomLeft;
-        this.upperRight = upperRight;
+/**
+ * Defines the $addToSet operator
+ *
+ * 
+ */
+public class AddToSetOperator extends UpdateOperator {
+    private final boolean each;
+
+    /**
+     * @param field  the field
+     * @param values the values
+     *
+     */
+    public AddToSetOperator(String field, Object values) {
+        super("$addToSet", field, values);
+        each = values instanceof Collection;
     }
 
     @Override
-    public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        writer.writeStartDocument(path(mapper));
-        writer.writeStartDocument("$geoWithin");
-
-        writer.writeStartArray(getName());
-        writer.writeStartArray();
-        for (Double value : bottomLeft.getPosition().getValues()) {
-            writer.writeDouble(value);
+    public OperationTarget toTarget( PathTarget pathTarget) {
+        if (each) {
+            return new OperationTarget(pathTarget, new Document("$each", value()));
+        } else {
+            return new OperationTarget(pathTarget, value());
         }
-        writer.writeEndArray();
-        writer.writeStartArray();
-        for (Double value : upperRight.getPosition().getValues()) {
-            writer.writeDouble(value);
-        }
-        writer.writeEndArray();
-        writer.writeEndArray();
-
-        writer.writeEndDocument();
-        writer.writeEndDocument();
     }
+
 }
