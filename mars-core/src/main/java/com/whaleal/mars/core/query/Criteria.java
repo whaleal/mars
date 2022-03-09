@@ -34,6 +34,7 @@ import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.Point;
 import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.ArrayUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
@@ -57,6 +58,7 @@ import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
  */
 public class Criteria implements CriteriaDefinition {
 
+    public static final String centerSphere = "$centerSphere";
     /**
      * Custom "not-null" object as we have to be able to work with {@literal null} values as well.
      */
@@ -77,8 +79,7 @@ public class Criteria implements CriteriaDefinition {
     }
 
     // key  is used  to  decorate  itself
-    private
-    String key;
+    private String key;
 
     // criteriaChain  is used  to  decorate  it innerData
     //  主要用于放置 前置 的 criteria ，实现 是一个 ArrayList   如果没有前置 。那么久放置自己 到该 criteraChain中 ，外部调用 主要是调用 该 参数 并获取该值
@@ -89,8 +90,7 @@ public class Criteria implements CriteriaDefinition {
     private LinkedHashMap<String, Object> criteria = new LinkedHashMap<String, Object>();
 
     //  默认值 为 空对象 ，可以使用is() 设置
-    private
-    Object isValue = NOT_SET;
+    private Object isValue = NOT_SET;
 
 
     public Criteria() {
@@ -129,7 +129,6 @@ public class Criteria implements CriteriaDefinition {
     private static boolean requiresGeoJsonFormat(Object value) {
 
        return value instanceof Geometry;
-
     }
 
     /**
@@ -483,6 +482,26 @@ public class Criteria implements CriteriaDefinition {
      * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
      * Mongo 2.4 and higher.
      *
+     * @param point must not be {@literal null}
+     * @return this.
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
+     *      $geoWithin</a>
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
+     *      $centerSphere</a>
+     */
+    public Criteria withinSphere(Point point,Double radius) {
+
+        Precondition.notNull(point, "Circle must not be null!");
+
+        criteria.put("$geoWithin", new Document(centerSphere,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
+        return this;
+    }
+
+
+    /**
+     * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
+     * Mongo 2.4 and higher.
+     *
      * @param geometry must not be {@literal null}
      * @return this.
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
@@ -497,6 +516,8 @@ public class Criteria implements CriteriaDefinition {
         criteria.put("$geoWithin", geometry);
         return this;
     }
+
+
 
 
 
