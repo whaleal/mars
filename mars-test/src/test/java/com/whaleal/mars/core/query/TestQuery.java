@@ -15,7 +15,7 @@ import org.junit.Test;
  * @description
  * @date 2022/3/9 10:00
  */
-public class QueryUpdate {
+public class TestQuery {
     private MongoMappingContext context;
 
     private Query query ;
@@ -195,12 +195,16 @@ public class QueryUpdate {
         Assert.assertEquals(criteria5.getCriteriaObject(),Document.parse("{ \"instock.qty\": 5, \"instock.warehouse\": \"A\" }"));
 
     }
-
     @Test
-    public void testForQueryReturn(){
+    public void testForQueryNull(){
+        Criteria criteria = new Criteria("item").is(null);
 
+        System.out.println(criteria.getCriteriaObject());
+
+        Criteria item = new Criteria("item").type(10);
+        System.out.println(item.getCriteriaObject());
+
+        Criteria item1 = new Criteria("item").exists(false);
+        System.out.println(item1.getCriteriaObject());
     }
-
-
-
 }
