@@ -198,6 +198,21 @@ public class QueryUpdate {
 
     @Test
     public void testForQueryReturn(){
+        Criteria criteria = new Criteria("status").is("A");
+
+        query.addCriteria(criteria);
+        query.withProjection(new Projection().include("status").include("item"));
+
+        Document queryObject = query.getQueryObject();
+        System.out.println(queryObject);
+
+        query.fields().exclude("item", "status");
+        Document queryObject1 = query.getQueryObject();
+        System.out.println(queryObject1);
+        //存疑     queryObject打印结果为Document{{status=A}}
+        Assert.assertEquals(queryObject,Document.parse(" { status: \"A\" }, { item: 1, status: 1 }"));
+
+
 
     }
 
