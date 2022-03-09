@@ -172,10 +172,19 @@ public class UpdateTest {
 
     }
 
-    @Test
-    public void test(){
-
-    }
+//    @Test
+//    public void test(){
+//        MongoMappingContext context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
+//
+//        CodecRegistry codecRegistry = context.getCodecRegistry();
+//        Codec<EachStage> eachStageCodec = codecRegistry.get(EachStage.class);
+//
+//        MongoClient mongoClient = MongoClients.create(Constant.connectionStr);
+//        mongoClient.getDatabase("cc").withCodecRegistry(codecRegistry).getCollection("cc").updateOne(new Document(),new Document("$push",new Document("key",new EachStage("1",2,"vv"))));
+//
+//
+//        System.out.println(eachStageCodec);
+//    }
 
     @Test
     public void testForSlice1(){
