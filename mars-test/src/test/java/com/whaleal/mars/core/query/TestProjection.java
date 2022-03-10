@@ -64,4 +64,12 @@ public class TestProjection {
         Document fieldsObject = new Projection().include("item", "status").slice("instock", -1).getFieldsObject();
         System.out.println(fieldsObject);
     }
+
+    @Test
+    public void testForMetaProject(){
+
+        Projection projection = new Projection();
+
+
+    }
 }
