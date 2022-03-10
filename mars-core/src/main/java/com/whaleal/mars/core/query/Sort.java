@@ -144,7 +144,7 @@ public class Sort extends Stage implements  Serializable {
         Document document = new Document();
 
         this.sorts.stream()//
-                .forEach(sortType -> document.put(sortType.getField(), Sort.Direction.ASCENDING.equals(sortType.getDirection() )? 1 : -1));
+                .forEach(sortType -> document.put(sortType.getField(), sortType.getDirection().toData()));
 
         return document;
     }
@@ -172,24 +172,24 @@ public class Sort extends Stage implements  Serializable {
     public enum Direction {
         ASCENDING {
             @Override
-            public void encode( BsonWriter writer) {
-                writer.writeInt32(1);
+            public Object toData( ) {
+                return 1;
             }
         },
         DESCENDING {
             @Override
-            public void encode(BsonWriter writer) {
-                writer.writeInt32(-1);
+            public Object toData(){
+                return -1;
             }
         },
         META {
             @Override
-            public void encode(BsonWriter writer) {
-                ExpressionHelper.document(writer, () -> writer.writeString("$meta", "textScore"));
+            public Object toData() {
+                return new Document("$meta", "textScore");
             }
         };
 
-        public abstract void encode(BsonWriter writer);
+        public abstract Object toData();
     }
 
 

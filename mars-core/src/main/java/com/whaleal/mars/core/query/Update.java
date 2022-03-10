@@ -632,9 +632,7 @@ public class Update implements UpdateDefinition {
             return Update.this.push(key, this.modifiers);
         }
 
-       /* public void addModifier(Stage modifier) {
-            this.modifiers.put(modifier.getStageName(), modifier);
-        }*/
+
 
 
 
@@ -652,7 +650,7 @@ public class Update implements UpdateDefinition {
         public PushOperatorBuilder slice(int count) {
 
             this.modifiers.put("$slice",count);
-            //this.addModifier(new SliceStage(count));
+
             return this;
         }
 
@@ -667,7 +665,6 @@ public class Update implements UpdateDefinition {
 
             Precondition.notNull(direction, "Direction must not be null.");
             this.modifiers.put("$sort",direction);
-            //this.addModifier(new SortStage(direction));
             return this;
         }
 
@@ -698,7 +695,7 @@ public class Update implements UpdateDefinition {
 
 
             this.modifiers.put("$position",position);
-            //this.addModifier(positionStage);
+
             return this;
         }
 
