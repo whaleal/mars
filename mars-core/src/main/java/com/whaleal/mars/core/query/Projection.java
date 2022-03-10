@@ -64,7 +64,7 @@ public class Projection {
     //以下示例使用 $slice 投影运算符返回 instock 数组中的最后一个元素：
     // { item: 1, status: 1, instock: { $slice: -1 } }
     private final Map<String, Object> slices = new HashMap<>();
-    //
+
     private final Map<String, Criteria> elemMatchs = new HashMap<>();
     private String positionKey;
     private int positionValue;

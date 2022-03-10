@@ -44,12 +44,10 @@ public class UpdatePipeline implements UpdateDefinition {
 
     private final List< UpdateOperator > updates = new ArrayList<>();
 
+    public UpdatePipeline(){}
 
-    public UpdatePipeline(
-            List< UpdateOperator > updates ) {
-
+    public UpdatePipeline( List< UpdateOperator > updates ) {
         this.updates.addAll(updates);
-
     }
 
 

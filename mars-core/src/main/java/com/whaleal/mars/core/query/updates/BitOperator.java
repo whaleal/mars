@@ -37,7 +37,7 @@ class BitOperator extends UpdateOperator {
     private final String operation;
 
     BitOperator(String operation, String field, int value) {
-        super("$bit", field, value);
+        super("$bit", field, new Document(operation,value));
         this.operation = operation;
     }
 

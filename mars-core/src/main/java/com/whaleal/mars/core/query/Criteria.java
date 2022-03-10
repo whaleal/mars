@@ -34,7 +34,7 @@ import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.Point;
 import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ArrayUtil;
+
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
