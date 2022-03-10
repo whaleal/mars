@@ -36,7 +36,6 @@ public class TestUpdateOperators {
 
         Update update = new Update().set("item", "apple").setOnInsert("defaultQty", 100);
 
-        System.out.println(new Update().unset("quantity").unset("instock").getUpdateObject());
 
         new Update().pop("scores", Update.Position.FIRST);
         new Update().pop("scores", Update.Position.LAST);
@@ -45,5 +44,10 @@ public class TestUpdateOperators {
         System.out.println(new Update().pull("vagetables", "carrots").getUpdateObject());
 
         System.out.println(new Update().pullAll("scores", new Object[]{0, 5}).getUpdateObject());
+
+
+        System.out.println(new Update().unset("quantity").unset("instock").getUpdateObject());
+
+//        new Update().filterArray().
     }
 }

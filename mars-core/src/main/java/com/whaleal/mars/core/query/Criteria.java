@@ -31,7 +31,9 @@ package com.whaleal.mars.core.query;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.client.model.geojson.Geometry;
+import com.mongodb.client.model.geojson.MultiPoint;
 import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
 import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
 
@@ -60,6 +62,7 @@ public class Criteria implements CriteriaDefinition {
 
     public static final String center = "$center";
     public static final String centerSphere = "$centerSphere";
+    public static final String polygon = "$polygon";
     /**
      * Custom "not-null" object as we have to be able to work with {@literal null} values as well.
      */
@@ -503,6 +506,22 @@ public class Criteria implements CriteriaDefinition {
         Precondition.notNull(point, "Point must not be null!");
 
         criteria.put("$geoWithin", new Document(center,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
+        return this;
+    }
+
+    public Criteria withinPolygon(MultiPoint multiPoint) {
+
+        Precondition.notNull(multiPoint, "multiPoint must not be null!");
+
+        List<Position> coordinates = multiPoint.getCoordinates();
+
+        Object[] objects = new Object[coordinates.size()];
+        for (int i = 0;i < coordinates.size();i++){
+            List<Double> values = coordinates.get(i).getValues();
+            objects[i] = values;
+        }
+
+        criteria.put("$geoWithin", new Document(polygon,objects));
         return this;
     }
 
