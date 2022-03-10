@@ -27,30 +27,75 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query.updates;
+
+
+import org.bson.Document;
+
+import java.util.List;
 
 /**
- * Defines the $pop update operator.
+ * Defines an update operator
+ *
+ * 自带 $set  属性
  *
  *
- * 
  */
-public class PopOperator extends UpdateOperator {
-    /**
-     * @param field the field
-     *
-     */
-    public PopOperator(String field) {
-        super("$pop", field, 1);
+public class UpdateOperator {
+    private final String operator;
+    private final String field;
+    private Object value;
+
+    protected UpdateOperator(String operator, String field, Object value) {
+        this.operator = operator;
+        this.field = field;
+        this.value = value;
+    }
+
+    protected UpdateOperator(String operator, String field, List<?> values) {
+        if (values.isEmpty()) {
+            throw new UpdateException("valuesCannotBeNullOrEmpty");
+        }
+        this.operator = operator;
+        this.field = field;
+        this.value = values;
     }
 
     /**
-     * Remove the first element rather than the last.
+     * @return the field
      *
-     * @return this
      */
-    public PopOperator removeFirst() {
-        value(-1);
-        return this;
+    public String field() {
+        return field;
+    }
+
+    /**
+     * @return the operator
+     *
+     */
+    public String operator() {
+        return operator;
+    }
+
+    /**
+     * Creates the OperationTarget for serialization
+     *
+     * @return the OperationTarget
+     *
+     */
+    public Document toDocument() {
+        return new Document(operator, new Document(field,value()));
+    }
+
+    /**
+     * @return the value
+     *
+     */
+    public Object value() {
+        return value;
+    }
+
+    protected void value(Object value) {
+        this.value = value;
     }
 }

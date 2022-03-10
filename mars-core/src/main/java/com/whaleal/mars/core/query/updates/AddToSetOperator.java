@@ -27,36 +27,38 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query;
+package com.whaleal.mars.core.query.updates;
 
-import java.util.Iterator;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
-final class LazyStreamable<T> implements Streamable<T> {
-    private final Supplier<? extends Stream<T>> stream;
+import org.bson.Document;
 
-    private LazyStreamable(Supplier<? extends Stream<T>> stream) {
-        this.stream = stream;
+import java.util.Collection;
+
+/**
+ * Defines the $addToSet operator
+ *
+ * 
+ */
+public class AddToSetOperator extends UpdateOperator {
+    private final boolean each;
+
+    /**
+     * @param field  the field
+     * @param values the values
+     *
+     */
+    public AddToSetOperator(String field, Object values) {
+        super("$addToSet", field, values);
+        each = values instanceof Collection;
     }
 
-    public static <T> LazyStreamable<T> of(Supplier<? extends Stream<T>> stream) {
-        return new LazyStreamable(stream);
+    @Override
+    public Document toDocument() {
+        if (each) {
+            return new Document("$addToSet",new Document(field(), new Document("$each", value())));
+        } else {
+            return super.toDocument();
+        }
     }
 
-    public Iterator<T> iterator() {
-        return this.stream().iterator();
-    }
-
-    public Stream<T> stream() {
-        return (Stream) this.stream.get();
-    }
-
-    public Supplier<? extends Stream<T>> getStream() {
-        return this.stream;
-    }
-
-    public String toString() {
-        return "LazyStreamable(stream=" + this.getStream() + ")";
-    }
 }

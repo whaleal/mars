@@ -27,36 +27,79 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query;
 
-
-import com.whaleal.mars.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
-
-
+import com.whaleal.mars.core.query.updates.UpdateOperator;
 import org.bson.Document;
 
-/**
- *
- * 
- */
-public class UnsetOperator extends UpdateOperator {
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+
+public class UpdatePipeline implements UpdateDefinition {
+
+    public static final String UpdatePipeline = "_updatepipeline";
+
+    private final List< UpdateOperator > updates = new ArrayList<>();
+
+
+    public UpdatePipeline(
+            List< UpdateOperator > updates ) {
+
+        this.updates.addAll(updates);
+
+    }
+
+
     /**
-     * @param field the field
-     *
+     * Adds a new operator to this update operation.
      */
-    public UnsetOperator(String field) {
-        super("$unset", field, "unused");
+    public void add( UpdateOperator operator ) {
+        updates.add(operator);
+    }
+
+
+    protected List< UpdateOperator > getUpdates() {
+        return updates;
     }
 
     @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        return new OperationTarget(pathTarget, "") {
-            @Override
-            public Object encode( MongoMappingContext mapper) {
-                return new Document(field(), "");
+    public Boolean isIsolated() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Document getUpdateObject() {
+        Document docs = new Document();
+        if (updates.isEmpty()) {
+            return docs;
+        } else if (updates.size() == 1) {
+            docs = updates.get(0).toDocument();
+            return docs;
+        } else {
+            List< Document > documentList = new ArrayList<>();
+            for (UpdateOperator updateOperator : updates) {
+                documentList.add(updateOperator.toDocument());
             }
-        };
+            docs.put(UpdatePipeline, documentList);
+            return docs;
+        }
+    }
+
+    @Override
+    public boolean modifies( String key ) {
+        return false;
+    }
+
+    @Override
+    public void inc( String key ) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List< ArrayFilter > getArrayFilters() {
+        throw new UnsupportedOperationException();
     }
 }

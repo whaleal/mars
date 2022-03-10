@@ -22,28 +22,28 @@ public class TestUpdateOperators {
 
     @Test
     public void testForUpdate(){
-        Update1 set = new Update1().set("lastModified", "$$NOW").set("cancellation", new Document("date", "$$CLUSTER_TIME").append("reason", "request")).set("status", "D");
+        Update set = new Update().set("lastModified", "$$NOW").set("cancellation", new Document("date", "$$CLUSTER_TIME").append("reason", "request")).set("status", "D");
         System.out.println(set.getUpdateObject());
 
-        System.out.println(new Update1().inc("quantity", -2).inc("metrics.orders", 1).getUpdateObject());
+        System.out.println(new Update().inc("quantity", -2).inc("metrics.orders", 1).getUpdateObject());
 
-        System.out.println(new Update1().min("lowScore", 150).getUpdateObject());
-        System.out.println(new Update1().max("highScore", 500).getUpdateObject());
+        System.out.println(new Update().min("lowScore", 150).getUpdateObject());
+        System.out.println(new Update().max("highScore", 500).getUpdateObject());
 
-        System.out.println(new Update1().multiply("price", 1.25).multiply("qty", 25).getUpdateObject());
+        System.out.println(new Update().multiply("price", 1.25).multiply("qty", 25).getUpdateObject());
 
-        System.out.println(new Update1().rename("nickname", "alias").rename("cell", "mobile").getUpdateObject());
+        System.out.println(new Update().rename("nickname", "alias").rename("cell", "mobile").getUpdateObject());
 
-        Update1 update1 = new Update1().set("item", "apple").setOnInsert("defaultQty", 100);
+        Update update = new Update().set("item", "apple").setOnInsert("defaultQty", 100);
 
-        System.out.println(new Update1().unset("quantity").unset("instock").getUpdateObject());
+        System.out.println(new Update().unset("quantity").unset("instock").getUpdateObject());
 
-        new Update1().pop("scores", Update1.Position.FIRST);
-        new Update1().pop("scores", Update1.Position.LAST);
+        new Update().pop("scores", Update.Position.FIRST);
+        new Update().pop("scores", Update.Position.LAST);
 
         Criteria in = new Criteria("fruits").in("apples", "oranges");
-        System.out.println(new Update1().pull("vagetables", "carrots").getUpdateObject());
+        System.out.println(new Update().pull("vagetables", "carrots").getUpdateObject());
 
-        System.out.println(new Update1().pullAll("scores", new Object[]{0, 5}).getUpdateObject());
+        System.out.println(new Update().pullAll("scores", new Object[]{0, 5}).getUpdateObject());
     }
 }

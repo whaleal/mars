@@ -31,9 +31,8 @@ package com.whaleal.mars.core.query;
 
 
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
-import com.whaleal.icefrog.json.JSONUtil;
+
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
 import org.bson.Document;
@@ -72,7 +71,7 @@ public class Update implements UpdateDefinition {
      * @param exclude the fields to exclude.
      * @return new instance of {@link Update}.
      */
-    public static Update fromDocument(Document object, String... exclude) {
+    public static Update fromDocument( Document object, String... exclude) {
 
         Update update = new Update();
         List<String> excludeList = Arrays.asList(exclude);
@@ -119,6 +118,7 @@ public class Update implements UpdateDefinition {
         return this;
     }
 
+
     /**
      * Update using the {@literal $setOnInsert} update modifier
      *
@@ -140,7 +140,7 @@ public class Update implements UpdateDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/unset/">MongoDB Update operator: $unset</a>
      */
-    public Update unset(String key) {
+    public Update unset( String key) {
         addMultiFieldOperation("$unset", key, 1);
         return this;
     }
@@ -153,7 +153,7 @@ public class Update implements UpdateDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/inc/">MongoDB Update operator: $inc</a>
      */
-    public Update inc(String key, Number inc) {
+    public Update inc( String key, Number inc) {
         addMultiFieldOperation("$inc", key, inc);
         return this;
     }
@@ -209,7 +209,7 @@ public class Update implements UpdateDefinition {
      * @deprecated as of MongoDB 2.4. Removed in MongoDB 3.6. Use {@link #push(String) $push $each} instead.
      */
     @Deprecated
-    public Update pushAll(String key, Object[] values) {
+    public Update pushAll( String key, Object[] values) {
         addMultiFieldOperation("$pushAll", key, Arrays.asList(values));
         return this;
     }
@@ -247,7 +247,7 @@ public class Update implements UpdateDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/pop/">MongoDB Update operator: $pop</a>
      */
-    public Update pop(String key, Position pos) {
+    public Update pop( String key, Position pos) {
         addMultiFieldOperation("$pop", key, pos == Position.FIRST ? -1 : 1);
         return this;
     }
@@ -274,7 +274,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/pullAll/">MongoDB Update operator:
      * $pullAll</a>
      */
-    public Update pullAll(String key, Object[] values) {
+    public Update pullAll( String key, Object[] values) {
         addMultiFieldOperation("$pullAll", key, Arrays.asList(values));
         return this;
     }
@@ -288,7 +288,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/rename/">MongoDB Update operator:
      * $rename</a>
      */
-    public Update rename(String oldName, String newName) {
+    public Update rename( String oldName, String newName) {
         addMultiFieldOperation("$rename", oldName, newName);
         return this;
     }
@@ -301,7 +301,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/currentDate/">MongoDB Update operator:
      * $currentDate</a>
      */
-    public Update currentDate(String key) {
+    public Update currentDate( String key) {
 
         addMultiFieldOperation("$currentDate", key, true);
         return this;
@@ -315,7 +315,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/currentDate/">MongoDB Update operator:
      * $currentDate</a>
      */
-    public Update currentTimestamp(String key) {
+    public Update currentTimestamp( String key) {
 
         addMultiFieldOperation("$currentDate", key, new Document("$type", "timestamp"));
         return this;
@@ -329,7 +329,7 @@ public class Update implements UpdateDefinition {
      * @return this.
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/mul/">MongoDB Update operator: $mul</a>
      */
-    public Update multiply(String key, Number multiplier) {
+    public Update multiply( String key, Number multiplier) {
 
         Precondition.notNull(multiplier, "Multiplier must not be null.");
         addMultiFieldOperation("$mul", key, multiplier.doubleValue());
@@ -345,7 +345,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/">Comparison/Sort Order</a>
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/max/">MongoDB Update operator: $max</a>
      */
-    public Update max(String key, Object value) {
+    public Update max( String key, Object value) {
 
         Precondition.notNull(value, "Value for max operation must not be null.");
         addMultiFieldOperation("$max", key, value);
@@ -361,7 +361,7 @@ public class Update implements UpdateDefinition {
      * @see <a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/">Comparison/Sort Order</a>
      * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/min/">MongoDB Update operator: $min</a>
      */
-    public Update min(String key, Object value) {
+    public Update min( String key, Object value) {
 
         Precondition.notNull(value, "Value for min operation must not be null.");
         addMultiFieldOperation("$min", key, value);
@@ -397,7 +397,7 @@ public class Update implements UpdateDefinition {
      * @param criteria must not be {@literal null}.
      * @return this.
      */
-    public Update filterArray(CriteriaDefinition criteria) {
+    public Update filterArray( CriteriaDefinition criteria) {
 
         this.arrayFilters.add(criteria::getCriteriaObject);
         return this;
@@ -411,7 +411,7 @@ public class Update implements UpdateDefinition {
      * @param expression the positional operator filter expression.
      * @return this.
      */
-    public Update filterArray(String identifier, Object expression) {
+    public Update filterArray( String identifier, Object expression) {
 
         this.arrayFilters.add(() -> new Document(identifier, expression));
         return this;
@@ -424,105 +424,8 @@ public class Update implements UpdateDefinition {
 
 
     public Document getUpdateObject() {
-        Document docs = new Document();
-
-        for (Map.Entry<String,Object> entry :modifierOps.entrySet()){
-
-            if(entry.getValue() instanceof Modifier){
-                Document value = modifier2Doc((Modifier) entry.getValue());
-                docs.put(entry.getKey() ,value);
-            }else if(entry.getValue() instanceof Modifiers){
-                Document value = modifiers2Doc((Modifiers) entry.getValue());
-                docs.put(entry.getKey() ,value);
-            }else if(entry.getValue() instanceof Map){
-
-                Object o = modifyObject(entry.getValue());
-                docs.put(entry.getKey(),o);
-
-
-            }
-            else {
-                docs.put(entry.getKey() ,entry.getValue());
-            }
-
-        }
-
-        return docs;
-        //return new Document(modifierOps);
+        return new Document(modifierOps);
     }
-
-
-    private Object modifyObject(Object obj){
-
-        if(obj instanceof Modifier){
-            return modifier2Doc((Modifier) obj);
-
-        }else if(obj instanceof Modifiers){
-           return modifiers2Doc((Modifiers) obj);
-
-        }else if(obj instanceof Map){
-            Document doc = new Document();
-            for(Map.Entry<String,Object> data :((Map<String, Object>) obj).entrySet()){
-                doc.put(data.getKey(),modifyObject(data.getValue()));
-
-            }
-            return doc ;
-
-        }
-        else {
-           return obj;
-        }
-
-
-
-
-    }
-
-
-
-
-
-    public Document modifier2Doc(Modifier modifier){
-        if(modifier.getValue() instanceof Modifier){
-            Document docInner = modifier2Doc((Modifier) modifier.getValue());
-
-            return new Document(modifier.getKey(),docInner);
-        }else if(modifier.getValue() instanceof Modifiers){
-            Document docInner = modifiers2Doc((Modifiers) modifier.getValue());
-            return new Document(modifier.getKey(),docInner);
-
-        }   else {
-            return new Document(modifier.getKey(),modifier.getValue());
-        }
-    }
-
-    public Document modifiers2Doc(Modifiers modifiers){
-        Document docs = new Document();
-        for(Modifier modifier :modifiers.getModifiers()){
-
-            Object value = modifier.getValue();
-
-            if(value instanceof Modifier){
-                Document value1 = modifier2Doc((Modifier)value);
-                docs.put(modifier.getKey(),value1);
-
-            }else if(value instanceof Modifiers){
-
-                Document value1 = modifiers2Doc((Modifiers) value);
-                docs.put(modifier.getKey(),value1);
-
-            }else {
-                docs.put(modifier.getKey(),value);
-            }
-
-        }
-        return docs;
-
-    }
-
-
-
-
 
     public List<ArrayFilter> getArrayFilters() {
         return Collections.unmodifiableList(this.arrayFilters);
@@ -629,261 +532,6 @@ public class Update implements UpdateDefinition {
         LAST, FIRST
     }
 
-    /**
-     * Marker interface of nested commands.
-     */
-    public interface Modifier {
-
-        /**
-         * @return the command to send eg. {@code $push}
-         */
-        String getKey();
-
-        /**
-         * @return value to be sent with command
-         */
-        Object getValue();
-
-        /**
-         * @return a safely serialized JSON representation.
-         */
-        default String toJsonString() {
-            return JSONUtil.toJsonStr(Collections.singletonMap(getKey(), getValue()));
-        }
-    }
-
-    /**
-     * Modifiers holds a distinct collection of {@link Modifier}
-     */
-    public static class Modifiers {
-
-        private Map<String, Modifier> modifiers;
-
-        public Modifiers() {
-            this.modifiers = new LinkedHashMap<>(1);
-        }
-
-        public Collection<Modifier> getModifiers() {
-            return Collections.unmodifiableCollection(this.modifiers.values());
-        }
-
-        public void addModifier(Modifier modifier) {
-            this.modifiers.put(modifier.getKey(), modifier);
-        }
-
-        /**
-         * @return true if no modifiers present.
-         */
-        public boolean isEmpty() {
-            return modifiers.isEmpty();
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(modifiers);
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        @Override
-        public boolean equals(Object obj) {
-
-            if (this == obj) {
-                return true;
-            }
-
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-
-            Modifiers that = (Modifiers) obj;
-            return Objects.equals(this.modifiers, that.modifiers);
-        }
-
-        @Override
-        public String toString() {
-            return JSONUtil.toJsonStr(this.modifiers);
-        }
-    }
-
-    /**
-     * Abstract {@link Modifier} implementation with defaults for {@link Object#equals(Object)}, {@link Object#hashCode()}
-     * and {@link Object#toString()}.
-     */
-    private static abstract class AbstractModifier implements Modifier {
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
-        @Override
-        public int hashCode() {
-            return ObjectUtil.nullSafeHashCode(getKey()) + ObjectUtil.nullSafeHashCode(getValue());
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        @Override
-        public boolean equals(Object that) {
-
-            if (this == that) {
-                return true;
-            }
-
-            if (that == null || getClass() != that.getClass()) {
-                return false;
-            }
-
-            if (!Objects.equals(getKey(), ((Modifier) that).getKey())) {
-                return false;
-            }
-
-            return Objects.deepEquals(getValue(), ((Modifier) that).getValue());
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString() {
-            return toJsonString();
-        }
-    }
-
-    /**
-     * Implementation of {@link Modifier} representing {@code $each}.
-     */
-    private static class Each extends AbstractModifier {
-
-        private Object[] values;
-
-        Each(Object... values) {
-            this.values = extractValues(values);
-        }
-
-        private Object[] extractValues(Object[] values) {
-
-            if (values == null || values.length == 0) {
-                return values;
-            }
-
-            if (values.length == 1 && values[0] instanceof Collection) {
-                return ((Collection<?>) values[0]).toArray();
-            }
-
-            return Arrays.copyOf(values, values.length);
-        }
-
-
-        @Override
-        public String getKey() {
-            return "$each";
-        }
-
-
-        @Override
-        public Object getValue() {
-            return this.values;
-        }
-    }
-
-    /**
-     * {@link Modifier} implementation used to propagate {@code $position}.
-     */
-    private static class PositionModifier extends AbstractModifier {
-
-        private final int position;
-
-        PositionModifier(int position) {
-            this.position = position;
-        }
-
-        @Override
-        public String getKey() {
-            return "$position";
-        }
-
-        @Override
-        public Object getValue() {
-            return position;
-        }
-    }
-
-    /**
-     * Implementation of {@link Modifier} representing {@code $slice}.
-     */
-    private static class Slice extends AbstractModifier {
-
-        private int count;
-
-        Slice(int count) {
-            this.count = count;
-        }
-
-
-        @Override
-        public String getKey() {
-            return "$slice";
-        }
-
-
-        @Override
-        public Object getValue() {
-            return this.count;
-        }
-    }
-
-    /**
-     * Implementation of {@link Modifier} representing {@code $sort}.
-     */
-    private static class SortModifier extends AbstractModifier {
-
-        private final Object sort;
-
-        /**
-         * @param direction must not be {@literal null}.
-         */
-        SortModifier(Sort.Direction direction) {
-
-            Precondition.notNull(direction, "Direction must not be null!");
-            this.sort = Sort.Direction.ASCENDING.equals(direction) ? 1 : -1;
-        }
-
-        /**
-         * Creates a new {@link SortModifier} instance given {@link Sort}.
-         *
-         * @param sort must not be {@literal null}.
-         */
-        SortModifier(Sort sort) {
-
-            Precondition.notNull(sort, "Sort must not be null!");
-
-
-
-            this.sort = sort;
-        }
-
-
-        @Override
-        public String getKey() {
-            return "$sort";
-        }
-
-
-        @Override
-        public Object getValue() {
-            return this.sort;
-        }
-    }
 
     public static class BitwiseOperatorBuilder {
 
@@ -897,7 +545,7 @@ public class Update implements UpdateDefinition {
          * @param reference must not be {@literal null}
          * @param key       must not be {@literal null}
          */
-        protected BitwiseOperatorBuilder(Update reference, String key) {
+        protected BitwiseOperatorBuilder( Update reference, String key) {
 
             Precondition.notNull(reference, "Reference must not be null!");
             Precondition.notNull(key, "Key must not be null!");
@@ -912,7 +560,7 @@ public class Update implements UpdateDefinition {
          * @param value
          * @return never {@literal null}.
          */
-        public Update and(long value) {
+        public Update and( long value) {
 
             addFieldOperation(BitwiseOperator.AND, value);
             return reference;
@@ -924,7 +572,7 @@ public class Update implements UpdateDefinition {
          * @param value
          * @return never {@literal null}.
          */
-        public Update or(long value) {
+        public Update or( long value) {
 
             addFieldOperation(BitwiseOperator.OR, value);
             return reference;
@@ -936,7 +584,7 @@ public class Update implements UpdateDefinition {
          * @param value
          * @return never {@literal null}.
          */
-        public Update xor(long value) {
+        public Update xor( long value) {
 
             addFieldOperation(BitwiseOperator.XOR, value);
             return reference;
@@ -964,11 +612,11 @@ public class Update implements UpdateDefinition {
     public class PushOperatorBuilder {
 
         private final String key;
-        private final Modifiers modifiers;
+        private final Document modifiers;
 
         PushOperatorBuilder(String key) {
             this.key = key;
-            this.modifiers = new Modifiers();
+            this.modifiers =new Document();
         }
 
         /**
@@ -977,11 +625,18 @@ public class Update implements UpdateDefinition {
          * @param values
          * @return never {@literal null}.
          */
-        public Update each(Object... values) {
+        public Update each( Object... values) {
 
-            this.modifiers.addModifier(new Each(values));
+            //this.addModifier(new EachStage(values));
+            this.modifiers.put("$each",values);
             return Update.this.push(key, this.modifiers);
         }
+
+       /* public void addModifier(Stage modifier) {
+            this.modifiers.put(modifier.getStageName(), modifier);
+        }*/
+
+
 
         /**
          * Propagates {@code $slice} to {@code $push}. {@code $slice} requires the {@code $each operator}. <br />
@@ -996,7 +651,8 @@ public class Update implements UpdateDefinition {
          */
         public PushOperatorBuilder slice(int count) {
 
-            this.modifiers.addModifier(new Slice(count));
+            this.modifiers.put("$slice",count);
+            //this.addModifier(new SliceStage(count));
             return this;
         }
 
@@ -1010,7 +666,8 @@ public class Update implements UpdateDefinition {
         public PushOperatorBuilder sort(Sort.Direction direction) {
 
             Precondition.notNull(direction, "Direction must not be null.");
-            this.modifiers.addModifier(new SortModifier(direction));
+            this.modifiers.put("$sort",direction);
+            //this.addModifier(new SortStage(direction));
             return this;
         }
 
@@ -1024,7 +681,9 @@ public class Update implements UpdateDefinition {
         public PushOperatorBuilder sort(Sort sort) {
 
             Precondition.notNull(sort, "Sort must not be null.");
-            this.modifiers.addModifier(new SortModifier(sort));
+            //SortStage sortStage = new SortStage(sort);
+            this.modifiers.put("$sort",sort.getSortObject());
+            //this.addModifier(new SortStage(sort));
             return this;
         }
 
@@ -1037,7 +696,9 @@ public class Update implements UpdateDefinition {
          */
         public PushOperatorBuilder atPosition(int position) {
 
-            this.modifiers.addModifier(new PositionModifier(position));
+
+            this.modifiers.put("$position",position);
+            //this.addModifier(positionStage);
             return this;
         }
 
@@ -1053,7 +714,8 @@ public class Update implements UpdateDefinition {
                 return this;
             }
 
-            this.modifiers.addModifier(new PositionModifier(0));
+            this.modifiers.put("$position",0);
+
 
             return this;
         }
@@ -1064,13 +726,15 @@ public class Update implements UpdateDefinition {
          * @param value
          * @return never {@literal null}.
          */
-        public Update value(Object value) {
+        public Update value( Object value) {
 
             if (this.modifiers.isEmpty()) {
                 return Update.this.push(key, value);
             }
 
-            this.modifiers.addModifier(new Each(Collections.singletonList(value)));
+            List< Object > objects = Collections.singletonList(value);
+            this.modifiers.put("$each",objects);
+            //this.addModifier(new EachStage(Collections.singletonList(value)));
             return Update.this.push(key, this.modifiers);
         }
 
@@ -1129,8 +793,8 @@ public class Update implements UpdateDefinition {
          * @param values must not be {@literal null}.
          * @return never {@literal null}.
          */
-        public Update each(Object... values) {
-            return Update.this.addToSet(this.key, new Each(values));
+        public Update each( Object... values) {
+            return Update.this.addToSet(this.key, new Document("$each",values));
         }
 
         /**
@@ -1139,8 +803,9 @@ public class Update implements UpdateDefinition {
          * @param value
          * @return never {@literal null}.
          */
-        public Update value(Object value) {
+        public Update value( Object value) {
             return Update.this.addToSet(this.key, value);
         }
     }
+
 }

@@ -492,7 +492,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria withinSphere(Point point,Double radius) {
 
-        Precondition.notNull(point, "Circle must not be null!");
+        Precondition.notNull(point, "Point must not be null!");
 
         criteria.put("$geoWithin", new Document(centerSphere,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
         return this;
@@ -500,7 +500,7 @@ public class Criteria implements CriteriaDefinition {
 
     public Criteria withinCenter(Point point,Double radius) {
 
-        Precondition.notNull(point, "Circle must not be null!");
+        Precondition.notNull(point, "Point must not be null!");
 
         criteria.put("$geoWithin", new Document(center,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
         return this;

@@ -27,40 +27,61 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query.updates;
 
 
-import com.whaleal.mars.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
-
-
-
-import java.util.Map;
+import org.bson.Document;
 
 /**
+ * Defines the $currentDate operator
  *
  * 
  */
-public class SetOnInsertOperator extends UpdateOperator {
-    private final Map<String, Object> insertValues;
+public class CurrentDateOperator extends UpdateOperator {
+    private TypeSpecification typeSpec = TypeSpecification.DATE;
 
     /**
-     * @param values the values
+     * Creates an operator for a field
      *
+     * @param field the field to update
      */
-    public SetOnInsertOperator(Map<String, Object> values) {
-        super("$setOnInsert", "unused", "unused");
-        insertValues = values;
+    protected CurrentDateOperator(String field) {
+        super("$currentDate", field, field);
     }
 
     @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        return new OperationTarget(null, null) {
+    public Document toDocument() {
+        return new Document("$currentDate",new Document(field(),typeSpec.toTarget()));
+    }
+
+    /**
+     * Sets the type of value to set when updating the field
+     *
+     * @param type the type to use
+     * @return this
+     */
+    public CurrentDateOperator type(TypeSpecification type) {
+        this.typeSpec = type;
+        return this;
+    }
+
+    /**
+     * Type type options when setting the current date
+     */
+    public enum TypeSpecification {
+        DATE {
             @Override
-            public Object encode( MongoMappingContext mapper) {
-                return insertValues;
+            Object toTarget() {
+                return true;
+            }
+        },
+        TIMESTAMP {
+            @Override
+            Object toTarget() {
+                return new Document("$type", "timestamp");
             }
         };
+
+        abstract Object toTarget();
     }
 }

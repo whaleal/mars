@@ -27,63 +27,30 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
-
-
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
-import org.bson.Document;
+package com.whaleal.mars.core.query.updates;
 
 /**
- * Defines the $currentDate operator
+ * Defines the $pop update operator.
+ *
  *
  * 
  */
-public class CurrentDateOperator extends UpdateOperator {
-    private TypeSpecification typeSpec = TypeSpecification.DATE;
-
+public class PopOperator extends UpdateOperator {
     /**
-     * Creates an operator for a field
+     * @param field the field
      *
-     * @param field the field to update
      */
-    protected CurrentDateOperator(String field) {
-        super("$currentDate", field, field);
-    }
-
-    @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        return new OperationTarget(pathTarget, typeSpec.toTarget());
+    public PopOperator(String field) {
+        super("$pop", field, 1);
     }
 
     /**
-     * Sets the type of value to set when updating the field
+     * Remove the first element rather than the last.
      *
-     * @param type the type to use
      * @return this
      */
-    public CurrentDateOperator type(TypeSpecification type) {
-        this.typeSpec = type;
+    public PopOperator removeFirst() {
+        value(-1);
         return this;
-    }
-
-    /**
-     * Type type options when setting the current date
-     */
-    public enum TypeSpecification {
-        DATE {
-            @Override
-            Object toTarget() {
-                return true;
-            }
-        },
-        TIMESTAMP {
-            @Override
-            Object toTarget() {
-                return new Document("$type", "timestamp");
-            }
-        };
-
-        abstract Object toTarget();
     }
 }

@@ -38,7 +38,7 @@ import org.bson.Document;
 
 import java.io.Serializable;
 import java.util.*;
-
+import java.util.stream.Stream;
 
 
 /**
@@ -51,7 +51,7 @@ import java.util.*;
  *
  *
  */
-public class Sort extends Stage implements Streamable< Sort.SortType >, Serializable {
+public class Sort extends Stage implements  Serializable {
 
     private final List< SortType > sorts = new ArrayList<>();
 
@@ -98,9 +98,9 @@ public class Sort extends Stage implements Streamable< Sort.SortType >, Serializ
 
         Precondition.notNull(sort, "Sort must not be null!");
 
-        ArrayList<SortType> these = new ArrayList<>(this.toList());
+        ArrayList<SortType> these = new ArrayList<>(this.sorts);
 
-        for (SortType order : sort) {
+        for (SortType order : sort.sorts) {
             these.add(order);
         }
 
@@ -161,7 +161,7 @@ public class Sort extends Stage implements Streamable< Sort.SortType >, Serializ
         return this;
     }
 
-    @Override
+    
     public Iterator< SortType > iterator() {
         return sorts.iterator();
     }

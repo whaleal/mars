@@ -27,23 +27,23 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query.updates;
 
-
-import com.whaleal.mars.codecs.MongoMappingContext;
-
-import com.whaleal.mars.codecs.writer.DocumentWriter;
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
 
 
 
 import org.bson.Document;
-import org.bson.codecs.Codec;
-import org.bson.codecs.EncoderContext;
+
 
 /**
  *
+ * { $set:
+ *       {
+ *         quantity: 500,
+ *         details: { model: "2600", make: "Fashionaires" },
+ *         tags: [ "coats", "outerwear", "clothing" ]
+ *       }
+ *    }
  * 
  */
 public class SetEntityOperator extends UpdateOperator {
@@ -57,21 +57,8 @@ public class SetEntityOperator extends UpdateOperator {
 
 
     @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        return new OperationTarget(null, value()) {
-            @Override
-            @SuppressWarnings("unchecked")
-            public Object encode( MongoMappingContext mapper) {
-                Object value = value();
+    public Document toDocument() {
 
-                Codec<Object> codec = mapper.getCodecRegistry().get((Class<Object>) value.getClass());
-                DocumentWriter writer = new DocumentWriter();
-
-                codec.encode(writer, value, EncoderContext.builder().build());
-
-                Document document = writer.getDocument();
-                return document;
-            }
-        };
+        return new Document("$set",value());
     }
 }

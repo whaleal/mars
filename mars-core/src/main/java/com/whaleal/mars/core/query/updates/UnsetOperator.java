@@ -27,76 +27,26 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query.updates;
 
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
-import com.whaleal.mars.core.query.UpdateException;
 
-import java.util.List;
+import org.bson.Document;
 
 /**
- * Defines an update operator
  *
- *
- *
+ * 
  */
-public class UpdateOperator {
-    private final String operator;
-    private final String field;
-    private Object value;
-
-    protected UpdateOperator(String operator, String field, Object value) {
-        this.operator = operator;
-        this.field = field;
-        this.value = value;
-    }
-
-    protected UpdateOperator(String operator, String field, List<?> values) {
-        if (values.isEmpty()) {
-            throw new UpdateException("valuesCannotBeNullOrEmpty");
-        }
-        this.operator = operator;
-        this.field = field;
-        this.value = values;
-    }
-
+public class UnsetOperator extends UpdateOperator {
     /**
-     * @return the field
+     * @param field the field
      *
      */
-    public String field() {
-        return field;
+    public UnsetOperator(String field) {
+        super("$unset", field, "unused");
     }
 
-    /**
-     * @return the operator
-     *
-     */
-    public String operator() {
-        return operator;
-    }
-
-    /**
-     * Creates the OperationTarget for serialization
-     *
-     * @param pathTarget the PathTarget
-     * @return the OperationTarget
-     *
-     */
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        return new OperationTarget(pathTarget, value());
-    }
-
-    /**
-     * @return the value
-     *
-     */
-    public Object value() {
-        return value;
-    }
-
-    protected void value(Object value) {
-        this.value = value;
+    @Override
+    public Document toDocument() {
+       return  new Document("$unset",new Document(field(),""));
     }
 }

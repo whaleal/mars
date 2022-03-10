@@ -27,50 +27,35 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query.experimental.updates;
+package com.whaleal.mars.core.query.updates;
 
 
 
-import com.whaleal.mars.codecs.MongoMappingContext;
-
-import com.whaleal.mars.codecs.writer.DocumentWriter;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
-import com.whaleal.mars.core.aggregation.stages.filters.OperationTarget;
-import com.whaleal.mars.core.internal.PathTarget;
 import org.bson.Document;
-import org.bson.codecs.EncoderContext;
 
-import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 
+import java.util.Map;
 
 /**
- * Defines an operator for $pull
  *
+ * { $setOnInsert: { <field1>: <value1>, ... } },
+ *  {$setOnInsert: { defaultQty: 100 } }
  * 
  */
-public class PullOperator extends UpdateOperator {
+public class SetOnInsertOperator extends UpdateOperator {
+    private final Map<String, Object> insertValues;
+
     /**
-     * @param field  the field
-     * @param filter the filter to apply
+     * @param values the values
      *
      */
-    public PullOperator(String field, Filter filter) {
-        super("$pull", field, filter);
+    public SetOnInsertOperator(Map<String, Object> values) {
+        super("$setOnInsert", "unused", "unused");
+        insertValues = values;
     }
 
     @Override
-    public OperationTarget toTarget( PathTarget pathTarget) {
-        return new OperationTarget(pathTarget, value()) {
-            @Override
-            public Object encode( MongoMappingContext mapper) {
-                DocumentWriter writer = new DocumentWriter();
-                document(writer, () -> {
-                    ((Filter) getValue())
-                        .encode(mapper, writer, EncoderContext.builder().build());
-                });
-
-                return new Document(field(), writer.getDocument());
-            }
-        };
+    public Document toDocument() {
+       return new Document("$setOnInsert",insertValues);
     }
 }

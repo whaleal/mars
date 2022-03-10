@@ -256,14 +256,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options, String collectionName ) {
 
+
         ClientSession session = this.startSession();
-        MongoCollection collection = this.getCollection(entityClass, collectionName);
+        MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
         collection = prepareConcern(collection, options);
         CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.UPDATE_DEFINITION);
 
-        UpdateResult result = crudExecutor.execute(session, collection, query, options, update.getUpdateObject());
+        if(update instanceof UpdatePipeline){
+            //todo
+            return null ;
+        }else {
+            UpdateResult result = crudExecutor.execute(session, collection, query, options, update.getUpdateObject());
 
-        return result;
+            return result;
+        }
+
     }
 
 
@@ -382,9 +389,16 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Document updateObject = update.getUpdateObject();
         MarsSession marsSession = this.startSession();
 
+        if(update instanceof UpdatePipeline){
+            //todo
+            return null ;
+        }else {
 
-        T oneAndUpdate = collection.findOneAndUpdate(marsSession,query.getQueryObject(), updateObject, optionsToUse.getOriginOptions());
-        return oneAndUpdate;
+            T oneAndUpdate = collection.findOneAndUpdate(marsSession,query.getQueryObject(), updateObject, optionsToUse.getOriginOptions());
+            return oneAndUpdate;
+
+        }
+
     }
 
 
