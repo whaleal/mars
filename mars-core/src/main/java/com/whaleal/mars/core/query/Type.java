@@ -1,9 +1,7 @@
 package com.whaleal.mars.core.query;
 
 /**
- * Defines BSON types for use in querying against field types.
- *
- *
+ * 用于查询字段类型的 BSON类型枚举类。
  */
 public enum Type {
 
