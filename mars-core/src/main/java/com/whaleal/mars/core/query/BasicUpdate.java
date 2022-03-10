@@ -38,7 +38,7 @@ import java.util.Collections;
 
 public class BasicUpdate extends Update {
 
-    private Document updateObject;
+    protected Document updateObject;
 
     public BasicUpdate(String updateString) {
         super();
