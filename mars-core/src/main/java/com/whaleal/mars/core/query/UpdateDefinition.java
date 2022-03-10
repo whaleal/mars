@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Interface fixing must have operations for {@literal updates} as implemented via {@link Update}.
- */
+ */@
 public interface UpdateDefinition {
 
     /**
@@ -92,6 +92,6 @@ public interface UpdateDefinition {
          *
          * @return never {@literal null}.
          */
-        Document asDocument();
+        Document toData();
     }
 }
