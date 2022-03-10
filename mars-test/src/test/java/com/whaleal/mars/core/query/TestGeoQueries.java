@@ -59,7 +59,7 @@ public class TestGeoQueries {
 
         Criteria location4 = new Criteria("location").withinCenter(point,5/3963.2);
 
-        System.out.println(context.toDocument(location4.getCriteriaObject()));
+        System.out.println(context.toDocument(location1.getCriteriaObject()));
 
 
         Position position = new Position(0, 0);
@@ -70,9 +70,13 @@ public class TestGeoQueries {
         objects.add(position);
         objects.add(position1);
         objects.add(position2);
-        objects.add(position3);
+        //objects.add(position3);
 
-        Criteria loc = new Criteria("loc").geowithin(new Polygon(new PolygonCoordinates(objects)));
-        System.out.println(context.toDocument(loc.getCriteriaObject()));
+        //Criteria loc = new Criteria("loc").geowithin(new Polygon(new PolygonCoordinates(objects)));
+       // System.out.println(context.toDocument(loc.getCriteriaObject()));
+
+        Document loc1 = new Criteria("loc").withinPolygon(new MultiPoint(objects)).getCriteriaObject();
+        System.out.println(context.toDocument(loc1));
+
     }
 }
