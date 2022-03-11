@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Interface fixing must have operations for {@literal updates} as implemented via {@link Update}.
- */@
+ */
 public interface UpdateDefinition {
 
     /**
@@ -60,29 +60,29 @@ public interface UpdateDefinition {
     boolean modifies(String key);
 
     /**
-     * Increment the value of a given {@literal key} by {@code 1}.
-     *
-     * @param key must not be {@literal null}.
+     * 给指定字段属性值加1
+     * @param key 不为空
      */
     void inc(String key);
 
     /**
-     * Get the specification which elements to modify in an array field. {@link ArrayFilter} are passed directly to the
-     * driver without further type or field mapping.
      *
-     * @return never {@literal null}.
+     * 获取UpdateDefinition中的ArrayFilters
+     *
+     * @return ArrayFilter类型的List.
      */
     List<ArrayFilter> getArrayFilters();
 
     /**
-     * @return {@literal true} if {@link UpdateDefinition} contains {@link #getArrayFilters() array filters}.
+     * @return 如果UpdateDefinition包含数组过滤就返回true
      */
     default boolean hasArrayFilters() {
         return !getArrayFilters().isEmpty();
     }
 
     /**
-     * A filter to specify which elements to modify in an array field.
+     * 用于指定修改数组字段中哪些元素的过滤器
+     *
      */
     interface ArrayFilter {
 

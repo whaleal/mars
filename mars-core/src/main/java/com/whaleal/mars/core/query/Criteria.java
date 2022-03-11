@@ -53,10 +53,7 @@ import java.util.regex.Pattern;
 import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
 
 /**
- * Central class for creating queries. It follows a fluent API style so that you can easily chain together multiple
- * criteria. Static import of the 'Criteria.where' method will improve readability.
- *
- * this  is   basic Criteria
+ * 创建查询的基本类，它遵循流畅的 API 风格，可以轻松地将多个查询连在一起。使用Criteria.where方法创建此类对象可以提高可读性
  */
 public class Criteria implements CriteriaDefinition {
 
@@ -64,7 +61,8 @@ public class Criteria implements CriteriaDefinition {
     public static final String centerSphere = "$centerSphere";
     public static final String polygon = "$polygon";
     /**
-     * Custom "not-null" object as we have to be able to work with {@literal null} values as well.
+     * as we have to be able to work with {@literal null} values as well.
+     * 自定义的非空对象
      */
     private static final Object NOT_SET = new Object();
 
@@ -117,10 +115,10 @@ public class Criteria implements CriteriaDefinition {
     }
 
     /**
-     * Static factory method to create a Criteria using the provided key
+     *  根据指定属性名创建Criteria实例的静态方法
      *
-     * @param key the property or field name.
-     * @return new instance of {@link Criteria}.
+     * @param key 字段属性名
+     * @return Criteria实例.
      *
      */
     public static Criteria where(String key) {
@@ -923,6 +921,7 @@ public class Criteria implements CriteriaDefinition {
     /**
      * Checks the given objects for equality. Handles {@link Pattern} and arrays correctly.
      *
+     * 比较两个对象是否相同
      * @param left
      * @param right
      * @return
@@ -966,12 +965,8 @@ public class Criteria implements CriteriaDefinition {
     }
 
     /**
-     * MongoDB specific <a href="https://docs.mongodb.com/manual/reference/operator/query-bitwise/">bitwise query
-     * operators</a> like {@code $bitsAllClear, $bitsAllSet,...} for usage with {@link Criteria#bits()} and {@link Query}.
+     * MongoDB specific like {@code $bitsAllClear, $bitsAllSet,...} for usage with {@link Criteria#bits()} and {@link Query}.
      *
-     * @currentRead Beyond the Shadows - Brent Weeks
-     * @see <a href=
-     * "https://docs.mongodb.com/manual/reference/operator/query-bitwise/">https://docs.mongodb.com/manual/reference/operator/query-bitwise/</a>
      */
     public interface BitwiseCriteriaOperators {
 
