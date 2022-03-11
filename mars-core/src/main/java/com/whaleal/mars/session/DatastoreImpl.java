@@ -39,6 +39,7 @@ import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 
+import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -267,6 +268,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                 arrayFilterList.add(document);
             }
 
+            // todo
+            // option 本身 是否包含相关  arrayFilters
+            // 是否冲突
+
             options.arrayFilters(arrayFilterList);
 
         }
@@ -277,6 +282,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         if(update instanceof UpdatePipeline){
             //todo
+            // 针对所有的 UpdateDefinition
+            //getUpdateObject () 方法 在这里都需要处理
             return null ;
         }else {
             UpdateResult result = updateDefinitionExecute(session, collection, query, options, update.getUpdateObject());
@@ -1068,11 +1075,24 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     }
 
+    /**
+     *
+     * find 操作本身没有相关 的Option 参数
+     * @param session
+     * @param collection
+     * @param query
+     * @param options
+     * @param data
+     * @param <T>
+     * @return
+     */
     private <T> T findOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         FindIterable findIterable;
 
         if (session == null) {
+
+
 
             findIterable = collection.find(query.getQueryObject());
 
@@ -1188,6 +1208,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
             throw new ClassCastException();
         }
 
+        
+
         UpdateOptions option = (UpdateOptions) options;
 
         Document updateOperations = new Document("$set", new Document((Map) data));
@@ -1219,6 +1241,17 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     private <T> T updateDefinitionExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+
+        Document dd = (Document) data;
+
+
+        dd.containsKey(UpdatePipeline.Updatepipeline);
+
+
+        List< Document > list = dd.getList(UpdatePipeline.Updatepipeline, Document.class);
+
+
 
 
         if (!(options instanceof UpdateOptions)) {
