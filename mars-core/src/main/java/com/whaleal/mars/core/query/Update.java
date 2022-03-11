@@ -40,7 +40,8 @@ import org.bson.Document;
 import java.util.*;
 
 /**
- * Class to easily construct MongoDB update clauses.
+ * 构建mongoDB更新子句的类
+ *
  */
 public class Update implements UpdateDefinition {
 
@@ -51,25 +52,22 @@ public class Update implements UpdateDefinition {
     private List<ArrayFilter> arrayFilters = new ArrayList<>();
 
     /**
-     * Static factory method to create an Update using the provided key
+     * 创建更新语句实体类
      *
-     * @param key the field to update.
-     * @return new instance of {@link Update}.
+     * @param key 要更新的字段属性.
+     * @return 更新语句实例.
      */
     public static Update update( String key, Object value ) {
         return new Update().set(key, value);
     }
 
     /**
-     * Creates an {@link Update} instance from the given {@link Document}. Allows to explicitly exclude fields from making
-     * it into the created {@link Update} object. Note, that this will set attributes directly and <em>not</em> use
-     * {@literal $set}. This means fields not given in the {@link Document} will be nulled when executing the update. To
-     * create an only-updating {@link Update} instance of a {@link Document}, call {@link #set(String, Object)} for each
-     * value in it.
      *
-     * @param object  the source {@link Document} to create the update from.
-     * @param exclude the fields to exclude.
-     * @return new instance of {@link Update}.
+     * 根据Document生成更新实例，允许排除字段
+     *
+     * @param object  更新文档.
+     * @param exclude 要排除的字段.
+     * @return update实例.
      */
     public static Update fromDocument( Document object, String... exclude) {
 
@@ -95,23 +93,21 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Inspects given {@code key} for '$'.
+     * 判断key是否为更新关键字
      *
-     * @param key the field name.
-     * @return {@literal true} if given key is prefixed.
+     * @param key 字段属性名.
+     * @return 如果key的前缀为"$"，返回true.
      */
     private static boolean isKeyword(String key) {
         return StrUtil.startsWithIgnoreCase(key, "$");
     }
 
     /**
-     * Update using the {@literal $set} update modifier
+     * 使用$set更新指定字段
      *
-     * @param key   the field name.
-     * @param value can be {@literal null}. In this case the property remains in the db with a {@literal null} value. To
-     *              remove it use {@link #unset(String)}.
+     * @param key   字段属性名.
+     * @param value 更新的值，可以为null
      * @return this.
-     * @see <a href="https://docs.mongodb.com/manual/reference/operator/update/set/">MongoDB Update operator: $set</a>
      */
     public Update set( String key, Object value ) {
         addMultiFieldOperation("$set", key, value);
@@ -120,13 +116,11 @@ public class Update implements UpdateDefinition {
 
 
     /**
-     * Update using the {@literal $setOnInsert} update modifier
+     * 使用$setOnInsert方式对指定字段进行更新
      *
-     * @param key   the field name.
-     * @param value can be {@literal null}.
-     * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/setOnInsert/">MongoDB Update operator:
-     * $setOnInsert</a>
+     * @param key   字段名.
+     * @param value 可以为null.
+     * @return Update实例.
      */
     public Update setOnInsert( String key, Object value ) {
         addMultiFieldOperation("$setOnInsert", key, value);
@@ -134,11 +128,10 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@literal $unset} update modifier
+     * 使用$unset更新指定字段
      *
-     * @param key the field name.
-     * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/unset/">MongoDB Update operator: $unset</a>
+     * @param key 字段名.
+     * @return Update实例.
      */
     public Update unset( String key) {
         addMultiFieldOperation("$unset", key, 1);
@@ -146,12 +139,11 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@literal $inc} update modifier
+     * 给指定字段的值进行加/减
      *
-     * @param key the field name.
-     * @param inc must not be {@literal null}.
-     * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/inc/">MongoDB Update operator: $inc</a>
+     * @param key 字段名.
+     * @param inc 不能为空.
+     * @return Update实例.
      */
     public Update inc( String key, Number inc) {
         addMultiFieldOperation("$inc", key, inc);
@@ -165,12 +157,11 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@literal $push} update modifier
+     * 使用$push更新指定字段
      *
-     * @param key   the field name.
-     * @param value can be {@literal null}.
-     * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/push/">MongoDB Update operator: $push</a>
+     * @param key   字段名.
+     * @param value 可以为空.
+     * @return Update实例.
      */
     public Update push( String key, Object value ) {
         addMultiFieldOperation("$push", key, value);
@@ -178,14 +169,10 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using {@code $push} modifier. <br/>
-     * Allows creation of {@code $push} command for single or multiple (using {@code $each}) values as well as using
-     * {@code $position}.
+     * 根据提供的key创建PushOperatorBuilder实例
      *
      * @param key the field name.
-     * @return {@link PushOperatorBuilder} for given key
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/push/">MongoDB Update operator: $push</a>
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/each/">MongoDB Update operator: $each</a>
+     * @return  PushOperatorBuilder实例
      */
     public PushOperatorBuilder push(String key) {
 
@@ -196,16 +183,10 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@code $pushAll} update modifier. <br>
-     * <b>Note</b>: In MongoDB 2.4 the usage of {@code $pushAll} has been deprecated in favor of {@code $push $each}.
-     * <b>Important:</b> As of MongoDB 3.6 {@code $pushAll} is not longer supported. Use {@code $push $each} instead.
-     * {@link #push(String)}) returns a builder that can be used to populate the {@code $each} object.
-     *
-     * @param key    the field name.
-     * @param values must not be {@literal null}.
+     * 创建对key进行pushAll更新的update实例
+     * @param key    字段名.
+     * @param values 不能为空.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/pushAll/">MongoDB Update operator:
-     * $pushAll</a>
      * @deprecated as of MongoDB 2.4. Removed in MongoDB 3.6. Use {@link #push(String) $push $each} instead.
      */
     @Deprecated
@@ -215,24 +196,21 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using {@code $addToSet} modifier. <br/>
-     * Allows creation of {@code $push} command for single or multiple (using {@code $each}) values
+     * 根据指定的key创建AddToSetBuilder实例
      *
-     * @param key the field name.
-     * @return new instance of {@link AddToSetBuilder}.
+     * @param key 字段名.
+     * @return AddToSetBuilder实例.
      */
     public AddToSetBuilder addToSet(String key) {
         return new AddToSetBuilder(key);
     }
 
     /**
-     * Update using the {@literal $addToSet} update modifier
+     * 创建对key字段进行addToSet方式的update实例
      *
-     * @param key   the field name.
-     * @param value can be {@literal null}.
+     * @param key   字段名.
+     * @param value 可以为空.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/addToSet/">MongoDB Update operator:
-     * $addToSet</a>
      */
     public Update addToSet( String key, Object value ) {
         addMultiFieldOperation("$addToSet", key, value);
@@ -240,12 +218,11 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@literal $pop} update modifier
+     * 生成对key字段进行pop方式的update实例
      *
-     * @param key the field name.
-     * @param pos must not be {@literal null}.
+     * @param key 字段名.
+     * @param pos 不能为空.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/pop/">MongoDB Update operator: $pop</a>
      */
     public Update pop( String key, Position pos) {
         addMultiFieldOperation("$pop", key, pos == Position.FIRST ? -1 : 1);
@@ -253,12 +230,11 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@literal $pull} update modifier
+     * 生成key字段进行pull方式的update实例
      *
      * @param key   the field name.
      * @param value can be {@literal null}.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/pull/">MongoDB Update operator: $pull</a>
      */
     public Update pull( String key, Object value ) {
         addMultiFieldOperation("$pull", key, value);
@@ -266,13 +242,11 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@literal $pullAll} update modifier
+     * 创建对key进行pullAll方式更新的update实例
      *
-     * @param key    the field name.
-     * @param values must not be {@literal null}.
+     * @param key    字段名.
+     * @param values 不能为空.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/pullAll/">MongoDB Update operator:
-     * $pullAll</a>
      */
     public Update pullAll( String key, Object[] values) {
         addMultiFieldOperation("$pullAll", key, Arrays.asList(values));
@@ -280,13 +254,11 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update using the {@literal $rename} update modifier
+     * 创建rename方式的update实例
      *
-     * @param oldName must not be {@literal null}.
-     * @param newName must not be {@literal null}.
+     * @param oldName 不能为空.
+     * @param newName 不能为空.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/rename/">MongoDB Update operator:
-     * $rename</a>
      */
     public Update rename( String oldName, String newName) {
         addMultiFieldOperation("$rename", oldName, newName);
@@ -294,12 +266,10 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update given key to current date using {@literal $currentDate} modifier.
+     * 创建对key的$currentDate方式更新的update实例.
      *
-     * @param key the field name.
+     * @param key 字段名.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/currentDate/">MongoDB Update operator:
-     * $currentDate</a>
      */
     public Update currentDate( String key) {
 
@@ -308,12 +278,10 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Update given key to current date using {@literal $currentDate : &#123; $type : "timestamp" &#125;} modifier.
+     * 创建更新语句 更新key到当前日期，日期格式为timestamp
      *
-     * @param key the field name.
+     * @param key 字段名.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/currentDate/">MongoDB Update operator:
-     * $currentDate</a>
      */
     public Update currentTimestamp( String key) {
 
@@ -322,12 +290,11 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Multiply the value of given key by the given number.
+     * 创建更新语句，对key字段进行乘操作.
      *
      * @param key        must not be {@literal null}.
      * @param multiplier must not be {@literal null}.
      * @return this.
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/mul/">MongoDB Update operator: $mul</a>
      */
     public Update multiply( String key, Number multiplier) {
 
@@ -342,8 +309,6 @@ public class Update implements UpdateDefinition {
      * @param key   must not be {@literal null}.
      * @param value must not be {@literal null}.
      * @return this.
-     * @see <a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/">Comparison/Sort Order</a>
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/max/">MongoDB Update operator: $max</a>
      */
     public Update max( String key, Object value) {
 
@@ -358,8 +323,6 @@ public class Update implements UpdateDefinition {
      * @param key   must not be {@literal null}.
      * @param value must not be {@literal null}.
      * @return this.
-     * @see <a href="https://docs.mongodb.com/manual/reference/bson-type-comparison-order/">Comparison/Sort Order</a>
-     * @see <a href="https://docs.mongodb.org/manual/reference/operator/update/min/">MongoDB Update operator: $min</a>
      */
     public Update min( String key, Object value) {
 
@@ -633,16 +596,8 @@ public class Update implements UpdateDefinition {
         }
 
 
-
-
-
         /**
-         * Propagates {@code $slice} to {@code $push}. {@code $slice} requires the {@code $each operator}. <br />
-         * If {@literal count} is zero, {@code $slice} updates the array to an empty array. <br />
-         * If {@literal count} is negative, {@code $slice} updates the array to contain only the last {@code count}
-         * elements. <br />
-         * If {@literal count} is positive, {@code $slice} updates the array to contain only the first {@code count}
-         * elements. <br />
+         * 创建包含$slice子语句的PushOperatorBuilder实例，
          *
          * @param count
          * @return never {@literal null}.
@@ -657,6 +612,7 @@ public class Update implements UpdateDefinition {
         /**
          * Propagates {@code $sort} to {@code $push}. {@code $sort} requires the {@code $each} operator. Forces elements to
          * be sorted by values in given {@literal direction}.
+         * 创建PushOperatorBuilder实例，强制元素按照指定的值进行排序
          *
          * @param direction must not be {@literal null}.
          * @return never {@literal null}.
@@ -685,11 +641,10 @@ public class Update implements UpdateDefinition {
         }
 
         /**
-         * Forces values to be added at the given {@literal position}.
+         * 强制在给定位置添加值
          *
-         * @param position the position offset. As of MongoDB 3.6 use a negative value to indicate starting from the end,
-         *                 counting (but not including) the last element of the array.
-         * @return never {@literal null}.
+         * @param position 添加值的位置. 从 MongoDB 3.6 开始，使用负值表示从末尾开始计算（但不包括）数组的最后一个元素。
+         * @return PushOperatorBuilder实例.
          */
         public PushOperatorBuilder atPosition(int position) {
 
@@ -700,10 +655,10 @@ public class Update implements UpdateDefinition {
         }
 
         /**
-         * Forces values to be added at given {@literal position}.
+         * 强制在指定位置添加值
          *
-         * @param position can be {@literal null} which will be appended at the last position.
-         * @return never {@literal null}.
+         * @param position 可以为空，会被追加到最后一个位置.
+         * @return PushOperatorBuilder实例.
          */
         public PushOperatorBuilder atPosition( Position position ) {
 
@@ -735,19 +690,11 @@ public class Update implements UpdateDefinition {
             return Update.this.push(key, this.modifiers);
         }
 
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
         @Override
         public int hashCode() {
             return Objects.hash(getOuterType(), key, modifiers);
         }
 
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
         @Override
         public boolean equals(Object obj) {
 
@@ -774,7 +721,7 @@ public class Update implements UpdateDefinition {
     }
 
     /**
-     * Builder for creating {@code $addToSet} modifier.
+     * AddToSetBuilder构造类
      */
     public class AddToSetBuilder {
 

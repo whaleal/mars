@@ -116,6 +116,7 @@ public class BasicQuery extends Query {
 
     /**
      * Set the fields (projection) {@link Document}.
+     * 设置字段（投影）
      *
      * @param fieldsObject must not be {@literal null}.
      * @throws IllegalArgumentException when {@code fieldsObject} is {@literal null}.
@@ -142,7 +143,7 @@ public class BasicQuery extends Query {
 
     /**
      * Set the sort {@link Document}.
-     *
+     * 根据document设置sort
      * @param sortObject 不能为空.
      * @throws IllegalArgumentException sortObject为空抛出IllegalArgumentException.
      */
