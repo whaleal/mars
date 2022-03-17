@@ -38,6 +38,7 @@ import com.whaleal.mars.session.option.Options;
  * @author cx
  * @Date 2020/12/31
  */
+@Deprecated
 public interface CrudExecutor {
 
     <T> T execute(
