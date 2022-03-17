@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 public class DocumnetMessageListener implements MessageListener<ChangeStreamDocument<Document>, Document> {
     @Override
     public void onMessage(Message<ChangeStreamDocument<Document>, Document> message) {
-        log.info("Received Message in collection: {},message raw: {}, message body:{}",
-                message.getProperties().getCollectionName(), message.getRaw(), message.getBody());
+//        log.info("Received Message in collection: {},message raw: {}, message body:{}",
+//                message.getProperties().getCollectionName(), message.getRaw(), message.getBody());
     }
 }

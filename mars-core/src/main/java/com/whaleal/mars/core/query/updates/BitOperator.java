@@ -27,33 +27,23 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
-
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Options;
-
-/**
- * @author: cx
- * @date: 2021/1/8
- */
-public class DropIndexesExecutor implements CrudExecutor {
-    @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
-
-        if (session == null) {
-
-            collection.dropIndexes();
+package com.whaleal.mars.core.query.updates;
 
 
-        } else {
 
-            collection.dropIndexes(session);
+import org.bson.Document;
 
+class BitOperator extends UpdateOperator {
+    private final String operation;
 
-        }
-
-        return null;
+    BitOperator(String operation, String field, int value) {
+        super("$bit", field, new Document(operation,value));
+        this.operation = operation;
     }
+
+    @Override
+    public Document toDocument() {
+        return super.toDocument();
+    }
+
 }

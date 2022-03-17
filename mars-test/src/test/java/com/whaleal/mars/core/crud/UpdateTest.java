@@ -25,7 +25,7 @@ public class UpdateTest {
         Mars mars = new Mars(Constant.connectionStr);
 
 
-        Update  update = new Update();
+        Update update = new Update();
         update.push("cc").each("1",2,"lyz","lhp");
 
         Document updateObject = update.getUpdateObject();

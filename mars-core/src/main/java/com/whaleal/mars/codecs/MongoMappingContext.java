@@ -94,25 +94,33 @@ public class MongoMappingContext {
 
         CodecRegistry codecRegistry = fromProviders(
                 new com.whaleal.mars.codecs.internal.ValueCodecProvider(),
+
                 new BsonValueCodecProvider(),
                 new DBRefCodecProvider(),
                 new DBObjectCodecProvider(),
                 new DocumentCodecProvider(new DocumentToDBRefTransformer()),
+
                 new IterableCodecProvider(new DocumentToDBRefTransformer()),
                 new com.whaleal.mars.codecs.internal.MapCodecProvider(),
                 new GeoJsonCodecProvider(),
                 new GridFSFileCodecProvider(),
                 new Jsr310CodecProvider(),
                 new JsonObjectCodecProvider(),
-                new BsonCodecProvider());
+                new BsonCodecProvider()
+        );
+
 
         marsCodecProvider = new MarsCodecProvider(this);
-        this.codecRegistry = fromProviders(new MarsTypesCodecProvider(this),
+        this.codecRegistry = fromProviders(
+
+                new MarsTypesCodecProvider(this),
                 new PrimitiveCodecRegistry(codecRegistry),
                 new EnumCodecProvider(),
                 new AggregationCodecProvider(this),
+
                 codecRegistry,
                 marsCodecProvider
+
 
         );
 

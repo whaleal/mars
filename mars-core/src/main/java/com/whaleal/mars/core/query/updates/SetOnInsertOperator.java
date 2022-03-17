@@ -27,61 +27,35 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
+package com.whaleal.mars.core.query.updates;
 
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Options;
-import com.whaleal.mars.session.option.ReplaceOptions;
-import com.whaleal.mars.session.result.UpdateResult;
+
+
+import org.bson.Document;
+
+
+import java.util.Map;
 
 /**
- * @author: cx
- * @date: 2021/1/14
+ *
+ * { $setOnInsert: { <field1>: <value1>, ... } },
+ *  {$setOnInsert: { defaultQty: 100 } }
+ * 
  */
-public class ReplaceExecutor implements CrudExecutor {
+public class SetOnInsertOperator extends UpdateOperator {
+    private final Map<String, Object> insertValues;
+
+    /**
+     * @param values the values
+     *
+     */
+    public SetOnInsertOperator(Map<String, Object> values) {
+        super("$setOnInsert", "unused", "unused");
+        insertValues = values;
+    }
 
     @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
-
-        UpdateResult updateResult = new UpdateResult();
-
-
-        //options == null 是一种情况
-        if (options == null) {
-            if (session == null) {
-
-
-                updateResult.setOriginUpdateResult(collection.replaceOne(query.getQueryObject(), data));
-
-            } else {
-
-                updateResult.setOriginUpdateResult(collection.replaceOne(session, query.getQueryObject(), data));
-
-            }
-
-            return (T) updateResult;
-        }
-
-        //options != null也是一种情况
-        if (!(options instanceof ReplaceOptions)) {
-            throw new ClassCastException();
-        }
-
-        ReplaceOptions replaceOptions = (ReplaceOptions) options;
-
-        if (session == null) {
-
-            updateResult.setOriginUpdateResult(collection.replaceOne(query.getQueryObject(), data, replaceOptions.getOriginOptions()));
-
-        } else {
-
-            updateResult.setOriginUpdateResult(collection.replaceOne(session, query.getQueryObject(), data, replaceOptions.getOriginOptions()));
-
-        }
-
-
-        return (T) updateResult;
+    public Document toDocument() {
+       return new Document("$setOnInsert",insertValues);
     }
 }

@@ -27,54 +27,26 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
+package com.whaleal.mars.core.query.updates;
 
 
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Options;
+import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+
 
 /**
- * @author cx
- * @Date 2021/1/3
- * <p>
- * 原生的findOne  不支持 skip  sort 等操作
- * <p>
- * 这里采用 find  操作
- * 强制 使用limit（1）
+ * Defines an operator for $pull
+ *
+ * 
  */
-public class FindOneExecutor implements CrudExecutor {
-    @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
-
-        FindIterable findIterable;
-
-        if (session == null) {
-
-            findIterable = collection.find(query.getQueryObject());
-
-        } else {
-
-            findIterable = collection.find(session, query.getQueryObject());
-
-        }
-
-
-        if (query.getSkip() > 0) {
-            findIterable = findIterable.skip((int) query.getSkip());
-        }
-
-        if (query.getSortObject() != null) {
-            findIterable = findIterable.sort(query.getSortObject());
-        }
-
-        findIterable.limit(1);
-
-        return (T) findIterable.first();
-
-
+public class PullOperator extends UpdateOperator {
+    /**
+     * @param field  the field
+     * @param filter the filter to apply
+     *
+     */
+    public PullOperator(String field, Filter filter) {
+        super("$pull", field, filter);
     }
+
 
 }

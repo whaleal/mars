@@ -34,7 +34,7 @@ import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-class Box extends Filter {
+public class Box extends Filter {
 
     private final Point bottomLeft;
     private final Point upperRight;

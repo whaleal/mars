@@ -96,6 +96,10 @@ public class AggregationCodecProvider implements CodecProvider {
             codecs.put(UnionWith.class, new UnionWithCodec(mapper));
             codecs.put(Unset.class, new UnsetCodec(mapper));
             codecs.put(Unwind.class, new UnwindCodec(mapper));
+
+
+
+
         }
         return codecs;
     }

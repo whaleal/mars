@@ -27,8 +27,38 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query;
+package com.whaleal.mars.core.query.updates;
 
-public class GeoCriteria  extends Criteria{
+
+import org.bson.Document;
+
+import java.util.Collection;
+
+/**
+ * Defines the $addToSet operator
+ *
+ * 
+ */
+public class AddToSetOperator extends UpdateOperator {
+    private final boolean each;
+
+    /**
+     * @param field  the field
+     * @param values the values
+     *
+     */
+    public AddToSetOperator(String field, Object values) {
+        super("$addToSet", field, values);
+        each = values instanceof Collection;
+    }
+
+    @Override
+    public Document toDocument() {
+        if (each) {
+            return new Document("$addToSet",new Document(field(), new Document("$each", value())));
+        } else {
+            return super.toDocument();
+        }
+    }
 
 }

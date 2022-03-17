@@ -27,54 +27,26 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
+package com.whaleal.mars.core.query.updates;
 
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.DeleteOptions;
-import com.whaleal.mars.session.option.Options;
-import com.whaleal.mars.session.result.DeleteResult;
+
+import org.bson.Document;
 
 /**
- * @author cx
- * @Date 2020/12/31
+ *
+ * 
  */
-public class DeleteExecutor implements CrudExecutor {
-
-    @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
-
-        if (!(options instanceof DeleteOptions)) {
-            throw new ClassCastException();
-        }
-
-        DeleteOptions option = (DeleteOptions) options;
-
-        DeleteResult deleteResult = new DeleteResult();
-
-        if (option.isMulti()) {
-
-            if (session == null) {
-                deleteResult.setOriginDeleteResult(collection.deleteMany(query.getQueryObject(), option.getOriginOptions()));
-            } else {
-                deleteResult.setOriginDeleteResult(collection.deleteMany(session, query.getQueryObject(), option.getOriginOptions()));
-            }
-
-            return (T) deleteResult;
-        } else {
-
-            if (session == null) {
-                deleteResult.setOriginDeleteResult(collection.deleteOne(query.getQueryObject(), option.getOriginOptions()));
-            } else {
-                deleteResult.setOriginDeleteResult(collection.deleteOne(session, query.getQueryObject(), option.getOriginOptions()));
-            }
-
-            return (T) deleteResult;
-
-        }
-
+public class UnsetOperator extends UpdateOperator {
+    /**
+     * @param field the field
+     *
+     */
+    public UnsetOperator(String field) {
+        super("$unset", field, "unused");
     }
 
-
+    @Override
+    public Document toDocument() {
+       return  new Document("$unset",new Document(field(),""));
+    }
 }

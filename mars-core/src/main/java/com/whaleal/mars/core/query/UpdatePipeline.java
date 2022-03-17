@@ -27,52 +27,59 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
+package com.whaleal.mars.core.query;
 
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.index.Index;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.IndexOptions;
-import com.whaleal.mars.session.option.Options;
 
-/**
- * @author: cx
- * @date: 2021/1/8
- */
-public class CreateIndexExecutor implements CrudExecutor {
+import org.bson.Document;
+
+
+import java.util.LinkedHashSet;
+
+import java.util.Set;
+
+public class UpdatePipeline extends BasicUpdate {
+
+    public static final String Updatepipeline = "_pipeline";
+
+    private Set<Document> pipeline = new LinkedHashSet<>();
+
+    public UpdatePipeline( Document updateObject ) {
+        super(updateObject);
+    }
+
+    public UpdatePipeline(String updatestr){
+        super(updatestr);
+    }
+
+
+    public void addBasicUpdate(){
+        if(super.getUpdateObject().isEmpty()){
+            return;
+        }
+        this.pipeline.add(super.getUpdateObject());
+        super.updateObject =new Document();
+    }
+
+    public void addBasicUpdate(BasicUpdate update){
+
+        if(update.updateObject.isEmpty()){
+            return;
+        }
+        addBasicUpdate();
+        this.pipeline.add(update.getUpdateObject());
+
+    }
 
     @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
-
-        Index index = (Index) data;
-
-        IndexOptions indexOptions = index.getIndexOptions();
-
-        if (indexOptions == null) {
-
-            if (session == null) {
-
-                collection.createIndex(index.getIndexKeys());
-
-            } else {
-
-                collection.createIndex(session, index.getIndexKeys());
-
-            }
-
-
-        } else {
-
-            if (session == null) {
-                collection.createIndex(index.getIndexKeys(), indexOptions.getOriginOptions());
-            } else {
-                collection.createIndex(session, index.getIndexKeys(), indexOptions.getOriginOptions());
-            }
-
+    public Document getUpdateObject() {
+        addBasicUpdate();
+        if(pipeline.isEmpty()){
+            return new Document();
+        }else if(pipeline.size()==1){
+            return pipeline.stream().findFirst().get();
+        }else {
+            return new Document(Updatepipeline,pipeline);
         }
 
-
-        return null;
     }
 }

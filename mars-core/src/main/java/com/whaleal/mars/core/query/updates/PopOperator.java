@@ -27,52 +27,30 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
-
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.index.Index;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Options;
-
-import java.util.List;
+package com.whaleal.mars.core.query.updates;
 
 /**
- * @author: cx
- * @date: 2021/1/8
+ * Defines the $pop update operator.
+ *
+ *
+ * 
  */
-public class CreateIndexesExecutor implements CrudExecutor {
-    @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+public class PopOperator extends UpdateOperator {
+    /**
+     * @param field the field
+     *
+     */
+    public PopOperator(String field) {
+        super("$pop", field, 1);
+    }
 
-        List<Index> indexes = (List) data;
-
-        if (session == null) {
-
-            for (Index index : indexes) {
-
-                if (index.getIndexOptions() == null) {
-                    collection.createIndex(index.getIndexKeys());
-                } else {
-                    collection.createIndex(index.getIndexKeys(), index.getIndexOptions().getOriginOptions());
-                }
-
-            }
-
-        } else {
-
-            for (Index index : indexes) {
-
-                if (index.getIndexOptions() == null) {
-                    collection.createIndex(session, index.getIndexKeys());
-                } else {
-                    collection.createIndex(session, index.getIndexKeys(), index.getIndexOptions().getOriginOptions());
-                }
-
-            }
-
-        }
-
-        return null;
+    /**
+     * Remove the first element rather than the last.
+     *
+     * @return this
+     */
+    public PopOperator removeFirst() {
+        value(-1);
+        return this;
     }
 }

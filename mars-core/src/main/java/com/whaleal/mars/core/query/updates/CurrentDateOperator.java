@@ -27,59 +27,61 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
+package com.whaleal.mars.core.query.updates;
 
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.InsertOneOptions;
-import com.whaleal.mars.session.option.Options;
-import com.whaleal.mars.session.result.InsertOneResult;
+
+import org.bson.Document;
 
 /**
- * @author cx
- * @Date 2020/12/31
+ * Defines the $currentDate operator
+ *
+ * 
  */
-public class InsertOneExecutor implements CrudExecutor {
+public class CurrentDateOperator extends UpdateOperator {
+    private TypeSpecification typeSpec = TypeSpecification.DATE;
+
+    /**
+     * Creates an operator for a field
+     *
+     * @param field the field to update
+     */
+    protected CurrentDateOperator(String field) {
+        super("$currentDate", field, field);
+    }
+
     @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+    public Document toDocument() {
+        return new Document("$currentDate",new Document(field(),typeSpec.toTarget()));
+    }
 
-        InsertOneResult insertOneResult = new InsertOneResult();
+    /**
+     * Sets the type of value to set when updating the field
+     *
+     * @param type the type to use
+     * @return this
+     */
+    public CurrentDateOperator type(TypeSpecification type) {
+        this.typeSpec = type;
+        return this;
+    }
 
-        //Entity insertDocument = new Entity((Map) data);
-
-        if (options == null) {
-
-            if (session == null) {
-
-                insertOneResult.setOriginInsertOneResult(collection.insertOne(data));
-
-            } else {
-
-                insertOneResult.setOriginInsertOneResult(collection.insertOne(session, data));
-
+    /**
+     * Type type options when setting the current date
+     */
+    public enum TypeSpecification {
+        DATE {
+            @Override
+            Object toTarget() {
+                return true;
             }
+        },
+        TIMESTAMP {
+            @Override
+            Object toTarget() {
+                return new Document("$type", "timestamp");
+            }
+        };
 
-            return (T) insertOneResult;
-
-        }
-
-        if (!(options instanceof InsertOneOptions)) {
-            throw new ClassCastException();
-        }
-
-
-        InsertOneOptions insertOneOptions = (InsertOneOptions) options;
-
-        if (session == null) {
-
-            insertOneResult.setOriginInsertOneResult(collection.insertOne(data, insertOneOptions.getOriginOptions()));
-
-        } else {
-
-            insertOneResult.setOriginInsertOneResult(collection.insertOne(session, data, insertOneOptions.getOriginOptions()));
-
-        }
-        return (T) insertOneResult;
+        abstract Object toTarget();
     }
 }

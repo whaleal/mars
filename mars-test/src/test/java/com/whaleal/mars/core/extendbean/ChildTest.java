@@ -184,7 +184,7 @@ public class ChildTest {
         mars.insert(p2);
         mars.insert(p);
         Criteria age = Criteria.where("age").lte(100);
-        QueryCursor< Child > all = mars.findAll(new Query(age).with(Sort.by(new Sort.Order(Sort.Direction.DESC,"age"))), Child.class);
+        QueryCursor< Child > all = mars.findAll(new Query(age).with(Sort.on().descending("age")), Child.class);
         List< Child > Childs = all.toList();
         Child first = Childs.get(0);
 

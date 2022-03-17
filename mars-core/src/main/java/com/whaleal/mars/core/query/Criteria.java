@@ -31,9 +31,12 @@ package com.whaleal.mars.core.query;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.client.model.geojson.Geometry;
+import com.mongodb.client.model.geojson.MultiPoint;
 import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
 import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
@@ -50,15 +53,16 @@ import java.util.regex.Pattern;
 import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
 
 /**
- * Central class for creating queries. It follows a fluent API style so that you can easily chain together multiple
- * criteria. Static import of the 'Criteria.where' method will improve readability.
- *
- * this  is   basic Criteria
+ * 创建查询语句的基本类，它遵循流畅的 API 风格，可以轻松地将多个查询连在一起。使用Criteria.where方法创建此类对象可以提高可读性
  */
 public class Criteria implements CriteriaDefinition {
 
+    public static final String center = "$center";
+    public static final String centerSphere = "$centerSphere";
+    public static final String polygon = "$polygon";
     /**
-     * Custom "not-null" object as we have to be able to work with {@literal null} values as well.
+     * as we have to be able to work with {@literal null} values as well.
+     * 自定义的非空对象
      */
     private static final Object NOT_SET = new Object();
 
@@ -77,8 +81,7 @@ public class Criteria implements CriteriaDefinition {
     }
 
     // key  is used  to  decorate  itself
-    private
-    String key;
+    private String key;
 
     // criteriaChain  is used  to  decorate  it innerData
     //  主要用于放置 前置 的 criteria ，实现 是一个 ArrayList   如果没有前置 。那么久放置自己 到该 criteraChain中 ，外部调用 主要是调用 该 参数 并获取该值
@@ -89,8 +92,7 @@ public class Criteria implements CriteriaDefinition {
     private LinkedHashMap<String, Object> criteria = new LinkedHashMap<String, Object>();
 
     //  默认值 为 空对象 ，可以使用is() 设置
-    private
-    Object isValue = NOT_SET;
+    private Object isValue = NOT_SET;
 
 
     public Criteria() {
@@ -113,10 +115,10 @@ public class Criteria implements CriteriaDefinition {
     }
 
     /**
-     * Static factory method to create a Criteria using the provided key
+     *  根据指定属性名创建Criteria实例的静态方法
      *
-     * @param key the property or field name.
-     * @return new instance of {@link Criteria}.
+     * @param key 字段属性名
+     * @return Criteria实例.
      *
      */
     public static Criteria where(String key) {
@@ -129,7 +131,6 @@ public class Criteria implements CriteriaDefinition {
     private static boolean requiresGeoJsonFormat(Object value) {
 
        return value instanceof Geometry;
-
     }
 
     /**
@@ -483,6 +484,50 @@ public class Criteria implements CriteriaDefinition {
      * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
      * Mongo 2.4 and higher.
      *
+     * @param point must not be {@literal null}
+     * @return this.
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
+     *      $geoWithin</a>
+     * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/centerSphere/">MongoDB Query operator:
+     *      $centerSphere</a>
+     */
+    public Criteria withinSphere(Point point,Double radius) {
+
+        Precondition.notNull(point, "Point must not be null!");
+
+        criteria.put("$geoWithin", new Document(centerSphere,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
+        return this;
+    }
+
+    public Criteria withinCenter(Point point,Double radius) {
+
+        Precondition.notNull(point, "Point must not be null!");
+
+        criteria.put("$geoWithin", new Document(center,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
+        return this;
+    }
+
+    public Criteria withinPolygon(MultiPoint multiPoint) {
+
+        Precondition.notNull(multiPoint, "multiPoint must not be null!");
+
+        List<Position> coordinates = multiPoint.getCoordinates();
+
+        Object[] objects = new Object[coordinates.size()];
+        for (int i = 0;i < coordinates.size();i++){
+            List<Double> values = coordinates.get(i).getValues();
+            objects[i] = values;
+        }
+
+        criteria.put("$geoWithin", new Document(polygon,objects));
+        return this;
+    }
+
+
+    /**
+     * Creates a geospatial criterion using a {@literal $geoWithin $centerSphere} operation. This is only available for
+     * Mongo 2.4 and higher.
+     *
      * @param geometry must not be {@literal null}
      * @return this.
      * @see <a href="https://docs.mongodb.com/manual/reference/operator/query/geoWithin/">MongoDB Query operator:
@@ -497,6 +542,8 @@ public class Criteria implements CriteriaDefinition {
         criteria.put("$geoWithin", geometry);
         return this;
     }
+
+
 
 
 
@@ -874,6 +921,7 @@ public class Criteria implements CriteriaDefinition {
     /**
      * Checks the given objects for equality. Handles {@link Pattern} and arrays correctly.
      *
+     * 比较两个对象是否相同
      * @param left
      * @param right
      * @return
@@ -917,12 +965,8 @@ public class Criteria implements CriteriaDefinition {
     }
 
     /**
-     * MongoDB specific <a href="https://docs.mongodb.com/manual/reference/operator/query-bitwise/">bitwise query
-     * operators</a> like {@code $bitsAllClear, $bitsAllSet,...} for usage with {@link Criteria#bits()} and {@link Query}.
+     * MongoDB specific like {@code $bitsAllClear, $bitsAllSet,...} for usage with {@link Criteria#bits()} and {@link Query}.
      *
-     * @currentRead Beyond the Shadows - Brent Weeks
-     * @see <a href=
-     * "https://docs.mongodb.com/manual/reference/operator/query-bitwise/">https://docs.mongodb.com/manual/reference/operator/query-bitwise/</a>
      */
     public interface BitwiseCriteriaOperators {
 

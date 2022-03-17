@@ -78,10 +78,9 @@ public class BsonUtil {
     }
 
     /**
-     * Extract the corresponding plain value from {@link BsonValue}. Eg. plain {@link String} from
-     * {@link BsonString}.
+     * 从BsonValue中提取响应的普通值，例如从BsonString中抽取普通的String
      *
-     * @param value must not be {@literal null}.
+     * @param value 不能为空.
      * @return
      */
     public static Object toJavaType( BsonValue value ) {
@@ -119,11 +118,11 @@ public class BsonUtil {
     }
 
     /**
-     * Convert a given simple value (eg. {@link String}, {@link Long}) to its corresponding {@link BsonValue}.
+     * 把给定的简单值（如String，Long）转换为其对应的BsonValue
      *
-     * @param source must not be {@literal null}.
-     * @return the corresponding {@link BsonValue} representation.
-     * @throws IllegalArgumentException if {@literal source} does not correspond to a {@link BsonValue} type.
+     * @param source 不能为空.
+     * @return 对应的BsonValue.
+     * @throws IllegalArgumentException 如果source类型不支持转换为BsonValue.
      */
     public static BsonValue simpleToBsonValue( Object source ) {
 
@@ -168,11 +167,10 @@ public class BsonUtil {
     }
 
     /**
-     * Merge the given {@link Document documents} into on in the given order. Keys contained within multiple documents are
-     * overwritten by their follow ups.
+     * 按入参的顺序把多个document合并到一个document中，同一key值的多个document只会保留最后一个document
      *
-     * @param documents must not be {@literal null}. Can be empty.
-     * @return the document containing all key value pairs.
+     * @param documents 必须传参，但参数可以为"empty".
+     * @return 如果document为空，则返回一个空的document，不为空，返回合并后的结果.
      */
     public static Document merge( Document... documents ) {
 

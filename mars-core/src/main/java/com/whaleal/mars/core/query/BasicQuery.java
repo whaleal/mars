@@ -38,7 +38,7 @@ import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
 
 
 /**
- * Custom {@link Query} implementation to setup a basic query from some arbitrary JSON query string.
+ * json字符串转为基本查询语句的自定义实现
  */
 public class BasicQuery extends Query {
 
@@ -47,28 +47,25 @@ public class BasicQuery extends Query {
     private Document sortObject;
 
     /**
-     * Create a new {@link BasicQuery} given a JSON {@code query}.
-     *
-     * @param query may be {@literal null}.
+     * json字符串生成查询语句
+     * @param query 可能为空
      */
     public BasicQuery( String query ) {
         this(query, null);
     }
 
     /**
-     * Create a new {@link BasicQuery} given a query {@link Document}.
-     *
-     * @param queryObject must not be {@literal null}.
+     * 根据给定的Document对象生成查询语句
+     * @param queryObject 不能为空
      */
     public BasicQuery(Document queryObject) {
         this(queryObject, new Document());
     }
 
     /**
-     * Create a new {@link BasicQuery} given a JSON {@code query} and {@code fields}.
-     *
-     * @param query  may be {@literal null}.
-     * @param fields may be {@literal null}.
+     * 根据查询字符串和字段生成查询语句
+     * @param query  可以为空.
+     * @param fields 可以为空.
      */
     public BasicQuery( String query, String fields ) {
 
@@ -77,11 +74,10 @@ public class BasicQuery extends Query {
     }
 
     /**
-     * Create a new {@link BasicQuery} given a query {@link Document} and field specification {@link Document}.
-     *
-     * @param queryObject  must not be {@literal null}.
-     * @param fieldsObject must not be {@literal null}.
-     * @throws IllegalArgumentException when {@code sortObject} or {@code fieldsObject} is {@literal null}.
+     * 根据查询文档和字段规范文档生成查询对象
+     * @param queryObject  不能为空。
+     * @param fieldsObject 不能为空。
+     * @throws IllegalArgumentException queryObject或fieldsObject为空抛出IllegalArgumentException.
      */
     public BasicQuery(Document queryObject, Document fieldsObject) {
 
@@ -120,6 +116,7 @@ public class BasicQuery extends Query {
 
     /**
      * Set the fields (projection) {@link Document}.
+     * 设置字段（投影）
      *
      * @param fieldsObject must not be {@literal null}.
      * @throws IllegalArgumentException when {@code fieldsObject} is {@literal null}.
@@ -146,9 +143,9 @@ public class BasicQuery extends Query {
 
     /**
      * Set the sort {@link Document}.
-     *
-     * @param sortObject must not be {@literal null}.
-     * @throws IllegalArgumentException when {@code sortObject} is {@literal null}.
+     * 根据document设置sort
+     * @param sortObject 不能为空.
+     * @throws IllegalArgumentException sortObject为空抛出IllegalArgumentException.
      */
     public void setSortObject(Document sortObject) {
 

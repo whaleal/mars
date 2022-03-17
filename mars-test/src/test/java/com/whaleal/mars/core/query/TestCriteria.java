@@ -5,7 +5,7 @@ import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import org.bson.Document;
 import org.junit.Test;
 
-public class CriteriaTest {
+public class TestCriteria {
 
     @Test
 

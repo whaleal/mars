@@ -27,34 +27,30 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
-
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.index.Index;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Options;
+package com.whaleal.mars.core.query.updates;
 
 /**
- * @author: cx
- * @date: 2021/1/8
+ * Error during update.
+ *
+ *
  */
-public class DropIndexExecutor implements CrudExecutor {
-    @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+public class UpdateException extends RuntimeException {
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     */
+    public UpdateException( String message) {
+        super(message);
+    }
 
-        Index index = (Index) data;
-
-        if (session == null) {
-
-            collection.dropIndex(index.getIndexKeys());
-
-        } else {
-
-            collection.dropIndex(session, index.getIndexKeys());
-
-        }
-
-        return null;
+    /**
+     * Creates a UpdateException with a message and a cause
+     *
+     * @param message the message to record
+     * @param cause   the underlying cause
+     */
+    public UpdateException( String message, Throwable cause) {
+        super(message, cause);
     }
 }

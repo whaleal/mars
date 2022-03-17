@@ -27,58 +27,38 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.session.executor;
+package com.whaleal.mars.core.query.updates;
 
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.Options;
 
-/*
- * @author cx
- * @Date 2020/12/31
+
+
+import org.bson.Document;
+
+
+/**
+ *
+ * { $set:
+ *       {
+ *         quantity: 500,
+ *         details: { model: "2600", make: "Fashionaires" },
+ *         tags: [ "coats", "outerwear", "clothing" ]
+ *       }
+ *    }
+ * 
  */
-public class FindAllExecutor implements CrudExecutor {
-
-    @Override
-    public <T> T execute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
-
-        FindIterable findIterable;
-
-        //todo  query  解析缺少
-        //  projection
-        //  find  操作 没有 option   参数
-
-
-        if (session == null) {
-            findIterable = collection.find(query.getQueryObject());
-
-        } else {
-
-            findIterable = collection.find(session, query.getQueryObject());
-        }
-
-        if (!query.getFieldsObject().isEmpty()) {
-            findIterable.projection(query.getFieldsObject());
-        }
-
-
-        if (query.getSortObject() != null) {
-            findIterable = findIterable.sort(query.getSortObject());
-        }
-
-        if (query.getSkip() > 0) {
-            findIterable = findIterable.skip((int) query.getSkip());
-        }
-
-        if (query.getLimit() > 0) {
-            findIterable = findIterable.limit(query.getLimit());
-        }
-
-
-        return (T) findIterable.iterator();
-
+public class SetEntityOperator extends UpdateOperator {
+    /**
+     * @param value the value
+     *
+     */
+    public SetEntityOperator(Object value) {
+        super("$set", "", value);
     }
 
+
+    @Override
+    public Document toDocument() {
+
+        return new Document("$set",value());
+    }
 }

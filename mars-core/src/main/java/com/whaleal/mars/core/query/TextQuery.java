@@ -35,7 +35,10 @@ import org.bson.Document;
 import java.util.Locale;
 
 /**
- * {@link Query} implementation to be used to for performing full text searches.
+
+ * TextQuery  主要用于文本查找
+ * 里面已经封装了 meta  相关的 project 及 sort
+ * @author wh
  */
 public class TextQuery extends Query {
 

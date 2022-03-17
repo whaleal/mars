@@ -27,36 +27,75 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.query;
+package com.whaleal.mars.core.query.updates;
 
-import java.util.Iterator;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
-final class LazyStreamable<T> implements Streamable<T> {
-    private final Supplier<? extends Stream<T>> stream;
+import org.bson.Document;
 
-    private LazyStreamable(Supplier<? extends Stream<T>> stream) {
-        this.stream = stream;
+import java.util.List;
+
+/**
+ * Defines an update operator
+ *
+ * 自带 $set  属性
+ *
+ *
+ */
+public class UpdateOperator {
+    private final String operator;
+    private final String field;
+    private Object value;
+
+    protected UpdateOperator(String operator, String field, Object value) {
+        this.operator = operator;
+        this.field = field;
+        this.value = value;
     }
 
-    public static <T> LazyStreamable<T> of(Supplier<? extends Stream<T>> stream) {
-        return new LazyStreamable(stream);
+    protected UpdateOperator(String operator, String field, List<?> values) {
+        if (values.isEmpty()) {
+            throw new UpdateException("valuesCannotBeNullOrEmpty");
+        }
+        this.operator = operator;
+        this.field = field;
+        this.value = values;
     }
 
-    public Iterator<T> iterator() {
-        return this.stream().iterator();
+    /**
+     * @return the field
+     *
+     */
+    public String field() {
+        return field;
     }
 
-    public Stream<T> stream() {
-        return (Stream) this.stream.get();
+    /**
+     * @return the operator
+     *
+     */
+    public String operator() {
+        return operator;
     }
 
-    public Supplier<? extends Stream<T>> getStream() {
-        return this.stream;
+    /**
+     * Creates the OperationTarget for serialization
+     *
+     * @return the OperationTarget
+     *
+     */
+    public Document toDocument() {
+        return new Document(operator, new Document(field,value()));
     }
 
-    public String toString() {
-        return "LazyStreamable(stream=" + this.getStream() + ")";
+    /**
+     * @return the value
+     *
+     */
+    public Object value() {
+        return value;
+    }
+
+    protected void value(Object value) {
+        this.value = value;
     }
 }

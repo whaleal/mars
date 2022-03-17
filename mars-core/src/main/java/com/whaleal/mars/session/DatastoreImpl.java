@@ -39,6 +39,7 @@ import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 
+import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -54,12 +55,11 @@ import com.whaleal.mars.codecs.pojo.annotations.Language;
 import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.index.Index;
+import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.index.IndexHelper;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.core.gridfs.GridFsObject;
 import com.whaleal.mars.core.gridfs.GridFsResource;
-import com.whaleal.mars.session.executor.CrudExecutor;
-import com.whaleal.mars.session.executor.CrudExecutorFactory;
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
@@ -69,8 +69,10 @@ import com.whaleal.mars.core.query.BsonUtil;
 
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import javax.print.Doc;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -103,7 +105,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public DatastoreImpl( MongoClient mongoClient, String databaseName ) {
         super(mongoClient.getDatabase(databaseName));
         this.mongoClient = mongoClient;
-        defaultGridFSBucket = GridFSBuckets.create(this.database);
+        defaultGridFSBucket = GridFSBuckets.create(super.database);
     }
 
 
@@ -122,14 +124,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     public MongoDatabase getDatabase() {
-        return this.database;
+        return super.database;
     }
 
     public MongoDatabase getDatabase(String databaseName){
         if (StrUtil.isBlank(databaseName)) {
             throw new IllegalArgumentException("databaseName in getDatabase can't be null or empty ");
         }
-        return this.mongoClient.getDatabase(databaseName);
+        return this.mongoClient.getDatabase(databaseName).withCodecRegistry(super.mapper.getCodecRegistry());
     }
 
     @Override
@@ -141,10 +143,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         collection = prepareConcern(collection, options);
         //根据query  去 删除相关数据
         ClientSession session = this.startSession();
+//        CrudExecutor executor = CrudExecutorFactory.create(CrudEnum.DELETE);
 
-        CrudExecutor executor = CrudExecutorFactory.create(CrudEnum.DELETE);
-
-        DeleteResult result = executor.execute(session, collection, query, options, null);
+        DeleteResult result = deleteExecute(session, collection, query, options, null);
 
         return result;
 
@@ -157,9 +158,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ALL);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ALL);
 
-        MongoCursor< T > iterator = crudExecutor.execute(session, collection, query, null, null);
+        MongoCursor< T > iterator = findAllExecute(session, collection, query, null, null);
 
         return new QueryCursor< T >(iterator, entityClass);
 
@@ -172,9 +173,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
 
-        T result = crudExecutor.execute(session, collection, query, null, null);
+        T result = findOneExecute(session, collection, query, null, null);
         if (log.isDebugEnabled()) {
             log.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
@@ -195,8 +196,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
-        InsertOneResult result = crudExecutor.execute(session, collection, null, options, entity);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
+        InsertOneResult result = insertOneExecute(session, collection, null, options, entity);
 
         return result;
     }
@@ -223,9 +224,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         collection = prepareConcern(collection, options);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_MANY);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_MANY);
 
-        InsertManyResult result = crudExecutor.execute(session, collection, null, options, entities);
+        InsertManyResult result = insertManyExecute(session, collection, null, options, entities);
 
         return result;
 
@@ -242,9 +243,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         MongoCollection< ? > collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.UPDATE);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.UPDATE);
 
-        UpdateResult result = crudExecutor.execute(session, collection, query, options, entityDoc);
+
+        UpdateResult result = updateExecute(session, collection, query, options, entityDoc);
 
         return result;
 
@@ -256,14 +258,56 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options, String collectionName ) {
 
+        //update中的arrayList
+        List<UpdateDefinition.ArrayFilter> arrayFilters = update.getArrayFilters();
+        //option中的arrayList
+        List<UpdateDefinition.ArrayFilter> arrayFilters1 = options.getArrayFilters();
+        //最终的arraylist
+        List<Document> arrayFilterList = new ArrayList<>();
+        if (ObjectUtil.isNotEmpty(arrayFilters)){
+            for (int i = 0; i < arrayFilters.size(); i++) {
+                Document document = arrayFilters.get(i).toData();
+                arrayFilterList.add(document);
+            }
+            if(ObjectUtil.isNotEmpty(arrayFilters1)){
+                //保存arrayFilter
+                for (int i = 0; i < arrayFilters1.size(); i++) {
+                    Document document = arrayFilters1.get(i).toData();
+                    arrayFilterList.add(document);
+                }
+            }
+
+
+/*
+            // todo
+            // option 本身 是否包含相关  arrayFilters
+            // 是否冲突
+            //判断UpdateOption本身是否包含相关的arrayFilters
+            List<Document> arrayFiltersOption = (List<Document>) options.getOriginOptions().getArrayFilters();
+            //如果update的arrayFilter没有包含option的arrayFilter所有条件，就合并两个arrayFilter
+            if(!arrayFilterList.containsAll(arrayFiltersOption)){
+                arrayFilterList.addAll(arrayFiltersOption);
+            }
+*/
+            options.arrayFilters(arrayFilterList);
+
+        }
+
         ClientSession session = this.startSession();
-        MongoCollection collection = this.getCollection(entityClass, collectionName);
+        MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
         collection = prepareConcern(collection, options);
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.UPDATE_DEFINITION);
 
-        UpdateResult result = crudExecutor.execute(session, collection, query, options, update.getUpdateObject());
+        if(update instanceof UpdatePipeline){
+            //todo
+            // 针对所有的 UpdateDefinition
+            //getUpdateObject () 方法 在这里都需要处理
+            return null ;
+        }else {
+            UpdateResult result = updateDefinitionExecute(session, collection, query, options, update.getUpdateObject());
 
-        return result;
+            return result;
+        }
+
     }
 
 
@@ -382,9 +426,16 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Document updateObject = update.getUpdateObject();
         MarsSession marsSession = this.startSession();
 
+        if(update instanceof UpdatePipeline){
+            //todo
+            return null ;
+        }else {
 
-        T oneAndUpdate = collection.findOneAndUpdate(marsSession,query.getQueryObject(), updateObject, optionsToUse.getOriginOptions());
-        return oneAndUpdate;
+            T oneAndUpdate = collection.findOneAndUpdate(marsSession,query.getQueryObject(), updateObject, optionsToUse.getOriginOptions());
+            return oneAndUpdate;
+
+        }
+
     }
 
 
@@ -395,9 +446,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.REPLACE);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.REPLACE);
 
-        UpdateResult execute = crudExecutor.execute(session, collection, query, options, entity);
+        UpdateResult execute = replaceExecute(session, collection, query, options, entity);
 
         return execute;
 
@@ -411,10 +462,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = database.getCollection(collectionName);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_CREATE_ONE);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_CREATE_ONE);
 
 
-        crudExecutor.execute(session, collection, null, index.getIndexOptions(), index);
+        createIndexExecute(session, collection, null, index.getIndexOptions(), index);
 
     }
 
@@ -435,9 +486,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = database.getCollection(collectionName);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_ONE);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_ONE);
 
-        crudExecutor.execute(session, collection, null, null, index);
+        dropOneIndexExecute(session, collection, null, null, index);
 
     }
 
@@ -448,9 +499,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = database.getCollection(collectionName);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_MANY);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_MANY);
 
-        crudExecutor.execute(session, collection, null, null, null);
+        dropManyIndexExecute(session, collection, null, null, null);
 
     }
 
@@ -461,9 +512,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = database.getCollection(collectionName);
 
-        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_FIND);
+//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_FIND);
 
-        List< Index > execute = crudExecutor.execute(session, collection, null, null, null);
+        List< Index > execute = findManyIndexExecute(session, collection, null, null, null);
 
         return execute;
 
@@ -968,5 +1019,543 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 
         return options;
+    }
+
+    private <T> T deleteExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        if (!(options instanceof DeleteOptions)) {
+            throw new ClassCastException();
+        }
+
+        DeleteOptions option = (DeleteOptions) options;
+
+        DeleteResult deleteResult = new DeleteResult();
+
+        if (option.isMulti()) {
+
+            if (session == null) {
+                deleteResult.setOriginDeleteResult(collection.deleteMany(query.getQueryObject(), option.getOriginOptions()));
+            } else {
+                deleteResult.setOriginDeleteResult(collection.deleteMany(session, query.getQueryObject(), option.getOriginOptions()));
+            }
+
+            return (T) deleteResult;
+        } else {
+
+            if (session == null) {
+                deleteResult.setOriginDeleteResult(collection.deleteOne(query.getQueryObject(), option.getOriginOptions()));
+            } else {
+                deleteResult.setOriginDeleteResult(collection.deleteOne(session, query.getQueryObject(), option.getOriginOptions()));
+            }
+
+            return (T) deleteResult;
+
+        }
+
+    }
+
+    private <T> T findAllExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        FindIterable findIterable;
+
+        //todo  query  解析缺少
+        //  projection
+        //  find  操作 没有 option   参数
+
+        if (session == null) {
+            findIterable = collection.find(query.getQueryObject());
+
+        } else {
+
+            findIterable = collection.find(session, query.getQueryObject());
+        }
+
+        if (!query.getFieldsObject().isEmpty()) {
+            findIterable.projection(query.getFieldsObject());
+        }
+
+
+        if (query.getSortObject() != null) {
+            findIterable = findIterable.sort(query.getSortObject());
+        }
+
+        if (query.getSkip() > 0) {
+            findIterable = findIterable.skip((int) query.getSkip());
+        }
+
+        if (query.getLimit() > 0) {
+            findIterable = findIterable.limit(query.getLimit());
+        }
+
+
+        return (T) findIterable.iterator();
+
+    }
+
+    /**
+     *
+     * find 操作本身没有相关 的Option 参数
+     * @param session
+     * @param collection
+     * @param query
+     * @param options
+     * @param data
+     * @param <T>
+     * @return
+     */
+    private <T> T findOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        FindIterable findIterable;
+
+        if (session == null) {
+
+
+
+            findIterable = collection.find(query.getQueryObject());
+
+        } else {
+
+            findIterable = collection.find(session, query.getQueryObject());
+
+        }
+
+
+        if (query.getSkip() > 0) {
+            findIterable = findIterable.skip((int) query.getSkip());
+        }
+
+        if (query.getSortObject() != null) {
+            findIterable = findIterable.sort(query.getSortObject());
+        }
+
+        findIterable.limit(1);
+
+        return (T) findIterable.first();
+
+
+    }
+
+    private <T> T insertOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        InsertOneResult insertOneResult = new InsertOneResult();
+
+        //Entity insertDocument = new Entity((Map) data);
+
+        if (options == null) {
+
+            if (session == null) {
+
+                insertOneResult.setOriginInsertOneResult(collection.insertOne(data));
+
+            } else {
+
+                insertOneResult.setOriginInsertOneResult(collection.insertOne(session, data));
+
+            }
+
+            return (T) insertOneResult;
+
+        }
+
+        if (!(options instanceof InsertOneOptions)) {
+            throw new ClassCastException();
+        }
+
+
+        InsertOneOptions insertOneOptions = (InsertOneOptions) options;
+
+        if (session == null) {
+
+            insertOneResult.setOriginInsertOneResult(collection.insertOne(data, insertOneOptions.getOriginOptions()));
+
+        } else {
+
+            insertOneResult.setOriginInsertOneResult(collection.insertOne(session, data, insertOneOptions.getOriginOptions()));
+
+        }
+        return (T) insertOneResult;
+    }
+
+    private <T> T insertManyExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        InsertManyResult insertManyResult = new InsertManyResult();
+
+        //options == null是另外一种情况
+        if (options == null) {
+
+            if (session == null) {
+
+                insertManyResult.setOriginInsertManyResult(collection.insertMany((List) data));
+
+            } else {
+
+                insertManyResult.setOriginInsertManyResult(collection.insertMany(session, (List) data));
+
+            }
+
+            return (T) insertManyResult;
+
+        }
+
+
+        //options != null是一种情况
+        if (!(options instanceof InsertManyOptions)) {
+            throw new ClassCastException();
+        }
+
+        InsertManyOptions insertManyOptions = (InsertManyOptions) options;
+
+        if (session == null) {
+
+
+            insertManyResult.setOriginInsertManyResult(collection.insertMany((List) data, insertManyOptions.getOriginOptions()));
+
+        } else {
+
+            insertManyResult.setOriginInsertManyResult(collection.insertMany(session, (List) data, insertManyOptions.getOriginOptions()));
+
+        }
+
+        return (T) insertManyResult;
+    }
+
+    private <T> T updateExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        if (!(options instanceof UpdateOptions)) {
+            throw new ClassCastException();
+        }
+
+        
+
+        UpdateOptions option = (UpdateOptions) options;
+
+        Document updateOperations = new Document("$set", new Document((Map) data));
+
+        UpdateResult updateResult = new UpdateResult();
+
+        if (option.isMulti()) {
+
+            if (session == null) {
+                updateResult.setOriginUpdateResult(collection.updateMany(query.getQueryObject(), updateOperations, option.getOriginOptions()));
+            } else {
+                updateResult.setOriginUpdateResult(collection.updateMany(session, query.getQueryObject(), updateOperations, option.getOriginOptions()));
+            }
+
+            return (T) updateResult;
+
+        } else {
+
+            if (session == null) {
+                updateResult.setOriginUpdateResult(collection.updateOne(query.getQueryObject(), updateOperations, option.getOriginOptions()));
+            } else {
+                updateResult.setOriginUpdateResult(collection.updateOne(session, query.getQueryObject(), updateOperations, option.getOriginOptions()));
+            }
+
+            return (T) updateResult;
+
+        }
+
+    }
+
+    private <T> T updateDefinitionExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+
+        Document dd = (Document) data;
+
+
+        dd.containsKey(UpdatePipeline.Updatepipeline);
+
+
+        List< Document > list = dd.getList(UpdatePipeline.Updatepipeline, Document.class);
+
+
+
+
+        if (!(options instanceof UpdateOptions)) {
+            throw new ClassCastException();
+        }
+
+        UpdateOptions option = (UpdateOptions) options;
+
+        UpdateResult updateResult = new UpdateResult();
+
+
+
+        if (option.isMulti()) {
+
+            if (session == null) {
+                updateResult.setOriginUpdateResult(collection.updateMany(query.getQueryObject(), (Document) data, option.getOriginOptions()));
+            } else {
+                updateResult.setOriginUpdateResult(collection.updateMany(session, query.getQueryObject(), (Document) data, option.getOriginOptions()));
+            }
+
+            return (T) updateResult;
+
+        } else {
+
+
+            if (session == null) {
+                updateResult.setOriginUpdateResult(collection.updateOne(query.getQueryObject(), (Document) data, option.getOriginOptions()));
+            } else {
+                updateResult.setOriginUpdateResult(collection.updateOne(session, query.getQueryObject(), (Document) data, option.getOriginOptions()));
+            }
+
+            return (T) updateResult;
+
+        }
+
+
+    }
+
+    private <T> T replaceExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        UpdateResult updateResult = new UpdateResult();
+
+
+        //options == null 是一种情况
+        if (options == null) {
+            if (session == null) {
+
+
+                updateResult.setOriginUpdateResult(collection.replaceOne(query.getQueryObject(), data));
+
+            } else {
+
+                updateResult.setOriginUpdateResult(collection.replaceOne(session, query.getQueryObject(), data));
+
+            }
+
+            return (T) updateResult;
+        }
+
+        //options != null也是一种情况
+        if (!(options instanceof ReplaceOptions)) {
+            throw new ClassCastException();
+        }
+
+        ReplaceOptions replaceOptions = (ReplaceOptions) options;
+
+        if (session == null) {
+
+            updateResult.setOriginUpdateResult(collection.replaceOne(query.getQueryObject(), data, replaceOptions.getOriginOptions()));
+
+        } else {
+
+            updateResult.setOriginUpdateResult(collection.replaceOne(session, query.getQueryObject(), data, replaceOptions.getOriginOptions()));
+
+        }
+
+
+        return (T) updateResult;
+    }
+
+    private <T> T createIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        Index index = (Index) data;
+
+        IndexOptions indexOptions = index.getIndexOptions();
+
+        if (indexOptions == null) {
+
+            if (session == null) {
+
+                collection.createIndex(index.getIndexKeys());
+
+            } else {
+
+                collection.createIndex(session, index.getIndexKeys());
+
+            }
+
+
+        } else {
+
+            if (session == null) {
+                collection.createIndex(index.getIndexKeys(), indexOptions.getOriginOptions());
+            } else {
+                collection.createIndex(session, index.getIndexKeys(), indexOptions.getOriginOptions());
+            }
+
+        }
+
+
+        return null;
+    }
+
+    private <T> T dropOneIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        Index index = (Index) data;
+
+        if (session == null) {
+
+            collection.dropIndex(index.getIndexKeys());
+
+        } else {
+
+            collection.dropIndex(session, index.getIndexKeys());
+
+        }
+
+        return null;
+    }
+
+    private <T> T dropManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        if (session == null) {
+
+            collection.dropIndexes();
+
+
+        } else {
+
+            collection.dropIndexes(session);
+
+
+        }
+
+        return null;
+    }
+
+    private <T> T findManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        ListIndexesIterable indexIterable = null;
+
+        if (session == null) {
+            indexIterable = collection.listIndexes();
+
+        } else {
+
+            indexIterable = collection.listIndexes(session);
+        }
+
+
+        MongoCursor iterator = indexIterable.iterator();
+
+        Index index = null;
+
+        List indexes = new ArrayList();
+
+
+        while (iterator.hasNext()) {
+
+            Document indexDocument = (Document) iterator.next();
+
+            IndexOptions indexOptions = new IndexOptions();
+
+            if (indexDocument.get("name") != null) {
+                indexOptions.name((String) indexDocument.get("name"));
+            }
+            if (indexDocument.get("partialFilterExpression") != null) {
+                indexOptions.partialFilterExpression((Bson) indexDocument.get("partialFilterExpression"));
+            }
+            if (indexDocument.get("weights") != null) {
+                indexOptions.weights((Bson) indexDocument.get("weights"));
+            }
+            if (indexDocument.get("storageEngine") != null) {//不常用到
+                indexOptions.storageEngine((Bson) indexDocument.get("storageEngine"));
+            }
+            if (indexDocument.get("wildcardProjection") != null) {
+                indexOptions.wildcardProjection((Bson) indexDocument.get("wildcardProjection"));
+            }
+            if (indexDocument.get("collation") != null) {
+                Document document = (Document) indexDocument.get("collation");
+                Collation collation = Collation.from(document);
+                indexOptions.collation(collation.toMongoCollation());
+            }
+            /*if (indexDocument.get("version") != null) {         官方文档也没有这个Index偏好设置，只在IndexOptions类里面有
+                indexOptions.version((Integer) indexDocument.get("version"));
+            }*/
+            if (indexDocument.get("unique") != null) {
+                indexOptions.unique((Boolean) indexDocument.get("unique"));
+            }
+            if (indexDocument.get("bits") != null) {
+                indexOptions.bits((Integer) indexDocument.get("bits"));
+            }
+            if (indexDocument.get("bucketSize") != null) {
+                indexOptions.bucketSize((Double) indexDocument.get("bucketSize"));
+            }
+            if (indexDocument.get("default_language") != null) {
+                indexOptions.defaultLanguage((String) indexDocument.get("default_language"));
+            }
+            if (indexDocument.get("expireAfterSeconds") != null) {
+                Long expireAfter = (Long) indexDocument.get("expireAfterSeconds");//秒以下会丢失
+                indexOptions.expireAfter(expireAfter, TimeUnit.SECONDS);
+            }
+            if (indexDocument.get("hidden") != null) {
+                indexOptions.hidden((Boolean) indexDocument.get("hidden"));
+            }
+            if (indexDocument.get("language_override") != null) {
+                indexOptions.languageOverride((String) indexDocument.get("language_override"));
+            }
+            if (indexDocument.get("max") != null) {
+                indexOptions.max((Double) indexDocument.get("max"));
+            }
+            if (indexDocument.get("min") != null) {
+                indexOptions.min((Double) indexDocument.get("min"));
+            }
+            if (indexDocument.get("sparse") != null) {
+                indexOptions.sparse((Boolean) indexDocument.get("sparse"));
+            }
+            if (indexDocument.get("2dsphereIndexVersion") != null) {
+                indexOptions.sphereVersion((Integer) indexDocument.get("2dsphereIndexVersion"));
+            }
+            if (indexDocument.get("background") != null) {
+                indexOptions.background((Boolean) indexDocument.get("background"));
+            }
+            if (indexDocument.get("textIndexVersion") != null) {
+                indexOptions.textVersion((Integer) indexDocument.get("textIndexVersion"));
+            }
+
+            Document key = (Document) indexDocument.get("key");
+
+            index = new Index();
+
+            Set<String> strings = key.keySet();
+
+            for (String keyName : strings) {
+                index.on(keyName, IndexDirection.fromValue(key.get(keyName)));
+
+            }
+            index.setOptions(indexOptions);
+
+            indexes.add(index);
+
+        }
+
+        return (T) indexes;
+    }
+
+
+    private <T> T createManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+
+        List<Index> indexes = (List) data;
+
+        if (session == null) {
+
+            for (Index index : indexes) {
+
+                if (index.getIndexOptions() == null) {
+                    collection.createIndex(index.getIndexKeys());
+                } else {
+                    collection.createIndex(index.getIndexKeys(), index.getIndexOptions().getOriginOptions());
+                }
+
+            }
+
+        } else {
+
+            for (Index index : indexes) {
+
+                if (index.getIndexOptions() == null) {
+                    collection.createIndex(session, index.getIndexKeys());
+                } else {
+                    collection.createIndex(session, index.getIndexKeys(), index.getIndexOptions().getOriginOptions());
+                }
+
+            }
+
+        }
+
+        return null;
     }
 }
