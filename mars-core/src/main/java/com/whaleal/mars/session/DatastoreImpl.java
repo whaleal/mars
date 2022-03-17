@@ -72,6 +72,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import javax.print.Doc;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -257,21 +258,37 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options, String collectionName ) {
 
-        //
-        if (ObjectUtil.isNotEmpty(update.getArrayFilters())){
-
-            List<UpdateDefinition.ArrayFilter> arrayFilters = update.getArrayFilters();
-            List<Document> arrayFilterList = new ArrayList<>();
-
+        //update中的arrayList
+        List<UpdateDefinition.ArrayFilter> arrayFilters = update.getArrayFilters();
+        //option中的arrayList
+        List<UpdateDefinition.ArrayFilter> arrayFilters1 = options.getArrayFilters();
+        //最终的arraylist
+        List<Document> arrayFilterList = new ArrayList<>();
+        if (ObjectUtil.isNotEmpty(arrayFilters)){
             for (int i = 0; i < arrayFilters.size(); i++) {
                 Document document = arrayFilters.get(i).toData();
                 arrayFilterList.add(document);
             }
+            if(ObjectUtil.isNotEmpty(arrayFilters1)){
+                //保存arrayFilter
+                for (int i = 0; i < arrayFilters1.size(); i++) {
+                    Document document = arrayFilters1.get(i).toData();
+                    arrayFilterList.add(document);
+                }
+            }
 
+
+/*
             // todo
             // option 本身 是否包含相关  arrayFilters
             // 是否冲突
-
+            //判断UpdateOption本身是否包含相关的arrayFilters
+            List<Document> arrayFiltersOption = (List<Document>) options.getOriginOptions().getArrayFilters();
+            //如果update的arrayFilter没有包含option的arrayFilter所有条件，就合并两个arrayFilter
+            if(!arrayFilterList.containsAll(arrayFiltersOption)){
+                arrayFilterList.addAll(arrayFiltersOption);
+            }
+*/
             options.arrayFilters(arrayFilterList);
 
         }

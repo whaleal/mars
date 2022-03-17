@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
 import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
 
 /**
- * 创建查询的基本类，它遵循流畅的 API 风格，可以轻松地将多个查询连在一起。使用Criteria.where方法创建此类对象可以提高可读性
+ * 创建查询语句的基本类，它遵循流畅的 API 风格，可以轻松地将多个查询连在一起。使用Criteria.where方法创建此类对象可以提高可读性
  */
 public class Criteria implements CriteriaDefinition {
 
