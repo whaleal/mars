@@ -178,29 +178,27 @@ public interface Datastore extends IndexOperations,MongoOperations {
     /**
      * Inserts a List of entities in to the mapped collection.
      */
-    default <T> InsertManyResult insert(Collection<? extends T> entities) {
-        return insert(entities, new InsertManyOptions(), null);
+    default <T> InsertManyResult insert(Collection<? extends T> entities,Class<?> entityClass) {
+       return insert(entities,entityClass,new InsertManyOptions());
     }
 
     /**
      * Inserts a List of entities in to the mapped collection.
      */
     default <T> InsertManyResult insert( Collection<? extends T> entities, String collectionName ) {
-        return insert(entities, new InsertManyOptions(), collectionName);
+        return insert(entities, collectionName,new InsertManyOptions());
     }
 
 
     /**
      * Inserts entities in to the mapped collection.
      */
-    default <T> InsertManyResult insert(Collection<? extends T> entities, InsertManyOptions options) {
-        return insert(entities, options, null);
-    }
+    <T> InsertManyResult insert(Collection<? extends T> entities, Class<?> entityClass,InsertManyOptions options);
 
     /**
      * Inserts entities in to the mapped collection.
      */
-    <T> InsertManyResult insert( Collection<? extends T> entities, InsertManyOptions options, String collectionName );
+    <T> InsertManyResult insert( Collection<? extends T> entities, String collectionName , InsertManyOptions options);
 
 
     default <T> UpdateResult update(Query query, T entity) {
@@ -252,6 +250,8 @@ public interface Datastore extends IndexOperations,MongoOperations {
     <T> UpdateResult update( Query query, UpdateDefinition update, Class<T> entityClass, UpdateOptions options, String collectionName );
 
 
+
+
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
@@ -259,6 +259,12 @@ public interface Datastore extends IndexOperations,MongoOperations {
         return save(entities, new InsertManyOptions(), null);
     }
 
+    /**
+     * Saves the entities (Objects) and updates the @Id field
+     */
+    default <T> List<T> save(Collection<? extends T> entities ,String collectionName) {
+        return save(entities, new InsertManyOptions(), collectionName);
+    }
 
     /**
      * Saves the entities (Objects) and updates the @Id field
@@ -286,6 +292,13 @@ public interface Datastore extends IndexOperations,MongoOperations {
      */
     default <T> T save(T entity) {
         return save(entity, new InsertOneOptions(), null);
+    }
+
+    /**
+     * Saves an entity (Object) and updates the @Id field
+     */
+    default <T> T save(T entity,String collectionName) {
+        return save(entity, new InsertOneOptions(), collectionName);
     }
 
 
