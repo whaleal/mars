@@ -1,37 +1,36 @@
 /**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
+ * Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Server Side Public License, version 1,
+ * as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
+ * <p>
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Server Side Public License for more details.
+ * <p>
+ * You should have received a copy of the Server Side Public License
+ * along with this program. If not, see
+ * <http://www.whaleal.com/licensing/server-side-public-license>.
+ * <p>
+ * As a special exception, the copyright holders give permission to link the
+ * code of portions of this program with the OpenSSL library under certain
+ * conditions as described in each individual source file and distribute
+ * linked combinations including the program with the OpenSSL library. You
+ * must comply with the Server Side Public License in all respects for
+ * all of the code used other than as permitted herein. If you modify file(s)
+ * with this exception, you may extend this exception to your version of the
+ * file(s), but you are not obligated to do so. If you do not wish to do so,
+ * delete this exception statement from your version. If you delete this
+ * exception statement from all source files in the program, then also delete
+ * it in the license file.
  */
 package com.whaleal.mars.session;
 
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.query.*;
@@ -73,98 +72,77 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  * 将 索引 部分的接口单独拿出来
  */
 
-public interface Datastore extends IndexOperations,MongoOperations {
+public interface Datastore extends IndexOperations, MongoOperations {
 
 
-
-    default <T> UpdateResult replace(Query query, T entity) {
+    default < T > UpdateResult replace( Query query, T entity ) {
         return replace(query, entity, new ReplaceOptions());
     }
 
-    default <T> UpdateResult replace(Query query, T entity, ReplaceOptions options) {
+    default < T > UpdateResult replace( Query query, T entity, ReplaceOptions options ) {
         return replace(query, entity, options, null);
     }
 
-    <T> UpdateResult replace( Query query, T entity, ReplaceOptions options, String collectionName );
+    < T > UpdateResult replace( Query query, T entity, ReplaceOptions options, String collectionName );
 
-    default <T> DeleteResult delete(Query query, Class<T> entityClass) {
+    default < T > DeleteResult delete( Query query, Class< T > entityClass ) {
         return delete(query, entityClass, new DeleteOptions());
     }
 
-    default <T> DeleteResult delete(Query query, Class<T> entityClass, DeleteOptions deleteOptions) {
+    default < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions deleteOptions ) {
         return delete(query, entityClass, deleteOptions, null);
     }
 
 
-    //todo  根据实体 Id  删除
-    /*default  DeleteResult delete(Object entity) {
-
-        Precondition.notNull(entity, "Object must not be null!");
-
-        return delete(entity, getCollectionName(entity.getClass()));
-    }
-
-
-    default  DeleteResult delete(Object entity, String collectionName) {
-
-        Precondition.notNull(object, "Object must not be null!");
-        Precondition.hasText(collectionName, "Collection name must not be null or empty!");
-
-        Query query = operations.forEntity(object).getRemoveByQuery();
-
-        return delete(collectionName, query, object.getClass());
-    }*/
-
-
-    default DeleteResult delete(Query query, String collectionName) {
+    default DeleteResult delete( Query query, String collectionName ) {
         return delete(query, org.bson.Document.class, new DeleteOptions(), collectionName);
     }
 
 
-    default DeleteResult delete(Query query, String collectionName, DeleteOptions options) {
+    default DeleteResult delete( Query query, String collectionName, DeleteOptions options ) {
         return delete(query, org.bson.Document.class, options, collectionName);
     }
 
 
-    default DeleteResult delete(Query query, Class<?> entityClass, String collectionName) {
+    default DeleteResult delete( Query query, Class< ? > entityClass, String collectionName ) {
 
         notNull(entityClass, "EntityClass must not be null!");
         return delete(query, entityClass, new DeleteOptions(), collectionName);
     }
 
 
-    <T> DeleteResult delete( Query query, Class<T> entityClass, DeleteOptions options, String collectionName );
+    < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions options, String collectionName );
 
-    default <T> QueryCursor<T> findAll(Query query, Class<T> entityClass) {
+    default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass ) {
         return findAll(query, entityClass, null);
     }
 
-    <T> QueryCursor<T> findAll( Query query, Class<T> entityClass, String collectionName );
+    < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName );
 
-    default <T> Optional<T> findOne(Query query, Class<T> entityClass) {
+    default < T > Optional< T > findOne( Query query, Class< T > entityClass ) {
         return findOne(query, entityClass, null);
     }
 
-    <T> Optional<T> findOne( Query query, Class<T> entityClass, String collectionName );
+    < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName );
 
     /**
      * Inserts an entity in to the mapped collection.
      */
-    default <T> InsertOneResult insert(T entity) {
+    default < T > InsertOneResult insert( T entity ) {
         return insert(entity, new InsertOneOptions());
     }
 
     /**
      * Inserts an entity in to the mapped collection.
      */
-    default <T> InsertOneResult insert( T entity, String collectionName ) {
+    default < T > InsertOneResult insert( T entity, String collectionName ) {
         return insert(entity, new InsertOneOptions(), collectionName);
     }
 
     /**
      * Inserts an entity in to the mapped collection.
      */
-    default <T> InsertOneResult insert(T entity, InsertOneOptions insertOneOptions) {
+    default < T > InsertOneResult insert( T entity, InsertOneOptions insertOneOptions ) {
         return insert(entity, insertOneOptions, null);
     }
 
@@ -172,49 +150,49 @@ public interface Datastore extends IndexOperations,MongoOperations {
     /**
      * Inserts an entity in to the mapped collection.
      */
-    <T> InsertOneResult insert( T entity, InsertOneOptions options, String collectionName );
+    < T > InsertOneResult insert( T entity, InsertOneOptions options, String collectionName );
 
 
     /**
      * Inserts a List of entities in to the mapped collection.
      */
-    default <T> InsertManyResult insert(Collection<? extends T> entities,Class<?> entityClass) {
-       return insert(entities,entityClass,new InsertManyOptions());
+    default < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass ) {
+        return insert(entities, entityClass, new InsertManyOptions());
     }
 
     /**
      * Inserts a List of entities in to the mapped collection.
      */
-    default <T> InsertManyResult insert( Collection<? extends T> entities, String collectionName ) {
-        return insert(entities, collectionName,new InsertManyOptions());
+    default < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName ) {
+        return insert(entities, collectionName, new InsertManyOptions());
     }
 
 
     /**
      * Inserts entities in to the mapped collection.
      */
-    <T> InsertManyResult insert(Collection<? extends T> entities, Class<?> entityClass,InsertManyOptions options);
+    < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options );
 
     /**
      * Inserts entities in to the mapped collection.
      */
-    <T> InsertManyResult insert( Collection<? extends T> entities, String collectionName , InsertManyOptions options);
+    < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
 
 
-    default <T> UpdateResult update(Query query, T entity) {
+    default < T > UpdateResult update( Query query, T entity ) {
         return update(query, entity, new UpdateOptions(), null);
     }
 
-    default <T> UpdateResult update(Query query, T entity, UpdateOptions options) {
+    default < T > UpdateResult update( Query query, T entity, UpdateOptions options ) {
         return update(query, entity, options, null);
     }
 
-    default <T> UpdateResult update( Query query, T entity, String collectionName ) {
+    default < T > UpdateResult update( Query query, T entity, String collectionName ) {
         return update(query, entity, new UpdateOptions(), collectionName);
     }
 
 
-    <T> UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName );
+    < T > UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName );
 
 
     /**
@@ -222,23 +200,23 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * 修改更新的定义
      */
 
-    default <T> UpdateResult update(Query query, UpdateDefinition update, Class<T> entityClass) {
+    default < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass ) {
         return update(query, update, entityClass, new UpdateOptions());
     }
 
 
-    default <T> UpdateResult update(Query query, UpdateDefinition update, Class<T> entityClass, UpdateOptions options) {
+    default < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options ) {
         return update(query, update, entityClass, options, null);
     }
 
     // 2021-05-18 新增更新方法
 
-    default <T> UpdateResult update(Query query, UpdateDefinition update, String collectionName) {
+    default < T > UpdateResult update( Query query, UpdateDefinition update, String collectionName ) {
         return update(query, update, org.bson.Document.class, new UpdateOptions(), collectionName);
     }
 
 
-    default <T> UpdateResult update(Query query, UpdateDefinition update, String collectionName, UpdateOptions options) {
+    default < T > UpdateResult update( Query query, UpdateDefinition update, String collectionName, UpdateOptions options ) {
         return update(query, update, org.bson.Document.class, options, collectionName);
     }
 
@@ -247,38 +225,36 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * 修改更新的定义
      */
 
-    <T> UpdateResult update( Query query, UpdateDefinition update, Class<T> entityClass, UpdateOptions options, String collectionName );
-
-
+    < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options, String collectionName );
 
 
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    default <T> List<T> save(Collection<? extends T> entities) {
+    default < T > List< T > save( Collection< ? extends T > entities ) {
         return save(entities, new InsertManyOptions(), null);
     }
 
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    default <T> List<T> save(Collection<? extends T> entities ,String collectionName) {
+    default < T > List< T > save( Collection< ? extends T > entities, String collectionName ) {
         return save(entities, new InsertManyOptions(), collectionName);
     }
 
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    default <T> List<T> save(Collection<? extends T> entities, InsertManyOptions insertManyOptions) {
+    default < T > List< T > save( Collection< ? extends T > entities, InsertManyOptions insertManyOptions ) {
         return save(entities, insertManyOptions, null);
     }
 
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    default <T> List<T> save( Collection<? extends T> entities, InsertManyOptions options, String collectionName ) {
+    default < T > List< T > save( Collection< ? extends T > entities, InsertManyOptions options, String collectionName ) {
         if (entities.isEmpty()) {
-            return new ArrayList<T>();
+            return new ArrayList< T >();
         }
         InsertOneOptions insertOneOption = new InsertOneOptions()
                 .bypassDocumentValidation(options.getBypassDocumentValidation())
@@ -290,14 +266,14 @@ public interface Datastore extends IndexOperations,MongoOperations {
     /**
      * Saves an entity (Object) and updates the @Id field
      */
-    default <T> T save(T entity) {
+    default < T > T save( T entity ) {
         return save(entity, new InsertOneOptions(), null);
     }
 
     /**
      * Saves an entity (Object) and updates the @Id field
      */
-    default <T> T save(T entity,String collectionName) {
+    default < T > T save( T entity, String collectionName ) {
         return save(entity, new InsertOneOptions(), collectionName);
     }
 
@@ -305,14 +281,14 @@ public interface Datastore extends IndexOperations,MongoOperations {
     /**
      * Saves an entity (Object) and updates the @Id field
      */
-    default <T> T save(T entity, InsertOneOptions options) {
+    default < T > T save( T entity, InsertOneOptions options ) {
         return save(entity, options, null);
     }
 
     /**
      * Saves an entity (Object) and updates the @Id field
      */
-    <T> T save( T entity, InsertOneOptions options, String collectionName );
+    < T > T save( T entity, InsertOneOptions options, String collectionName );
 
 
     /**
@@ -325,7 +301,7 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * Starts a new session on the server.
      * 提供出去的对外的接口
      */
-    MarsSession startSession(ClientSessionOptions options);
+    MarsSession startSession( ClientSessionOptions options );
 
     MongoMappingContext getMapper();
 
@@ -339,13 +315,13 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @param update the {@link UpdateDefinition} to apply on matching documents. Must not be {@literal null}.
      * @param entityClass the parametrized type. Must not be {@literal null}.
      * @return the converted object that was updated before it was updated or {@literal null}, if not found.
-     * 
+     *
      * @see Update
-     * 
+     *
      */
-    
-    default <T> T findAndModify(Query query, UpdateDefinition update, Class<T> entityClass){
-        return findAndModify(query,update,new FindOneAndUpdateOptions(),entityClass);
+
+    default < T > T findAndModify( Query query, UpdateDefinition update, Class< T > entityClass ) {
+        return findAndModify(query, update, new FindOneAndUpdateOptions(), entityClass);
     }
 
     /**
@@ -358,12 +334,12 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @param entityClass the parametrized type. Must not be {@literal null}.
      * @param collectionName the collection to query. Must not be {@literal null}.
      * @return the converted object that was updated before it was updated or {@literal null}, if not found.
-     * 
+     *
      * @see Update
-     * 
+     *
      */
-    
-    default <T> T findAndModify(Query query, UpdateDefinition update, Class<T> entityClass, String collectionName){
+
+    default < T > T findAndModify( Query query, UpdateDefinition update, Class< T > entityClass, String collectionName ) {
         return findAndModify(query, update, new FindOneAndUpdateOptions(), entityClass, collectionName);
     }
 
@@ -380,12 +356,12 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
      *         {@link FindOneAndUpdateOptions#getReturnDocument()} this will either be the object as it was before the update or as
      *         it is after the update.
-     * 
+     *
      * @see Update
-     * 
+     *
      */
-    
-    default <T> T findAndModify(Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class<T> entityClass){
+
+    default < T > T findAndModify( Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class< T > entityClass ) {
         return findAndModify(query, update, options, entityClass, getCollectionName(entityClass));
     }
 
@@ -403,14 +379,13 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @return the converted object that was updated or {@literal null}, if not found. Depending on the value of
      *         {@link FindOneAndUpdateOptions#getReturnDocument()} this will either be the object as it was before the update or as
      *         it is after the update.
-     * 
+     *
      * @see Update
-     * 
+     *
      */
-    
-    <T> T findAndModify(Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class<T> entityClass,
-                        String collectionName);
 
+    < T > T findAndModify( Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class< T > entityClass,
+                           String collectionName );
 
 
     /**
@@ -429,7 +404,7 @@ public interface Datastore extends IndexOperations,MongoOperations {
      *
      */
     @Nullable
-    default <T> T findAndReplace(Query query, T replacement) {
+    default < T > T findAndReplace( Query query, T replacement ) {
         return findAndReplace(query, replacement, new FindOneAndReplaceOptions());
     }
 
@@ -449,7 +424,7 @@ public interface Datastore extends IndexOperations,MongoOperations {
      *
      */
     @Nullable
-    default <T> T findAndReplace(Query query, T replacement, String collectionName) {
+    default < T > T findAndReplace( Query query, T replacement, String collectionName ) {
         return findAndReplace(query, replacement, new FindOneAndReplaceOptions(), collectionName);
     }
 
@@ -470,7 +445,7 @@ public interface Datastore extends IndexOperations,MongoOperations {
      *
      */
     @Nullable
-    default <T> T findAndReplace(Query query, T replacement, FindOneAndReplaceOptions options) {
+    default < T > T findAndReplace( Query query, T replacement, FindOneAndReplaceOptions options ) {
         return findAndReplace(query, replacement, options, getCollectionName(ClassUtil.getClass(replacement)));
     }
 
@@ -491,10 +466,10 @@ public interface Datastore extends IndexOperations,MongoOperations {
      *
      */
     @Nullable
-    default <T> T findAndReplace(Query query, T replacement, FindOneAndReplaceOptions options, String collectionName) {
+    default < T > T findAndReplace( Query query, T replacement, FindOneAndReplaceOptions options, String collectionName ) {
 
         notNull(replacement, "Replacement must not be null!");
-        return findAndReplace(query, replacement, options, (Class<T>) ClassUtil.getClass(replacement), collectionName);
+        return findAndReplace(query, replacement, options, (Class< T >) ClassUtil.getClass(replacement), collectionName);
     }
 
     /**
@@ -516,8 +491,8 @@ public interface Datastore extends IndexOperations,MongoOperations {
      *
      */
     @Nullable
-    default <T> T findAndReplace(Query query, T replacement, FindOneAndReplaceOptions options, Class<T> entityType,
-                                 String collectionName) {
+    default < T > T findAndReplace( Query query, T replacement, FindOneAndReplaceOptions options, Class< T > entityType,
+                                    String collectionName ) {
 
         return findAndReplace(query, replacement, options, entityType, collectionName, entityType);
     }
@@ -543,8 +518,8 @@ public interface Datastore extends IndexOperations,MongoOperations {
      *
      */
     @Nullable
-    default <S, T> T findAndReplace(Query query, S replacement, FindOneAndReplaceOptions options, Class<S> entityType,
-                                    Class<T> resultType) {
+    default < S, T > T findAndReplace( Query query, S replacement, FindOneAndReplaceOptions options, Class< S > entityType,
+                                       Class< T > resultType ) {
 
         return findAndReplace(query, replacement, options, entityType,
                 getCollectionName(entityType), resultType);
@@ -571,8 +546,8 @@ public interface Datastore extends IndexOperations,MongoOperations {
      *
      */
     @Nullable
-    <S, T> T findAndReplace(Query query, S replacement, FindOneAndReplaceOptions options, Class<S> entityType,
-                            String collectionName, Class<T> resultType);
+    < S, T > T findAndReplace( Query query, S replacement, FindOneAndReplaceOptions options, Class< S > entityType,
+                               String collectionName, Class< T > resultType );
 
     /**
      * Map the results of an ad-hoc query on the collection for the entity type to a single instance of an object of the
@@ -589,9 +564,9 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @param entityClass the parametrized type of the returned list.
      * @return the converted object
      */
-    
-    default <T> T findAndDelete(Query query, Class<T> entityClass){
-        return findAndDelete(query,entityClass,getCollectionName(entityClass));
+
+    default < T > T findAndDelete( Query query, Class< T > entityClass ) {
+        return findAndDelete(query, entityClass, getCollectionName(entityClass));
     }
 
     /**
@@ -610,9 +585,9 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @param collectionName name of the collection to retrieve the objects from.
      * @return the converted object.
      */
-    
-    default <T> T findAndDelete(Query query, Class<T> entityClass, String collectionName){
-        return findAndDelete(query,entityClass,collectionName,new FindOneAndDeleteOptions());
+
+    default < T > T findAndDelete( Query query, Class< T > entityClass, String collectionName ) {
+        return findAndDelete(query, entityClass, collectionName, new FindOneAndDeleteOptions());
     }
 
 
@@ -633,7 +608,7 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @param options  FindOneAndDeleteOptions
      * @return the converted object.
      */
-    <T> T findAndDelete(Query query ,Class<T> entityClass, String collectionName,FindOneAndDeleteOptions options);
+    < T > T findAndDelete( Query query, Class< T > entityClass, String collectionName, FindOneAndDeleteOptions options );
 
     /**
      * 根据类型 获取实体对应的表名
@@ -641,5 +616,5 @@ public interface Datastore extends IndexOperations,MongoOperations {
      * @param entityClass must not be {@literal null}.
      * @return never {@literal null}.
      */
-    String getCollectionName(Class<?> entityClass);
+    String getCollectionName( Class< ? > entityClass );
 }
