@@ -34,6 +34,9 @@ package com.whaleal.mars.core.index;
  * @Date 2021-01-11
  * @desc 定义了索引的方向
  * 枚举类
+ *
+ * @see Index
+ * @see com.whaleal.mars.core.index.annotation.Field
  */
 public enum IndexDirection {
     ASC(1),
@@ -50,6 +53,11 @@ public enum IndexDirection {
     }
 
 
+    /**
+     * 创建 IndexDirection
+     * @param value
+     * @return
+     */
     public static IndexDirection fromValue(Object value) {
 
         if (Double.class.equals(value.getClass())) {

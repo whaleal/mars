@@ -480,7 +480,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > void ensureIndexes( Class< T > entityClass, String collectionName ) {
 
-        final IndexHelper indexHelper = new IndexHelper();
+        final IndexHelper indexHelper = new IndexHelper(this.mapper);
         String collName = this.mapper.determineCollectionName(entityClass, collectionName);
         indexHelper.createIndex(this.database.getCollection(collName), this.mapper.getEntityModel(entityClass));
 

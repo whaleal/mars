@@ -36,6 +36,7 @@ import com.mongodb.client.model.CollationStrength;
 
 /**
  * Defines the collation options for an index
+ * @see IndexOptions
  */
 public @interface Collation {
     /**

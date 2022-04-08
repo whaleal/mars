@@ -35,8 +35,9 @@ import java.lang.annotation.*;
 /**
  * Defines the options to be used when declaring an index.
  * <p>
- * todo
- * 需要和 下方的创建索引 统一
+ *
+ * @see com.whaleal.mars.session.option.IndexOptions  两者统一
+ *
  */
 @Documented
 @Inherited

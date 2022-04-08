@@ -33,9 +33,11 @@ import com.mongodb.client.MongoCollection;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.codecs.MarsOrmException;
+import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.core.index.annotation.Index;
 import com.whaleal.mars.core.index.annotation.*;
+import com.whaleal.mars.core.internal.PathTarget;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -46,12 +48,22 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A helper class for dealing with index definitions
+ * 一个 用于解析 Index 相关注解的帮助类
+ *
+ *
+ * @author wh
+ *
  */
 public final class IndexHelper {
     private static final Log log = LogFactory.get(IndexHelper.class);
 
+    private final MongoMappingContext mapper ;
 
-    private void calculateWeights(Index index, com.mongodb.client.model.IndexOptions indexOptions) {
+    public IndexHelper(MongoMappingContext mapper ){
+        this.mapper  = mapper ;
+    }
+
+    private void calculateWeights(Index index, com.whaleal.mars.session.option.IndexOptions indexOptions) {
         Document weights = new Document();
         for (Field field : index.fields()) {
             if (field.weight() != -1) {
@@ -70,14 +82,14 @@ public final class IndexHelper {
     /**
      * @param entityModel
      * @param parentEntityModels
-     * @return 获取 摸个实体 的 的 索引
+     * @return
+     * 获取、收集  某个实体 的 的 索引
      * <p>
      * 如果他已经包含在 parentEntityModels  中
      * 那就什么也不做
      * 否则 返回索引
      */
     private List<Index> collectIndexes(EntityModel entityModel, List<EntityModel> parentEntityModels) {
-
 
         List<Index> indexes = collectTopLevelIndexes(entityModel);
 
@@ -88,6 +100,7 @@ public final class IndexHelper {
      * @param entityModel
      * @return 根据某个实体类对象  生成的 EntityModel  为依据
      * 获取其注解中的所有索引 包含父类 父类为空是 返回空的 List
+     * 其实是按照 索引的向上顺序 获取到第一层 的 索引
      */
     private List<Index> collectTopLevelIndexes(EntityModel entityModel) {
         List<Index> list = new ArrayList<>();
@@ -95,6 +108,7 @@ public final class IndexHelper {
             final Indexes indexes = (Indexes) entityModel.getAnnotation(Indexes.class);
             if (indexes != null) {
                 for (Index index : indexes.value()) {
+                    // 多个字段
                     List<Field> fields = new ArrayList<>();
                     for (Field field : index.fields()) {
                         fields.add(new FieldBuilder()
@@ -141,11 +155,10 @@ public final class IndexHelper {
      * @return 解析注解中的  IndexOption
      * 同时对 其 值 进行转化
      * 转为 Mongodb原生的  IndexOption
-     * todo  后面 最好转为 自己的  复制的 index Option
-     * 使用上进行统一
+     * 
      */
-    com.mongodb.client.model.IndexOptions convert(IndexOptions options) {
-        com.mongodb.client.model.IndexOptions indexOptions = new com.mongodb.client.model.IndexOptions()
+    com.whaleal.mars.session.option.IndexOptions convert(IndexOptions options) {
+        com.whaleal.mars.session.option.IndexOptions indexOptions = new com.whaleal.mars.session.option.IndexOptions()
                 .background(options.background())
                 .sparse(options.sparse())
                 .unique(options.unique());
@@ -192,12 +205,14 @@ public final class IndexHelper {
 
 
     /**
-     * @param collection
+     * 核心方法 直接在本类中创建相关索引
+     * @param collection  数据表
      * @param entityModel 对外开放的 创建索引的方法
      *                    传入 collection  及 实体模型
      *                    内部迭代并依次创建 索引
      */
     public void createIndex(MongoCollection<?> collection, EntityModel entityModel) {
+        /** 验证 EntityModel 的有效性 */
         if (!entityModel.isInterface() && !entityModel.isAbstract()) {
             for (Index index : collectIndexes(entityModel, Collections.emptyList())) {
                 createIndex(collection, entityModel, index);
@@ -205,19 +220,34 @@ public final class IndexHelper {
         }
     }
 
+    /**
+     * 创建索引的主要方法
+     * 用于创建单个方法
+     *
+     * @param collection
+     * @param entityModel
+     * @param index
+     */
     void createIndex(MongoCollection<?> collection, EntityModel entityModel, Index index) {
+
+        /**获取 key */
         Document keys = calculateKeys(entityModel, index);
-        com.mongodb.client.model.IndexOptions indexOptions = convert(index.options());
+        /** 获取Option */
+        com.whaleal.mars.session.option.IndexOptions indexOptions = convert(index.options());
+
+        /**查看是否 是 text 相关 并调试 option */
         calculateWeights(index, indexOptions);
 
-        collection.createIndex(keys, indexOptions);
+        /** 执行创建 索引 动作*/
+        collection.createIndex(keys, indexOptions.getOriginOptions());
     }
 
     String findField(EntityModel entityModel, IndexOptions options, String path) {
         if (path.equals("$**")) {
             return path;
         }
-        return path;
+
+        return new PathTarget(mapper, entityModel, path, !options.disableValidation()).translatedPath();
 
     }
 }
