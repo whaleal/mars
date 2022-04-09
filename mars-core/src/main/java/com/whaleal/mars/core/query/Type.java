@@ -2,7 +2,11 @@ package com.whaleal.mars.core.query;
 
 /**
  * 用于查询字段类型的 BSON类型枚举类。
+ *
+ * @see org.bson.BsonType
+ *
  */
+@Deprecated
 public enum Type {
 
     DOUBLE(1),
