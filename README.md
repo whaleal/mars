@@ -55,7 +55,7 @@ mars 目标是兼容大多数的非关系型数据库，使用一套的标准查
 
 ### 🎁mars名称的由来
 
-mars ，是上海锦木信息技术有限公司与相关方合作方共同研发的一款ODM/ORM框架，纪念中国火星探测任务“天问一号”的火星车祝融号成功登陆火星的乌托邦平原【2021年5月15日】，故起名为 mars。
+mars ，是上海锦木信息技术有限公司与 中国东方航空公司 共同研发的一款ODM/ORM框架，纪念中国火星探测任务“天问一号”的火星车祝融号成功登陆火星的乌托邦平原【2021年5月15日】，故起名为 mars。
 
 ### 🍺mars如何改变我们的coding方式
 
@@ -82,7 +82,7 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 
 ## 📝文档 
 
-* [See the usage docs](Usage.md)
+* [See the usage docs](https://github.com/whaleal/mars/wiki)
 * [Download Latest](https://github.com/whaleal/mars/releases)
 
 
