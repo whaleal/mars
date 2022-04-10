@@ -27,56 +27,19 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.core.index;
-
-import com.whaleal.mars.core.index.annotation.Field;
 
 /**
- * 解析 索引相关的 Field
- * 其本身也是 注解的一个子类
- * 本质还是值的持有
+ * 索引相关的注解全都在这里
+ * 主要结构如下所示
+ * Indexes
+ *     -Index
+ *          -Field = {field1 ,ASC}
+ *          -Field = {field1 ,ASC}
+ *     -Index
+ *          -Field = {field1 ,ASC}
+ *          -Field = {field1 ,ASC}
+ *          -IndexOptions
  *
- * @see com.whaleal.mars.core.index.annotation.Field
- * @see com.whaleal.mars.core.index.AnnotationBuilder
  *
- *
- *
- * @author wh
  */
-class FieldBuilder extends AnnotationBuilder<Field> implements Field {
-    @Override
-    public Class<Field> annotationType() {
-        return Field.class;
-    }
-
-    @Override
-    public IndexDirection type() {
-        return get("type");
-    }
-
-    @Override
-    public String value() {
-        return get("value");
-    }
-
-    @Override
-    public int weight() {
-        return get("weight");
-    }
-
-    FieldBuilder type(IndexDirection type) {
-        put("type", type);
-        return this;
-    }
-
-    FieldBuilder value(String value) {
-        put("value", value);
-        return this;
-    }
-
-    FieldBuilder weight(int weight) {
-        put("weight", weight);
-        return this;
-    }
-
-}
+package com.whaleal.mars.core.index.annotation;

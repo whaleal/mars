@@ -251,7 +251,7 @@ public class ChangeStreamRequest<T>
          * <a href="https://docs.mongodb.com/manual/reference/change-events/">structure of Change Events</a>.
          * <p/>
          *
-         * @param aggregation the {@link Aggregation Aggregation pipeline} to apply for filtering events. Must not be
+         * @param aggregation the {@link AggregationPipeline Aggregation pipeline} to apply for filtering events. Must not be
          *                    {@literal null}.
          * @return this.
          * @see ChangeStreamOptions#getFilter()

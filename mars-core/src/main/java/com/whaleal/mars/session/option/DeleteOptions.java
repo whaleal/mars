@@ -42,8 +42,9 @@ import com.mongodb.client.model.Collation;
 public class DeleteOptions
         implements WriteConfigurable<DeleteOptions> {
 
+
     private WriteConcern writeConcern;
-    // 删除多条数据
+    /** 删除多条数据 */
     private boolean multi;
 
     private com.mongodb.client.model.DeleteOptions originDeleteOptions;

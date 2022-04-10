@@ -36,8 +36,7 @@ import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.internal.PathTarget;
 import com.whaleal.mars.core.query.Type;
-import org.bson.BsonWriter;
-import org.bson.Document;
+import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
@@ -628,7 +627,20 @@ public final class Filters {
      * @return the filter
      * @query.filter $type
      */
+    @Deprecated
     public static Filter type(String field, Type val) {
+        return new Filter("$type", field, val.toString().toLowerCase());
+    }
+
+    /**
+     * Selects documents if a field is of the specified BsonType.
+     *
+     * @param field the field to check
+     * @param val   the value to check
+     * @return the filter
+     * @query.filter $type
+     */
+    public static Filter type(String field, BsonType val) {
         return new Filter("$type", field, val.toString().toLowerCase());
     }
 

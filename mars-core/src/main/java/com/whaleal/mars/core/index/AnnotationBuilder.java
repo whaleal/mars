@@ -41,14 +41,24 @@ import static java.lang.String.format;
 
 
 public abstract class AnnotationBuilder<T extends Annotation> implements Annotation {
+    /**使用一个 Map  来进行 基础信息的存储 这里主要用来存储  注解里的值;
+     * 默认情况下 当构造该对象时会自动的加载所有的默认值
+     */
     private final Map<String, Object> values = new HashMap<String, Object>();
 
+    /**
+     * 加载默认设置
+     */
     protected AnnotationBuilder() {
         for (Method method : annotationType().getDeclaredMethods()) {
             values.put(method.getName(), method.getDefaultValue());
         }
     }
 
+    /**
+     * 加载对象的值
+     * @param original
+     */
     protected AnnotationBuilder(T original) {
         try {
             for (Method method : annotationType().getDeclaredMethods()) {
@@ -105,6 +115,11 @@ public abstract class AnnotationBuilder<T extends Annotation> implements Annotat
         return format("@%s %s", annotationType().getName(), values.toString());
     }
 
+    /**
+     * 由子类去完成 该泛型的具体类型
+     *
+     * @return
+     */
     @Override
     public abstract Class<T> annotationType();
 

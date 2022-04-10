@@ -28,6 +28,10 @@
  *    it in the license file.
  */
 
+/**
+ * 关于编码包的相关说明
+ * @author wh
+ */
 @NonNullApi
 package com.whaleal.mars.codecs;
 import com.mongodb.lang.NonNullApi;

@@ -34,6 +34,7 @@ import java.sql.ResultSet;
 /**
  * Constants are fixed values that are used in the whole database code.
  */
+@Deprecated
 public class Constants {
 
     /**

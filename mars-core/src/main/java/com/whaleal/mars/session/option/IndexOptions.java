@@ -38,8 +38,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author cx
  * @Date 2020/12/15
+ *
+ * @see com.whaleal.mars.core.index.annotation.IndexOptions
+ *
  */
-public class IndexOptions implements WriteConfigurable<IndexOptions> {
+public class IndexOptions extends com.mongodb.client.model.IndexOptions implements WriteConfigurable<IndexOptions> {
 
     private WriteConcern writeConcern;
 
@@ -52,7 +55,6 @@ public class IndexOptions implements WriteConfigurable<IndexOptions> {
 
     public IndexOptions(com.mongodb.client.model.IndexOptions originIndexOptions) {
         this.originIndexOptions = originIndexOptions;
-
     }
 
 

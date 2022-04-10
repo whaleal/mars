@@ -96,6 +96,7 @@ public class AtomicIntegerCodec implements Codec<AtomicInteger>, RepresentationC
         return representation;
     }
 
+
     @Override
     public Codec<AtomicInteger> withRepresentation(BsonType bsonType) {
 

@@ -37,6 +37,7 @@ package com.whaleal.mars.session;
  * <p>
  * 后续：  因为引入了静态工厂处理 关于crud的具体操作，所以这里的enum只做一个标识作用
  */
+@Deprecated
 public enum CrudEnum {
 
     UPDATE,

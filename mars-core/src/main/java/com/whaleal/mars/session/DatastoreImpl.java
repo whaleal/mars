@@ -39,7 +39,6 @@ import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 
-import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -72,7 +71,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
-import javax.print.Doc;
+
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -203,7 +202,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     @Override
-    public < T > InsertManyResult insert( Collection< ? extends T > entities, InsertManyOptions options, String collectionName ) {
+    public < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options ) {
+        String collectionName = this.mapper.determineCollectionName(entityClass, null);
+        return this.insert(entities,collectionName,options);
+    }
+
+
+
+    @Override
+    public < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName ,InsertManyOptions options) {
 
         if (entities == null || entities.isEmpty()) {
             throw new IllegalArgumentException("entities in operation can't be null or empty ");
@@ -473,7 +480,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > void ensureIndexes( Class< T > entityClass, String collectionName ) {
 
-        final IndexHelper indexHelper = new IndexHelper();
+        final IndexHelper indexHelper = new IndexHelper(this.mapper);
         String collName = this.mapper.determineCollectionName(entityClass, collectionName);
         indexHelper.createIndex(this.database.getCollection(collName), this.mapper.getEntityModel(entityClass));
 
@@ -616,7 +623,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         if (upload.getFileId() == null) {
             return (T) getGridFsBucket(bucketName).uploadFromStream(upload.getFilename(), upload.getContent(), uploadOptions);
         }
-
+        
         getGridFsBucket(bucketName).uploadFromStream(BsonUtil.simpleToBsonValue(upload.getFileId()), upload.getFilename(),
                 upload.getContent(), uploadOptions);
 

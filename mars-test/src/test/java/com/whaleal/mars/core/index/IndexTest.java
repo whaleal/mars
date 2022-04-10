@@ -5,12 +5,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.whaleal.mars.bean.Address;
 import com.whaleal.mars.bean.Student;
-import org.bson.Document;
-import org.junit.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.option.IndexOptions;
+import org.bson.Document;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,34 +26,31 @@ public class IndexTest {
     @Autowired
     Mars mars;
 
-    String coll = "coll" ;
-
+    String coll = "coll";
 
 
     @Test
-    public void testConnection(){
+    public void testConnection() {
 
         Assert.assertNotNull(mars);
     }
 
 
-
-
     @Test
-    public void testCreateIndex(){
+    public void testCreateIndex() {
 
         mars.dropIndexes(coll);
         Index index = new Index();
         index.on("c", IndexDirection.ASC);
         index.setOptions(new IndexOptions().background(true).expireAfter(3600l, TimeUnit.SECONDS));
-        mars.createIndex(index,coll);
+        mars.createIndex(index, coll);
 
-        List<Index> cool = mars.getIndexes(coll);
-        Assert.assertEquals(cool.size() ,2);
+        List< Index > cool = mars.getIndexes(coll);
+        Assert.assertEquals(cool.size(), 2);
 
-        Assert.assertEquals(cool.get(1).getIndexKeys(),new Document("c",1));
+        Assert.assertEquals(cool.get(1).getIndexKeys(), new Document("c", 1));
 
-        Assert.assertEquals(cool.get(1).getIndexOptions().getExpireAfter(TimeUnit.SECONDS),Long.valueOf(3600));
+        Assert.assertEquals(cool.get(1).getIndexOptions().getExpireAfter(TimeUnit.SECONDS), Long.valueOf(3600));
 
         mars.dropIndexes(coll);
 
@@ -61,42 +58,42 @@ public class IndexTest {
 
 
     @Test
-    public void testDropIndex(){
-        Index  index = new Index();
-        index.on("a",IndexDirection.ASC).on("b",IndexDirection.DESC);
+    public void testDropIndex() {
+        Index index = new Index();
+        index.on("a", IndexDirection.ASC).on("b", IndexDirection.DESC);
         index.setOptions(new IndexOptions().background(true));
 
         mars.dropIndexes(coll);
 
-        mars.createIndex(index ,coll);
-        List<Index> indexes = mars.getIndexes(coll);
-        Assert.assertEquals(indexes.size() ,2);
+        mars.createIndex(index, coll);
+        List< Index > indexes = mars.getIndexes(coll);
+        Assert.assertEquals(indexes.size(), 2);
 
-        Assert.assertEquals(indexes.get(1).getIndexKeys(),new Document("a",1).append("b",-1));
-        mars.dropIndex(index,coll);
+        Assert.assertEquals(indexes.get(1).getIndexKeys(), new Document("a", 1).append("b", -1));
+        mars.dropIndex(index, coll);
 
     }
 
     @Test
-    public void testEnsurseIndexes(){
+    public void testEnsurseIndexes() {
 
         mars.dropIndexes(coll);
-        mars.ensureIndexes(Student.class ,coll);
-        List<Index> indexes = mars.getIndexes(coll);
-        Assert.assertEquals(indexes.size() ,4);
+        mars.ensureIndexes(Student.class, coll);
+        List< Index > indexes = mars.getIndexes(coll);
+        Assert.assertEquals(indexes.size(), 4);
 
 
-        Assert.assertEquals(indexes.get(1).getIndexKeys(),new Document("salary",1).append("name",-1));
+        Assert.assertEquals(indexes.get(1).getIndexKeys(), new Document("salary", 1).append("name", -1));
 
-        Assert.assertEquals(indexes.get(2).getIndexKeys(),new Document("idcc","hashed"));
+        Assert.assertEquals(indexes.get(2).getIndexKeys(), new Document("idcc", "hashed"));
 
 
-        Assert.assertEquals(indexes.get(3).getIndexKeys(),new Document("idcc",1));
+        Assert.assertEquals(indexes.get(3).getIndexKeys(), new Document("idcc", 1));
 
 
         Long expireAfter = indexes.get(3).getIndexOptions().getExpireAfter(TimeUnit.SECONDS);
 
-        Assert.assertEquals(expireAfter,Long.valueOf(10));
+        Assert.assertEquals(expireAfter, Long.valueOf(10));
 
         mars.dropIndexes(coll);
 
@@ -114,9 +111,9 @@ public class IndexTest {
 
 
     @Test
-    public void testDBAndCollection(){
+    public void testDBAndCollection() {
         MongoDatabase database = mars.getDatabase();
-        MongoCollection<Document> tables = database.getCollection("tables");
+        MongoCollection< Document > tables = database.getCollection("tables");
 
         tables.insertOne(new Document());
 
@@ -142,7 +139,7 @@ public class IndexTest {
     @Test
     public void testGetIndexes() {
 
-        List<Index> addr = mars.getIndexes("cc");
+        List< Index > addr = mars.getIndexes("cc");
 
         System.out.println(addr);
     }
