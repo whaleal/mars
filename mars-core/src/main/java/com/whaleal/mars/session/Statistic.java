@@ -38,7 +38,7 @@ import com.whaleal.mars.session.option.CountOptions;
  * 用于查询 MongoDB  文档数量的相关方法
  * @Date 2020-01-14
  */
-public interface Statistic {
+interface Statistic {
 
     default <T> long count(Class<T> clazz) {
         return count(clazz, new CountOptions());

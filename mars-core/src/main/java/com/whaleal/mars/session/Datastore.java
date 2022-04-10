@@ -39,6 +39,7 @@ import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
+import com.whaleal.mars.session.transactions.MarsTransaction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +73,7 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  * 将 索引 部分的接口单独拿出来
  */
 
-public interface Datastore extends IndexOperations, MongoOperations {
+interface Datastore extends IndexOperations, MongoOperations {
 
 
     default < T > UpdateResult replace( Query query, T entity ) {
@@ -617,4 +618,22 @@ public interface Datastore extends IndexOperations, MongoOperations {
      * @return never {@literal null}.
      */
     String getCollectionName( Class< ? > entityClass );
+
+
+    /**
+     * @param transaction the transaction wrapper
+     * @param <T>         the return type
+     * @return the return value
+     */
+    <T> T withTransaction(MarsTransaction<T> transaction);
+
+    /**
+     * @param <T>         the return type
+     * @param options     the session options to apply
+     * @param transaction the transaction wrapper
+     * @return the return value
+     *
+     */
+    <T> T withTransaction( MarsTransaction<T> transaction , ClientSessionOptions options);
+
 }

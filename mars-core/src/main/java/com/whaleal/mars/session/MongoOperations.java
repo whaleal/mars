@@ -34,7 +34,7 @@ import com.whaleal.mars.core.gridfs.GridFsOperations;
 import com.whaleal.mars.session.option.CollectionOptions;
 import org.bson.Document;
 
-public interface MongoOperations extends GridFsOperations, Statistic{
+interface MongoOperations extends GridFsOperations, Statistic{
 
     /**
      * 传递一个类对象，根据对象创建集合

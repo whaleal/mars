@@ -31,7 +31,7 @@ package com.whaleal.mars.core.gridfs;
 
 import java.io.IOException;
 
-public interface ResourcePatternResolver extends ResourceLoader {
+interface ResourcePatternResolver extends ResourceLoader {
 
     /**
      * Pseudo URL prefix for all matching resources from the class path: "classpath*:"

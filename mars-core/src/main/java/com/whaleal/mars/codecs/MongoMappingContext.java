@@ -86,8 +86,20 @@ public class MongoMappingContext {
     //
     private final CodecRegistry codecRegistry;
 
+    public MongoDatabase getDatabase() {
+        return database;
+    }
+
     private final MongoDatabase database;
 
+    private Set<? extends Class<?>> initialEntitySet;
+
+    public void setInitialEntitySet(Set<? extends Class<?>> initialEntitySet) {
+        this.initialEntitySet = initialEntitySet;
+    }
+
+
+    private boolean autoIndexCreation = false;
 
     public MongoMappingContext( MongoDatabase database ) {
         this.database = database;
@@ -124,6 +136,29 @@ public class MongoMappingContext {
 
         );
 
+    }
+
+    /**
+     * Returns whether auto-index creation is enabled or disabled. <br />
+     * <strong>NOTE:</strong>Index creation should happen at a well-defined time that is ideally controlled by the
+     * application itself.
+     *
+     * @return {@literal true} when auto-index creation is enabled;
+     */
+    public boolean isAutoIndexCreation() {
+        return autoIndexCreation;
+    }
+
+    /**
+     * Enables/disables auto-index creation. <br />
+     * <strong>NOTE:</strong>Index creation should happen at a well-defined time that is ideally controlled by the
+     * application itself.
+     *
+     * @param autoCreateIndexes set to {@literal true} to enable auto-index creation.
+     *
+     */
+    public void setAutoIndexCreation(boolean autoCreateIndexes) {
+        this.autoIndexCreation = autoCreateIndexes;
     }
 
 

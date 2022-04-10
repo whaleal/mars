@@ -66,6 +66,7 @@ import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.core.query.BsonUtil;
 
+import com.whaleal.mars.session.transactions.MarsTransaction;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
@@ -89,7 +90,7 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  * @Date 2020-12-03
  *
  */
-public class DatastoreImpl extends AggregationImpl implements Datastore{
+public abstract class DatastoreImpl extends AggregationImpl implements Datastore{
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
 
@@ -101,10 +102,16 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     private final Map< Class<?> , String > collectionNameCache = new HashMap< Class<?>, String >();
 
 
-    public DatastoreImpl( MongoClient mongoClient, String databaseName ) {
+    protected DatastoreImpl( MongoClient mongoClient, String databaseName ) {
         super(mongoClient.getDatabase(databaseName));
         this.mongoClient = mongoClient;
         defaultGridFSBucket = GridFSBuckets.create(super.database);
+    }
+
+    protected DatastoreImpl(MongoClient mongoClient ,MongoMappingContext mapper){
+        super(mapper.getDatabase(),mapper);
+        this.mongoClient = mongoClient ;
+        this.defaultGridFSBucket = GridFSBuckets.create(super.database);
     }
 
 
@@ -1385,7 +1392,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         }
 
-
         return null;
     }
 
@@ -1565,4 +1571,30 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         return null;
     }
+
+
+
+    @Override
+    public <T> T withTransaction(MarsTransaction<T> body) {
+        return doTransaction(startSession(), body);
+    }
+
+    @Override
+    public <T> T withTransaction(MarsTransaction<T> transaction ,ClientSessionOptions options ) {
+        return doTransaction(startSession(options), transaction);
+    }
+    private <T> T doTransaction(MarsSession marssession, MarsTransaction<T> body) {
+        try {
+            ClientSession session = marssession.startSession();
+            if (session == null) {
+                throw new IllegalStateException("No session could be found for the transaction.");
+            }
+            return session.withTransaction(() -> body.execute(marssession));
+        }catch (Exception e){
+            log.error(e);
+            throw e;
+        }
+    }
+
+
 }

@@ -40,7 +40,7 @@ import java.util.List;
  * 后期需要 封装基于 entity  的 索引接口
  * 直接在接口中实现   默认做法
  */
-public interface IndexOperations {
+interface IndexOperations {
 
 
     void createIndex(Index index, String collectionName);
