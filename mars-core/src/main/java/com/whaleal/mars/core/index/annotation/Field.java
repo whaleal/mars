@@ -46,7 +46,7 @@ import java.lang.annotation.*;
 @Target({ElementType.ANNOTATION_TYPE})
 public @interface Field {
     /**
-     * @return "Direction" of the indexing.  Defaults to {@link IndexDirection#ASC}.
+     * @return "IndexDirection" of the indexing.  Defaults to {@link IndexDirection#ASC}.
      */
     IndexDirection type() default IndexDirection.ASC;
 
