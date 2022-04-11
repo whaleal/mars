@@ -103,7 +103,7 @@ public class LocalCrudTest {
     public void insertMany() {
 
         mars.dropCollection(Person.class);
-        InsertManyResult insert = mars.insert(people);
+        InsertManyResult insert = mars.insert(people,Person.class);
 
         int size = insert.getInsertedIds().size();
 

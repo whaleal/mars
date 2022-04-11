@@ -122,7 +122,7 @@ public class PersonCrudTest {
 
         Assert.assertEquals(personList.size() ,number);
 
-        InsertManyResult insertManyResult = mars.insert(personList);
+        InsertManyResult insertManyResult = mars.insert(personList,Person.class);
 
         Assert.assertTrue(insertManyResult.wasAcknowledged());
 

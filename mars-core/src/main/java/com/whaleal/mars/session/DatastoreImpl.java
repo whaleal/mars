@@ -247,7 +247,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     @Override
-    public < T > UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName ) {
+    public < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options, String collectionName ) {
 
         Document entityDoc = this.toDocument(entity);
         if (entityDoc == null) {

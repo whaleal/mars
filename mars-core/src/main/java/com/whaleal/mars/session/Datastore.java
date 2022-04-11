@@ -180,20 +180,22 @@ interface Datastore extends IndexOperations, MongoOperations {
     < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
 
 
-    default < T > UpdateResult update( Query query, T entity ) {
-        return update(query, entity, new UpdateOptions(), null);
+
+    default < T > UpdateResult updateEntity( Query query, T entity ) {
+        return updateEntity(query, entity, new UpdateOptions(), null);
     }
 
-    default < T > UpdateResult update( Query query, T entity, UpdateOptions options ) {
-        return update(query, entity, options, null);
+    default < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options ) {
+        return updateEntity(query, entity, options, null);
     }
 
-    default < T > UpdateResult update( Query query, T entity, String collectionName ) {
-        return update(query, entity, new UpdateOptions(), collectionName);
+    default < T > UpdateResult updateEntity( Query query, T entity, String collectionName ) {
+        return updateEntity(query, entity, new UpdateOptions(), collectionName);
     }
 
 
-    < T > UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName );
+    < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options, String collectionName );
+
 
 
     /**

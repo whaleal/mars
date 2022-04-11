@@ -73,28 +73,6 @@ public class TestUse {
     public void test2(){
         Criteria criteria = new Criteria("size").is(new Document("h", 14).append("w", 21).append("uom", "cm"));
 
-        Query query = new Query().addCriteria(criteria);
-        Optional<Inventory> inventory = mars.findOne(query, Inventory.class, "inventory");
-        System.out.println(inventory.get());
-
-        Criteria criteria1 = Criteria.where("size.uom").is("cm");
-        Query query1 = new Query(criteria1);
-        Optional<Inventory> one = mars.findOne(query1, Inventory.class);
-        System.out.println(one.orElse(null));
-
-        QueryCursor<Inventory> all = mars.findAll(query1, Inventory.class);
-        while (all.hasNext()){
-            System.out.println(all.next());
-        }
-
-        Criteria criteria2 = Criteria.where("size.h").lt(15).and("size.uom").is("cm");
-        Query query2 = new Query(criteria2);
-        System.out.println(query2.getQueryObject());
-        QueryCursor<Inventory> all1 = mars.findAll(query2, Inventory.class);
-        while (all1.hasNext()){
-            System.out.println(all1.next());
-        }
-
 
 
 

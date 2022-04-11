@@ -56,7 +56,7 @@ public class StudentCrudTest {
     @Test
     public void test01del() {
 
-        mars.insert(stuList ,new InsertManyOptions().ordered(false));
+        mars.insert(stuList ,Student.class ,new InsertManyOptions().ordered(false));
         DeleteResult deleteResult = mars.delete(new Query(), Student.class, new DeleteOptions().multi(true));
         Assert.assertEquals("删除异常", stuList.size(), deleteResult.getDeletedCount());
 
@@ -70,7 +70,7 @@ public class StudentCrudTest {
 
         ArrayList< Student > students = CollUtil.newArrayList(instance1, instance2, instance3);
 
-        InsertManyResult result = mars.insert(students);
+        InsertManyResult result = mars.insert(students,Student.class);
         Assert.assertEquals("insert exception", students.size(), result.getOriginInsertManyResult().getInsertedIds().size());
     }
 
@@ -124,7 +124,7 @@ public class StudentCrudTest {
             list.add(student);
         }
         mars.dropCollection(Student.class);
-        InsertManyResult insert = mars.insert(list);
+        InsertManyResult insert = mars.insert(list,Student.class);
         long count = mars.count(Student.class);
         Assert.assertEquals(i,count);
         mars.dropCollection(Student.class);

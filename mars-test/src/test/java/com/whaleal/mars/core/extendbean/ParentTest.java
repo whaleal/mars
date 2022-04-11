@@ -73,7 +73,7 @@ public class ParentTest {
         p2.setName("person");
         ArrayList< Parent > parents = CollUtil.newArrayList(p1, p2);
 
-        InsertManyResult insert = mars.insert(parents);
+        InsertManyResult insert = mars.insert(parents,Parent.class);
 
         Assert.assertEquals(2,insert.getInsertedIds().size());
 
