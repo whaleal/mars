@@ -23,11 +23,7 @@
             <artifactId>icefrog-log</artifactId>
             <version>${icefrog.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.whaleal.icefrog</groupId>
-            <artifactId>icefrog-json</artifactId>
-            <version>${icefrog.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
