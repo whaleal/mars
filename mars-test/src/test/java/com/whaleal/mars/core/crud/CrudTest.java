@@ -113,8 +113,8 @@ public class CrudTest {
         options.upsert(true);
         options.multi(true);
 
-        UpdateResult result = mars.update(query, student, options, null);
-        mars.update(query,student);
+        UpdateResult result = mars.updateEntity(query, student, options, null);
+        mars.updateEntity(query,student);
 
         System.out.println(result);
 
