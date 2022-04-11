@@ -49,8 +49,7 @@ public class AggregationPipeline<T> implements Aggregation<T> {
         return outputType;
     }
 
-    //todo  计划后续使用该参数来封装 聚合返回类型 ；
-    // 泛型绑定
+
     private final Class<T>  outputType ;
 
     private AggregationPipeline(Class<T> outputType ){

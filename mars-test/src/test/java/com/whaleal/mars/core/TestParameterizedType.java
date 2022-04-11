@@ -1,6 +1,7 @@
 package com.whaleal.mars.core;
 
-import org.junit.Test;
+
+import org.testng.annotations.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -11,11 +12,11 @@ import java.util.Map;
 public class TestParameterizedType {
 
 
-    private List<Character> list;
+    private List< Character > list;
 
-    private Map<String, Integer> map;
+    private Map< String, Integer > map;
 
-    private Map<String, Integer> map2;
+    private Map< String, Integer > map2;
     private Map map3;
 
     @Test
@@ -47,7 +48,7 @@ public class TestParameterizedType {
 
         Type genericType = mapField.getGenericType();
 
-        System.out.println(ParameterizedType.class.isInstance(genericType));
+        System.out.println(genericType instanceof ParameterizedType);
 
     }
 

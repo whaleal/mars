@@ -2,8 +2,8 @@ package com.whaleal.mars.core.extendbean;
 
 import com.mongodb.client.MongoCollection;
 import com.whaleal.icefrog.core.collection.CollUtil;
-import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.bean.Parent;
+import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
@@ -12,12 +12,12 @@ import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,45 +26,46 @@ import java.util.Optional;
 /**
  * @author wh
  */
-@RunWith(SpringRunner.class)
+
 @SpringBootTest
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class ParentTest {
 
 
     @Autowired
-    Mars mars ;
-    
-    @Before
-    public void init(){
+    Mars mars;
+
+    @BeforeMethod
+    public void init() {
 
 
     }
 
 
-    @After
-    public void destory(){
+    @AfterMethod
+    public void destory() {
 
         try {
             mars.dropCollection(Parent.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             // e.printStackTrace();
         }
     }
 
 
     @Test
-    public void test00Entity(){
+    public void test00Entity() {
         Parent p = new Parent();
         p.setAge(18);
         p.setName("person");
 
         MongoCollection< Parent > collection = mars.getCollection(Parent.class);
         String collectionName = collection.getNamespace().getCollectionName();
-        Assert.assertEquals("parent",collectionName);
+        Assert.assertEquals("parent", collectionName);
     }
+
     @Test
-    public void test01Insert(){
+    public void test01Insert() {
         Parent p1 = new Parent();
         p1.setAge(18);
         p1.setName("person");
@@ -73,20 +74,21 @@ public class ParentTest {
         p2.setName("person");
         ArrayList< Parent > parents = CollUtil.newArrayList(p1, p2);
 
-        InsertManyResult insert = mars.insert(parents,Parent.class);
+        InsertManyResult insert = mars.insert(parents, Parent.class);
 
-        Assert.assertEquals(2,insert.getInsertedIds().size());
+        Assert.assertEquals(2, insert.getInsertedIds().size());
 
 
     }
+
     @Test
-    public void test02Insert(){
+    public void test02Insert() {
         Parent p = new Parent();
         p.setAge(18);
         p.setName("person");
         p.setId("10");
         InsertOneResult insert = mars.insert(p);
-        Assert.assertEquals("10",insert.getInsertedId().asString().getValue());
+        Assert.assertEquals("10", insert.getInsertedId().asString().getValue());
         //-----------------
         p.setId(null);
         mars.insert(p);
@@ -96,7 +98,7 @@ public class ParentTest {
     }
 
     @Test
-    public void test03Countt(){
+    public void test03Countt() {
         Parent p = new Parent();
         p.setAge(18);
         p.setName("person");
@@ -104,13 +106,13 @@ public class ParentTest {
 
         mars.insert(p);
         long count = mars.count(Parent.class);
-        Assert.assertEquals(1,count);
+        Assert.assertEquals(1, count);
 
     }
 
 
     @Test
-    public void test04ctById(){
+    public void test04ctById() {
 
         Parent p = new Parent();
         p.setAge(18);
@@ -122,11 +124,11 @@ public class ParentTest {
 
         long l = mars.countById(new Query(id), Parent.class);
 
-        Assert.assertEquals(1,l);
+        Assert.assertEquals(1, l);
     }
 
     @Test
-    public void  test05delete(){
+    public void test05delete() {
         Parent p = new Parent();
         p.setAge(18);
         p.setName("person");
@@ -134,11 +136,12 @@ public class ParentTest {
         mars.insert(p);
         Criteria id = Criteria.where("_id").is("10");
         DeleteResult delete = mars.delete(new Query(id), Parent.class);
-        Assert.assertEquals(1,delete.getDeletedCount());
+        Assert.assertEquals(1, delete.getDeletedCount());
 
     }
+
     @Test
-    public void  test06delete(){
+    public void test06delete() {
         Parent p = new Parent();
         p.setAge(18);
         p.setName("person");
@@ -150,13 +153,13 @@ public class ParentTest {
         mars.insert(p);
 
         Criteria id = Criteria.where("age").is(18);
-        DeleteResult delete = mars.delete(new Query(id), Parent.class,new DeleteOptions().multi(true));
-        Assert.assertEquals(2,delete.getDeletedCount());
+        DeleteResult delete = mars.delete(new Query(id), Parent.class, new DeleteOptions().multi(true));
+        Assert.assertEquals(2, delete.getDeletedCount());
 
     }
 
     @Test
-    public void test07find1(){
+    public void test07find1() {
         Parent p = new Parent();
         p.setAge(18);
         p.setName("person");
@@ -167,13 +170,13 @@ public class ParentTest {
         Optional< Parent > one = mars.findOne(new Query(id), Parent.class);
         Parent parent = one.get();
 
-        Assert.assertEquals(p.getId(),parent.getId());
-        Assert.assertEquals(p.getAge(),parent.getAge());
-        Assert.assertEquals(p.getName(),parent.getName());
+        Assert.assertEquals(p.getId(), parent.getId());
+        Assert.assertEquals(p.getAge(), parent.getAge());
+        Assert.assertEquals(p.getName(), parent.getName());
     }
 
     @Test
-    public void test08findA(){
+    public void test08findA() {
         Parent p = new Parent();
         p.setAge(33);
         p.setName("person");
@@ -192,20 +195,20 @@ public class ParentTest {
         List< Parent > parents = all.toList();
         Parent first = parents.get(0);
 
-        Assert.assertEquals(p.getId(),first.getId());
-        Assert.assertEquals(p.getAge(),first.getAge());
-        Assert.assertEquals(p.getName(),first.getName());
+        Assert.assertEquals(p.getId(), first.getId());
+        Assert.assertEquals(p.getAge(), first.getAge());
+        Assert.assertEquals(p.getName(), first.getName());
 
         Parent secondy = parents.get(1);
 
-        Assert.assertEquals(p2.getId(),secondy.getId());
-        Assert.assertEquals(p2.getAge(),secondy.getAge());
-        Assert.assertEquals(p2.getName(),secondy.getName());
+        Assert.assertEquals(p2.getId(), secondy.getId());
+        Assert.assertEquals(p2.getAge(), secondy.getAge());
+        Assert.assertEquals(p2.getName(), secondy.getName());
 
     }
 
     @Test
-    public void test07Save1(){
+    public void test07Save1() {
         Parent p = new Parent();
         p.setAge(18);
         p.setName("person");
@@ -220,8 +223,8 @@ public class ParentTest {
 
         Parent first = one.get();
 
-        Assert.assertEquals(p.getId(),first.getId());
-        Assert.assertEquals(p.getAge(),first.getAge());
-        Assert.assertEquals(p.getName(),first.getName());
+        Assert.assertEquals(p.getId(), first.getId());
+        Assert.assertEquals(p.getAge(), first.getAge());
+        Assert.assertEquals(p.getName(), first.getName());
     }
 }

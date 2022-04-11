@@ -6,6 +6,5 @@
  * 注入测试
  * 及普通的工具类 等
  * 其他未分类的也在这里
- *
  */
 package com.whaleal.mars.base;

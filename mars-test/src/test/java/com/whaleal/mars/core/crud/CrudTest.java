@@ -1,28 +1,25 @@
-
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.base.StudentGenerator;
-import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.bean.Person;
-import com.whaleal.mars.core.query.Update;
-import org.bson.Document;
-import org.bson.types.ObjectId;
-import org.junit.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.core.query.Criteria;
+import com.whaleal.mars.core.query.Query;
+import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.ReplaceOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.UpdateResult;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import com.whaleal.mars.core.query.Criteria;
-import com.whaleal.mars.core.query.Query;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +33,6 @@ import java.util.Optional;
  */
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class CrudTest {
 
@@ -44,11 +40,11 @@ public class CrudTest {
     Mars mars;
 
     Student student;
-    
-    
-    Integer  stuNo = 10000 ; 
 
-    @Before
+
+    Integer stuNo = 10000;
+
+    @BeforeMethod
     public void isNull() {
 
         Assert.assertNotNull(mars);
@@ -57,14 +53,13 @@ public class CrudTest {
         student = StudentGenerator.getInstance(10000);
     }
 
-    
 
     @Test
     public void findAll() {
 
         Query query = new Query();
 
-        QueryCursor<Student> result = mars.findAll(query, Student.class);
+        QueryCursor< Student > result = mars.findAll(query, Student.class);
 
         while (result.hasNext()) {
             System.out.println(result.next());
@@ -76,7 +71,7 @@ public class CrudTest {
     public void findOne() {
 
         Query query = Query.query(Criteria.where("_id").is(new ObjectId("6034c9c9e73be70704731635")));
-        Optional<Student> one = mars.findOne(query, Student.class, null);
+        Optional< Student > one = mars.findOne(query, Student.class, null);
 
         System.out.println(one);
     }
@@ -84,7 +79,7 @@ public class CrudTest {
     @Test
     public void insertOne() {
 
-       Student student = StudentGenerator.getInstance(stuNo);
+        Student student = StudentGenerator.getInstance(stuNo);
 
         mars.dropCollection(Student.class);
         mars.insert(student);
@@ -94,10 +89,10 @@ public class CrudTest {
 
     @Test
     public void insertMany() {
-        System.out.println("getTime: " +System.currentTimeMillis());
+        System.out.println("getTime: " + System.currentTimeMillis());
         mars.dropCollection(Student.class);
         mars.insert(student);
-        System.out.println("endTime: " +System.currentTimeMillis());
+        System.out.println("endTime: " + System.currentTimeMillis());
     }
 
     @Test
@@ -114,7 +109,7 @@ public class CrudTest {
         options.multi(true);
 
         UpdateResult result = mars.updateEntity(query, student, options, null);
-        mars.updateEntity(query,student);
+        mars.updateEntity(query, student);
 
         System.out.println(result);
 
@@ -187,7 +182,7 @@ public class CrudTest {
     @Test
     public void replace() {
 
-        Student student =  StudentGenerator.getInstance(stuNo);
+        Student student = StudentGenerator.getInstance(stuNo);
         student.setStuName("cName");
 
         ReplaceOptions replaceOptions = new ReplaceOptions();
@@ -198,9 +193,9 @@ public class CrudTest {
 
 
     @Test
-    public void deleteMany(){
+    public void deleteMany() {
 
-        mars.delete(new Query(), Person.class,new DeleteOptions().multi(true));
+        mars.delete(new Query(), Person.class, new DeleteOptions().multi(true));
 
     }
 

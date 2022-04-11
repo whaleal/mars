@@ -9,14 +9,16 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.MarsSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.After;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
 import static com.mongodb.ClientSessionOptions.builder;
 import static com.mongodb.WriteConcern.MAJORITY;
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
+
 
 /**
  * @author wh
@@ -27,26 +29,30 @@ public class TestTransactions {
 
     private Mars mars;
 
-    @Before
+    @BeforeMethod
     public void init() {
 
         mars = new Mars(Constant.connectionStr);
-        Student student = StudentGenerator.getInstance(1001);
-        mars.insert(student);
+
+        mars.dropCollection(Student.class);
+
     }
+
 
     @Test
     public void delete() {
 
+        Student student = StudentGenerator.getInstance(1001);
+        mars.insert(student);
 
         mars.withTransaction(( session ) -> {
 
-            assertNotNull(mars.findAll(new Query(), Student.class).tryNext());
+
             assertNotNull(session.findAll(new Query(), Student.class).tryNext());
 
             session.delete(new Query(), Student.class);
 
-            assertNotNull(mars.findAll(new Query(), Student.class).tryNext());
+
             assertNull(session.findAll(new Query(), Student.class).tryNext());
             return null;
         }, builder()
@@ -61,11 +67,12 @@ public class TestTransactions {
     @Test
     public void insert() {
         Student stu = StudentGenerator.getInstance(1001);
+        MarsSession marsSession = mars.startSession();
 
         mars.withTransaction(( session ) -> {
             session.insert(stu);
 
-            assertNull(mars.findAll(new Query(), Student.class));
+            assertNotNull(marsSession.findAll(new Query(), Student.class).tryNext());
             assertEquals(session.count(Student.class), 1);
 
             return null;
@@ -80,9 +87,9 @@ public class TestTransactions {
                 StudentGenerator.getInstance(1002));
 
         mars.withTransaction(( session ) -> {
-            session.insert(stus);
+            session.insert(stus, Student.class);
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
+
             assertEquals(session.findAll(new Query(), Student.class).toList(), stus);
 
             return null;
@@ -105,9 +112,7 @@ public class TestTransactions {
 
             session.save(StudentGenerator.getInstance(1002));
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
-            assertNotNull(session.findAll(new Query(), Student.class).tryNext());
+
             assertNotNull(session.findAll(new Query(), Student.class).tryNext());
 
             session.commitTransaction();
@@ -125,10 +130,10 @@ public class TestTransactions {
 
         mars.withTransaction(( session ) -> {
 
-            assertEquals(mars.findAll(new Query(), Student.class).tryNext(), stu);
+
             assertEquals(session.findAll(new Query(), Student.class).tryNext(), stu);
 
-            assertEquals(mars.findAll(new Query(), Student.class).tryNext().getStuAge(), stu.getStuAge());
+
             assertEquals(session.findAll(new Query(), Student.class).tryNext().getClassNo(), stu.getClassNo());
 
             return null;
@@ -144,15 +149,13 @@ public class TestTransactions {
         mars.withTransaction(( session ) -> {
             session.save(stu);
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
-
 
             Update update = new Update().inc("stuAge", 13);
             session.update(new Query(), update, Student.class);
 
             Student student = mars.findAll(new Query(), Student.class).tryNext();
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
+
             assertEquals(stu.getClassNo(), student.getClassNo());
             assertEquals(stu.getStuAge() + 13, student.getStuAge(), 18);
 
@@ -169,12 +172,13 @@ public class TestTransactions {
 
         mars.withTransaction(( session ) -> {
 
-            assertNotNull(mars.findAll(new Query(), Student.class).tryNext());
             assertNotNull(session.findAll(new Query(), Student.class).tryNext());
 
             session.findAll(new Query(), Student.class);
 
-            assertNotNull(mars.findAll(new Query(), Student.class).tryNext());
+            session.delete(new Query(), Student.class);
+
+
             assertNull(session.findAll(new Query(), Student.class).tryNext());
             return null;
         });
@@ -189,13 +193,13 @@ public class TestTransactions {
         mars.withTransaction(( session ) -> {
             session.save(stu);
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
+
             assertNotNull(session.findAll(new Query(), Student.class).tryNext());
 
             stu.setStuAge(42);
             session.save(stu);
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
+
             assertEquals(session.findAll(new Query(), Student.class).tryNext().getStuAge(), 42, 0.5);
 
             return null;
@@ -212,7 +216,7 @@ public class TestTransactions {
         mars.withTransaction(( session ) -> {
             session.save(stus);
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
+
             assertEquals(session.count(Student.class), 2);
 
             return null;
@@ -228,8 +232,7 @@ public class TestTransactions {
         mars.withTransaction(( session ) -> {
             session.save(stu);
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
-
+            assertNotNull(new Mars(Constant.connectionStr).findAll(new Query(), Student.class).tryNext());
 
             Update update = new Update().inc("stuAge", 13);
 
@@ -237,10 +240,18 @@ public class TestTransactions {
 
             assertEquals(session.findAll(new Query(), Student.class).tryNext().getStuAge(), stu.getStuAge() + 13, 0.5);
 
-            assertNull(mars.findAll(new Query(), Student.class).tryNext());
+            assertNotNull(mars.findAll(new Query(), Student.class).tryNext());
             return null;
         });
 
         assertEquals(mars.findAll(new Query(), Student.class).tryNext().getStuAge(), stu.getStuAge() + 13, 0.5);
     }
+
+
+    @After
+    public void destory() {
+        mars.dropCollection(Student.class);
+    }
+
+
 }

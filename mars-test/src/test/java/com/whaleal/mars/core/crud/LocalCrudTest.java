@@ -1,18 +1,12 @@
-
 package com.whaleal.mars.core.crud;
 
-import com.whaleal.mars.bean.Person;
-import com.whaleal.mars.bean.EntityGenerater;
-import com.whaleal.mars.core.query.Update;
-import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
-import org.junit.*;
-import org.junit.Before;
-import org.junit.Test;
 import com.whaleal.mars.Constant;
+import com.whaleal.mars.bean.EntityGenerater;
+import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
+import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.ReplaceOptions;
@@ -20,6 +14,11 @@ import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.UpdateResult;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +32,10 @@ public class LocalCrudTest {
     Mars mars;
 
 
-    List<Person> people = new ArrayList<>();
+    List< Person > people = new ArrayList<>();
 
 
-    @Before
+    @BeforeMethod
     public void init() {
         mars = new Mars(Constant.connectionStr);
 
@@ -48,12 +47,11 @@ public class LocalCrudTest {
     }
 
 
-
     @Test
     public void findAll() {
 
         Query query = new Query();
-        QueryCursor<Person> result = mars.findAll(query, Person.class);
+        QueryCursor< Person > result = mars.findAll(query, Person.class);
 
         while (result.hasNext()) {
             Person person = result.next();
@@ -69,7 +67,7 @@ public class LocalCrudTest {
 
 
         Query query = Query.query(Criteria.where("address.city.name").is("上海"));
-        Optional<Person> one = mars.findOne(query, Person.class);
+        Optional< Person > one = mars.findOne(query, Person.class);
 
         Person person = one.get();
 
@@ -79,7 +77,6 @@ public class LocalCrudTest {
         Assert.assertNotNull(person.getId());
 
         Assert.assertEquals(person.getAddress().getCity().getName(), "上海");
-
 
 
     }
@@ -103,12 +100,12 @@ public class LocalCrudTest {
     public void insertMany() {
 
         mars.dropCollection(Person.class);
-        InsertManyResult insert = mars.insert(people,Person.class);
+        InsertManyResult insert = mars.insert(people, Person.class);
 
         int size = insert.getInsertedIds().size();
 
 
-        Assert.assertEquals(size ,people.size());
+        Assert.assertEquals(size, people.size());
 
     }
 
@@ -123,7 +120,7 @@ public class LocalCrudTest {
         options.upsert(true);
         options.multi(true);
 
-        UpdateResult result = mars.updateEntity(query, person, options,null);
+        UpdateResult result = mars.updateEntity(query, person, options, null);
         //mars.update(query, person);
 
         System.out.println(result);
@@ -216,7 +213,7 @@ public class LocalCrudTest {
     @Test
     public void save() {
 
-        Optional<Person> one = mars.findOne(new Query(), Person.class);
+        Optional< Person > one = mars.findOne(new Query(), Person.class);
 
         Person p = one.get();
 
@@ -237,9 +234,8 @@ public class LocalCrudTest {
     }
 
 
-
     @Test
-    public void upsertWithEntity(){
+    public void upsertWithEntity() {
         Person person = EntityGenerater.getPerson();
 
         Query query = Query.query(Criteria.where("a").is(99));
@@ -248,7 +244,7 @@ public class LocalCrudTest {
         options.upsert(true);
         options.multi(true);
 
-        UpdateResult result = mars.updateEntity(query, person, options,null);
+        UpdateResult result = mars.updateEntity(query, person, options, null);
         //mars.update(query, person);
 
         System.out.println(result);
@@ -257,7 +253,7 @@ public class LocalCrudTest {
 
 
     @Test
-    public void upsertWithUpdateDefinition(){
+    public void upsertWithUpdateDefinition() {
         List zipCodes = new ArrayList();
         zipCodes.add("11111");
         zipCodes.add("2222");
@@ -313,7 +309,7 @@ public class LocalCrudTest {
         Query query = new Query();
 
 
-        Optional<Person> one = mars.findOne(query, Person.class);
+        Optional< Person > one = mars.findOne(query, Person.class);
         Person person = one.get();
         System.out.println(person);
         Assert.assertNotNull(person);
@@ -324,8 +320,7 @@ public class LocalCrudTest {
 
         System.out.println(person.getAge());
 
-       // Assert.assertEquals(person.getAddress().getCity().getName(), "上海");
-
+        // Assert.assertEquals(person.getAddress().getCity().getName(), "上海");
 
 
     }

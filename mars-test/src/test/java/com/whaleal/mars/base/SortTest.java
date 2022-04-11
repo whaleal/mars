@@ -6,9 +6,9 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.session.QueryCursor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.LinkedList;
 
@@ -22,32 +22,30 @@ import java.util.LinkedList;
 public class SortTest {
     Mars mars;
 
-    @Before
+    @BeforeMethod
     public void init() {
         mars = new Mars(Constant.connectionStr);
         //准备数据准备一次就足够了，不能准备多次
-        LinkedList<Student> list = new LinkedList<>();
+        LinkedList< Student > list = new LinkedList<>();
         for (int i = 1001; i < 1010; i++) {
             Student student = StudentGenerator.getInstance(i);
             list.add(student);
         }
-        mars.insert(list);
+        mars.insert(list, Student.class);
     }
 
 
-    @After
-    public void destory(){
+    @AfterMethod
+    public void destory() {
 
         mars.dropCollection(Student.class);
 
     }
 
 
-
-
     @Test
     public void testSort() {
-        QueryCursor<Student> stuList = mars.findAll(new Query().with(Sort.on().ascending("sex").and(Sort.on().descending("stuName"))), Student.class);
+        QueryCursor< Student > stuList = mars.findAll(new Query().with(Sort.on().ascending("sex").and(Sort.on().descending("stuName"))), Student.class);
         stuList.toList().forEach(System.out::println);
     }
 

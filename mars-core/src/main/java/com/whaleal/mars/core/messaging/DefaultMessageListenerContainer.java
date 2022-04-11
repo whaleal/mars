@@ -31,7 +31,6 @@ package com.whaleal.mars.core.messaging;
 
 
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.thread.ExecutorBuilder;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
@@ -46,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * 消息监听者的容器，里面有好多消息监听
@@ -64,7 +64,7 @@ public class DefaultMessageListenerContainer implements MessageListenerContainer
 
 
     public DefaultMessageListenerContainer(Mars mars) {
-        this(mars, ExecutorBuilder.create().build());
+        this(mars, Executors.newSingleThreadExecutor());
     }
 
 

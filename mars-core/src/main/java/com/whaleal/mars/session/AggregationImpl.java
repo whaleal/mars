@@ -58,7 +58,7 @@ public abstract class AggregationImpl {
     }
 
     protected AggregationImpl(MongoDatabase database ,MongoMappingContext mapper){
-        this.database = database ;
+        this.database = database.withCodecRegistry(mapper.getCodecRegistry());
         this.mapper = mapper ;
     }
 
@@ -129,6 +129,7 @@ public abstract class AggregationImpl {
         if (options != null) {
             collection = options.prepare(collection);
         }
+
 
         MongoCursor<T> cursor = collection.aggregate(getDocuments(pipeline.getInnerStage()), resultType).iterator();
 

@@ -1,40 +1,39 @@
 package com.whaleal.mars.codecs.pojo;
 
-import com.whaleal.mars.bean.Car;
-import com.whaleal.mars.bean.Person;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.whaleal.mars.Constant;
+import com.whaleal.mars.bean.Car;
+import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.RepresentationConfigurable;
 import com.whaleal.mars.codecs.internal.ValueCodecProvider;
 import org.bson.BsonType;
 import org.bson.codecs.Codec;
-
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.junit.*;
-import org.junit.Before;
-import org.junit.Test;
-import com.whaleal.mars.Constant;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 public class EntityBuilderTest {
 
-    MongoMappingContext context ;
+    MongoMappingContext context;
 
-    @Before
-    public void init(){
-        MongoClient  client = MongoClients.create(Constant.connectionStr);
+    @BeforeMethod
+    public void init() {
+        MongoClient client = MongoClients.create(Constant.connectionStr);
         context = new MongoMappingContext(client.getDatabase("mars"));
         Assert.assertNotNull(context);
     }
 
 
     @Test
-    public void test01(){
+    public void test01() {
         EntityModelBuilder< Person > personEntityModelBuilder = new EntityModelBuilder<>(Person.class);
 
         String idPropertyName = personEntityModelBuilder.getIdPropertyName();
@@ -46,39 +45,36 @@ public class EntityBuilderTest {
     }
 
 
-
-
-
     @Test
-    public void checkRegister(){
+    public void checkRegister() {
         CodecRegistry codecRegistry = context.getCodecRegistry();
 
-        Codec<Car> marsCodec = codecRegistry.get(Car.class);
+        Codec< Car > marsCodec = codecRegistry.get(Car.class);
 
         Assert.assertNotNull(marsCodec);
 
         System.out.println(marsCodec);
 
 
-        Codec<String> stringCodec = codecRegistry.get(String.class);
+        Codec< String > stringCodec = codecRegistry.get(String.class);
 
         System.out.println(stringCodec);
 
-        if(stringCodec instanceof RepresentationConfigurable){
+        if (stringCodec instanceof RepresentationConfigurable) {
             ((RepresentationConfigurable) stringCodec).withRepresentation(BsonType.OBJECT_ID);
 
             System.out.println("isOk");
         }
 
-        Codec<Student> corporationCodec = codecRegistry.get(Student.class);
+        Codec< Student > corporationCodec = codecRegistry.get(Student.class);
 
         System.out.println(corporationCodec);
     }
 
 
     @Test
-    public void checkPersonCodec(){
-       EntityModel model = new EntityModelBuilder(Person.class).build() ;
+    public void checkPersonCodec() {
+        EntityModel model = new EntityModelBuilder(Person.class).build();
         PropertyModel idProperty = model.getIdProperty();
 
         System.out.println(idProperty);
@@ -90,20 +86,19 @@ public class EntityBuilderTest {
     }
 
 
-
     @Test
-    public void checkString(){
+    public void checkString() {
         CodecRegistry defaultCodecRegistry = MongoClientSettings.getDefaultCodecRegistry();
 
-        Codec<String> stringCodec = defaultCodecRegistry.get(String.class);
+        Codec< String > stringCodec = defaultCodecRegistry.get(String.class);
 
         Assert.assertNotNull(stringCodec);
 
-        CodecRegistry  marCodec   = CodecRegistries.fromProviders(
-               new ValueCodecProvider()
+        CodecRegistry marCodec = CodecRegistries.fromProviders(
+                new ValueCodecProvider()
         );
 
-        Codec<String> stringCodec1 = marCodec.get(String.class);
+        Codec< String > stringCodec1 = marCodec.get(String.class);
 
         Assert.assertNotNull(stringCodec1);
 
@@ -112,16 +107,15 @@ public class EntityBuilderTest {
     }
 
 
-
     @Test
-    public void testDouble(){
+    public void testDouble() {
 
 
-        CodecRegistry  marCodec   = fromProviders(
+        CodecRegistry marCodec = fromProviders(
                 new ValueCodecProvider()
         );
 
-        Codec<Double> doubleCodec = marCodec.get(Double.class);
+        Codec< Double > doubleCodec = marCodec.get(Double.class);
 
         Assert.assertNotNull(doubleCodec);
 
@@ -131,9 +125,8 @@ public class EntityBuilderTest {
     }
 
 
-
     @Test
-    public void testEntityBuilder(){
+    public void testEntityBuilder() {
 
         EntityModel build = new EntityModelBuilder(Car.class).build();
 
@@ -143,12 +136,11 @@ public class EntityBuilderTest {
     }
 
 
-
     @Test
-    public void checkCar(){
+    public void checkCar() {
         CodecRegistry codecRegistry = context.getCodecRegistry();
 
-        Codec<Car> marsCodec = codecRegistry.get(Car.class);
+        Codec< Car > marsCodec = codecRegistry.get(Car.class);
 
         Assert.assertNotNull(marsCodec);
 
@@ -158,10 +150,10 @@ public class EntityBuilderTest {
 
 
     @Test
-    public void checkDefault(){
+    public void checkDefault() {
         CodecRegistry codecRegistry = context.getCodecRegistry();
 
-        Codec<String> marsCodec = codecRegistry.get(String.class);
+        Codec< String > marsCodec = codecRegistry.get(String.class);
 
         Assert.assertNotNull(marsCodec);
 
@@ -171,22 +163,17 @@ public class EntityBuilderTest {
 
 
     @Test
-    public void checkPersonEntity(){
+    public void checkPersonEntity() {
 
 
-        EntityModel<Person> build = new EntityModelBuilder<>(Person.class).build();
+        EntityModel< Person > build = new EntityModelBuilder<>(Person.class).build();
 
-        PropertyModel<?> idProperty = build.getIdProperty();
+        PropertyModel< ? > idProperty = build.getIdProperty();
 
         System.out.println(idProperty);
 
 
     }
-
-
-
-
-
 
 
 }

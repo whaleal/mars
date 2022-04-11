@@ -1584,17 +1584,18 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         return doTransaction(startSession(options), transaction);
     }
     private <T> T doTransaction(MarsSession marssession, MarsTransaction<T> body) {
-        try {
+        try (AutoCloseable closeable = marssession){
             ClientSession session = marssession.startSession();
             if (session == null) {
                 throw new IllegalStateException("No session could be found for the transaction.");
             }
             return session.withTransaction(() -> body.execute(marssession));
-        }catch (Exception e){
-            log.error(e);
-            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null ;
         }
     }
-
-
 }
+
+
+
