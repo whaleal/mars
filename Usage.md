@@ -29,76 +29,6 @@
 >
 > 用户也可以通过本项目github地址来下载使用
 
-### 项目的整体架构
-
-
-
-![整体架构图](./images/img.png)
-
-## 性能对比
-
-> 由于本框架底层采用Bson数据流进行传输，所以对于数据的批量插入和删除在性能上较Spring 相比会有一定的提升，数据单位为毫秒，具体的数据如下  
-
-<img src="./images/性能对比.png" alt="性能对比" style="zoom:200%;" />
-
-> 性能对比折线图
->
-> 注： 柱状图横坐标 (蓝色)为Mars性能测试，(橙色)为spring-data-mongo性能测试
->
-> 纵坐标单位时间为毫秒
-
-<img src="./images/img_1.png" alt="性能对比图" />
-
-<img src="./images/img_2.png" alt="性能对比图2" />
-
-<img src="./images/img_3.png" alt="性能对比图3" />
-
-<img src="./images/img_4.png" alt="性能对比图3" />
-
-
-
-## 在项目中引入Mars
-
-接下来将通过一个简易的 Demo 来阐述 `Mars` 的强大功能，在此之前，我们假设您已经：
-
-- 有一定的 Java 基础
-- 熟悉 Spring Boot
-- 熟悉 Maven
-
-一个简单的java项目想要使用 `Mars` ,那么只需要引入依赖
-
-```xml
-<dependency>
-    <groupId>com.whaleal.mars</groupId>
-    <artifactId>mars-core</artifactId>
-    <version>x.x.x</version>
-</dependency>
-```
-
-然后可以通过传递一个连接字符串来创建一个`Mars`对象
-
-```java
-//mongodb://用户名：密码@mongoDB服务器1的IP：端口，mongoDB服务器1的IP：端口/数据库?附带拼接字符串
-Mars mars = new Mars("mongodb://root:123456@localhost:27017/mydb?authSource=admin");
-```
-
-`SpringBoot`项目中引入最新版本的`Mars`：
-
-```xml
-<dependency>
-    <groupId>com.whaleal.mars</groupId>
-    <artifactId>mars-springboot</artifactId>
-    <version>x.x.x</version>
-</dependency>
-```
-
-```xml
-<dependency>
-    <groupId>com.whaleal.mars</groupId>
-    <artifactId>mars-core</artifactId>
-    <version>x.x.x</version>
-</dependency>
-```
 
 ## 配置Entity
 在 `application.properties` 配置文件中添加Mars框架的配置信息：
@@ -480,7 +410,7 @@ public class SimpleListenerTest {
 - 如果你只是想要简单的使用，并且对性能方面也没有太高的要求的话，那么建议你使用 `Mars` 支持的原生changeStream操作
 
   
-```java
+```
     @Test
     public void testWatch() {
         Mars mars = new Mars("连接uri");
