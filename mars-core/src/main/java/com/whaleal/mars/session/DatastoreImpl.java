@@ -783,6 +783,12 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     @Override
+    public long count( Query query, Class< ? > entityClass, CountOptions countOptions, String collectionName ) {
+
+        String s = this.mapper.determineCollectionName(entityClass, collectionName);
+        return this.database.getCollection(s).countDocuments(query.getQueryObject(),countOptions.getOriginOptions());
+    }
+    @Override
     public long count( Query query, Class< ? > entityClass, String collectionName ) {
 
         String s = this.mapper.determineCollectionName(entityClass, collectionName);

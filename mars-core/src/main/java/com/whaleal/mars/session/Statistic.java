@@ -47,6 +47,7 @@ interface Statistic {
     <T> long count( Query query, Class<T> clazz);
     <T> long count( Query query, String collName);
     long count(Query query, Class<?> entityClass, String collectionName);
+    long count(Query query ,Class<?> entityClass ,CountOptions countOptions,String collectionName );
 
 
 }
