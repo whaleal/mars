@@ -125,7 +125,7 @@ public class StudentCrudTest {
         }
         mars.dropCollection(Student.class);
         InsertManyResult insert = mars.insert(list, Student.class);
-        long count = mars.count(Student.class);
+        long count = mars.estimatedCount(Student.class);
         Assert.assertEquals(i, count);
         mars.dropCollection(Student.class);
 

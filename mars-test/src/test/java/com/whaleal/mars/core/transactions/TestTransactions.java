@@ -73,7 +73,7 @@ public class TestTransactions {
             session.insert(stu);
 
             assertNotNull(marsSession.findAll(new Query(), Student.class).tryNext());
-            assertEquals(session.count(Student.class), 1);
+            assertEquals(session.estimatedCount(Student.class), 1);
 
             return null;
         });
@@ -95,7 +95,7 @@ public class TestTransactions {
             return null;
         });
 
-        assertEquals(mars.count(Student.class), 2);
+        assertEquals(mars.estimatedCount(Student.class), 2);
     }
 
 
@@ -126,7 +126,7 @@ public class TestTransactions {
         Student stu = StudentGenerator.getInstance(1001);
 
         mars.save(stu);
-        assertEquals(mars.count(Student.class), 1);
+        assertEquals(mars.estimatedCount(Student.class), 1);
 
         mars.withTransaction(( session ) -> {
 
@@ -217,12 +217,12 @@ public class TestTransactions {
             session.save(stus);
 
 
-            assertEquals(session.count(Student.class), 2);
+            assertEquals(session.estimatedCount(Student.class), 2);
 
             return null;
         });
 
-        assertEquals(mars.count(Student.class), 2);
+        assertEquals(mars.estimatedCount(Student.class), 2);
     }
 
     @Test

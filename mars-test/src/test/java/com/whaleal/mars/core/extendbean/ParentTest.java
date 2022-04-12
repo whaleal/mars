@@ -105,7 +105,7 @@ public class ParentTest {
         p.setId("10");
 
         mars.insert(p);
-        long count = mars.count(Parent.class);
+        long count = mars.estimatedCount(Parent.class);
         Assert.assertEquals(1, count);
 
     }
@@ -122,7 +122,7 @@ public class ParentTest {
         mars.insert(p);
         Criteria id = Criteria.where("_id").is("10");
 
-        long l = mars.countById(new Query(id), Parent.class);
+        long l = mars.count(new Query(id), Parent.class);
 
         Assert.assertEquals(1, l);
     }

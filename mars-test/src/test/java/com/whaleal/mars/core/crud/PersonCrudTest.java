@@ -122,7 +122,7 @@ public class PersonCrudTest {
 
         Assert.assertTrue(insertManyResult.wasAcknowledged());
 
-        long count = mars.count(Person.class);
+        long count = mars.estimatedCount(Person.class);
 
         Assert.assertEquals(number, count);
 
@@ -170,7 +170,7 @@ public class PersonCrudTest {
         }
 
         mars.insert(personList);
-        long count = mars.count(Person.class);
+        long count = mars.estimatedCount(Person.class);
 
         Assert.assertEquals(count, number);
 
@@ -186,7 +186,7 @@ public class PersonCrudTest {
         }
 
         mars.insert(personList);
-        long count = mars.countById(new Query(), Person.class);
+        long count = mars.count(new Query(), Person.class);
 
         Assert.assertEquals(count, number);
 
@@ -199,7 +199,7 @@ public class PersonCrudTest {
 
         mars.createCollection(Person.class);
 
-        long count = mars.count(Person.class);
+        long count = mars.estimatedCount(Person.class);
 
         Assert.assertEquals(count, 0);
 
@@ -215,7 +215,7 @@ public class PersonCrudTest {
 
             String id = insert.getInsertedId().asObjectId().getValue().toHexString();
 
-            long count1 = mars.count(Person.class);
+            long count1 = mars.estimatedCount(Person.class);
             Assert.assertEquals(count1, 1);
 
             Query query = new Query().addCriteria(Criteria.where("_id").is(new ObjectId(id)));
@@ -277,7 +277,7 @@ public class PersonCrudTest {
 
         Assert.assertEquals(deletedCount, 1);
 
-        long count = mars.count(Person.class);
+        long count = mars.estimatedCount(Person.class);
 
         Assert.assertEquals(count, 0);
 

@@ -73,6 +73,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 
+import javax.print.Doc;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -91,6 +92,7 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  *
  */
 public abstract class DatastoreImpl extends AggregationImpl implements Datastore{
+
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
 
@@ -767,11 +769,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
 
     @Override
-    public < T > long count( Class< T > clazz, CountOptions countOptions ) {
+    public < T > long estimatedCount( Class< T > clazz) {
 
         com.mongodb.client.model.EstimatedDocumentCountOptions escountOptions = new com.mongodb.client.model.EstimatedDocumentCountOptions();
 
-        escountOptions.maxTime(countOptions.getMaxTime(TimeUnit.SECONDS), TimeUnit.SECONDS);
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (log.isDebugEnabled()) {
@@ -782,35 +783,43 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     @Override
-    public < T > long countById( Query query, Class< T > clazz, CountOptions countOptions ) {
+    public long count( Query query, Class< ? > entityClass, String collectionName ) {
+
+        String s = this.mapper.determineCollectionName(entityClass, collectionName);
+
+        return count(query,s);
+    }
+
+    @Override
+    public < T > long count( Query query, Class< T > clazz ) {
+
+        com.mongodb.client.model.CountOptions countOptions = decorateCountOption(query);
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (log.isDebugEnabled()) {
             log.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
         }
-        return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
+        return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions);
     }
 
     @Override
-    public < T > long count( String collectionName, CountOptions countOptions ) {
+    public < T > long estimatedCount( String collectionName) {
 
-        com.mongodb.client.model.EstimatedDocumentCountOptions escountOptions = new com.mongodb.client.model.EstimatedDocumentCountOptions();
-
-        escountOptions.maxTime(countOptions.getMaxTime(TimeUnit.SECONDS), TimeUnit.SECONDS);
 
         if (log.isDebugEnabled()) {
             log.debug("Executing count: {} in collection: {}", "{}", collectionName);
         }
 
-        return this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
+        return this.database.getCollection(collectionName).estimatedDocumentCount( new com.mongodb.client.model.EstimatedDocumentCountOptions());
     }
 
     @Override
-    public < T > long countById( Query query, String collectionName, CountOptions countOptions ) {
+    public < T > long count( Query query, String collectionName) {
+        com.mongodb.client.model.CountOptions countOptions = decorateCountOption(query);
         if (log.isDebugEnabled()) {
             log.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
         }
-        return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
+        return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions);
     }
 
 
@@ -1594,6 +1603,33 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             log.error(e.getMessage());
             return null ;
         }
+    }
+
+
+private com.mongodb.client.model.CountOptions  decorateCountOption(Query query ){
+        com.mongodb.client.model.CountOptions options = new com.mongodb.client.model.CountOptions();
+
+
+        if (query.getLimit() > 0) {
+            options.limit(query.getLimit());
+        }
+        if (query.getSkip() > 0) {
+            options.skip((int) query.getSkip());
+        }
+        if (StrUtil.hasText(query.getHint())) {
+
+            String hint = query.getHint();
+
+            try {
+                Document parse = Document.parse(hint);
+                options.hint(parse);
+            }catch (Exception e){
+                options.hintString(hint);
+            }
+
+        }
+
+        return options;
     }
 }
 
