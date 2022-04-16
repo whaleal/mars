@@ -30,6 +30,7 @@
 package com.whaleal.mars.session;
 
 import com.mongodb.ClientSessionOptions;
+import com.mongodb.ReadPreference;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
@@ -40,6 +41,7 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.session.transactions.MarsTransaction;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -637,5 +639,36 @@ interface Datastore extends IndexOperations, MongoOperations {
      *
      */
     <T> T withTransaction( MarsTransaction<T> transaction , ClientSessionOptions options);
+
+
+    /**
+     * Execute the a MongoDB command expressed as a JSON string. Parsing is delegated to {@link Document#parse(String)} to
+     * obtain the {@link Document} holding the actual command. Any errors that result from executing this command will be
+     * converted into  exception hierarchy.
+     *
+     * @param jsonCommand a MongoDB command expressed as a JSON string. Must not be {@literal null}.
+     * @return a result object returned by the action.
+     */
+    Document executeCommand(String jsonCommand);
+
+    /**
+     * Execute a MongoDB command. Any errors that result from executing this command will be converted into
+     * exception hierarchy.
+     *
+     * @param command a MongoDB command.
+     * @return a result object returned by the action.
+     */
+    Document executeCommand(Document command);
+
+    /**
+     * Execute a MongoDB command. Any errors that result from executing this command will be converted into
+     * access exception hierarchy.
+     *
+     * @param command a MongoDB command, must not be {@literal null}.
+     * @param readPreference read preferences to use, can be {@literal null}.
+     * @return a result object returned by the action.
+     *
+     */
+    Document executeCommand(Document command, @Nullable ReadPreference readPreference);
 
 }

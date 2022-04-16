@@ -39,6 +39,7 @@ import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -73,7 +74,6 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 
-import javax.print.Doc;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +92,21 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  *
  */
 public abstract class DatastoreImpl extends AggregationImpl implements Datastore{
+    @Override
+    public Document executeCommand( String jsonCommand ) {
+        Precondition.notNull(jsonCommand);
+        return this.database.runCommand(Document.parse(jsonCommand));
+    }
 
+    @Override
+    public Document executeCommand( Document command ) {
+        return this.database.runCommand(command);
+    }
+
+    @Override
+    public Document executeCommand( Document command, ReadPreference readPreference ) {
+        return this.database.runCommand(command,readPreference);
+    }
 
     private static final Log log = LogFactory.get(DatastoreImpl.class);
 
