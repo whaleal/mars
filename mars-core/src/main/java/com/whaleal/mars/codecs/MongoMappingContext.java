@@ -85,6 +85,9 @@ public class MongoMappingContext {
     private final MarsCodecProvider marsCodecProvider;
     //
     private final CodecRegistry codecRegistry;
+    // 命名策略 保留状态  todo  转为实体直接保存 。并预先设置相关策略 。
+    // 相关 name strategy 需要设计 ，并通过反射方式 生成该bean
+    private Class< ? > strategyClass;
 
     public MongoDatabase getDatabase() {
         return database;
@@ -111,7 +114,6 @@ public class MongoMappingContext {
                 new DBRefCodecProvider(),
                 new DBObjectCodecProvider(),
                 new DocumentCodecProvider(new DocumentToDBRefTransformer()),
-
                 new IterableCodecProvider(new DocumentToDBRefTransformer()),
                 new com.whaleal.mars.codecs.internal.MapCodecProvider(),
                 new GeoJsonCodecProvider(),
@@ -432,4 +434,7 @@ public class MongoMappingContext {
     }
 
 
+    public void setNamingStrategy( Class<?> strategyClass ) {
+        this.strategyClass = strategyClass ;
+    }
 }

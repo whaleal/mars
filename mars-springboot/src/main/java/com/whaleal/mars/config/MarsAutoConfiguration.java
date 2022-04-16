@@ -56,7 +56,8 @@ import java.util.stream.Collectors;
  * @Date 2020/12/18
  * 配置类，MongoProperties都是在这里获取的
  * 原生的配置了许多Bean，涉及到mars的有
- * 当
+ * @see MongoProperties
+ * @see MongoClient
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({MongoClient.class, Mars.class})
@@ -67,23 +68,18 @@ public class MarsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean({Mars.class})
-    public Mars mars( MongoClient client, MongoProperties properties, ApplicationContext applicationContext ) {
+    public Mars mars( MongoClient client, MongoProperties properties, ApplicationContext applicationContext ) throws ClassNotFoundException {
 
-        if (Boolean.TRUE.equals(properties.isAutoIndexCreation())) {
-            String databaseName = properties.getMongoClientDatabase();
-            PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
-            MongoMappingContext context = new MongoMappingContext(client.getDatabase(databaseName));
-            mapper.from(properties.isAutoIndexCreation()).to(context::setAutoIndexCreation);
-            try {
-                context.setInitialEntitySet(new EntityScanner(applicationContext).scan(Entity.class));
-            } catch (Exception e) {
-                context.setAutoIndexCreation(false);
-            }
-            return new Mars(client, context);
-        } else {
-            return new Mars(client, properties.getMongoClientDatabase());
+        PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
+        String databaseName = properties.getMongoClientDatabase();
+        MongoMappingContext context = new MongoMappingContext(client.getDatabase(databaseName));
+        mapper.from(properties.isAutoIndexCreation()).to(context::setAutoIndexCreation);
+        context.setInitialEntitySet(new EntityScanner(applicationContext).scan(Entity.class));
+        Class<?> strategyClass = properties.getFieldNamingStrategy();
+        if (strategyClass != null) {
+            context.setNamingStrategy(strategyClass);
         }
-
+        return new Mars(client, context);
     }
 
 
