@@ -55,7 +55,7 @@ mars 目标是兼容大多数的非关系型数据库，使用一套的标准查
 
 ### 🎁mars名称的由来
 
-mars ，是上海锦木信息技术有限公司与 中国东方航空公司 共同研发的一款ODM/ORM框架  
+mars 是 [上海锦木信息技术有限公司](https://www.jinmuinfo.com/) 与 [中国东方航空公司](https://www.ceair.com/) 合作研发的一款ODM/ORM框架  
 纪念中国火星探测任务“天问一号”的火星车祝融号成功登陆火星的乌托邦平原【2021年5月15日】,故起名为 mars。
 
 ### 🍺mars如何改变我们的coding方式
@@ -73,9 +73,8 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 
 | 模块                |     介绍                                                                          |
 | -------------------|---------------------------------------------------------------------------------- |
-| mars-core        |     核心                                         |
-| mars-spring      |     基于spring的框架                                                    |
-| mars-bson         |    mongodb-bson 的拓展 ，可以完全取代                                                   |
+| mars-core          |     核心包                                    |
+| mars-springboot    |     基于springboot 自动注入的插件                                                    |
 
 可以根据需求对每个模块单独引入，也可以通过引入`mars-core`方式引入所有模块。
 
@@ -177,6 +176,11 @@ mars欢迎任何人为mars添砖加瓦，贡献代码，不过维护者是一个
 
 ## 其他相关项目 
 [Project](https://docs.whaleal.com/project)
+
+## 社区支持
+本项目由 [whaleal社区](https://www.whaleal.com/)提供支持  
+
+
 
 ## What is Mars
 
