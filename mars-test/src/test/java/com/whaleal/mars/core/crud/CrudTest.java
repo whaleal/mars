@@ -1,5 +1,6 @@
 package com.whaleal.mars.core.crud;
 
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.base.StudentGenerator;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
@@ -9,6 +10,7 @@ import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
+import com.whaleal.mars.session.option.InsertOneOptions;
 import com.whaleal.mars.session.option.ReplaceOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.DeleteResult;
@@ -47,9 +49,11 @@ public class CrudTest {
     @BeforeMethod
     public void isNull() {
 
-        Assert.assertNotNull(mars);
+        mars = new Mars(Constant.connectionStr);
 
-        System.out.println(mars);
+        Assert.assertNotNull(this.mars);
+
+        System.out.println(this.mars);
         student = StudentGenerator.getInstance(10000);
     }
 
@@ -83,8 +87,15 @@ public class CrudTest {
 
         mars.dropCollection(Student.class);
         mars.insert(student);
-        mars.dropCollection(Student.class);
+//        mars.dropCollection(Student.class);
 
+    }
+
+    @Test
+    public void insertOption() {
+        System.out.println("getTime: " + System.currentTimeMillis());
+        mars.insert(student,new InsertOneOptions());
+        System.out.println("endTime: " + System.currentTimeMillis());
     }
 
     @Test
