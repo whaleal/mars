@@ -7,6 +7,7 @@ import com.whaleal.mars.bean.Vehicles;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.AddFields;
+import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
@@ -17,6 +18,8 @@ import org.junit.Test;
 import javax.print.Doc;
 
 import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
+import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.array;
+import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.concatArrays;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
 import static com.whaleal.mars.core.aggregation.expressions.MathExpressions.add;
@@ -31,6 +34,7 @@ public class AddToSetTest {
 
     Mars mars = new Mars(Constant.connectionStr);
 
+
     @Before
     public void createData(){
         mars.insert(new Scores(1,"Maya",new int[]{10, 5,10 },new int[]{10,8},0));
@@ -42,10 +46,13 @@ public class AddToSetTest {
         Vehicles vehicles = new Vehicles();
         vehicles.setId(3);
         vehicles.setType("jet ski");
-        mars.insert(vehicles);
+        mars.insert(vehicles,"vehicles");
 
         mars.insert(new Document("id",1).append("dogs",10).append("cats",15),"animals");
 
+        mars.insert(new Document("_id","1").append("item","tangerine").append("type","citrus"),"fruit");
+        mars.insert(new Document("_id","2").append("item","lemon").append("type","citrus"),"fruit");
+        mars.insert(new Document("_id","3").append("item","grapefruit").append("type","citrus"),"fruit");
 
 
     }
@@ -54,6 +61,8 @@ public class AddToSetTest {
     public void dropCollection(){
         mars.dropCollection("vehicles");
         mars.dropCollection("scores");
+        mars.dropCollection("animals");
+        mars.dropCollection("fruit");
     }
 
     @Test
@@ -100,6 +109,51 @@ public class AddToSetTest {
 
         pipeline.addFields(AddFields.of().field("cats",value(20)));
 
+        QueryCursor<Document> aggregate = mars.aggregate(pipeline,"animals");
+
+        while (aggregate.hasNext()){
+            System.out.println(aggregate.next());
+        }
 
     }
+
+    @Test
+    public void testForReplace(){
+        AggregationPipeline<Document> pipeline = AggregationPipeline.create();
+
+        pipeline.addFields(AddFields.of().field("_id",field("item")).field("item",value("fruit")));
+
+        QueryCursor<Document> fruit = mars.aggregate(pipeline, "fruit");
+
+        while (fruit.hasNext()){
+            System.out.println(fruit.next());
+        }
+    }
+
+    /**
+     * 根据值生成数组表达式：array(value(7))
+     */
+    @Test
+    public void testForConcatArrays(){
+        AggregationPipeline<Document> pipeline = AggregationPipeline.create();
+
+        pipeline.match(Filters.eq("_id",1));
+
+        Document scores = mars.aggregate(pipeline, "scores").tryNext();
+        System.out.println(scores);
+
+        pipeline.addFields(AddFields.of().field("homework",concatArrays(field("homework"),array(value(7)))));
+
+
+        QueryCursor<Document> aggregate = mars.aggregate(pipeline,"scores");
+
+        while (aggregate.hasNext()){
+            System.out.println(aggregate.next());
+        }
+
+
+    }
+
+
+
 }

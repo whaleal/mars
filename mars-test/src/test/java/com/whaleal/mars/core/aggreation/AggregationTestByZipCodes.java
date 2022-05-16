@@ -35,23 +35,23 @@ public class AggregationTestByZipCodes {
     Mars mars = new Mars(Constant.connectionStr);
 
 
-//    @Before
-//    public void createData(){
-//
-//        List<Document> document = new ArrayList<>();
-//        try {
-//            document = ZipCodesUtil.createDocument();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        mars.insert(document, "zipCodes");
-//    }
+    @Before
+    public void createData(){
 
-//    @After
-//    public void dropCollection(){
-//        mars.dropCollection("zipCodes");
-//    }
+        List<Document> document = new ArrayList<>();
+        try {
+            document = ZipCodesUtil.createDocument();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mars.insert(document, "zipCodes");
+    }
+
+    @After
+    public void dropCollection(){
+        mars.dropCollection("zipCodes");
+    }
 
     @Test
     public void testForZipCode(){
