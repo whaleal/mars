@@ -60,6 +60,13 @@ public class Index {
     public Index() {
     }
 
+    public Index( String field, IndexDirection direction ) {
+
+        Precondition.notNull("field can't be null in Index", field);
+        Precondition.notNull("direction can't be null in Index", direction);
+        key.put(field, direction);
+    }
+
     public Index( String field, IndexDirection direction, IndexOptions options ) {
 
         Precondition.notNull("field can't be null in Index", field);
