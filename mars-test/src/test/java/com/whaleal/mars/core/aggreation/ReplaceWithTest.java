@@ -5,6 +5,8 @@ import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.ReplaceWith;
+import com.whaleal.mars.core.aggregation.stages.Unwind;
+import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -35,11 +37,30 @@ public class ReplaceWithTest {
                 "   { \"_id\" : 3, \"name\" : \"Maria\", \"age\" : 25 }";
         List<Document> documents = CreateDataUtil.parseString(s);
         mars.insert(documents,"people");
+
+        mars.insert(Document.parse("   {\n" +
+                "      \"_id\" : 1,\n" +
+                "      \"grades\" : [\n" +
+                "         { \"test\": 1, \"grade\" : 80, \"mean\" : 75, \"std\" : 6 },\n" +
+                "         { \"test\": 2, \"grade\" : 85, \"mean\" : 90, \"std\" : 4 },\n" +
+                "         { \"test\": 3, \"grade\" : 95, \"mean\" : 85, \"std\" : 6 }\n" +
+                "      ]\n" +
+                "   }"),"students");
+        mars.insert(Document.parse("   {\n" +
+                "      \"_id\" : 2,\n" +
+                "      \"grades\" : [\n" +
+                "         { \"test\": 1, \"grade\" : 90, \"mean\" : 75, \"std\" : 6 },\n" +
+                "         { \"test\": 2, \"grade\" : 87, \"mean\" : 90, \"std\" : 3 },\n" +
+                "         { \"test\": 3, \"grade\" : 91, \"mean\" : 85, \"std\" : 4 }\n" +
+                "      ]\n" +
+                "   }"),"students");
     }
 
     @After
     public void dropCollection(){
         mars.dropCollection("people");
+
+        mars.dropCollection("students");
     }
 
     /**
@@ -55,6 +76,25 @@ public class ReplaceWithTest {
         QueryCursor people = mars.aggregate(pipeline, "people");
         while (people.hasNext()){
             System.out.println(people.next());
+        }
+    }
+
+    /**
+     *db.students.aggregate( [
+     *    { $unwind: "$grades" },
+     *    { $match: { "grades.grade" : { $gte: 90 } } },
+     *    { $replaceWith: "$grades" }
+     * ] )
+     */
+    @Test
+    public void testForEmbedArray(){
+        pipeline.unwind(Unwind.on("grades"));
+        pipeline.match(Filters.gte("grades.grade",90));
+        pipeline.replaceWith(ReplaceWith.with(field("grades")));
+
+        QueryCursor students = mars.aggregate(pipeline, "students");
+        while (students.hasNext()){
+            System.out.println(students.next());
         }
     }
 
