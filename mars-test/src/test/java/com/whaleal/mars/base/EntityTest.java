@@ -1,6 +1,7 @@
 package com.whaleal.mars.base;
 
 import com.whaleal.mars.Constant;
+import com.whaleal.mars.bean.Gender;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.option.CollectionOptions;
@@ -26,6 +27,20 @@ public class EntityTest {
 
         mars.createCollection(Student.class, options);
 
+    }
+
+    @Test
+    public void testProperty(){
+        Student student = new Student();
+        //id
+        student.setStuNo("1234");
+        //字段指定别名
+        student.setStuAge(25);
+        //指定字段值类型
+        student.setStuHeight(160D);
+        student.setStuSex(Gender.male);
+
+        mars.insert(student);
     }
 
 }
