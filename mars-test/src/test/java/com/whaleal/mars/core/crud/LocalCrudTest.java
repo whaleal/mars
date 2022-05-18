@@ -16,9 +16,11 @@ import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,7 @@ public class LocalCrudTest {
     List< Person > people = new ArrayList<>();
 
 
-    @BeforeMethod
+    @Before
     public void init() {
         mars = new Mars(Constant.connectionStr);
 
@@ -90,6 +92,7 @@ public class LocalCrudTest {
 
 
         mars.insert(p);
+
 
         Assert.assertNotNull(p.getId());
 

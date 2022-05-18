@@ -1,7 +1,14 @@
 package com.whaleal.mars.core;
 
 
-import org.testng.annotations.Test;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.whaleal.mars.Constant;
+import org.bson.Document;
+import org.junit.Test;
+
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -70,6 +77,26 @@ public class TestParameterizedType {
         Type genericType3 = mapField3.getGenericType();
 
         System.out.println(genericType3);
+
+
+    }
+
+
+    @Test
+    public void test01(){
+        MongoClient mongoClient = MongoClients.create(Constant.connectionStr);
+
+        MongoCollection< Document > collection = mongoClient.getDatabase("mars").getCollection("stu");
+
+        MongoCursor< Document > iterator = collection.find().batchSize(2).iterator();
+
+        while (iterator.hasNext()){
+            System.out.println(iterator.available());
+
+            Document next = iterator.next();
+
+            System.out.println(next);
+        }
 
 
     }
