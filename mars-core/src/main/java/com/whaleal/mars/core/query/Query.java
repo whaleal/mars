@@ -31,6 +31,9 @@ package com.whaleal.mars.core.query;
 
 
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.codecs.writer.DocumentWriter;
+import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.aggregation.stages.Sort;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
 import org.bson.Document;
@@ -242,8 +245,6 @@ public class Query {
             return this;
         }
 
-
-
         this.sort = this.sort.and(sort);
 
         return this;
@@ -277,7 +278,14 @@ public class Query {
      */
     public Document getSortObject() {
 
-       return this.sort.getSortObject();
+        DocumentWriter writer = new DocumentWriter() ;
+        ExpressionHelper.document(writer, () -> {
+            for (Sort.SortType sorttype : sort.getSorts()) {
+                writer.writeName(sorttype.getField());
+                sorttype.getDirection().encode(writer);
+            }
+        });
+        return writer.getDocument();
     }
 
     /**
