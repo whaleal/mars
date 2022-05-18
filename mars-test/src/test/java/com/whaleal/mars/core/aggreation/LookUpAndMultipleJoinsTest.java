@@ -5,6 +5,10 @@ import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Lookup;
+import com.whaleal.mars.core.aggregation.stages.Match;
+import com.whaleal.mars.core.aggregation.stages.Projection;
+import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -12,7 +16,11 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.whaleal.mars.core.aggregation.expressions.BooleanExpressions.and;
+import static com.whaleal.mars.core.aggregation.expressions.ComparisonExpressions.eq;
+import static com.whaleal.mars.core.aggregation.expressions.ComparisonExpressions.gte;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
+import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
 
 /**
  * @author lyz
@@ -74,12 +82,19 @@ public class LookUpAndMultipleJoinsTest {
      *     }
      * ] )
      */
-    //todo 不会实现
+    //todo
     @Test
     public void testForMultipleJoins(){
-        pipeline.lookup(Lookup.from("warehouses")
+        pipeline.lookup(Lookup.lookup("warehouses")
                 .let("order_item",field("item"))
                 .let("order_qty",field("ordered"))
+                .pipeline(Match.on(Filters.expr(and(eq(field("$stock_item"),value("$$order_item")),gte(field("instock"),value("$$order_item"))))),
+                        Projection.of().exclude("stock_item").exclude("_id"))
                 .as("stockdata"));
+
+        QueryCursor orders = mars.aggregate(pipeline, "orders");
+        while (orders.hasNext()){
+            System.out.println(orders.next());
+        }
     }
 }

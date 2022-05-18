@@ -5,12 +5,20 @@ import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Lookup;
+import com.whaleal.mars.core.aggregation.stages.Match;
+import com.whaleal.mars.core.aggregation.stages.Projection;
+import com.whaleal.mars.core.aggregation.stages.ReplaceRoot;
+import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+
+import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
+import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
 
 /**
  * @author lyz
@@ -64,8 +72,17 @@ public class LookUpAndCorrelatedTest {
      */
     @Test
     public void testForCorrelatedSubquer(){
-        pipeline.lookup(Lookup.from("holidays")
-                .as("holidays"));
+
+        pipeline.lookup(Lookup.lookup("holidays")
+                .pipeline(Match.on(Filters.eq("year",2018)),
+                        Projection.of().exclude("_id").include("date",value(Document.parse("{ name: \"$name\", date: \"$date\" }")))
+                ,ReplaceRoot.with().field("newRoot",field("date"))));
+
+        QueryCursor absences = mars.aggregate(pipeline, "absences");
+
+        while (absences.hasNext()){
+            System.out.println(absences.next());
+        }
 
     }
 }

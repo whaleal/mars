@@ -5,8 +5,6 @@ import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Lookup;
-import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.ReplaceRoot;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -15,10 +13,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.elementAt;
-import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
-import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
-import static com.whaleal.mars.core.aggregation.expressions.ObjectExpressions.mergeObjects;
 
 /**
  * @author lyz

@@ -79,7 +79,7 @@ public class RedactTest {
     public void testForEvaluatePermissions(){
         pipeline.match(Filters.eq("year",2014));
 
-//        pipeline.redact(Redact.on(condition()))
+//        pipeline.redact(Redact.on(condition(gt())))
     }
 
 }
