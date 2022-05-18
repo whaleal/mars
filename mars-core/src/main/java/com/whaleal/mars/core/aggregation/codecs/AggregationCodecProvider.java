@@ -94,7 +94,7 @@ public class AggregationCodecProvider implements CodecProvider {
             codecs.put(SetWindowFields.class, new SetWindowFieldsCodec(mapper));
             codecs.put(Skip.class, new SkipCodec(mapper));
             codecs.put(Sort.class, new SortCodec(mapper));
-            codecs.put(com.whaleal.mars.core.query.Sort.class,new SortCodec2(mapper));
+            
             codecs.put(SortByCount.class, new SortByCountCodec(mapper));
             codecs.put(UnionWith.class, new UnionWithCodec(mapper));
             codecs.put(Unset.class, new UnsetCodec(mapper));

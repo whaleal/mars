@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.codecs.writer;
 
+import com.mongodb.lang.Nullable;
 import org.bson.Document;
 
 import java.util.List;
@@ -38,25 +39,18 @@ abstract class WriteState {
     private final DocumentWriter writer;
     private final WriteState previous;
 
-    WriteState(DocumentWriter writer) {
-        this.writer = writer;
-        this.previous = writer.state(this);
+    WriteState() {
+        writer = null;
+        previous = null;
     }
 
-    //    @Override
-    //    public String toString() {
-    //        return stateToString("");
-    //    }
-
-    //    void apply(Object value) {
-    //        throw new UnsupportedOperationException();
-    //    }
+    WriteState(DocumentWriter writer, @Nullable WriteState previous) {
+        this.writer = writer;
+        this.previous = previous;
+        writer.state(this);
+    }
 
     protected abstract String state();
-
-    //    protected String stateToString(String s) {
-    //        return s;
-    //    }
 
     protected String toString(Object value) {
         if (value instanceof Document) {
@@ -74,20 +68,26 @@ abstract class WriteState {
 
             return joiner.toString();
         } else {
-            return value.toString();
+            return String.valueOf(value);
         }
     }
 
     WriteState array() {
-        return new ArrayState(getWriter());
+        throw new IllegalStateException("cantStartArray(" +state() +")" + ". writer: " + getWriter());
     }
 
     WriteState document() {
-        return new DocumentState(getWriter());
+        throw new IllegalStateException("cantStartDocument(" + state()+ ") " + ". writer: " + getWriter());
     }
 
-    final void end() {
-        getWriter().previous();
+    void done() {
+    }
+
+    void end() {
+        getWriter().state(previous);
+        if (previous != null) {
+            previous.done();
+        }
     }
 
     DocumentWriter getWriter() {
@@ -95,15 +95,10 @@ abstract class WriteState {
     }
 
     WriteState name(String name) {
-        throw new UnsupportedOperationException();
-        //        return new NameState(getWriter(), name, document);
-    }
-
-    <P extends WriteState> P previous() {
-        return (P) previous;
+        throw new IllegalStateException("notInValidState("+name+", "+state()+")" + "  writer:  " + getWriter());
     }
 
     void value(Object value) {
-        throw new IllegalStateException("notInValidState(" + value + ", state())");
+        throw new IllegalStateException("notInValidState("+ value+ ", "+state()+ ")"  + "  writer:  " + getWriter());
     }
 }

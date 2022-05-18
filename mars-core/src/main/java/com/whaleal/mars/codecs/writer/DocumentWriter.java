@@ -38,6 +38,7 @@ import org.bson.types.ObjectId;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 
@@ -45,22 +46,38 @@ import java.time.ZoneOffset;
 public class DocumentWriter implements BsonWriter {
     private final RootState root;
     private WriteState state;
-    private int arraysLevel;
-    private int docsLevel;
 
 
+    /**
+     * Creates a new Writer
+     *
+     *
+     */
     public DocumentWriter() {
+
         root = new RootState(this);
         state = root;
     }
 
-
+    /**
+     * Creates a new Writer with a seeded Document
+     *
+     *
+     * @param seed   the seed Document
+     */
     public DocumentWriter(Document seed) {
         root = new RootState(this, seed);
         state = root;
     }
 
-
+    /**
+     * Encodes a value in to this Writer
+     *
+     * @param codecRegistry  the registry to use
+     * @param value          the value to encode
+     * @param encoderContext the context
+     * @return this
+     */
     public DocumentWriter encode(CodecRegistry codecRegistry, Object value, EncoderContext encoderContext) {
         ((Codec) codecRegistry.get(value.getClass()))
                 .encode(this, value, encoderContext);
@@ -72,29 +89,11 @@ public class DocumentWriter implements BsonWriter {
     public void flush() {
     }
 
-
-    public int getArraysLevel() {
-        return arraysLevel;
-    }
-
-
-    public int getDocsLevel() {
-        return docsLevel;
-    }
-
-
+    /**
+     * @return the root, or output, of this writer.  usually a Document.
+     */
     public Document getDocument() {
-        if (arraysLevel != 0 || docsLevel != 0) {
-            throw new IllegalStateException("unbalancedOpens(arraysLevel, docsLevel, state)");
-        }
         return root.getDocument();
-    }
-
-    public void previous() {
-        state(state.previous());
-        if (state() instanceof NameState) {
-            previous();
-        }
     }
 
     public WriteState state() {
@@ -123,12 +122,13 @@ public class DocumentWriter implements BsonWriter {
 
     @Override
     public void writeDateTime(long value) {
-        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneOffset.UTC));
+        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.of("UTC")));
     }
 
     @Override
     public void writeDateTime(String name, long value) {
-        state.name(name).value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneOffset.UTC));
+        state.name(name);
+        writeDateTime(value);
     }
 
     @Override
@@ -153,13 +153,11 @@ public class DocumentWriter implements BsonWriter {
 
     @Override
     public void writeEndArray() {
-        arraysLevel--;
         state.end();
     }
 
     @Override
     public void writeEndDocument() {
-        docsLevel--;
         state.end();
     }
 
@@ -279,13 +277,11 @@ public class DocumentWriter implements BsonWriter {
 
     @Override
     public void writeStartArray() {
-        arraysLevel++;
         state.array();
     }
 
     @Override
     public void writeStartDocument() {
-        docsLevel++;
         state.document();
     }
 
@@ -298,7 +294,6 @@ public class DocumentWriter implements BsonWriter {
     @Override
     public void writeStartDocument(String name) {
         state.name(name).document();
-        docsLevel++;
     }
 
     @Override
@@ -348,10 +343,8 @@ public class DocumentWriter implements BsonWriter {
         return root.toString();
     }
 
-    WriteState state(WriteState state) {
-        final WriteState previous = this.state;
+    void state(WriteState state) {
         this.state = state;
-        return previous;
     }
 
 }

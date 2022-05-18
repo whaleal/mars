@@ -29,10 +29,12 @@
  */
 package com.whaleal.mars.core.aggregation.stages;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import org.bson.BsonWriter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -41,6 +43,11 @@ public class Sort extends Stage {
 
     protected Sort() {
         super("$sort");
+    }
+
+    public Sort( List< SortType> sorts ) {
+        super("$sort");
+        this.sorts.addAll(sorts);
     }
 
 
@@ -75,6 +82,52 @@ public class Sort extends Stage {
     public Sort meta(String field) {
         sorts.add(new SortType(field, Direction.META));
         return this;
+    }
+
+    /**
+     * Returns a new {@link Sort} consisting of the {@link SortType}s of the current {@link Sort} combined with the given
+     * ones.
+     *
+     * @param sort must not be {@literal null}.
+     * @return
+     */
+    public Sort and(Sort sort) {
+
+        Precondition.notNull(sort, "Sort must not be null!");
+
+        ArrayList<SortType> these = new ArrayList<>(this.sorts);
+
+        for (SortType order : sort.sorts) {
+            these.add(order);
+        }
+
+        return Sort.by(these);
+    }
+
+    /**
+     * Creates a new {@link Sort} for the given {@link SortType}s.
+     *
+     * @param orders must not be {@literal null}.
+     * @return
+     */
+    public static Sort by(List<SortType> orders) {
+
+        Precondition.notNull(orders, "Orders must not be null!");
+
+        return orders.isEmpty() ? Sort.on() : new Sort(orders);
+    }
+
+    /**
+     * Creates a new {@link Sort} for the given {@link SortType}s.
+     *
+     * @param orders must not be {@literal null}.
+     * @return
+     */
+    public static Sort by(SortType... orders) {
+
+        Precondition.notNull(orders, "Orders must not be null!");
+
+        return new Sort(Arrays.asList(orders));
     }
 
 
