@@ -29,20 +29,46 @@
  */
 package com.whaleal.mars.core.aggregation.stages;
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Fields;
 import com.whaleal.mars.core.aggregation.expressions.impls.PipelineField;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+
+import org.bson.Document;
+
+import java.util.*;
 
 
+/**
+ * Projection projection.
+ *
+ * 对于包含数组的字段，MongoDB 提供了以下用于操作数组的投影运算符：$elemMatch、$slice 和 $。
+ * Name       ----------     Description
+ * $
+ * Projects the first element in an array that matches the query condition.
+ * $elemMatch
+ * Projects the first element in an array that matches the specified $elemMatch condition.
+ * $meta
+ * Projects the available per-document metadata.
+ * $slice
+ * Limits the number of elements projected from an array. Supports skip and limit slices.
+ *
+ * 其实就是一个projection
+ * 官方文档链接
+ * https://docs.mongodb.com/manual/reference/operator/projection/
+ */
 public class Projection extends Stage {
     private Fields<Projection> includes;
     private Fields<Projection> excludes;
+    // 压制 _id
     private boolean suppressId;
+    //{instock: { $slice: -1 }}
+    private Map<String,ArraySlice> slices ;
+
 
     protected Projection() {
         super("$project");
@@ -68,11 +94,20 @@ public class Projection extends Stage {
         if (excludes != null) {
             fields.addAll(excludes.getFields());
         }
+
         if (suppressId) {
             fields.add(new PipelineField("_id", Expressions.value(false)));
         }
+        if(slices != null){
+            for (Map.Entry< String, ArraySlice > arraySliceEntry : slices.entrySet()) {
+                fields.add(new PipelineField(arraySliceEntry.getKey(),Expressions.value(arraySliceEntry.getValue().toDocument())));
+            }
+        }
+       
+
         return fields;
     }
+
 
 
     public Projection include(String name, Expression value) {
@@ -90,6 +125,53 @@ public class Projection extends Stage {
     }
 
 
+    /**
+     * Project a {@code $slice} of the array {@code field} using the first {@code size} elements.
+     *
+     * @param field the document field name to project, must be an array field.
+     * @param size  the number of elements to include.
+     * @return {@code this} field projection instance.
+     */
+    public Projection slice( String field, int size) {
+        if(slices ==null){
+            slices = new HashMap<>();
+        }
+        Precondition.notNull(field, "Key must not be null!");
+
+        slices.put(field, new ArraySlice(size));
+
+        return this;
+    }
+
+    /**
+     * Project a {@code $slice} of the array {@code field} using the first {@code size} elements starting at
+     * {@code offset}.
+     *
+     * @param field  the document field name to project, must be an array field.
+     * @param offset the offset to start at.
+     * @param size   the number of elements to include.
+     * @return {@code this} field projection instance.
+     */
+    public Projection slice( String field, int offset, int size) {
+        if(slices ==null){
+            slices = new HashMap<>();
+        }
+        slices.put(field, new ArraySlice(offset,size));
+        return this;
+    }
+
+    public Projection slice( String field, ArraySlice slice) {
+        if(slices ==null){
+            slices = new HashMap<>();
+        }
+        slices.put(field, slice);
+        return this;
+    }
+
+    /**
+     * 压制 _id 用
+     * @return this
+     */
     public Projection suppressId() {
         suppressId = true;
         return this;
@@ -105,10 +187,66 @@ public class Projection extends Stage {
     }
 
     private void validateProjections() {
+        // 当project 有数据时 就需要校验
         if (includes != null && excludes != null) {
+
+             // _id 相关直接使用  suppressId 相关方法
             if (excludes.size() > 1 || !"_id".equals(excludes.getFields().get(0).getName())) {
                 throw new MarsOrmException();
             }
         }
     }
+
+
+    /**
+     * Defines array slicing options for query projections.
+     */
+    public class ArraySlice {
+        private final Integer limit;
+        private Integer skip;
+
+        /**
+         * Specifies the number of array elements to return
+         *
+         * @param limit the number of array elements to return
+         *
+         */
+        public ArraySlice(int limit) {
+            this.limit = limit;
+        }
+
+        /**
+         * Specifies the number of array elements to skip.
+         *
+         * @param skip  the number of array elements to skip
+         * @param limit the number of array elements to return
+         *
+         */
+        public ArraySlice(int skip, int limit) {
+            this.skip = skip;
+            this.limit = limit;
+        }
+
+        /**
+         * @return the limit to apply to the projection
+         */
+        public Integer getLimit() {
+            return limit;
+        }
+
+        /**
+         * @return the skip value to apply to the projection
+         */
+        public Integer getSkip() {
+            return skip;
+        }
+
+        Document toDocument() {
+            return new Document("$slice", skip == null ? limit : Arrays.asList(skip, limit));
+
+        }
+
+
+    }
+
 }
