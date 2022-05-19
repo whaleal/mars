@@ -15,8 +15,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.print.Doc;
-
 import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
 import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.array;
 import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.concatArrays;
@@ -30,7 +28,7 @@ import static com.whaleal.mars.core.aggregation.expressions.MathExpressions.add;
  * @desc
  * @date 2022-05-12 14:57
  */
-public class AddToSetTest {
+public class AddFieldTest {
 
     Mars mars = new Mars(Constant.connectionStr);
 
@@ -74,7 +72,20 @@ public class AddToSetTest {
         }
     }
 
-    //todo
+    /**
+     * db.scores.aggregate( [
+     *    {
+     *      $addFields: {
+     *        totalHomework: { $sum: "$homework" } ,
+     *        totalQuiz: { $sum: "$quiz" }
+     *      }
+     *    },
+     *    {
+     *      $addFields: { totalScore:
+     *        { $add: [ "$totalHomework", "$totalQuiz", "$extraCredit" ] } }
+     *    }
+     * ] )
+     */
     @Test
     public void testForSample(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();

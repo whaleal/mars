@@ -4,7 +4,6 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.AddFields;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Sort;
@@ -92,14 +91,16 @@ public class GroupTest {
     /**
      * db.sales.aggregate( [ { $group : { _id : "$item" } } ] )
      */
-    //todo 结果与预期不是很符合
     @Test
     public void testForDiffValue(){
         pipeline.group(Group.of(id(field("item"))));
 
-        Object o = mars.aggregate(pipeline,"sales").tryNext();
+        QueryCursor sales = mars.aggregate(pipeline, "sales");
 
-        System.out.println(o);
+        while (sales.hasNext()){
+            System.out.println(sales.next());
+        }
+
     }
 
 
@@ -228,16 +229,16 @@ public class GroupTest {
      *    }
      *  ])
      */
-
+    //todo 测试结果与预期不符
     //todo 测试不正确
     @Test
     public void testForGroupByAuthor(){
         pipeline.group(Group.of(id(field("author")))
 //                .field("books",push(field(field("ROOT").toString()))));
-                .field("books",push(field("$ROOT"))));
+                .field("books",push(value("$$ROOT"))));
 
 
-        pipeline.addFields(AddFields.of().field("totalCopies",sum(field("books.copies"))));
+        pipeline.addFields(AddFields.of().field("totalCopies",sum(value("$books.copies"))));
 
         QueryCursor books = mars.aggregate(pipeline, "books");
         while (books.hasNext()){

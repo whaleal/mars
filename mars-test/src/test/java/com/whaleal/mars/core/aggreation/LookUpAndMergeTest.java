@@ -73,7 +73,6 @@ public class LookUpAndMergeTest {
      * Document{{newRoot=Document{{_id=2, item=pecans, description=candied pecans, instock=60, price=20, quantity=1, fromItems=[Document{{_id=3, item=pecans, description=candied pecans, instock=60}}]}}}}
      * ] )
      */
-    //todo 结果与预期不符
     @Test
     public void testForMergerObjects(){
         pipeline.lookup(Lookup.from("items")
@@ -82,7 +81,7 @@ public class LookUpAndMergeTest {
                 .as("fromItems"));
 
 //        pipeline.replaceRoot(ReplaceRoot.with().field("newRoot",mergeObjects().add(elementAt(field("fromItems"),value(0))).add(value("$$ROOT"))));
-        pipeline.replaceRoot(ReplaceRoot.with().field("newRoot",mergeObjects().add(elementAt(field("fromItems"),value(0))).add(SystemVariables.ROOT)));
+        pipeline.replaceRoot(ReplaceRoot.with(mergeObjects().add(elementAt(field("fromItems"),value(0))).add(SystemVariables.ROOT)));
         pipeline.project(Projection.of().exclude("fromItems"));
 
         QueryCursor orders = mars.aggregate(pipeline, "orders");

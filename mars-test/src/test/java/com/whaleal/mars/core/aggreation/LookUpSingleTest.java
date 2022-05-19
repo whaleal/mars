@@ -5,8 +5,6 @@ import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Lookup;
-import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.ReplaceRoot;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -15,10 +13,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.elementAt;
-import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
-import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
-import static com.whaleal.mars.core.aggregation.expressions.ObjectExpressions.mergeObjects;
 
 /**
  * @author lyz
@@ -45,7 +39,7 @@ public class LookUpSingleTest {
                 "   { \"_id\" : 4, \"sku\" : \"pecans\", \"description\": \"product 4\", \"instock\" : 70 },\n" +
                 "   { \"_id\" : 5, \"sku\": null, \"description\": \"Incomplete\" },\n" +
                 "   { \"_id\" : 6 }";
-        List<Document> documents1 = CreateDataUtil.parseString(s);
+        List<Document> documents1 = CreateDataUtil.parseString(s1);
         mars.insert(documents1,"inventory");
 
     }
@@ -69,10 +63,9 @@ public class LookUpSingleTest {
      *   }
      * ] )
      */
-    //todo 结果有误
     @Test
     public void testForSingle(){
-        pipeline.lookup(Lookup.from("inventory")
+        pipeline.lookup(Lookup.lookup("inventory")
                 .localField("item")
                 .foreignField("sku")
                 .as("inventory_docs"));

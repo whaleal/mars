@@ -18,15 +18,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.beans.Expression;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.*;
+import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.avg;
+import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
 import static com.whaleal.mars.core.aggregation.expressions.DateExpressions.dateToString;
 import static com.whaleal.mars.core.aggregation.expressions.DateExpressions.month;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
-import static com.whaleal.mars.core.aggregation.expressions.MathExpressions.add;
+import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
 import static com.whaleal.mars.core.aggregation.expressions.MathExpressions.multiply;
 import static com.whaleal.mars.core.aggregation.expressions.StringExpressions.toUpper;
 import static com.whaleal.mars.core.aggregation.stages.Group.id;
@@ -94,7 +94,6 @@ public class AggregationTestByOrdersAndUsers {
 
         QueryCursor<Orders> aggregate = mars.aggregate(pipeline);
 
-        //todo 查询结果与官方文档提供结果不一致，多了几个属性的值
         while (aggregate.hasNext()){
             System.out.println(aggregate.next());
         }
@@ -129,7 +128,6 @@ public class AggregationTestByOrdersAndUsers {
      *
      *  ] )
      */
-    //todo 结果中日期的年份有错误
     @Test
     public void testForDate(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
@@ -180,7 +178,15 @@ public class AggregationTestByOrdersAndUsers {
         }
     }
 
-    //todo 涉及到嵌套文档和对分组记录数求和
+    /**
+     * db.users.aggregate(
+     *   [
+     *     { $project : { month_joined : { $month : "$joined" } } } ,
+     *     { $group : { _id : {month_joined:"$month_joined"} , number : { $sum : 1 } } },
+     *     { $sort : { "_id.month_joined" : 1 } }
+     *   ]
+     * )
+     */
     @Test
     public void testForJoinSumByMonth(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
@@ -189,7 +195,7 @@ public class AggregationTestByOrdersAndUsers {
 
         pipeline.group(Group.of(id(Expressions.value(new Document("month_joined","$month_joined")))).field("number",sum(Expressions.value(1))));
 
-        pipeline.sort(Sort.on().ascending("month_joined"));
+        pipeline.sort(Sort.on().ascending("_id.month_joined"));
 
         QueryCursor<Document> users = mars.aggregate(pipeline, "users");
 
@@ -198,13 +204,23 @@ public class AggregationTestByOrdersAndUsers {
         }
     }
 
-    //todo 测试结果与预期不同
+
+    /**
+     * db.users.aggregate(
+     *   [
+     *     { $unwind : "$likes" },
+     *     { $group : { _id : "$likes" , number : { $sum : 1 } } },
+     *     { $sort : { number : -1 } },
+     *     { $limit : 5 }
+     *   ]
+     * )
+     */
     @Test
     public void testForMostLike(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.unwind(Unwind.on("like"));
-        pipeline.group(Group.of(id("likes")).field("number",sum(field("likes"))));
+        pipeline.unwind(Unwind.on("likes"));
+        pipeline.group(Group.of(id("likes")).field("number",sum(value(1))));
 
         pipeline.sort(Sort.on().descending("number"));
         pipeline.limit(5);

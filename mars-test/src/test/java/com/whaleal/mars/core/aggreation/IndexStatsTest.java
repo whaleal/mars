@@ -1,13 +1,14 @@
 package com.whaleal.mars.core.aggreation;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoDatabase;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
+import com.whaleal.mars.core.query.Criteria;
+import com.whaleal.mars.core.query.Query;
+import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -43,35 +44,52 @@ public class IndexStatsTest {
     /**
      * db.orders.createIndex( { item: 1, quantity: 1 } )
      * db.orders.createIndex( { type: 1, item: 1 } )
-     *
+     */
+    @Test
+    public void createIndex(){
+        mars.createIndex(new Index("item",IndexDirection.ASC).on("quantity",IndexDirection.ASC),"orders");
+        mars.createIndex(new Index("type",IndexDirection.ASC).on("item",IndexDirection.ASC),"orders");
+    }
+
+    /**
      * db.orders.find( { type: "apparel"} )
      * db.orders.find( { item: "abc" } ).sort( { quantity: 1 } )
-     *
+     */
+    @Test
+    public void query(){
+        Criteria criteria = Criteria.where("type").is("apparel");
+        Query query = new Query(criteria);
+        QueryCursor<Document> orders = mars.findAll(query, Document.class, "orders");
+        while(orders.hasNext()){
+            System.out.println(orders.next());
+        }
+
+        System.out.println("------------------------------------");
+
+        Criteria criteria1 = Criteria.where("item").is("abc")
+                .and("quantity").is(1);
+        Query query1 = new Query(criteria1);
+        QueryCursor<Document> orders1 = mars.findAll(query1, Document.class, "orders");
+        while(orders1.hasNext()){
+            System.out.println(orders1.next());
+        }
+    }
+
+    /**
      * db.orders.aggregate( [ { $indexStats: { } } ] )
      */
-
-    //todo 测试时遇到问题/创建索引出错/查询有异议
     @Test
     public void testForIndexUsing(){
-        mars.createIndex(new Index().on("item", IndexDirection.ASC).on("quantity",IndexDirection.ASC),"orders");
-        mars.createIndex(new Index().on("type", IndexDirection.ASC).on("item",IndexDirection.ASC),"orders");
-
-        MongoDatabase database = mars.getDatabase();
-        FindIterable<Document> orders = database.getCollection("orders").find(Document.parse("{ type: \"apparel\"}"));
-        FindIterable<Document> orders1 = database.getCollection("orders").find(Document.parse(" { item: \"abc\" } , sort( { quantity: 1 } "));
-        //这种方式会进入死循环
-//        while (orders.cursor().hasNext()){
-//            System.out.println(orders.cursor().next());
-//        }
-
-//        Criteria criteria = Criteria.where("type").is("apparel");
-//        mars.findAll(new Query(criteria),"")
 
         pipeline.indexStats();
-        Object orders2 = mars.aggregate(pipeline, "orders").tryNext();
-        System.out.println(orders2);
+        QueryCursor orders = mars.aggregate(pipeline, "orders");
+        while (orders.hasNext()){
+            System.out.println(orders.next());
+        }
 
 
     }
+
+
 }
 
