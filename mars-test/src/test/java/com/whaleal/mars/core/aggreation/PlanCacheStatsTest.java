@@ -90,7 +90,6 @@ public class PlanCacheStatsTest {
      *    { $planCacheStats: { } }
      * ] )
      */
-    //todo 无结果
     @Test
     public void testForCache(){
         pipeline.planCacheStats();
