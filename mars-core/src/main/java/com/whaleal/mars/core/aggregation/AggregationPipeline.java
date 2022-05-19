@@ -159,6 +159,19 @@ public class AggregationPipeline<T> implements Aggregation<T> {
         stages.add(Match.on(filters));
         return this;
     }
+    @Override
+    public AggregationPipeline<T> set(Set set) {
+        stages.add(set);
+        return this;
+    }
+
+
+
+    @Override
+    public AggregationPipeline<T> setWindowFields(SetWindowFields fields) {
+        stages.add(fields);
+        return this;
+    }
 
     @Override
     public <M> void merge(Merge<M> merge) {

@@ -103,7 +103,7 @@ public class Projection extends Stage {
                 fields.add(new PipelineField(arraySliceEntry.getKey(),Expressions.value(arraySliceEntry.getValue().toDocument())));
             }
         }
-       
+
 
         return fields;
     }
