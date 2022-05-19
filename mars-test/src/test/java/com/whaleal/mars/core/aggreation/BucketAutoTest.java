@@ -66,7 +66,6 @@ public class BucketAutoTest {
         }
     }
 
-    //todo 结果大致相同，结果属性的顺序不同
     @Test
     public void testForMultiFaceted(){
         pipeline.facet(Facet.of().field("price",AutoBucket.of().groupBy(field("price")).buckets(4))

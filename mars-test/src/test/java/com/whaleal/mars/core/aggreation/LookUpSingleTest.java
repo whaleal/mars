@@ -39,7 +39,7 @@ public class LookUpSingleTest {
                 "   { \"_id\" : 4, \"sku\" : \"pecans\", \"description\": \"product 4\", \"instock\" : 70 },\n" +
                 "   { \"_id\" : 5, \"sku\": null, \"description\": \"Incomplete\" },\n" +
                 "   { \"_id\" : 6 }";
-        List<Document> documents1 = CreateDataUtil.parseString(s);
+        List<Document> documents1 = CreateDataUtil.parseString(s1);
         mars.insert(documents1,"inventory");
 
     }
@@ -63,10 +63,9 @@ public class LookUpSingleTest {
      *   }
      * ] )
      */
-    //todo 结果有误
     @Test
     public void testForSingle(){
-        pipeline.lookup(Lookup.from("inventory")
+        pipeline.lookup(Lookup.lookup("inventory")
                 .localField("item")
                 .foreignField("sku")
                 .as("inventory_docs"));

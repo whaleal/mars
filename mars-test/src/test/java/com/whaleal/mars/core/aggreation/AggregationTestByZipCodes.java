@@ -5,11 +5,9 @@ import com.whaleal.mars.base.ZipCodesUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.aggregation.stages.Sort;
-import com.whaleal.mars.core.aggregation.stages.Stage;
 import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
@@ -93,12 +91,42 @@ public class AggregationTestByZipCodes {
         }
     }
 
-    //todo 未测试完成
+    /**
+     * db.zipcodes.aggregate( [
+     *    { $group:
+     *       {
+     *         _id: { state: "$state", city: "$city" },
+     *         pop: { $sum: "$pop" }
+     *       }
+     *    },
+     *    { $sort: { pop: 1 } },
+     *    { $group:
+     *       {
+     *         _id : "$_id.state",
+     *         biggestCity:  { $last: "$_id.city" },
+     *         biggestPop:   { $last: "$pop" },
+     *         smallestCity: { $first: "$_id.city" },
+     *         smallestPop:  { $first: "$pop" }
+     *       }
+     *    },
+     *
+     *   // the following $project is optional, and
+     *   // modifies the output format.
+     *
+     *   { $project:
+     *     { _id: 0,
+     *       state: "$_id",
+     *       biggestCity:  { name: "$biggestCity",  pop: "$biggestPop" },
+     *       smallestCity: { name: "$smallestCity", pop: "$smallestPop" }
+     *     }
+     *   }
+     * ] )
+     */
     @Test
     public void testForCity(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.group(Group.of(id().field("state",field("state")).field("city",field("city")))
+        pipeline.group(Group.of(id(value(Document.parse("{ state: \"$state\", city: \"$city\" }"))))
                 .field("pop",sum(field("pop"))));
 
         pipeline.sort(Sort.on().ascending("pop"));
@@ -111,9 +139,8 @@ public class AggregationTestByZipCodes {
 
         pipeline.project(Projection.of().exclude("_id")
                 .include("state",field("_id"))
-                .include("biggestCity",value(new Document("name","$biggestCity").append("pop","$biggestPop")))
-                .include("smallestCity",value(new Document("name","$smallestCity").append("pop","$smallestPop"))))
-                ;
+                .include("biggestCity",value(Document.parse("{ name: \"$biggestCity\",  pop: \"$biggestPop\" }")))
+                .include("smallestCity",value(Document.parse("{ name: \"$smallestCity\", pop: \"$smallestPop\" }"))));
 
         QueryCursor<Document> aggregate = mars.aggregate(pipeline,"zipCodes");
         while (aggregate.hasNext()){

@@ -3,8 +3,6 @@ package com.whaleal.mars.core.aggreation;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
-import com.whaleal.mars.core.aggregation.expressions.Expressions;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.Bucket;
 import com.whaleal.mars.core.aggregation.stages.Facet;
 import com.whaleal.mars.core.aggregation.stages.filters.Filters;
@@ -14,8 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.mongodb.client.model.Aggregates.bucket;
-import static com.mongodb.client.model.Aggregates.group;
 import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.*;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
@@ -89,7 +85,32 @@ public class BucketTest {
 
     }
 
-    //todo 输出结果与预期不符
+    /**
+     * db.artists.aggregate( [
+     *   // First Stage
+     *   {
+     *     $bucket: {
+     *       groupBy: "$year_born",                        // Field to group by
+     *       boundaries: [ 1840, 1850, 1860, 1870, 1880 ], // Boundaries for the buckets
+     *       default: "Other",                             // Bucket id for documents which do not fall into a bucket
+     *       output: {                                     // Output for each bucket
+     *         "count": { $sum: 1 },
+     *         "artists" :
+     *           {
+     *             $push: {
+     *               "name": { $concat: [ "$first_name", " ", "$last_name"] },
+     *               "year_born": "$year_born"
+     *             }
+     *           }
+     *       }
+     *     }
+     *   },
+     *   // Second Stage
+     *   {
+     *     $match: { count: {$gt: 3} }
+     *   }
+     * ] )
+     */
     @Test
     public void testForBucket(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
@@ -110,7 +131,41 @@ public class BucketTest {
         }
     }
 
-    //todo 结果与预期不符
+    /**
+     * db.artwork.aggregate( [
+     *   {
+     *     $facet: {                               // Top-level $facet stage
+     *       "price": [                            // Output field 1
+     *         {
+     *           $bucket: {
+     *               groupBy: "$price",            // Field to group by
+     *               boundaries: [ 0, 200, 400 ],  // Boundaries for the buckets
+     *               default: "Other",             // Bucket id for documents which do not fall into a bucket
+     *               output: {                     // Output for each bucket
+     *                 "count": { $sum: 1 },
+     *                 "artwork" : { $push: { "title": "$title", "price": "$price" } },
+     *                 "averagePrice": { $avg: "$price" }
+     *               }
+     *           }
+     *         }
+     *       ],
+     *       "year": [                                      // Output field 2
+     *         {
+     *           $bucket: {
+     *             groupBy: "$year",                        // Field to group by
+     *             boundaries: [ 1890, 1910, 1920, 1940 ],  // Boundaries for the buckets
+     *             default: "Unknown",                      // Bucket id for documents which do not fall into a bucket
+     *             output: {                                // Output for each bucket
+     *               "count": { $sum: 1 },
+     *               "artwork": { $push: { "title": "$title", "year": "$year" } }
+     *             }
+     *           }
+     *         }
+     *       ]
+     *     }
+     *   }
+     * ] )
+     */
     @Test
     public void testForMulti(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
@@ -121,14 +176,14 @@ public class BucketTest {
                 .outputField("count",sum(value(1)))
                 .outputField("artwork",push().field("title",field("title")).field("price",field("price")))
                 .outputField("averagePrice",avg(field("price")))
-                ));
-
-        pipeline.facet(Facet.of().field("year",Bucket.of().groupBy(field("year"))
+                )
+                .field("year",Bucket.of().groupBy(field("year"))
                 .boundaries(value( 1890), value(1910), value(1920), value(1940 ))
                 .defaultValue("unknown")
                 .outputField("count",sum(value(1)))
                 .outputField("artwork",push().field("title",field("title")).field("year",field("year"))
                 )));
+
 
         QueryCursor<Document> artwork = mars.aggregate(pipeline, "artwork");
         while (artwork.hasNext()){
