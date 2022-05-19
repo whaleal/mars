@@ -4,10 +4,7 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
-import com.whaleal.mars.core.aggregation.stages.AddFields;
-import com.whaleal.mars.core.aggregation.stages.Group;
-import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.Sort;
+import com.whaleal.mars.core.aggregation.stages.*;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -132,7 +129,7 @@ public class UnionWithTest {
      *    { $sort: { _id: 1, store: 1, item: 1 } }
      * ] )
      */
-    //todo 缺少$Set类型的stage
+    //todo 缺少pipeline类型的stage
     @Test
     public void testForReport1(){
         pipeline.set(AddFields.of().field("_id",value("2019Q1")));

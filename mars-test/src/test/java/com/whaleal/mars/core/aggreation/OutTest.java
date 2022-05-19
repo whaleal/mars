@@ -71,7 +71,7 @@ public class OutTest {
      *     { $out : { db: "reporting", coll: "authors" } }
      * ] )
      */
-    //todo 不支持插入到外部数据库中
+    //todo 不支持插入到外部数据库中，暂时不考虑
     @Test
     public void testForOtherDatabase(){
         pipeline.group(Group.of(id(field("author")))

@@ -77,7 +77,7 @@ public class GroupTest {
     @After
     public void dropCollections(){
         mars.dropCollection("sales");
-        mars.dropCollection("books");
+//        mars.dropCollection("books");
     }
 
     @Test
@@ -236,7 +236,6 @@ public class GroupTest {
         pipeline.group(Group.of(id(field("author")))
 //                .field("books",push(field(field("ROOT").toString()))));
                 .field("books",push(value("$$ROOT"))));
-
 
         pipeline.addFields(AddFields.of().field("totalCopies",sum(value("$books.copies"))));
 
