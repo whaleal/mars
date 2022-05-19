@@ -78,7 +78,6 @@ public class ReplaceRootTest {
      *    { $replaceRoot: { newRoot: { $mergeObjects:  [ { dogs: 0, cats: 0, birds: 0, fish: 0 }, "$pets" ] }} }
      * ] )
      */
-    //todo  $mergeObjects实现处有小问题
     @Test
     public void testForEmbedDocument(){
         Document parse = Document.parse("{ dogs: 0, cats: 0, birds: 0, fish: 0 }");
