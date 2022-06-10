@@ -1,3 +1,4 @@
+@NonNullApi
 /**
  *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
  *
@@ -27,9 +28,8 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  *
- *    服务与聚合阶段的$match操作,生成过滤条件
+ *    生成聚合管道的操作阶段,比如$match,$group等,每个stage对应不同的操作
  */
-@NonNullApi
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.aggregation.stages;
 
 import com.mongodb.lang.NonNullApi;
