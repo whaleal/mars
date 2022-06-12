@@ -34,10 +34,16 @@ import com.mongodb.client.model.CollationCaseFirst;
 import com.mongodb.client.model.CollationMaxVariable;
 import com.mongodb.client.model.CollationStrength;
 
+import java.lang.annotation.*;
+
 /**
  * Defines the collation options for an index
  * @see IndexOptions
  */
+@Documented
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE})
 public @interface Collation {
     /**
      * Causes secondary differences to be considered in reverse order, as it is done in the French language

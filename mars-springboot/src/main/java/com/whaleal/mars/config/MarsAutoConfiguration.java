@@ -58,6 +58,12 @@ import java.util.stream.Collectors;
  * 原生的配置了许多Bean，涉及到mars的有
  * @see MongoProperties
  * @see MongoClient
+ *
+ * @Configuration(proxyBeanMethods = false)
+ * @ConditionalOnClass({MongoClient.class, Mars.class})
+ * @EnableConfigurationProperties(MongoProperties.class)
+ * @AutoConfigureBefore(MongoAutoConfiguration.class)
+ * @ConditionalOnMissingBean(Mars.class)
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({MongoClient.class, Mars.class})
