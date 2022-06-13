@@ -28,9 +28,8 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  *
- *    服务与聚合操作，生成聚合管道中的每个操作阶段
+ *    生成聚合管道的操作阶段,比如$match,$group等,每个stage对应不同的操作
  */
-
 package com.whaleal.mars.core.aggregation.stages;
 
 import com.mongodb.lang.NonNullApi;

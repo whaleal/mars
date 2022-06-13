@@ -26,6 +26,8 @@
  *    delete this exception statement from your version. If you delete this
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
+ *
+ *    服务与聚合阶段的$match操作,生成过滤条件
  */
 @NonNullApi
 package com.whaleal.mars.core.aggregation.stages.filters;

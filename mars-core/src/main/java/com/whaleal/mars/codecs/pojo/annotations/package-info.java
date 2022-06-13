@@ -26,5 +26,7 @@
  * delete this exception statement from your version. If you delete this
  * exception statement from all source files in the program, then also delete
  * it in the license file.
+ *
+ * 注解的生效大部分都是在创建表时生效，在项目运行期间要弱化
  */
 package com.whaleal.mars.codecs.pojo.annotations;
