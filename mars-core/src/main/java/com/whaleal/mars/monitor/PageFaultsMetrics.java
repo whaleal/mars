@@ -16,12 +16,12 @@ public class PageFaultsMetrics extends AbstractMonitor{
         super(mongoClient);
     }
 
-    public int getPageFaults(){
+    public long getPageFaults(){
         return getOpLatenciesData("page_faults");
     }
 
-    private <T> T getOpLatenciesData(String key) {
+    private Long getOpLatenciesData(String key) {
 
-        return (T) getServerStatus().get("extra_info",Document.class).get(key,Integer.class);
+        return getServerStatus().get("extra_info",Document.class).get(key,Long.class);
     }
 }

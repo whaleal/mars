@@ -37,7 +37,7 @@ import java.util.Date;
 /**
  * JMX Metrics for Background Flushing
  */
-//todo 方法均有问题
+//todo 参数均不存在
 public class BackgroundFlushingMetrics extends AbstractMonitor {
 
     /**

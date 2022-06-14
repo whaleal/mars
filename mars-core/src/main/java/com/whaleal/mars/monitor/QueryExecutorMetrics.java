@@ -26,11 +26,11 @@ public class QueryExecutorMetrics extends AbstractMonitor{
     }
 
     public long getCollectionScanNonTailable(){
-        return getQueryExecutorData("collectionScans", Document.class).get("nonTailable",long.class);
+        return getQueryExecutorData("collectionScans", Document.class).get("nonTailable",Long.class);
     }
 
     public long getCollectionScanTotal(){
-        return getQueryExecutorData("collectionScans", Document.class).get("total",long.class);
+        return getQueryExecutorData("collectionScans", Document.class).get("total",Long.class);
     }
 
     private <T> T getQueryExecutorData(String key,Class<T> targetClass) {
