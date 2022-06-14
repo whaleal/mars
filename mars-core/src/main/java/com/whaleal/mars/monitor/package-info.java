@@ -27,52 +27,7 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.monitor;
-
-import com.mongodb.client.MongoClient;
-import com.whaleal.icefrog.core.util.StrUtil;
-
-import java.net.UnknownHostException;
-import java.util.Date;
-
 /**
- * Expose basic server information via JMX
+ *  mongodb实时监控指标获取
  */
-public class ServerInfo extends AbstractMonitor {
-
-
-    public ServerInfo(MongoClient mongoClient) {
-        super(mongoClient);
-    }
-
-    /**
-     * Returns the hostname of the used server reported by MongoDB.
-     *
-     * @return the reported hostname can also be an IP address.
-     * @throws UnknownHostException
-     */
-    public String getHostName() throws UnknownHostException {
-
-        /*
-         * UnknownHostException is not necessary anymore, but clients could have
-         * called this method in a try..catch(UnknownHostException) already
-         */
-        return StrUtil.collectionToDelimitedString(hosts(), ",");
-    }
-
-    public Long getUptimeEstimate() {
-        return getServerStatus().get("uptimeEstimate",Long.class);
-    }
-
-    public String getVersion() {
-        return (String) getServerStatus().get("version");
-    }
-
-    public Date getLocalTime() {
-        return getServerStatus().get("localTime",Date.class);
-    }
-
-    public double getUptime() {
-        return (Double) getServerStatus().get("uptime");
-    }
-}
+package com.whaleal.mars.monitor;

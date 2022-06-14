@@ -35,6 +35,7 @@ import org.bson.Document;
 
 /**
  * JMX Metrics for Operation counters
+ * 解析serverStatus的结果中的opCounters参数
  */
 public class OperationCounters extends AbstractMonitor {
 

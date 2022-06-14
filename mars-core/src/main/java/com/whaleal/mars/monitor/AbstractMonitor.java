@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 /**
  * Base class to encapsulate common configuration settings when connecting to a database
+ * 抽象基类，连接数据库执行db.runCommand({"serverStatus" : 1,"rangeDeleter" : 1,"repl" : 1})，子类继承这个类，解析命令返回结果，获取对应的监控指标
  */
 public abstract class AbstractMonitor {
 
