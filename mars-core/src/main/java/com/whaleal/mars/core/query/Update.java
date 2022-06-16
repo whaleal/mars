@@ -33,6 +33,9 @@ package com.whaleal.mars.core.query;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.StrUtil;
 
+import com.whaleal.mars.codecs.writer.DocumentWriter;
+import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.aggregation.stages.Sort;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
 import org.bson.Document;
@@ -617,7 +620,7 @@ public class Update implements UpdateDefinition {
          * @param direction must not be {@literal null}.
          * @return never {@literal null}.
          */
-        public PushOperatorBuilder sort(Sort.Direction direction) {
+        public PushOperatorBuilder sort( Sort.Direction direction) {
 
             Precondition.notNull(direction, "Direction must not be null.");
             this.modifiers.put("$sort",direction);
@@ -634,9 +637,17 @@ public class Update implements UpdateDefinition {
         public PushOperatorBuilder sort(Sort sort) {
 
             Precondition.notNull(sort, "Sort must not be null.");
-            //SortStage sortStage = new SortStage(sort);
-            this.modifiers.put("$sort",sort.getSortObject());
-            //this.addModifier(new SortStage(sort));
+
+            DocumentWriter writer = new DocumentWriter() ;
+            ExpressionHelper.document(writer, () -> {
+                for (Sort.SortType sorttype : sort.getSorts()) {
+                    writer.writeName(sorttype.getField());
+                    sorttype.getDirection().encode(writer);
+                }
+            });
+
+            this.modifiers.put(sort.getStageName(),writer.getDocument());
+
             return this;
         }
 

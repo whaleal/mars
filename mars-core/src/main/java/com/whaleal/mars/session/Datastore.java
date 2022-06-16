@@ -30,6 +30,7 @@
 package com.whaleal.mars.session;
 
 import com.mongodb.ClientSessionOptions;
+import com.mongodb.ReadPreference;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
@@ -39,6 +40,8 @@ import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
+import com.whaleal.mars.session.transactions.MarsTransaction;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +75,7 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  * 将 索引 部分的接口单独拿出来
  */
 
-public interface Datastore extends IndexOperations, MongoOperations {
+interface Datastore extends IndexOperations, MongoOperations {
 
 
     default < T > UpdateResult replace( Query query, T entity ) {
@@ -179,20 +182,22 @@ public interface Datastore extends IndexOperations, MongoOperations {
     < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
 
 
-    default < T > UpdateResult update( Query query, T entity ) {
-        return update(query, entity, new UpdateOptions(), null);
+
+    default < T > UpdateResult updateEntity( Query query, T entity ) {
+        return updateEntity(query, entity, new UpdateOptions(), null);
     }
 
-    default < T > UpdateResult update( Query query, T entity, UpdateOptions options ) {
-        return update(query, entity, options, null);
+    default < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options ) {
+        return updateEntity(query, entity, options, null);
     }
 
-    default < T > UpdateResult update( Query query, T entity, String collectionName ) {
-        return update(query, entity, new UpdateOptions(), collectionName);
+    default < T > UpdateResult updateEntity( Query query, T entity, String collectionName ) {
+        return updateEntity(query, entity, new UpdateOptions(), collectionName);
     }
 
 
-    < T > UpdateResult update( Query query, T entity, UpdateOptions options, String collectionName );
+    < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options, String collectionName );
+
 
 
     /**
@@ -617,4 +622,53 @@ public interface Datastore extends IndexOperations, MongoOperations {
      * @return never {@literal null}.
      */
     String getCollectionName( Class< ? > entityClass );
+
+
+    /**
+     * @param transaction the transaction wrapper
+     * @param <T>         the return type
+     * @return the return value
+     */
+    <T> T withTransaction(MarsTransaction<T> transaction);
+
+    /**
+     * @param <T>         the return type
+     * @param options     the session options to apply
+     * @param transaction the transaction wrapper
+     * @return the return value
+     *
+     */
+    <T> T withTransaction( MarsTransaction<T> transaction , ClientSessionOptions options);
+
+
+    /**
+     * Execute the a MongoDB command expressed as a JSON string. Parsing is delegated to {@link Document#parse(String)} to
+     * obtain the {@link Document} holding the actual command. Any errors that result from executing this command will be
+     * converted into  exception hierarchy.
+     *
+     * @param jsonCommand a MongoDB command expressed as a JSON string. Must not be {@literal null}.
+     * @return a result object returned by the action.
+     */
+    Document executeCommand(String jsonCommand);
+
+    /**
+     * Execute a MongoDB command. Any errors that result from executing this command will be converted into
+     * exception hierarchy.
+     *
+     * @param command a MongoDB command.
+     * @return a result object returned by the action.
+     */
+    Document executeCommand(Document command);
+
+    /**
+     * Execute a MongoDB command. Any errors that result from executing this command will be converted into
+     * access exception hierarchy.
+     *
+     * @param command a MongoDB command, must not be {@literal null}.
+     * @param readPreference read preferences to use, can be {@literal null}.
+     * @return a result object returned by the action.
+     *
+     */
+    Document executeCommand(Document command, @Nullable ReadPreference readPreference);
+
 }

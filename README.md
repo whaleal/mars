@@ -6,8 +6,7 @@
 
 
 ##  致自己 
-造自己的轮子，让别人去说 ；
-
+造自己的轮子，让别人去说 
 
 
 <p align="center">
@@ -55,11 +54,12 @@ mars 目标是兼容大多数的非关系型数据库，使用一套的标准查
 
 ### 🎁mars名称的由来
 
-mars ，是上海锦木信息技术有限公司与相关方合作方共同研发的一款ODM/ORM框架，纪念中国火星探测任务“天问一号”的火星车祝融号成功登陆火星的乌托邦平原【2021年5月15日】，故起名为 mars。
+mars 是 [上海锦木信息技术有限公司](https://www.jinmuinfo.com/) 与 [中国东方航空公司](https://www.ceair.com/) 合作研发的一款ODM/ORM框架  
+纪念中国火星探测任务“天问一号”的火星车祝融号成功登陆火星的乌托邦平原【2021年5月15日】,故起名为 mars。
 
 ### 🍺mars如何改变我们的coding方式
 
-mars的目标是使得非关系型数据库使用一套标准的方式，即可简单的实现业务逻辑，减少开发者的学习使用成本，彻底改变我们写代码的方式。
+mars的目标是使得非关系型数据库使用一套标准的方式，即可简单的实现业务逻辑，减少开发者的学习使用成本,彻底改变我们写代码的方式。
 
 mars的存在就是为了减少框架的学习成本，避免网络上参差不齐的代码出现导致的bug,同时避免重复造轮子。
 
@@ -72,9 +72,8 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 
 | 模块                |     介绍                                                                          |
 | -------------------|---------------------------------------------------------------------------------- |
-| mars-core        |     核心                                         |
-| mars-spring      |     基于spring的框架                                                    |
-| mars-bson         |    mongodb-bson 的拓展 ，可以完全取代                                                   |
+| mars-core          |     核心包                                    |
+| mars-springboot    |     基于springboot 自动注入的插件                                                    |
 
 可以根据需求对每个模块单独引入，也可以通过引入`mars-core`方式引入所有模块。
 
@@ -82,7 +81,7 @@ mars的存在就是为了减少框架的学习成本，避免网络上参差不�
 
 ## 📝文档 
 
-* [See the usage docs](Usage.md)
+* [See the usage docs](https://github.com/whaleal/mars/wiki)
 * [Download Latest](https://github.com/whaleal/mars/releases)
 
 
@@ -146,25 +145,10 @@ mars的源码分为两个分支，功能如下：
 - [github issue](https://github.com/whaleal/mars/issues)
 
 
-### 🧬贡献代码的步骤
-1. 在github issues 上找到需要修复的问题，或提出要贡献的特性内容  
-2. 在github或者Github上fork项目到自己的repo  
-3. 把fork过去的项目也就是你的项目clone到你的本地  
-4. 修改代码（记得一定要修改v1-dev分支）并进行相关测试  
-5. commit后push到自己的库（v1-dev分支）  
-6. 登录github或Github在你首页可以看到一个 pull request 按钮，点击它，选择自己的dev 分支及本项目的dev 分支，填写一些说明信息，然后提交即可。  
-7. 等待维护者合并  
+### 🧬贡献代码的步骤及PR遵照的原则
 
-### 📐PR遵照的原则
+详见wiki  [How2Contribute](https://github.com/whaleal/mars/wiki/Mars-00How2Contribute)
 
-mars欢迎任何人为mars添砖加瓦，贡献代码，不过维护者是一个强迫症患者，为了照顾病人，需要提交的pr（pull request）符合一些规范，规范如下：
-
-1. 注释完备，尤其每个新增的方法应按照Java文档规范标明方法说明、参数说明、返回值说明等信息，必要时请添加单元测试，如果愿意，也可以加上你的大名。
-2. mars的缩进按照IDEA,IDEA真香，默认（tab）缩进，所以请遵守（不要和我争执空格与tab的问题，这是一个病人的习惯）。
-3. 新加的方法不要使用第三方库的方法，mars遵循无依赖原则（除非在extra模块中加方法工具）。
-4. 请pull request到`v1-dev`分支。mars在1.x版本后使用了新的分支：`v1-main`是主分支，表示已经发布中央库的版本，这个分支不允许pr，也不允许修改。
-
--------------------------------------------------------------------------------
 
 
 ## ⭐欢迎关注
@@ -176,6 +160,11 @@ mars欢迎任何人为mars添砖加瓦，贡献代码，不过维护者是一个
 
 ## 其他相关项目 
 [Project](https://docs.whaleal.com/project)
+
+## 社区支持
+本项目由 [whaleal社区](https://www.whaleal.com/)提供支持  
+
+
 
 ## What is Mars
 

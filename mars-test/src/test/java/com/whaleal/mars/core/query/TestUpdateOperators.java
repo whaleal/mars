@@ -4,8 +4,9 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 
 /**
  * @user Lyz
@@ -15,13 +16,13 @@ import org.junit.Test;
 public class TestUpdateOperators {
     private MongoMappingContext context;
 
-    @Before
-    public void before(){
+    @BeforeMethod
+    public void before() {
         context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
     }
 
     @Test
-    public void testForUpdate(){
+    public void testForUpdate() {
         Update set = new Update().set("lastModified", "$$NOW").set("cancellation", new Document("date", "$$CLUSTER_TIME").append("reason", "request")).set("status", "D");
         System.out.println(set.getUpdateObject());
 

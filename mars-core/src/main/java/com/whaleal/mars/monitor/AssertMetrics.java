@@ -33,7 +33,9 @@ package com.whaleal.mars.monitor;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
 
-
+/**
+ * 解析db.serverStatus()的assert参数
+ */
 public class AssertMetrics extends AbstractMonitor {
 
     /**
@@ -64,7 +66,7 @@ public class AssertMetrics extends AbstractMonitor {
     }
 
     private int getBtree(String key) {
-        Document Preconditions = (Document) getServerStatus().get("Preconditions");
+        Document Preconditions = (Document) getServerStatus().get("asserts");
         // Class c = btree.get(key).getClass();
         return (Integer) Preconditions.get(key);
     }

@@ -3,7 +3,8 @@ package com.whaleal.mars.core.query;
 import com.whaleal.mars.core.aggregation.stages.filters.Filter;
 import com.whaleal.mars.core.aggregation.stages.filters.Filters;
 import org.bson.Document;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 public class TestCriteria {
 

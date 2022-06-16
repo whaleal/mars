@@ -49,8 +49,7 @@ public class AggregationPipeline<T> implements Aggregation<T> {
         return outputType;
     }
 
-    //todo  计划后续使用该参数来封装 聚合返回类型 ；
-    // 泛型绑定
+
     private final Class<T>  outputType ;
 
     private AggregationPipeline(Class<T> outputType ){
@@ -158,6 +157,19 @@ public class AggregationPipeline<T> implements Aggregation<T> {
     @Override
     public AggregationPipeline<T> match(Filter... filters) {
         stages.add(Match.on(filters));
+        return this;
+    }
+    @Override
+    public AggregationPipeline<T> set(Set set) {
+        stages.add(set);
+        return this;
+    }
+
+
+
+    @Override
+    public AggregationPipeline<T> setWindowFields(SetWindowFields fields) {
+        stages.add(fields);
         return this;
     }
 

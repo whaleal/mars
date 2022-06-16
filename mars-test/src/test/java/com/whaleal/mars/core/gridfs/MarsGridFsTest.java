@@ -8,17 +8,16 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-
 import com.whaleal.icefrog.core.lang.Precondition;
-import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
-import org.bson.types.ObjectId;
-import org.junit.jupiter.api.Test;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.option.InsertOneOptions;
 import com.whaleal.mars.session.result.InsertOneResult;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -36,17 +35,13 @@ import java.util.regex.Pattern;
 @SpringBootTest
 @Slf4j
 public class MarsGridFsTest {
+    private static final String bucketName = "xx";
+    private static final String m1 = "/Users/cs/Documents/xxxx.jpeg";
+    private static final String m300 = "/usr/local/tmp/xxx.rar";
+    private static final String g2 = "";
+    private static final String m300Id = "6080dd5e878eb9205b437f7f";
     @Autowired
     Mars mars;
-
-    private static String bucketName = "xx";
-
-    private static String m1 = "/Users/cs/Documents/xxxx.jpeg";
-    private static String m300 = "/usr/local/tmp/xxx.rar";
-    private static String g2 = "";
-
-    private static String m300Id = "6080dd5e878eb9205b437f7f";
-
 
     @Test
     public void testRegex() {
@@ -102,11 +97,11 @@ public class MarsGridFsTest {
         stream.close();
         System.out.println(new String(bytesToWriteTo, StandardCharsets.UTF_8));*/
         String id = m300Id;
-        System.out.println("得到id"+m300Id);
+        System.out.println("得到id" + m300Id);
         //根据id查找文件
         GridFSFile gridFSFile = mars.findOneGridFs(Query.query(Criteria.where("_id").is(new ObjectId(id))), "xx");
         //打开下载流对象
-        GridFsResource resource = mars.getResource(gridFSFile,bucketName);
+        GridFsResource resource = mars.getResource(gridFSFile, bucketName);
         //创建gridFsSource，用于获取流对象
         //获取流中的数据
         InputStream input = resource.getInputStream();
@@ -148,7 +143,7 @@ public class MarsGridFsTest {
 
     @Test
     public void testFindNormal() {
-        FindIterable<Document> documents = mars.getDatabase().getCollection("fs.files").find();
+        FindIterable< Document > documents = mars.getDatabase().getCollection("fs.files").find();
         documents.forEach(document -> {
             System.out.println(document);
         });
@@ -160,7 +155,7 @@ public class MarsGridFsTest {
         MongoDatabase database = mars.getDatabase();
         System.out.println("获取到到数据库" + database);
         System.out.println(database.getName());
-        Optional<BasicDBObject> document = mars.findOne(Query.query(Criteria.where("_id").is(new ObjectId(fieldId))), BasicDBObject.class, "fs.files");
+        Optional< BasicDBObject > document = mars.findOne(Query.query(Criteria.where("_id").is(new ObjectId(fieldId))), BasicDBObject.class, "fs.files");
         System.out.println(document);
         //System.out.println(document.get());
 
@@ -179,7 +174,7 @@ public class MarsGridFsTest {
 
     @Test
     public void testFindByName() {
-        GridFSFindIterable iterable = mars.findGridFs(Query.query(Criteria.where("filename").is("xx")),bucketName);
+        GridFSFindIterable iterable = mars.findGridFs(Query.query(Criteria.where("filename").is("xx")), bucketName);
         System.out.println("找到的数据");
         iterable.forEach(item -> {
             System.out.println(item);

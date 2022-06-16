@@ -4,7 +4,7 @@ import com.mongodb.client.MongoCursor;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -44,17 +44,22 @@ import org.bson.codecs.EncoderContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AggregationImpl {
+public abstract class AggregationImpl {
 
     protected  MongoMappingContext mapper;
     protected  MongoDatabase database;
 
 
-    public AggregationImpl(MongoDatabase database) {
+    protected AggregationImpl(MongoDatabase database) {
 
         this.mapper = new MongoMappingContext(database);
         this.database = database.withCodecRegistry(mapper.getCodecRegistry());
 
+    }
+
+    protected AggregationImpl(MongoDatabase database ,MongoMappingContext mapper){
+        this.database = database.withCodecRegistry(mapper.getCodecRegistry());
+        this.mapper = mapper ;
     }
 
 
@@ -124,6 +129,7 @@ public class AggregationImpl {
         if (options != null) {
             collection = options.prepare(collection);
         }
+
 
         MongoCursor<T> cursor = collection.aggregate(getDocuments(pipeline.getInnerStage()), resultType).iterator();
 

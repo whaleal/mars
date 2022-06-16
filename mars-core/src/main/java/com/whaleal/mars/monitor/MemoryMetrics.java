@@ -58,10 +58,6 @@ public class MemoryMetrics extends AbstractMonitor {
         return getMemData("supported", Boolean.class);
     }
 
-    public int getMemoryMappedSpace() {
-        return getMemData("mapped", Integer.class);
-    }
-
     @SuppressWarnings("unchecked")
     private <T> T getMemData(String key, Class<T> targetClass) {
         Document mem = (Document) getServerStatus().get("mem");

@@ -143,4 +143,7 @@ interface Aggregation<T>  {
     Aggregation<T> unset(Unset unset);
 
     Aggregation<T> unwind(Unwind unwind);
+
+    AggregationPipeline<T> setWindowFields(SetWindowFields fields);
+    AggregationPipeline<T> set(Set set);
 }

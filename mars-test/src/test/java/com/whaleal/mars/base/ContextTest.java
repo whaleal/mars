@@ -11,7 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ContextTest {

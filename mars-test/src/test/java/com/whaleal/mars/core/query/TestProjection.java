@@ -4,9 +4,10 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 
 /**
  * @user Lyz
@@ -15,12 +16,12 @@ import org.junit.Test;
  */
 public class TestProjection {
 
-    private Query query ;
+    private Query query;
 
     private MongoMappingContext context;
 
-    @Before
-    public void before(){
+    @BeforeMethod
+    public void before() {
         context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
 
         query = new Query();
@@ -28,7 +29,7 @@ public class TestProjection {
     }
 
     @Test
-    public void testForQueryReturn(){
+    public void testForQueryReturn() {
         Criteria criteria = new Criteria("status").is("A");
 
         query.addCriteria(criteria);
@@ -38,7 +39,7 @@ public class TestProjection {
         System.out.println(query.getFieldsObject());
         System.out.println(queryObject);
 
-        Assert.assertEquals(queryObject,Document.parse(" { status: \"A\" }, { item: 1, status: 1}"));
+        Assert.assertEquals(queryObject, Document.parse(" { status: \"A\" }, { item: 1, status: 1}"));
 
         Criteria criteria1 = new Criteria("status").is("A");
 
@@ -49,24 +50,24 @@ public class TestProjection {
         System.out.println(query.getFieldsObject());
         System.out.println(queryObject1);
 
-        Assert.assertEquals(queryObject1,Document.parse(" { status: \"A\" }, { item: 1, status: 1 ,_id : 0}"));
+        Assert.assertEquals(queryObject1, Document.parse(" { status: \"A\" }, { item: 1, status: 1 ,_id : 0}"));
 
     }
 
     @Test
-    public void testForQueryProjection(){
+    public void testForQueryProjection() {
 
         Projection include = new Projection().include("item", "status", "size.uom");
         System.out.println(include.getFieldsObject());
 
-        System.out.println(new Projection().include("item","status","instock.qty").getFieldsObject());
+        System.out.println(new Projection().include("item", "status", "instock.qty").getFieldsObject());
 
         Document fieldsObject = new Projection().include("item", "status").slice("instock", -1).getFieldsObject();
         System.out.println(fieldsObject);
     }
 
     @Test
-    public void testForMetaProject(){
+    public void testForMetaProject() {
 
         Projection projection = new Projection();
 

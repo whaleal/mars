@@ -1,6 +1,14 @@
 package com.whaleal.mars.core;
 
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.whaleal.mars.Constant;
+import org.bson.Document;
 import org.junit.Test;
+
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -11,11 +19,11 @@ import java.util.Map;
 public class TestParameterizedType {
 
 
-    private List<Character> list;
+    private List< Character > list;
 
-    private Map<String, Integer> map;
+    private Map< String, Integer > map;
 
-    private Map<String, Integer> map2;
+    private Map< String, Integer > map2;
     private Map map3;
 
     @Test
@@ -47,7 +55,7 @@ public class TestParameterizedType {
 
         Type genericType = mapField.getGenericType();
 
-        System.out.println(ParameterizedType.class.isInstance(genericType));
+        System.out.println(genericType instanceof ParameterizedType);
 
     }
 
@@ -69,6 +77,26 @@ public class TestParameterizedType {
         Type genericType3 = mapField3.getGenericType();
 
         System.out.println(genericType3);
+
+
+    }
+
+
+    @Test
+    public void test01(){
+        MongoClient mongoClient = MongoClients.create(Constant.connectionStr);
+
+        MongoCollection< Document > collection = mongoClient.getDatabase("mars").getCollection("stu");
+
+        MongoCursor< Document > iterator = collection.find().batchSize(2).iterator();
+
+        while (iterator.hasNext()){
+            System.out.println(iterator.available());
+
+            Document next = iterator.next();
+
+            System.out.println(next);
+        }
 
 
     }

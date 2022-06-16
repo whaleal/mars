@@ -38,36 +38,16 @@ import com.whaleal.mars.session.option.CountOptions;
  * 用于查询 MongoDB  文档数量的相关方法
  * @Date 2020-01-14
  */
-public interface Statistic {
+interface Statistic {
 
-    default <T> long count(Class<T> clazz) {
-        return count(clazz, new CountOptions());
-    }
+    <T> long estimatedCount( Class<T> clazz);
 
+    <T> long estimatedCount( String collName);
 
-    <T> long count(Class<T> clazz, CountOptions countOptions);
+    <T> long count( Query query, Class<T> clazz);
+    <T> long count( Query query, String collName);
+    long count(Query query, Class<?> entityClass, String collectionName);
+    long count(Query query ,Class<?> entityClass ,CountOptions countOptions,String collectionName );
 
-
-    default <T> long count(String collName) {
-        return count(collName, new CountOptions());
-    }
-
-
-    <T> long count(String collName, CountOptions countOptions);
-
-
-    default <T> long countById(Query query, Class<T> clazz) {
-        return countById(query, clazz, new CountOptions());
-    }
-
-    <T> long countById(Query query, Class<T> clazz, CountOptions countOptions);
-
-
-    default <T> long countById(Query query, String collName) {
-        return countById(query, collName, new CountOptions());
-    }
-
-
-    <T> long countById(Query query, String collName, CountOptions countOptions);
 
 }

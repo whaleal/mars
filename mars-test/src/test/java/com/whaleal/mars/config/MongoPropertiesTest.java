@@ -18,10 +18,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class MongoPropertiesTest {
 
     @Autowired
-    MongoProperties properties ;
+    MongoProperties properties;
 
     @Before
-    public void init(){
+    public void init() {
 
         Assert.assertNotNull(properties);
 
@@ -29,14 +29,14 @@ public class MongoPropertiesTest {
 
 
     @Test
-    public void test01(){
+    public void test01() {
 
-        Assert.assertNotNull(properties.getUri(),"uri is not null");
+        Assert.assertNotNull(properties.getUri(), "uri is not null");
     }
 
 
     @Test
-    public void testProperties(){
+    public void testProperties() {
 
         Assert.assertNotNull(properties.getUri());
     }

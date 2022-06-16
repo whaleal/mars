@@ -6,13 +6,11 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @user Lyz
@@ -23,13 +21,13 @@ public class TestQueryAndProjection {
 
     private MongoMappingContext context;
 
-    @Before
-    public void before(){
+    @BeforeMethod
+    public void before() {
         context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
     }
 
     @Test
-    public void testForSimple(){
+    public void testForSimple() {
         System.out.println(new Criteria("qty").mod(4, 0).getCriteriaObject());
         System.out.println(new Criteria("qty").nin(5, 10).getCriteriaObject());
         System.out.println(new Criteria("qty").ne(20).getCriteriaObject());
@@ -41,7 +39,7 @@ public class TestQueryAndProjection {
         System.out.println(criteria2.getCriteriaObject());
 
 
-        ArrayList<Integer> objects = new ArrayList<>();
+        ArrayList< Integer > objects = new ArrayList<>();
         objects.add(1);
         objects.add(5);
 
@@ -61,13 +59,13 @@ public class TestQueryAndProjection {
         Document criteriaObject3 = criteria6.getCriteriaObject();
         System.out.println(criteriaObject3);
 
-        new Criteria("x").mod(2,0);
+        new Criteria("x").mod(2, 0);
 
         Query query = new Query().withProjection(new Projection().slice("comments", -5));
         System.out.println(context.toDocument(query.getFieldsObject()));
 
-        List<Double> objects1 = new ArrayList<>();
-        List<Object> inObjects1 = new ArrayList<>();
+        List< Double > objects1 = new ArrayList<>();
+        List< Object > inObjects1 = new ArrayList<>();
 
         objects1.add(-74.0);
         objects1.add(40.0);

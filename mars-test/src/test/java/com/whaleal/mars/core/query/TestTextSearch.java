@@ -1,7 +1,8 @@
 package com.whaleal.mars.core.query;
 
 import org.bson.Document;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 /**
  * @user Lyz
@@ -12,11 +13,10 @@ public class TestTextSearch {
 
 
     @Test
-    public void testForTextSearch(){
+    public void testForTextSearch() {
         TextCriteria java_coffee_shop = new TextCriteria().matching("java coffee shop");
         TextCriteria java_coffee_shop1 = new TextCriteria().matchingAny("java coffee shop");
         TextCriteria java_coffee_shop2 = new TextCriteria().matchingPhrase("java coffee shop");
-
 
 
         Document criteriaObject = java_coffee_shop.getCriteriaObject();

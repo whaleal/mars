@@ -37,7 +37,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-public interface Resource extends InputStreamSource {
+interface Resource extends InputStreamSource {
 
     /**
      * Determine whether this resource actually exists in physical form.
