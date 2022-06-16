@@ -51,14 +51,6 @@ public class GlobalLockMetrics extends AbstractMonitor {
         return getGlobalLockData("totalTime", Long.class);
     }
 
-    //5.0和4.4版本均未解析出参数
-//    public double getLockTime() {
-//        return getGlobalLockData("lockTime", Double.class);
-//    }
-//    public double getLockTimeRatio() {
-//        return getGlobalLockData("ratio", Double.class);
-//    }
-
     public int getCurrentQueueTotal() {
         return getCurrentQueue("total");
     }

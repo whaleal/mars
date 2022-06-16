@@ -24,13 +24,6 @@ public class CacheMetrics extends AbstractMonitor{
         return getCacheData("bytes written from cache");
     }
 
-//    public int getReadPageIntoCache(){
-//
-//    }
-//
-//    public int getPageIntoCache(){
-//
-//    }
 
     private long getCacheData(String key) {
         Document Preconditions = getServerStatus().get("wiredTiger",Document.class).get("cache",Document.class);
