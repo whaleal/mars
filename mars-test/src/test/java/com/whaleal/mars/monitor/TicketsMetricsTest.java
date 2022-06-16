@@ -23,5 +23,6 @@ public class TicketsMetricsTest {
         System.out.println(ticketsMetrics.getWriteTotalTickets());
         System.out.println(ticketsMetrics.getWriteAvailable());
         System.out.println(ticketsMetrics.getWriteOut());
+
     }
 }

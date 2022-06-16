@@ -33,8 +33,8 @@ public class LatencyMetricsTest {
         System.out.println(latencyMetrics.getOperationReadLatencyBucketOne());
         System.out.println(latencyMetrics.getOperationReadLatencyBucketTwo());
         System.out.println(latencyMetrics.getOperationReadLatencyBucketThree());
-        System.out.println(latencyMetrics.getOperationWriteLatencyBucketFour());
-        System.out.println(latencyMetrics.getOperationWriteLatencyBucketFive());
+        System.out.println(latencyMetrics.getOperationReadLatencyBucketFour());
+        System.out.println(latencyMetrics.getOperationReadLatencyBucketFive());
 
         System.out.println(latencyMetrics.getOperationWriteLatencyBucketOne());
         System.out.println(latencyMetrics.getOperationWriteLatencyBucketTwo());
