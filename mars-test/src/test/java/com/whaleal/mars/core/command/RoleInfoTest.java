@@ -30,7 +30,7 @@ public class RoleInfoTest {
         System.out.println("============查询单个指定角色============");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"myClusterwideAdmins\", db: \"admin\" }\n" +
+                        "      rolesInfo: { role: \"service\", db: \"mars\" }\n" +
                         "    }"
         );
         System.out.println("================查询角色结束==================");
@@ -43,7 +43,7 @@ public class RoleInfoTest {
         System.out.println("============查询单个指定角色包括权限============");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"admin\" },\n" +
+                        "      rolesInfo: { role: \"service\", db: \"mars\" },\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );
@@ -58,8 +58,8 @@ public class RoleInfoTest {
         Document document = mars.executeCommand(
                 "{\n" +
                         "      rolesInfo: [\n" +
-                        "         { role: \"myClusterwideAdmins\", db: \"admin\" },\n" +
-                        "         { role: \"dbAdmin\", db: \"mars\" }\n" +
+                        "         { role: \"serivce\", db: \"mars\" },\n" +
+                        "         { role: \"root\", db: \"admin\" }\n" +
                         "      ]\n" +
                         "    }"
         );
@@ -74,8 +74,8 @@ public class RoleInfoTest {
         Document document = mars.executeCommand(
                 "{\n" +
                         "      rolesInfo: [\n" +
-                        "         { role: \"myClusterwideAdmins\", db: \"admin\" },\n" +
-                        "         { role: \"dbAdmin\", db: \"mars\" }\n" +
+                        "         { role: \"root\", db: \"admin\" },\n" +
+                        "         { role: \"service\", db: \"mars\" }\n" +
                         "      ],\n" +
                         "      showPrivileges: true\n" +
                         "    }"

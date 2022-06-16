@@ -41,17 +41,8 @@ public class CreateRoleTest {
     public void testForCreateRole(){
         System.out.println("============开始创建角色=============");
         mars.executeCommand("{ createRole: \"service\",\n" +
-                "  privileges: [\n" +
-                "    { resource: { cluster: true }, actions: [ \"addShard\" ] },\n" +
-                "    { resource: { db: \"config\", collection: \"\" }, actions: [ \"find\", \"update\", \"insert\", \"remove\" ] },\n" +
-                "    { resource: { db: \"users\", collection: \"usersCollection\" }, actions: [ \"update\", \"insert\", \"remove\" ] },\n" +
-                "    { resource: { db: \"\", collection: \"\" }, actions: [ \"find\" ] }\n" +
-                "  ],\n" +
-                "  roles: [\n" +
-                "    { role: \"read\", db: \"admin\" }\n" +
-                "    { role: \"writeOrdersCollection\", db: \"admin\" }\n" +
-                "    { role: \"readOrdersCollection\", db: \"admin\" }\n" +
-                "  ],\n" +
+                "  privileges: [],\n" +
+                "  roles: [],\n" +
                 "  writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
                 "}");
         Document document = mars.executeCommand(
