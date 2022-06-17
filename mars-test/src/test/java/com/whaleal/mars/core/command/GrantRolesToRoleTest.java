@@ -30,13 +30,13 @@ public class GrantRolesToRoleTest {
         System.out.println("===================开始授予角色====================");
         mars.executeCommand("{ grantRolesToRole: \"service\",\n" +
                 "     roles: [\n" +
-                "              \"myClusterwideAdmins\"\n" +
+                "              \"read\"\n" +
                 "     ],\n" +
                 "     writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
                 "   }");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"admin\" },\n" +
+                        "      rolesInfo: { role: \"service\", db: \"mars\" },\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );
