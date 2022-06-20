@@ -36,10 +36,10 @@ public class GrantPrivilegesToRoleTest {
                         "     grantPrivilegesToRole: \"service\",\n" +
                         "     privileges: [\n" +
                         "         {\n" +
-                        "           resource: { db: \"admin\", collection: \"\" }, actions: [ \"find\" ]\n" +
+                        "           resource: { db: \"mars\", collection: \"\" }, actions: [ \"find\" ]\n" +
                         "         },\n" +
                         "         {\n" +
-                        "           resource: { db: \"admin\", collection: \"system.js\" }, actions: [ \"find\" ]\n" +
+                        "           resource: { db: \"mars\", collection: \"system.js\" }, actions: [ \"find\" ]\n" +
                         "         }\n" +
                         "     ],\n" +
                         "     writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
@@ -48,7 +48,7 @@ public class GrantPrivilegesToRoleTest {
         System.out.println("====================查看角色======================");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"admin\" },\n" +
+                        "      rolesInfo: { role: \"service\", db: \"mars\" },\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );
