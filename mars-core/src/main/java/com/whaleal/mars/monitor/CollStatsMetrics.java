@@ -31,19 +31,19 @@ public class CollStatsMetrics extends AbstractMonitor{
         return getCollStats("ns",String.class);
     }
 
-    public int getSize(){
+    public Integer getSize(){
         return getCollStats("size",Integer.class);
     }
 
-    public int getCount(){
+    public Integer getCount(){
         return getCollStats("count",Integer.class);
     }
 
-    public int getAvgObjSize(){
+    public Integer getAvgObjSize(){
         return getCollStats("avgObjSize",Integer.class);
     }
 
-    public int getStorageSize(){
+    public Integer getStorageSize(){
         return getCollStats("freeStorageSize",Integer.class);
     }
 
@@ -59,12 +59,12 @@ public class CollStatsMetrics extends AbstractMonitor{
         return getCollStats("maxSize", Integer.class);
     }
 
-    public int getScaleFactor(){
+    public Integer getScaleFactor(){
         return getCollStats("scaleFactor",Integer.class);
     }
 
 
-    public int getNIndexes(){
+    public Integer getNIndexes(){
         return getCollStats("nindexes",Integer.class);
     }
 
@@ -76,11 +76,11 @@ public class CollStatsMetrics extends AbstractMonitor{
         return getCollStats("indexDetails",Document.class);
     }
 
-    public int getTotalIndexSize(){
+    public Integer getTotalIndexSize(){
         return getCollStats("totalIndexSize",Integer.class);
     }
 
-    public int getTotalSize(){
+    public Integer getTotalSize(){
         return getCollStats("totalSize",Integer.class);
     }
 

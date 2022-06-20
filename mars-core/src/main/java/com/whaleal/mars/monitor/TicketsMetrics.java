@@ -19,41 +19,41 @@ public class TicketsMetrics extends AbstractMonitor{
         super(mongoClient);
     }
 
-    public int getWriteOut(){
+    public Integer getWriteOut(){
         return getWriteTicketsData("out");
     }
 
-    public int getWriteAvailable(){
+    public Integer getWriteAvailable(){
         return getWriteTicketsData("available");
     }
 
-    public int getWriteTotalTickets(){
+    public Integer getWriteTotalTickets(){
         return getWriteTicketsData("totalTickets");
     }
 
-    public int getReadOut(){
+    public Integer getReadOut(){
         return getReadTicketsData("out");
     }
 
-    public int getReadAvailable(){
+    public Integer getReadAvailable(){
         return getReadTicketsData("available");
     }
 
-    public int getReadTotalTickets(){
+    public Integer getReadTotalTickets(){
         return getReadTicketsData("totalTickets");
     }
 
-    private int getWriteTicketsData(String key) {
+    private Integer getWriteTicketsData(String key) {
         Document writeTicketsDocument = (Document) getServerStatus().get("wiredTiger",Document.class)
                 .get("concurrentTransactions", Document.class)
                 .get("write");
-        return (int)writeTicketsDocument.get(key);
+        return writeTicketsDocument.getInteger(key);
     }
 
-    private int getReadTicketsData(String key) {
+    private Integer getReadTicketsData(String key) {
         Document readTicketsDocument = (Document) getServerStatus().get("wiredTiger",Document.class)
                 .get("concurrentTransactions", Document.class)
                 .get("read");
-        return (int)readTicketsDocument.get(key);
+        return readTicketsDocument.getInteger(key);
     }
 }

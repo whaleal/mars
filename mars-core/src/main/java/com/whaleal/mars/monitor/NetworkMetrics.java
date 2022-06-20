@@ -18,19 +18,19 @@ public class NetworkMetrics extends AbstractMonitor{
     }
 
     public Long getBytesIn(){
-        return getNetworkData("bytesIn",Long.class);
+        return getNetworkData("bytesIn");
     }
 
     public Long getBytesOut(){
-        return getNetworkData("bytesOut",Long.class);
+        return getNetworkData("bytesOut");
     }
 
     public Long getNumRequests(){
-        return getNetworkData("numRequests",Long.class);
+        return getNetworkData("numRequests");
     }
 
-    private <T> T getNetworkData(String key, Class<T> targetClass) {
+    private Long getNetworkData(String key) {
         Document mem = (Document) getServerStatus().get("network");
-        return (T) mem.get(key,targetClass);
+        return mem.getLong(key);
     }
 }

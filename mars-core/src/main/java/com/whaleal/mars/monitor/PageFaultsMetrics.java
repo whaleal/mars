@@ -5,7 +5,7 @@ import org.bson.Document;
 
 /**
  * @author lyz
- * @description
+ * @description 解析db.serverStatus()的extra_info.page_faults参数
  * @date 2022-06-14 15:17
  **/
 public class PageFaultsMetrics extends AbstractMonitor{

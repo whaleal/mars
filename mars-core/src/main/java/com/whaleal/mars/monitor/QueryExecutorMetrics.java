@@ -17,19 +17,19 @@ public class QueryExecutorMetrics extends AbstractMonitor{
         super(mongoClient);
     }
 
-    public long getScannedKey(){
+    public Long getScannedKey(){
         return getQueryExecutorData("scanned",Long.class);
     }
 
-    public long getScannedObjects(){
+    public Long getScannedObjects(){
         return getQueryExecutorData("scannedObjects",Long.class);
     }
 
-    public long getCollectionScanNonTailable(){
+    public Long getCollectionScanNonTailable(){
         return getQueryExecutorData("collectionScans", Document.class).get("nonTailable",Long.class);
     }
 
-    public long getCollectionScanTotal(){
+    public Long getCollectionScanTotal(){
         return getQueryExecutorData("collectionScans", Document.class).get("total",Long.class);
     }
 

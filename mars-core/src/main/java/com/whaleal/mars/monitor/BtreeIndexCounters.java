@@ -34,8 +34,11 @@ import org.bson.Document;
 
 /**
  * JMX Metrics for B-tree index counters
+ *
+ * Starting in MongoDB 3.0, serverStatus no longer outputs the  indexCounters, and recordStats sections.
+ * 此项指标v4.2及之后版本不再支持
+ * @link{https://www.mongodb.com/docs/v4.2/reference/command/serverStatus/}
  */
-//todo 参数均不存在
 public class BtreeIndexCounters extends AbstractMonitor {
 
     /**

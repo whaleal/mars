@@ -36,6 +36,7 @@ import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
+import com.mongodb.client.model.TimeSeriesGranularity;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 
@@ -214,7 +215,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     @Override
     public < T > InsertOneResult insert( T entity, InsertOneOptions options, String collectionName ) {
 
+        // 开启与数据库的连接
         ClientSession session = this.startSession();
+
+        //根据传入的集合名和实体类获取对应的MongoCollection对象
         MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
@@ -771,6 +775,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
     public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
 
+        //集合名不为空，则有优先使用集合名
         if (collectionName != null) {
             MongoCollection< T > collection = this.database.getCollection(collectionName, type);
             return this.withConcern(collection, type);
@@ -843,6 +848,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
 
+    //只传入实体类的方式，根据实体类的注解获取CollectionOptions
     @Override
     public < T > MongoCollection< Document > createCollection( Class< T > entityClass ) {
         notNull(entityClass, "EntityClass must not be null!");
@@ -937,6 +943,24 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 it.getValidationLevel().ifPresent(val -> document.append("validationLevel", val.getValue()));
                 it.getValidationAction().ifPresent(val -> document.append("validationAction", val.getValue()));
             });
+
+            Optional<TimeSeriesOptions> timeSeries = collectionOptions.getTimeSeriesOptions();
+            if(ObjectUtil.isNotEmpty(timeSeries)){
+                TimeSeriesOptions timeSeriesOptions = timeSeries.get();
+                Document document1 = new Document();
+                if(ObjectUtil.isNotEmpty(timeSeriesOptions.getTimeField())){
+                    document1.append("timeField",timeSeriesOptions.getTimeField());
+                }
+
+                if (ObjectUtil.isNotEmpty(timeSeriesOptions.getMetaField())){
+                    document1.append("metaField",timeSeriesOptions.getMetaField());
+                }
+
+                if (ObjectUtil.isNotEmpty(timeSeriesOptions.getGranularity())){
+                    document1.append("granularity",timeSeriesOptions.getGranularity());
+                }
+                document.append("timeseries",document1);
+            }
         }
         return document;
     }
@@ -971,9 +995,31 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 if (collectionOptions.containsKey("validationAction")) {
                     options.validationAction(ValidationAction.fromString(collectionOptions.getString("validationAction")));
                 }
-
                 options.validator(collectionOptions.get("validator", Document.class));
                 co.validationOptions(options);
+            }
+
+            if(collectionOptions.containsKey("timeseries")){
+                Document timeseries = collectionOptions.get("timeseries", Document.class);
+
+                com.mongodb.client.model.TimeSeriesOptions timeSeriesOptions = null ;
+                if(ObjectUtil.isNotEmpty(timeseries.get("timeField"))){
+                    timeSeriesOptions = new com.mongodb.client.model.TimeSeriesOptions(timeseries.getString("timeField"));
+                }
+
+                if(ObjectUtil.isNotEmpty(timeseries.get("granularity"))){
+                    timeSeriesOptions.granularity(timeseries.get("granularity", TimeSeriesGranularity.class));
+                }
+                if(ObjectUtil.isNotEmpty(timeseries.getString("metaField"))){
+                    timeSeriesOptions.metaField(timeseries.getString("metaField"));
+                }
+
+//                if(ObjectUtil.isNotEmpty(timeseries.getString("expireAfterSeconds"))){
+//                    timeSeriesOptions = timeSeriesOptions(timeseries.getLong("expireAfterSeconds"));
+//                }
+
+                co.timeSeriesOptions(timeSeriesOptions);
+
             }
 
             this.database.createCollection(collectionName, co);
@@ -992,6 +1038,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         Concern annotation = (Concern) entityModel.getAnnotation(Concern.class);
 
+        //判断实体类是否有@Concern注解
         if (annotation != null) {
 
             if (WriteConcern.valueOf(annotation.writeConcern()) != null) {
@@ -1041,7 +1088,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         TimeSeries timeSeries = (TimeSeries) entityModel.getAnnotation(TimeSeries.class);
 
         if (!ObjectUtil.isEmpty(timeSeries)) {
-            CollectionOptions.TimeSeriesOptions toptions = CollectionOptions.TimeSeriesOptions.timeSeries(timeSeries.timeField());
+            TimeSeriesOptions toptions = TimeSeriesOptions.timeSeries(timeSeries.timeField());
             if (StrUtil.hasText(timeSeries.metaField())) {
 
                 if (entityModel.getPropertyModel(timeSeries.metaField()) == null) {

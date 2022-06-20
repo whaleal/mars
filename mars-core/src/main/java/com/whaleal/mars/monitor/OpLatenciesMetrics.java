@@ -34,9 +34,9 @@ public class OpLatenciesMetrics extends AbstractMonitor{
         return getOpLatenciesData("transactions");
     }
 
-    private <T> T getOpLatenciesData(String key) {
+    private Long getOpLatenciesData(String key) {
         Document mem = (Document) getServerStatus().get("opLatencies",Document.class).get(key);
 
-        return (T) mem.get("latency",Long.class);
+        return mem.get("latency",Long.class);
     }
 }

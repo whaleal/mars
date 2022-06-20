@@ -69,6 +69,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
  * <p>
  * <p>
  * 需要将原来的   的功能转移到这里来
+ * 自动注入 相关属性会注入到这个相关属性中
  */
 public class MongoMappingContext {
 
@@ -95,6 +96,7 @@ public class MongoMappingContext {
 
     private final MongoDatabase database;
 
+    //所有扫描到的带有@Entity的类的集合
     private Set<? extends Class<?>> initialEntitySet;
 
     public void setInitialEntitySet(Set<? extends Class<?>> initialEntitySet) {

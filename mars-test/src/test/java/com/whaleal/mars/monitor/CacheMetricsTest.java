@@ -16,7 +16,7 @@ public class CacheMetricsTest {
     @Test
     public void testForExec(){
         CacheMetrics cacheMetrics = new CacheMetrics(mars.getMongoClient());
-        System.out.println(cacheMetrics.getWrittenBytesFromCache());
+        System.out.println(cacheMetrics.getReadBytesIntoCache());
         System.out.println(cacheMetrics.getWrittenBytesFromCache());
     }
 }
