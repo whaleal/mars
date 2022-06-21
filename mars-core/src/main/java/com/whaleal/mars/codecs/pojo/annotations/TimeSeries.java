@@ -8,6 +8,8 @@ import com.mongodb.client.model.TimeSeriesGranularity;
 
 import java.lang.annotation.*;
 
+import static com.mongodb.client.model.TimeSeriesGranularity.SECONDS;
+
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
@@ -38,7 +40,7 @@ public @interface TimeSeries {
      *
      * @return {@link TimeSeriesGranularity server default} by default.
      */
-    TimeSeriesGranularity granularity() ;
+    TimeSeriesGranularity granularity() default SECONDS;
 
     /**
      * Optional. Enable the automatic deletion of documents in a time series collection by specifying the number of seconds
