@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.codecs.writer;
 
+import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
@@ -38,8 +39,7 @@ import org.bson.types.ObjectId;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+
 
 
 @SuppressWarnings("unchecked")
@@ -47,6 +47,7 @@ public class DocumentWriter implements BsonWriter {
     private final RootState root;
     private WriteState state;
 
+    private MongoMappingContext mapper;
 
     /**
      * Creates a new Writer
@@ -54,7 +55,6 @@ public class DocumentWriter implements BsonWriter {
      *
      */
     public DocumentWriter() {
-
         root = new RootState(this);
         state = root;
     }
@@ -67,6 +67,13 @@ public class DocumentWriter implements BsonWriter {
      */
     public DocumentWriter(Document seed) {
         root = new RootState(this, seed);
+        state = root;
+    }
+
+
+    public DocumentWriter(MongoMappingContext mapper) {
+        this.mapper = mapper;
+        root = new RootState(this);
         state = root;
     }
 
@@ -119,10 +126,15 @@ public class DocumentWriter implements BsonWriter {
     public void writeBoolean(String name, boolean value) {
         state.name(name).value(value);
     }
+//
+//    @Override
+//    public void writeDateTime(long value) {
+//        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.of("UTC")));
+//    }
 
     @Override
     public void writeDateTime(long value) {
-        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.of("UTC")));
+        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), mapper.getDateStorage().getZone()));
     }
 
     @Override
