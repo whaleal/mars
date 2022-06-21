@@ -77,6 +77,12 @@ public class DocumentWriter implements BsonWriter {
         state = root;
     }
 
+    public DocumentWriter(MongoMappingContext mapper,Document seed) {
+        this.mapper = mapper;
+        root = new RootState(this,seed);
+        state = root;
+    }
+
     /**
      * Encodes a value in to this Writer
      *
