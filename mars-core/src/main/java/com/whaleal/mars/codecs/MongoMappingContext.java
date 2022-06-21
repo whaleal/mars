@@ -95,6 +95,9 @@ public class MongoMappingContext {
     }
 
     private final MongoDatabase database;
+    private final DateStorage dateStorage = DateStorage.UTC;
+
+
 
     //所有扫描到的带有@Entity的类的集合
     private Set<? extends Class<?>> initialEntitySet;
@@ -438,5 +441,9 @@ public class MongoMappingContext {
 
     public void setNamingStrategy( Class<?> strategyClass ) {
         this.strategyClass = strategyClass ;
+    }
+
+    public DateStorage getDateStorage() {
+        return dateStorage;
     }
 }

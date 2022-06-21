@@ -41,6 +41,7 @@ import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,7 +131,6 @@ public abstract class AggregationImpl {
             collection = options.prepare(collection);
         }
 
-
         MongoCursor<T> cursor = collection.aggregate(getDocuments(pipeline.getInnerStage()), resultType).iterator();
 
         return new QueryCursor<T>(cursor);
@@ -139,16 +139,27 @@ public abstract class AggregationImpl {
     }
 
 
+    //todo 问题
     @SuppressWarnings({"unchecked", "rawtypes"})
     private List<Document> getDocuments(List<Stage> stages) {
-        return stages.stream()
-                .map(s -> {
-                    Codec codec = mapper.getCodecRegistry().get(s.getClass());
-                    DocumentWriter writer = new DocumentWriter();
-                    codec.encode(writer, s, EncoderContext.builder().build());
-                    return writer.getDocument();
-                })
-                .collect(Collectors.toList());
+        List list = new ArrayList();
+        for (Stage stage : stages){
+            Codec codec = mapper.getCodecRegistry().get(stage.getClass());
+            DocumentWriter writer = new DocumentWriter(mapper);
+            System.out.println(writer);
+            codec.encode(writer, stage, EncoderContext.builder().build());
+            list.add(writer.getDocument());
+        }
+
+        return list;
+//        return stages.stream()
+//                .map(s -> {
+//                    Codec codec = mapper.getCodecRegistry().get(s.getClass());
+//                    DocumentWriter writer = new DocumentWriter();
+//                    codec.encode(writer, s, EncoderContext.builder().build());
+//                    return writer.getDocument();
+//                })
+//                .collect(Collectors.toList());
     }
 
 
