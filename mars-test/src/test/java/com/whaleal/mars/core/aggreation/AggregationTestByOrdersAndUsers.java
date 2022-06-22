@@ -11,7 +11,7 @@ import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.aggregation.stages.Sort;
 import com.whaleal.mars.core.aggregation.stages.Unwind;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;

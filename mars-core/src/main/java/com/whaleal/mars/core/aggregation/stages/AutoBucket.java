@@ -1,94 +1,124 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
 import com.mongodb.client.model.BucketGranularity;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
+import com.whaleal.mars.core.aggregation.expressions.impls.ValueExpression;
 
 
+/**
+ * Categorizes incoming documents into a specific number of groups, called buckets, based on a specified expression. Bucket boundaries
+ * are automatically determined in an attempt to evenly distribute the documents into the specified number of buckets.
+ * <p>
+ * Each bucket is represented as a document in the output. The document for each bucket contains an _id field, whose value specifies the
+ * inclusive lower bound and the exclusive upper bound for the bucket, and a count field that contains the number of documents in the
+ * bucket. The count field is included by default when the output is not specified.
+ *
+ * @aggregation.expression $bucketAuto
+ */
 public class AutoBucket extends Stage {
     private Expression groupBy;
-    private Integer buckets;
+    private ValueExpression buckets;
     private DocumentExpression output;
-    private BucketGranularity granularity;
+    private ValueExpression granularity;
 
     protected AutoBucket() {
         super("$bucketAuto");
     }
 
+    /**
+     * Creates a new auto bucket
+     *
+     * @return the new bucket
+     */
+    public static AutoBucket autoBucket() {
+        return new AutoBucket();
+    }
 
+    /**
+     * Creates a new auto bucket
+     *
+     * @return the new bucket
+     * @deprecated use {@link #autoBucket()}
+     */
+    @Deprecated()
     public static AutoBucket of() {
         return new AutoBucket();
     }
 
-
+    /**
+     * A positive 32-bit integer that specifies the number of buckets into which input documents are grouped.
+     *
+     * @param buckets the number of buckets
+     * @return this
+     */
     public AutoBucket buckets(Integer buckets) {
-        this.buckets = buckets;
+        this.buckets = new ValueExpression(buckets);
         return this;
     }
 
-
-    public Integer getBuckets() {
+    /**
+     * @return the number of buckets
+     */
+    public ValueExpression getBuckets() {
         return buckets;
     }
 
-
-    public BucketGranularity getGranularity() {
+    /**
+     * @return the granularity
+     */
+    public ValueExpression getGranularity() {
         return granularity;
     }
 
-
+    /**
+     * @return the group by expression
+     */
     public Expression getGroupBy() {
         return groupBy;
     }
 
-
+    /**
+     * @return the output document
+     */
     public DocumentExpression getOutput() {
         return output;
     }
 
-
+    /**
+     * A string that specifies the preferred number series to use to ensure that the calculated boundary edges end on preferred round
+     * numbers or their powers of 10.
+     * <p>
+     * Available only if the all groupBy values are numeric and none of them are NaN.
+     *
+     * @param granularity the granularity
+     * @return this
+     */
     public AutoBucket granularity(BucketGranularity granularity) {
-        this.granularity = granularity;
+        this.granularity = new ValueExpression(granularity);
         return this;
     }
 
-
+    /**
+     * An expression to group documents by.
+     *
+     * @param groupBy the expression to use
+     * @return this
+     */
     public AutoBucket groupBy(Expression groupBy) {
         this.groupBy = groupBy;
         return this;
     }
 
-
+    /**
+     * Adds a field to the document that specifies the fields to include in the output documents in addition to the _id field. To specify
+     * the field to include, you must use accumulator expressions.
+     *
+     * @param name  the new field name
+     * @param value the value expression
+     * @return this
+     */
     public AutoBucket outputField(String name, Expression value) {
         if (output == null) {
             output = Expressions.of();

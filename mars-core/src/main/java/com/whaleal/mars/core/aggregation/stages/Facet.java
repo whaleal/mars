@@ -1,32 +1,3 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
 import java.util.LinkedHashMap;
@@ -35,7 +6,19 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 
-
+/**
+ * Processes multiple aggregation pipelines within a single stage on the same set of input documents. Each sub-pipeline has its own field
+ * in the output document where its results are stored as an array of documents.
+ * <p>
+ * The $facet stage allows you to create multi-faceted aggregations which characterize data across multiple dimensions, or facets, within
+ * a single aggregation stage. Multi-faceted aggregations provide multiple filters and categorizations to guide data browsing and
+ * analysis. Retailers commonly use faceting to narrow search results by creating filters on product price, manufacturer, size, etc.
+ * <p>
+ * Input documents are passed to the $facet stage only once. $facet enables various aggregations on the same set of input documents,
+ * without needing to retrieve the input documents multiple times.
+ *
+ * @aggregation.expression $facet
+ */
 public class Facet extends Stage {
     private final LinkedHashMap<String, List<Stage>> fields = new LinkedHashMap<>();
 
@@ -43,18 +26,41 @@ public class Facet extends Stage {
         super("$facet");
     }
 
+    /**
+     * Creates a new facet stage
+     *
+     * @return the new stage
+     */
+    public static Facet facet() {
+        return new Facet();
+    }
 
+    /**
+     * Creates a new facet stage
+     *
+     * @return the new stage
+     * @deprecated use {@link #facet()}
+     */
+    @Deprecated()
     public static Facet of() {
         return new Facet();
     }
 
-
+    /**
+     * Adds a field to the facet
+     *
+     * @param name   the field name
+     * @param stages the pipeline defining the field
+     * @return this
+     */
     public Facet field(String name, Stage... stages) {
         fields.put(name, asList(stages));
         return this;
     }
 
-
+    /**
+     * @return the fields
+     */
     public Map<String, List<Stage>> getFields() {
         return fields;
     }

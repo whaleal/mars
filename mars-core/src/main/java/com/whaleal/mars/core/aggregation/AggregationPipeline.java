@@ -34,11 +34,13 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+
+import com.whaleal.mars.core.query.filters.Filter;
 import com.whaleal.mars.session.option.AggregationOptions;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AggregationPipeline<T> implements Aggregation<T> {
@@ -155,8 +157,13 @@ public class AggregationPipeline<T> implements Aggregation<T> {
     }
 
     @Override
-    public AggregationPipeline<T> match(Filter... filters) {
-        stages.add(Match.on(filters));
+    public AggregationPipeline<T> match( Filter... filters) {
+        if (stages.isEmpty()) {
+            Arrays.stream(filters)
+                    .filter(f -> f.getName().equals("$eq"))
+                    .forEach(f -> f.entityType(outputType));
+        }
+        stages.add(Match.match(filters));
         return this;
     }
     @Override
@@ -247,7 +254,7 @@ public class AggregationPipeline<T> implements Aggregation<T> {
 
     @Override
     public AggregationPipeline<T> sortByCount(Expression sort) {
-        stages.add(SortByCount.on(sort));
+        stages.add(SortByCount.sortByCount(sort));
         return this;
     }
 

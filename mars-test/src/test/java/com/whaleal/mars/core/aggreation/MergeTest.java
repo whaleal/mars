@@ -9,7 +9,7 @@ import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Merge;
 import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.session.QueryCursor;

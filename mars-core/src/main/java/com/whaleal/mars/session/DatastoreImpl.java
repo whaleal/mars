@@ -125,7 +125,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         defaultGridFSBucket = GridFSBuckets.create(super.database);
     }
 
-    protected DatastoreImpl(MongoClient mongoClient ,MongoMappingContext mapper){
+    protected DatastoreImpl( MongoClient mongoClient , MongoMappingContext mapper){
         super(mapper.getDatabase(),mapper);
         this.mongoClient = mongoClient ;
         this.defaultGridFSBucket = GridFSBuckets.create(super.database);

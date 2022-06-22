@@ -47,7 +47,7 @@ public class CreateCollectionTest {
     @Test
     public void testForQuery(){
         Query query = new Query();
-        query.with(Sort.on().ascending("name"));
+//        query.with(Sort.on().ascending("name"));
 
         QueryCursor<Document> person = mars.findAll(query, Document.class, "person");
         while (person.hasNext()){

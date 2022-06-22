@@ -1,35 +1,11 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-
+/**
+ * Returns a stream of documents containing information on active and/or dormant operations as well as inactive sessions that are
+ * holding locks as part of a transaction.
+ *
+ * @aggregation.expression $currentOp
+ */
 public class CurrentOp extends Stage {
     private boolean allUsers;
     private boolean idleConnections;
@@ -41,61 +17,115 @@ public class CurrentOp extends Stage {
         super("$currentOp");
     }
 
+    /**
+     * Creates a new stage
+     *
+     * @return the new stage
+     */
+    public static CurrentOp currentOp() {
+        return new CurrentOp();
+    }
 
+    /**
+     * Creates a new stage
+     *
+     * @return the new stage
+     * @deprecated user {@link #currentOp()}
+     */
+    @Deprecated()
     public static CurrentOp of() {
         return new CurrentOp();
     }
 
-
+    /**
+     * <li>If set to false, $currentOp will only report on operations/idle connections/idle cursors/idle sessions belonging to the user who
+     * ran the command.
+     * <li>If set to true, $currentOp will report operations belonging to all users.
+     *
+     * @param allUsers include allUsers if true
+     * @return this
+     */
     public CurrentOp allUsers(boolean allUsers) {
         this.allUsers = allUsers;
         return this;
     }
 
-
+    /**
+     * If set to false, $currentOp will only report active operations. If set to true, all operations including idle connections will
+     * be returned.
+     *
+     * @param idleConnections include idle connections if true
+     * @return this
+     */
     public CurrentOp idleConnections(boolean idleConnections) {
         this.idleConnections = idleConnections;
         return this;
     }
 
-
+    /**
+     * If set to true, $currentOp will report on cursors that are “idle”; i.e. open but not currently active in a getMore operation.
+     *
+     * @param idleCursors include idle cursors if true
+     * @return this
+     */
     public CurrentOp idleCursors(boolean idleCursors) {
         this.idleCursors = idleCursors;
         return this;
     }
 
-
+    /**
+     * Include idle sessions or not
+     *
+     * @param idleSessions true to include idle sessions
+     * @return this
+     */
     public CurrentOp idleSessions(boolean idleSessions) {
         this.idleSessions = idleSessions;
         return this;
     }
 
-
+    /**
+     * @return include all users?
+     */
     public boolean isAllUsers() {
         return allUsers;
     }
 
-
+    /**
+     * @return include idle connections?
+     */
     public boolean isIdleConnections() {
         return idleConnections;
     }
 
-
+    /**
+     * @return include idle cursors?
+     */
     public boolean isIdleCursors() {
         return idleCursors;
     }
 
-
+    /**
+     * @return include idle sessions?
+     */
     public boolean isIdleSessions() {
         return idleSessions;
     }
 
-
+    /**
+     * @return is local ops?
+     */
     public boolean isLocalOps() {
         return localOps;
     }
 
-
+    /**
+     * If set to true for an aggregation running on mongos, $currentOp reports only those operations running locally on that mongos. If
+     * false, then the $currentOp will instead report operations running on the shards.
+     *
+     * @param localOps true to include only local ops
+     * @return this
+     */
     public CurrentOp localOps(boolean localOps) {
         this.localOps = localOps;
         return this;

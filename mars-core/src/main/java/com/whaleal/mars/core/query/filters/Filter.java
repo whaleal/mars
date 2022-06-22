@@ -1,54 +1,30 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.filters;
+
+import com.mongodb.lang.Nullable;
 
 
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.internal.OperationTarget;
 import com.whaleal.mars.core.internal.PathTarget;
 import org.bson.BsonWriter;
 import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
+
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 import static java.lang.String.format;
 
 /**
  * Base class for query filters
+ *
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Filter {
     private final String name;
     private String field;
-
+    @Nullable
     private Object value;
     private boolean not;
     private boolean validate;
@@ -60,7 +36,7 @@ public class Filter {
         this.name = name;
     }
 
-    protected Filter( String name, String field, Object value ) {
+    protected Filter(String name, @Nullable String field, @Nullable Object value) {
         this.name = name;
         this.field = field != null ? field : "";
         this.value = value;
@@ -75,23 +51,20 @@ public class Filter {
     }
 
     /**
-     * @param mapper  the mapper
-     * @param writer  the writer
-     * @param context the context
+     * @param mapper the mapper
+     * @param writer    the writer
+     * @param context   the context
      */
     public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-        String path = path(mapper);
-        if (path != null) {
-            ExpressionHelper.document(writer, path, () -> {
-                if (not) {
-                    ExpressionHelper.document(writer, "$not", () -> {
-                        writeNamedValue(name, getValue(mapper), mapper, writer, context);
-                    });
-                } else {
+        document(writer, path(mapper.getMapper()), () -> {
+            if (not) {
+                document(writer, "$not", () -> {
                     writeNamedValue(name, getValue(mapper), mapper, writer, context);
-                }
-            });
-        }
+                });
+            } else {
+                writeNamedValue(name, getValue(mapper), mapper, writer, context);
+            }
+        });
     }
 
     /**
@@ -108,7 +81,7 @@ public class Filter {
     /**
      * @return the filter field
      */
-
+    @Nullable
     public String getField() {
         return field;
     }
@@ -127,7 +100,7 @@ public class Filter {
     /**
      * @return the filter name
      */
-
+    @Nullable
     public String getName() {
         return name;
     }
@@ -135,7 +108,7 @@ public class Filter {
     /**
      * @return the filter value
      */
-
+    @Nullable
     public Object getValue() {
         return value;
     }
@@ -153,14 +126,14 @@ public class Filter {
         return this;
     }
 
-
+    @Nullable
     protected Object getValue(MongoMappingContext mapper) {
         if (!mapped) {
-            PathTarget target = pathTarget(mapper);
+          PathTarget target = pathTarget(mapper);
             OperationTarget operationTarget = new OperationTarget(pathTarget, value);
             this.value = operationTarget.getValue();
             PropertyModel property = target.getTarget();
-            if (property != null) {
+            if (property != null ) {
                 this.value = ((Document) operationTarget.encode(mapper)).get(field);
             }
             mapped = true;
@@ -173,7 +146,7 @@ public class Filter {
         return format("%s %s %s", field, name, value);
     }
 
-    protected String path(MongoMappingContext mapper) {
+    protected String path( MongoMappingContext mapper) {
         return pathTarget(mapper).translatedPath();
     }
 
@@ -185,18 +158,18 @@ public class Filter {
         return pathTarget;
     }
 
-    protected void writeNamedValue( String name, Object named, MongoMappingContext mapper, BsonWriter writer,
-                                    EncoderContext encoderContext ) {
+    protected void writeNamedValue(@Nullable String name, @Nullable Object value, MongoMappingContext mapper, BsonWriter writer,
+                                   EncoderContext encoderContext) {
         writer.writeName(name);
-        if (named != null) {
-            Codec codec = mapper.getCodecRegistry().get(named.getClass());
-            encoderContext.encodeWithChildContext(codec, writer, named);
+        if (value != null) {
+            Codec codec = mapper.getCodecRegistry().get(value.getClass());
+            encoderContext.encodeWithChildContext(codec, writer, value);
         } else {
             writer.writeNull();
         }
     }
 
-    protected void writeUnnamedValue( Object value, MongoMappingContext mapper, BsonWriter writer, EncoderContext encoderContext ) {
+    protected void writeUnnamedValue(@Nullable Object value, MongoMappingContext mapper, BsonWriter writer, EncoderContext encoderContext) {
         if (value != null) {
             Codec codec = mapper.getCodecRegistry().get(value.getClass());
             encoderContext.encodeWithChildContext(codec, writer, value);

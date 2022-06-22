@@ -46,7 +46,7 @@ import org.bson.BsonTimestamp;
  * 分别继承 session 会话相关的接口 及数据基本操作的基本实现
  * 主要是通用会话层的实现
  * <p>
- * 具体数据库 操作 还是要看 继承的 DatastoreImpl
+ * 具体数据库 操作 还是要看 继承的 MongoMappingContextImpl
  * <p>
  * 子类为 为 MarsSessionImpl
  *

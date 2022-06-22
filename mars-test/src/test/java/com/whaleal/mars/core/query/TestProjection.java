@@ -41,7 +41,7 @@ public class TestProjection {
 
         Assert.assertEquals(queryObject, Document.parse(" { status: \"A\" }, { item: 1, status: 1}"));
 
-        Criteria criteria1 = new Criteria("status").is("A");
+        Criteria criteria1 = new Criteria("item").is("1");
 
         query.addCriteria(criteria1);
         query.withProjection(new Projection().include("status").include("item").exclude("_id"));

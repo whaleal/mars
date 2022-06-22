@@ -1,69 +1,52 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.expressions.impls;
 
-import com.whaleal.mars.codecs.MongoMappingContext;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.core.aggregation.expressions.Expressions;
+import org.bson.BsonWriter;
+import org.bson.codecs.EncoderContext;
+
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.wrapExpression;
 
 
+/**
+ * Base class for the math expressions
+ */
 public class MathExpression extends Expression {
-    private final List<Expression> operands;
 
-
+    /**
+     * @param operation
+     * @param operands
+     */
     public MathExpression(String operation, List<Expression> operands) {
-        super(operation);
-        this.operands = operands;
+        super(operation, new ExpressionList(operands));
     }
 
-
+    /**
+     * @param operation
+     * @param operand
+     */
     public MathExpression(String operation, Expression operand) {
-        super(operation);
-        this.operands = asList(operand);
+        super(operation, new ExpressionList(operand));
     }
 
     @Override
     public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext encoderContext) {
-        ExpressionHelper.document(writer, () -> {
+        ExpressionList value = getValue();
+        if (value != null) {
+            final List<Expression> operands = value.getValues();
             writer.writeName(getOperation());
             if (operands.size() > 1) {
                 writer.writeStartArray();
             }
             for (Expression operand : operands) {
                 if (operand != null) {
-                    ExpressionHelper.expression(mapper, writer, operand, encoderContext);
+                    wrapExpression(mapper, writer, operand, encoderContext);
                 } else {
                     writer.writeNull();
                 }
@@ -71,6 +54,11 @@ public class MathExpression extends Expression {
             if (operands.size() > 1) {
                 writer.writeEndArray();
             }
-        });
+        }
+    }
+
+    @Override
+    public ExpressionList getValue() {
+        return (ExpressionList) super.getValue();
     }
 }

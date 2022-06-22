@@ -1,32 +1,32 @@
 package com.whaleal.mars.core.aggregation.codecs.stages;
 
 import com.mongodb.lang.Nullable;
+
+
 import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.core.aggregation.expressions.TimeUnit;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.SetWindowFields;
-import com.whaleal.mars.core.aggregation.stages.Sort;
+
+import com.whaleal.mars.core.query.Sort;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.*;
 
-/**
- *
- * @author wh
- *
- */
-public class SetWindowFieldsCodec  extends StageCodec< SetWindowFields > {
+
+public class SetWindowFieldsCodec extends StageCodec< SetWindowFields > {
+
     private final Codec<Object> objectCodec;
 
     public SetWindowFieldsCodec( MongoMappingContext mapper) {
         super(mapper);
-        objectCodec = mapper.getCodecRegistry()
-                .get(Object.class);
+        objectCodec = getMapper().getCodecRegistry()
+                                    .get(Object.class);
     }
 
     @Override
@@ -35,18 +35,17 @@ public class SetWindowFieldsCodec  extends StageCodec< SetWindowFields > {
     }
 
     @Override
-    protected void encodeStage( BsonWriter writer, SetWindowFields value, EncoderContext encoderContext) {
+    protected void encodeStage(BsonWriter writer, SetWindowFields value, EncoderContext encoderContext) {
         document(writer, () -> {
             if (value.partition() != null) {
                 writer.writeName("partitionBy");
                 expression(getMapper(), writer, value.partition(), encoderContext);
             }
-            Sort sorts = value.sorts();
+            Sort[] sorts = value.sorts();
             if (sorts != null) {
                 document(writer, "sortBy", () -> {
-                    for (Sort.SortType sort : sorts.getSorts()) {
-                        writer.writeName(sort.getField());
-                        sort.getDirection().encode(writer);
+                    for (Sort sort : sorts) {
+                        writer.writeInt64(sort.getField(), sort.getOrder());
                     }
                 });
             }
@@ -61,8 +60,8 @@ public class SetWindowFieldsCodec  extends StageCodec< SetWindowFields > {
         });
     }
 
-    private void documents( BsonWriter writer, @Nullable List<Object> list, String documents,
-                            EncoderContext encoderContext) {
+    private void documents(BsonWriter writer, @Nullable List<Object> list, String documents,
+                           EncoderContext encoderContext) {
         if (list != null) {
             array(writer, documents, () -> {
                 for (Object document : list) {

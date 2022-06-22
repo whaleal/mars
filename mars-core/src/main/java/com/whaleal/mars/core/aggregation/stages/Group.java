@@ -1,35 +1,6 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-
+import com.mongodb.lang.Nullable;
 import com.whaleal.mars.core.aggregation.AggregationException;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
@@ -37,6 +8,11 @@ import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Fields;
 
 
+/**
+ * Groups input documents by the specified _id expression and for each distinct grouping, outputs a document.
+ *
+ * @aggregation.expression $group
+ */
 public class Group extends Stage {
     private final GroupId id;
     private Fields<Group> fields;
@@ -51,37 +27,94 @@ public class Group extends Stage {
         this.id = id;
     }
 
-
-    public static GroupId id(String name) {
-        return new GroupId(Expressions.field(name));
+    /**
+     * Creates a group stage with an ID definition
+     *
+     * @param id the group ID
+     * @return the new stage
+     */
+    public static Group group(GroupId id) {
+        return new Group(id);
     }
 
-
-    public static GroupId id(Expression name) {
-        return new GroupId(name);
+    /**
+     * Creates a group stage with no ID definition
+     *
+     * @return the new stage
+     */
+    public static Group group() {
+        return new Group();
     }
 
-
+    /**
+     * Creates an unnamed group ID
+     *
+     * @return the new groupID
+     */
     public static GroupId id() {
         return new GroupId();
     }
 
+    /**
+     * Creates a named group ID
+     *
+     * @param name the id name
+     * @return the new groupID
+     */
+    public static GroupId id(String name) {
+        return new GroupId(Expressions.field(name));
+    }
 
+    /**
+     * Creates a named group ID
+     *
+     * @param name the id name
+     * @return the new groupID
+     */
+    public static GroupId id(Expression name) {
+        return new GroupId(name);
+    }
+
+    /**
+     * Creates a group stage with an ID definition
+     *
+     * @param id the group ID
+     * @return the new stage
+     * @deprecated use {@link #group(GroupId)}
+     */
+    @Deprecated()
     public static Group of(GroupId id) {
         return new Group(id);
     }
 
-
+    /**
+     * Creates a group stage with no ID definition
+     *
+     * @return the new stage
+     * @deprecated user {@link #group()}
+     */
+    @Deprecated()
     public static Group of() {
         return new Group();
     }
 
-
+    /**
+     * Adds a field to the group.  This method is equivalent to calling {@code field("name", Expression.field("name"))}
+     *
+     * @param name the field name
+     * @return this
+     */
     public Group field(String name) {
         return field(name, Expressions.field(name));
     }
 
-
+    /**
+     * Adds a named field to the group with an expression giving the value.
+     *
+     * @param name       the name of the field
+     * @param expression the expression giving the value
+     * @return this
+     */
     public Group field(String name, Expression expression) {
         if (fields == null) {
             fields = Fields.on(this);
@@ -90,12 +123,18 @@ public class Group extends Stage {
         return this;
     }
 
-
+    /**
+     * @return the fields
+     */
+    @Nullable
     public Fields<Group> getFields() {
         return fields;
     }
 
-
+    /**
+     * @return the ID
+     */
+    @Nullable
     public GroupId getId() {
         return id;
     }
@@ -119,27 +158,44 @@ public class Group extends Stage {
             }
         }
 
-
+        /**
+         * Adds a field to the group.  This method is equivalent to calling {@code field("name", Expression.field("name"))}
+         *
+         * @param name the field name
+         * @return this
+         */
         public GroupId field(String name) {
             return field(name, Expressions.field(name));
         }
 
-
+        /**
+         * Adds a named field to the group with an expression giving the value.
+         *
+         * @param name       the name of the field
+         * @param expression the expression giving the value
+         * @return this
+         */
         public GroupId field(String name, Expression expression) {
             if (field != null) {
-                throw new AggregationException("mixedModesNotAllowed(_id)");
+                throw new AggregationException("mixedModesNotAllowed_id");
             }
             document.field(name, expression);
 
             return this;
         }
 
-
+        /**
+         * @return the document
+         */
+        @Nullable
         public DocumentExpression getDocument() {
             return document;
         }
 
-
+        /**
+         * @return the field
+         */
+        @Nullable
         public Expression getField() {
             return field;
         }

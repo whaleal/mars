@@ -1,59 +1,61 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-import com.whaleal.mars.core.aggregation.expressions.Expressions;
-import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
+import com.whaleal.mars.core.aggregation.expressions.*;
+import com.whaleal.mars.core.aggregation.expressions.impls.*;
 
+/**
+* Adds new fields to documents. $addFields outputs documents that contain all existing fields from the input documents and newly added
+* fields.
+* <p>
+* The $addFields stage is equivalent to a $project stage that explicitly specifies all existing fields in the input documents and adds
+* the new fields.
+*
+* @aggregation.expression $addFields
+*/
 public class AddFields extends Stage {
-    private final DocumentExpression document = Expressions.of();
+   private final DocumentExpression document = Expressions.of();
 
-    protected AddFields() {
-        super("$addFields");
-    }
+   protected AddFields() {
+       super("$addFields");
+   }
 
+   /**
+    * Creates a new AddFields stage
+    *
+    * @return the new stage
+    */
+   public static AddFields addFields() {
+       return new AddFields();
+   }
 
-    public static AddFields of() {
-        return new AddFields();
-    }
+   /**
+    * Creates a new AddFields stage to bind field
+    *
+    * @return the new stage
+    * @deprecated use {@link #addFields()}
+    */
+   @Deprecated()
+   public static AddFields of() {
+       return new AddFields();
+   }
 
+   /**
+    * Add a field to the stage
+    *
+    * @param name  the name of the new field
+    * @param value the value expression
+    * @return this
+    */
+   public AddFields field(String name, Expression value) {
+       document.field(name, value);
+       return this;
+   }
 
-    public AddFields field(String name, Expression value) {
-        document.field(name, value);
-        return this;
-    }
-
-
-    public DocumentExpression getDocument() {
-        return document;
-    }
+   /**
+    * @return the fields
+    */
+   public DocumentExpression getDocument() {
+       return document;
+   }
 }

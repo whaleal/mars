@@ -44,7 +44,7 @@ import com.whaleal.mars.session.DatastoreImpl;
  * 或者通过 uri  参数 来创建该对象
  *
  * 操作相关实现全部详见  DataStoreImpl
- * @see com.whaleal.mars.session.DatastoreImpl
+ * @see DatastoreImpl
  */
 public class Mars extends DatastoreImpl {
     /**

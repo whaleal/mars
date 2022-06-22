@@ -1,46 +1,25 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-import com.whaleal.mars.core.aggregation.expressions.Expressions;
-import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
+import com.mongodb.lang.Nullable;
+import com.whaleal.mars.core.aggregation.expressions.*;
+import com.whaleal.mars.core.aggregation.expressions.impls.*;
 
 
+
+/**
+ * Categorizes incoming documents into groups, called buckets, based on a specified expression and bucket boundaries.
+ * <p>
+ * Each bucket is represented as a document in the output. The document for each bucket contains an _id field, whose value specifies the
+ * inclusive lower bound of the bucket and a count field that contains the number of documents in the bucket. The count field is included
+ * by default when the output is not specified.
+ * <p>
+ * $bucket only produces output documents for buckets that contain at least one input document.
+ *
+ * @aggregation.expression $bucket
+ */
 public class Bucket extends Stage {
     private Expression groupBy;
-    private List<Expression> boundaries;
+    private ExpressionList boundaries;
     private Object defaultValue;
     private DocumentExpression output;
 
@@ -48,50 +27,106 @@ public class Bucket extends Stage {
         super("$bucket");
     }
 
+    /**
+     * Creates a new bucket stage
+     *
+     * @return the new stage
+     */
+    public static Bucket bucket() {
+        return new Bucket();
+    }
 
+    /**
+     * Creates a new bucket stage
+     *
+     * @return the new stage
+     * @deprecated use {@link #bucket()}
+     */
+    @Deprecated()
     public static Bucket of() {
         return new Bucket();
     }
 
-
+    /**
+     * An array of values based on the groupBy expression that specify the boundaries for each bucket. Each adjacent pair of values acts
+     * as the inclusive lower boundary and the exclusive upper boundary for the bucket. You must specify at least two boundaries.
+     * <p>
+     * The specified values must be in ascending order and all of the same type.
+     *
+     * @param boundaries the boundaries
+     * @return this
+     */
     public Bucket boundaries(Expression... boundaries) {
-        this.boundaries = asList(boundaries);
+        this.boundaries = new ExpressionList(boundaries);
         return this;
     }
 
-
+    /**
+     * Optional.  A literal that specifies the _id of an additional bucket that contains all documents whose groupBy expression result does
+     * not fall into a bucket specified by boundaries.
+     * <p>
+     * If unspecified, each input document must resolve the groupBy expression to a value within one of the bucket ranges specified by
+     * boundaries or the operation throws an error.
+     *
+     * @param defaultValue the default value
+     * @return this
+     */
     public Bucket defaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
 
-
-    public List<Expression> getBoundaries() {
+    /**
+     * @return the boundaries
+     */
+    public ExpressionList getBoundaries() {
         return boundaries;
     }
 
-
+    /**
+     * @return the default value
+     */
     public Object getDefaultValue() {
         return defaultValue;
     }
 
-
+    /**
+     * @return the group by expression
+     */
     public Expression getGroupBy() {
         return groupBy;
     }
 
-
+    /**
+     * @return the output document
+     */
+    @Nullable
     public DocumentExpression getOutput() {
         return output;
     }
 
-
+    /**
+     * An expression to group documents by. To specify a field path, prefix the field name with a dollar sign $ and enclose it in quotes.
+     * <p>
+     * Unless $bucket includes a default specification, each input document must resolve the groupBy field path or expression to a value
+     * that falls within one of the ranges specified by the boundaries.
+     *
+     * @param groupBy the grouping expression
+     * @return this
+     */
     public Bucket groupBy(Expression groupBy) {
         this.groupBy = groupBy;
         return this;
     }
 
-
+    /**
+     * Adds a field to the document that specifies the fields to include in the output documents in addition to the _id field. To specify
+     * the field to include, you must use accumulator expressions.
+     *
+     * @param name  the new field name
+     * @param value the value expression
+     * @return this
+     */
     public Bucket outputField(String name, Expression value) {
         if (output == null) {
             output = Expressions.of();

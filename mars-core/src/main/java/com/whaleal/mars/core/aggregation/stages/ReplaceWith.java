@@ -1,41 +1,21 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-
+import com.mongodb.lang.Nullable;
 import com.whaleal.mars.core.aggregation.AggregationException;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
 
+/**
+ * Replaces the input document with the specified document. The operation replaces all existing fields in the input document, including
+ * the _id field. With $replaceWith, you can promote an embedded document to the top-level. You can also specify a new document as the
+ * replacement.
+ * <p>
+ * The $replaceWith is an alias for $replaceRoot.
+ *
+ * @aggregation.expression $replaceWith
+ */
 public class ReplaceWith extends Stage {
     private Expression value;
     private DocumentExpression document;
@@ -49,20 +29,60 @@ public class ReplaceWith extends Stage {
         super("$replaceWith");
     }
 
+    /**
+     * Creates a new stage
+     *
+     * @return the new stage
+     */
+    public static ReplaceWith replaceWith() {
+        return new ReplaceWith();
+    }
 
+    /**
+     * Creates a new stage to replace the root with the given expression.  This expression must evaluate to a document.  No further
+     * fields can be added to this stage.
+     *
+     * @param expression the document expression
+     * @return the new stage
+     */
+    public static ReplaceWith replaceWith(Expression expression) {
+        return new ReplaceWith(expression);
+    }
+
+    /**
+     * Creates a new stage
+     *
+     * @return the new stage
+     * @deprecated use {@link #replaceWith()}
+     */
+    @Deprecated()
     public static ReplaceWith with() {
         return new ReplaceWith();
     }
 
-
+    /**
+     * Creates a new stage to replace the root with the given expression.  This expression must evaluate to a document.  No further
+     * fields can be added to this stage.
+     *
+     * @param expression the document expression
+     * @return the new stage
+     * @deprecated use {@link #replaceWith(Expression)}
+     */
+    @Deprecated()
     public static ReplaceWith with(Expression expression) {
         return new ReplaceWith(expression);
     }
 
-
+    /**
+     * Adds a new field
+     *
+     * @param name       the field name
+     * @param expression the value expression
+     * @return this
+     */
     public ReplaceWith field(String name, Expression expression) {
         if (value != null) {
-            throw new AggregationException("mixedModesNotAllowed(getStageName())");
+            throw new AggregationException("mixedModesNotAllowed "+stageName());
         }
         if (document == null) {
             document = Expressions.of();
@@ -72,12 +92,17 @@ public class ReplaceWith extends Stage {
         return this;
     }
 
-
+    /**
+     * @return the expression
+     */
     public DocumentExpression getDocument() {
         return document;
     }
 
-
+    /**
+     * @return the expression
+     */
+    @Nullable
     public Expression getValue() {
         return value;
     }

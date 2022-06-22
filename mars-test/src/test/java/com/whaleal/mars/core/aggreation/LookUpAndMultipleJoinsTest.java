@@ -7,7 +7,7 @@ import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Lookup;
 import com.whaleal.mars.core.aggregation.stages.Match;
 import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;

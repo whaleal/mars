@@ -446,4 +446,8 @@ public class MongoMappingContext {
     public DateStorage getDateStorage() {
         return dateStorage;
     }
+
+    public MongoMappingContext getMapper() {
+        return this;
+    }
 }

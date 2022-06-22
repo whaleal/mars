@@ -7,7 +7,7 @@ import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.GeoNear;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.session.QueryCursor;

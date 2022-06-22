@@ -1,38 +1,15 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+import com.mongodb.lang.Nullable;
 
+import com.whaleal.mars.core.query.filters.Filter;
+import com.whaleal.mars.core.aggregation.expressions.impls.*;
 
+/**
+ * Performs a recursive search on a collection, with options for restricting the search by recursion depth and query filter.
+ *
+ * @aggregation.expression $graphLookup
+ */
 public class GraphLookup extends Stage {
     private String from;
     private Expression startWith;
@@ -44,7 +21,11 @@ public class GraphLookup extends Stage {
     private Filter[] restriction;
     private Class fromType;
 
-
+    /**
+     * Creates a new stage using the target collection
+     *
+     * @param from the target collection
+     */
     public GraphLookup(String from) {
         this();
         this.from = from;
@@ -54,7 +35,11 @@ public class GraphLookup extends Stage {
         super("$graphLookup");
     }
 
-
+    /**
+     * Creates a new stage using the target collection for the mapped type
+     *
+     * @param from the type to use for determining the target collection
+     */
     public GraphLookup(Class from) {
         this();
         this.fromType = from;
@@ -65,7 +50,9 @@ public class GraphLookup extends Stage {
      *
      * @param from the target collection name
      * @return this
+     * @deprecated user {@link #graphLookup(String)}
      */
+    @Deprecated()
     public static GraphLookup from(String from) {
         return new GraphLookup(from);
     }
@@ -75,8 +62,30 @@ public class GraphLookup extends Stage {
      *
      * @param from the target collection name
      * @return this
+     * @deprecated use {@link #graphLookup(Class)}
      */
+    @Deprecated()
     public static GraphLookup from(Class from) {
+        return new GraphLookup(from);
+    }
+
+    /**
+     * Target collection for the $graphLookup operation to search, recursively matching the connectFromField to the connectToField.
+     *
+     * @param from the target collection name
+     * @return this
+     */
+    public static GraphLookup graphLookup(String from) {
+        return new GraphLookup(from);
+    }
+
+    /**
+     * Target collection for the $graphLookup operation to search, recursively matching the connectFromField to the connectToField.
+     *
+     * @param from the target collection name
+     * @return this
+     */
+    public static GraphLookup graphLookup(Class<?> from) {
         return new GraphLookup(from);
     }
 
@@ -94,7 +103,7 @@ public class GraphLookup extends Stage {
     }
 
     /**
-     * Projection name whose value $graphLookup uses to recursively match against the connectToField of other documents in the collection. If
+     * Field name whose value $graphLookup uses to recursively match against the connectToField of other documents in the collection. If
      * the value is an array, each element is individually followed through the traversal process.
      *
      * @param connectFromField the field name
@@ -106,7 +115,7 @@ public class GraphLookup extends Stage {
     }
 
     /**
-     * Projection name in other documents against which to match the value of the field specified by the connectFromField parameter.
+     * Field name in other documents against which to match the value of the field specified by the connectFromField parameter.
      *
      * @param connectToField the field name
      * @return this
@@ -131,6 +140,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public String getAs() {
         return as;
     }
@@ -138,6 +148,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public String getConnectFromField() {
         return connectFromField;
     }
@@ -145,6 +156,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public String getConnectToField() {
         return connectToField;
     }
@@ -152,6 +164,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public String getDepthField() {
         return depthField;
     }
@@ -159,6 +172,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public String getFrom() {
         return from;
     }
@@ -166,6 +180,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public Class getFromType() {
         return fromType;
     }
@@ -173,6 +188,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public Integer getMaxDepth() {
         return maxDepth;
     }
@@ -180,6 +196,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public Filter[] getRestriction() {
         return restriction;
     }
@@ -187,6 +204,7 @@ public class GraphLookup extends Stage {
     /**
      * @return the value
      */
+    @Nullable
     public Expression getStartWith() {
         return startWith;
     }

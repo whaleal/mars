@@ -1,12 +1,19 @@
 package com.whaleal.mars.core.aggregation.stages;
 
+
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
 /**
- * @author wh
+ * Adds new fields to documents. $set outputs documents that contain all existing fields from the input documents and newly added fields.
+ * <p>
+ * The $set stage is an alias for $addFields.
+ * <p>
+ * Both stages are equivalent to a $project stage that explicitly specifies all existing fields in the input documents and adds the new
+ * fields.
  *
+ * @aggregation.expression $set
  */
 public class Set extends Stage {
     private final DocumentExpression document = Expressions.of();
@@ -38,7 +45,6 @@ public class Set extends Stage {
 
     /**
      * @return the fields
-     * 
      */
     public DocumentExpression getDocument() {
         return document;

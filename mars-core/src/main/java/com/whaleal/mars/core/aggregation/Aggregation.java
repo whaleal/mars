@@ -32,7 +32,8 @@ package com.whaleal.mars.core.aggregation;
 
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+
+import com.whaleal.mars.core.query.filters.Filter;
 import com.whaleal.mars.session.option.AggregationOptions;
 
 /**
@@ -91,7 +92,7 @@ interface Aggregation<T>  {
     Aggregation<T> lookup(Lookup lookup);
 
 
-    Aggregation<T> match(Filter... filters);
+    Aggregation<T> match( Filter... filters);
 
     <M> void merge(Merge<M> merge);
 

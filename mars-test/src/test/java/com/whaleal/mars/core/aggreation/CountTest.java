@@ -4,7 +4,7 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;

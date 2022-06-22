@@ -57,9 +57,9 @@ public class DateToPartsTest {
 //                .include("date_iso",DateExpressions.dateToParts(new DocumentExpression().field("date",field("date")).field("iso8601",value("true"))))
 //                .include("date_timezone",DateExpressions.dateToParts(new DocumentExpression().field("date",field("date")).field("timezone",value("America/New_York")))));
 
-        pipeline.project(Projection.of().include("date", DateExpressions.dateToParts(field("date")))
-                .include("date_iso",DateExpressions.dateToParts(new DocumentExpression().field("date",field("date")).field("iso8601",value("true"))))
-                .include("date_timezone",DateExpressions.dateToParts(new DocumentExpression().field("date",field("date")).field("timezone",value("America/New_York")))));
+        pipeline.project(Projection.of().include("date", DateExpressions.dateToParts(field("date"))));
+             //   .include("date_iso",DateExpressions.dateToParts(new DocumentExpression().field("date",field("date")).field("iso8601",value("true"))))
+               // .include("date_timezone",DateExpressions.dateToParts(new DocumentExpression().field("date",field("date")).field("timezone",value("America/New_York")))));
 
 
         QueryCursor<Document> sales = mars.aggregate(pipeline, "sales");

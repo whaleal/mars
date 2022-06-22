@@ -1,35 +1,10 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-
+/**
+ * Returns statistics regarding a collection or view.
+ *
+ * @aggregation.expression $collStats
+ */
 public class CollectionStats extends Stage {
     private boolean histogram;
     private Integer scale;
@@ -39,43 +14,84 @@ public class CollectionStats extends Stage {
         super("$collStats");
     }
 
+    /**
+     * Creates a new collStats stage
+     *
+     * @return the new stage
+     */
+    public static CollectionStats collStats() {
+        return new CollectionStats();
+    }
 
+    /**
+     * Creates a new collStats stage
+     *
+     * @return the new stage
+     * @deprecated use {@link #collStats()}
+     */
+    @Deprecated()
     public static CollectionStats with() {
         return new CollectionStats();
     }
 
-
+    /**
+     * Adds the total number of documents in the collection to the return document.
+     *
+     * @param count true to include the count
+     * @return this
+     */
     public CollectionStats count(boolean count) {
         this.count = count;
         return this;
     }
 
-
+    /**
+     * @return whether to get the count
+     */
     public boolean getCount() {
         return count;
     }
 
-
+    /**
+     * @return whether to add the histogram
+     */
     public boolean getHistogram() {
         return histogram;
     }
 
-
+    /**
+     * @return the scale
+     */
     public Integer getScale() {
         return scale;
     }
 
-
+    /**
+     * Adds latency histogram information to the embedded documents in latencyStats if true.
+     *
+     * @param histogram whether to add the histogram
+     * @return this
+     */
     public CollectionStats histogram(boolean histogram) {
         this.histogram = histogram;
         return this;
     }
 
-
+    /**
+     * Specify the scale factor (i.e. storageStats: { scale: <number> }) to use the specified scale factor for the various size data. For
+     * example, to display kilobytes rather than bytes, specify a scale value of 1024.
+     * <p>
+     * If you specify a non-integer scale factor, MongoDB uses the integer part of the specified factor. For example, if you specify a
+     * scale factor of 1023.999, MongoDB uses 1023 as the scale factor.
+     * <p>
+     * The scale factor does not affect those sizes that specify the unit of measurement in the field name, such as "bytes currently in
+     * the cache".
+     *
+     * @param scale the scale
+     * @return this
+     */
     public CollectionStats scale(Integer scale) {
         this.scale = scale;
         return this;
     }
-
-
 }

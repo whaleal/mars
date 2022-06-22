@@ -1,13 +1,19 @@
 package com.whaleal.mars.core.query;
 
 import com.whaleal.mars.Constant;
+import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.session.QueryCursor;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Before;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 
 /**
@@ -15,16 +21,41 @@ import org.testng.annotations.Test;
  * @description
  * @date 2022/3/9 10:00
  */
-public class TestQuery {
-    private MongoMappingContext context;
+public class QueryTest {
+    private MongoMappingContext context  = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
 
-    private Query query;
+    private Mars mars = new Mars(Constant.connectionStr);
 
-    @BeforeMethod
-    public void before() {
-//        Mars mars = new Mars(Constant.connectionStr);
-        context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
-        query = new Query();
+
+    private Query query = new Query();
+
+    @Before
+    public void createCollection() {
+
+        List<Document> list = CreateDataUtil.parseString("{ \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n" +
+                "    { \"item\": \"notebook\", \"qty\": 50, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"A\" },\n" +
+                "    { \"item\": \"paper\", \"qty\": 100, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"D\" },\n" +
+                "    { \"item\": \"planner\", \"qty\": 75, \"size\": { \"h\": 22.85, \"w\": 30, \"uom\": \"cm\" }, \"status\": \"D\" },\n" +
+                "    { \"item\": \"postcard\", \"qty\": 45, \"size\": { \"h\": 10, \"w\": 15.25, \"uom\": \"cm\" }, \"status\": \"A\" }\n");
+
+        mars.insert(list,"inventory");
+    }
+
+    @After
+    public void dropCollection(){
+        mars.dropCollection("inventory");
+    }
+
+    @Test
+    public void testForQuery(){
+        Criteria where = Criteria.where("");
+
+        Query query = new Query(where);
+
+        Document document = mars.findAll(query, Document.class, "inventory").tryNext();
+        Assert.assertNotNull(document);
+
+
     }
 
     @Test

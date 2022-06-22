@@ -1,59 +1,20 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
-package com.whaleal.mars.core.aggregation.stages.filters;
+package com.whaleal.mars.core.query.filters;
 
-
-import com.whaleal.mars.codecs.MongoMappingContext;
-import com.whaleal.mars.codecs.pojo.PropertyModel;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.internal.PathTarget;
-import com.whaleal.mars.core.query.Type;
-import org.bson.*;
-import org.bson.codecs.Codec;
-import org.bson.codecs.EncoderContext;
-
-import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
-import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.value;
-import static java.lang.String.format;
 import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.MultiPolygon;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Polygon;
 
+
+import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
+import com.whaleal.mars.core.query.Term;
 import org.bson.BsonWriter;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 
 
-
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.*;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.bson.Document.parse;
@@ -61,7 +22,6 @@ import static org.bson.Document.parse;
 /**
  * Defines helper methods to generate filter operations for queries.
  *
- * 
  */
 @SuppressWarnings("unused")
 public final class Filters {
@@ -245,14 +205,14 @@ public final class Filters {
             @Override
             public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
                 if (isNot()) {
-                    document(writer, path(mapper), () -> {
+                    document(writer, path(mapper.getMapper()), () -> {
                         document(writer, "$not", () -> {
                             writer.writeName(getName());
                             writeUnnamedValue(getValue(mapper), mapper, writer, context);
                         });
                     });
                 } else {
-                    writeNamedValue(path(mapper), getValue(mapper), mapper, writer, context);
+                    writeNamedValue(path(mapper.getMapper()), getValue(mapper), mapper, writer, context);
                 }
             }
         };
@@ -269,7 +229,7 @@ public final class Filters {
         return new Filter("$exists", field, null) {
             @Override
             public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                writer.writeStartDocument(path(mapper));
+                writer.writeStartDocument(path(mapper.getMapper()));
                 writer.writeName(getName());
                 writer.writeBoolean(!isNot());
                 writer.writeEndDocument();
@@ -287,11 +247,11 @@ public final class Filters {
     public static Filter expr( Expression expression) {
         return new Filter("$expr", null, expression) {
             @Override
-            public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
+            public void encode( MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
                 writer.writeName("$expr");
                 Expression value = getValue();
                 if (value != null) {
-                    value.encode(mapper, writer, context);
+                    wrapExpression(mapper, writer, value, context);
                 } else {
                     writer.writeNull();
                 }
@@ -408,7 +368,6 @@ public final class Filters {
      * @param schema the schema to use
      * @return the filter
      * @query.filter $jsonSchema
-     * 
      */
     public static Filter jsonSchema(Document schema) {
         return new Filter("$jsonSchema", null, schema) {
@@ -480,7 +439,7 @@ public final class Filters {
         return new Filter("$mod", field, null) {
             @Override
             public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext context) {
-                writer.writeStartDocument(path(mapper));
+                writer.writeStartDocument(path(mapper.getMapper()));
                 writer.writeName(getName());
                 writer.writeStartArray();
                 writeUnnamedValue(divisor, mapper, writer, context);
@@ -627,20 +586,7 @@ public final class Filters {
      * @return the filter
      * @query.filter $type
      */
-    @Deprecated
-    public static Filter type(String field, Type val) {
-        return new Filter("$type", field, val.toString().toLowerCase());
-    }
-
-    /**
-     * Selects documents if a field is of the specified BsonType.
-     *
-     * @param field the field to check
-     * @param val   the value to check
-     * @return the filter
-     * @query.filter $type
-     */
-    public static Filter type(String field, BsonType val) {
+    public static Filter type(String field, Term.Type val) {
         return new Filter("$type", field, val.toString().toLowerCase());
     }
 

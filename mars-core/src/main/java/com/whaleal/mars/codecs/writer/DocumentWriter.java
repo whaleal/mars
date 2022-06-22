@@ -50,9 +50,7 @@ public class DocumentWriter implements BsonWriter {
     private MongoMappingContext mapper;
 
     /**
-     * Creates a new Writer
-     *
-     *
+     * 生成新的DocumentWrite对象
      */
     public DocumentWriter() {
         root = new RootState(this);
@@ -60,8 +58,7 @@ public class DocumentWriter implements BsonWriter {
     }
 
     /**
-     * Creates a new Writer with a seeded Document
-     *
+     * 生成包含seeded Document的DocumentWrite对象
      *
      * @param seed   the seed Document
      */
@@ -132,11 +129,7 @@ public class DocumentWriter implements BsonWriter {
     public void writeBoolean(String name, boolean value) {
         state.name(name).value(value);
     }
-//
-//    @Override
-//    public void writeDateTime(long value) {
-//        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.of("UTC")));
-//    }
+
 
     @Override
     public void writeDateTime(long value) {

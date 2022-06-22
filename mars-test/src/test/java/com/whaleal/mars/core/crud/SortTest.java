@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class SortTest {
     @Before
     public void createCollection(){
         List<Document> documents = CreateDataUtil.parseString("{ \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n" +
-                "    { \"item\": \"notebook\", \"qty\": 50, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"A\" },\n" +
+                "    { \"item\": \"notebook\", \"qty\": 75, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"A\" },\n" +
                 "    { \"item\": \"paper\", \"qty\": 100, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"D\" },\n" +
                 "    { \"item\": \"planner\", \"qty\": 75, \"size\": { \"h\": 22.85, \"w\": 30, \"uom\": \"cm\" }, \"status\": \"D\" },\n" +
                 "    { \"item\": \"postcard\", \"qty\": 45, \"size\": { \"h\": 10, \"w\": 15.25, \"uom\": \"cm\" }, \"status\": \"A\" }\n");
@@ -42,11 +43,15 @@ public class SortTest {
 
     @Test
     public void testForSort(){
-        Criteria criteria = Criteria.where("status").is("A");
 
+        Criteria criteria = new Criteria();
         Query query = new Query(criteria);
 
-        query.with(Sort.on().descending("qty"));
+
+//        query.with(Sort.descending("qty"),Sort.ascending("status"));
+        query.with(Sort.ascending("size.w"),Sort.descending("status"));
+
+        System.out.println(query.getSortObject());
 
         QueryCursor<Document> inventory = mars.findAll(query, Document.class, "inventory");
         while (inventory.hasNext()){

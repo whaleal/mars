@@ -2,21 +2,18 @@ package com.whaleal.mars.core.aggregation.stages;
 
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.collection.ListUtil;
+import com.whaleal.mars.core.aggregation.expressions.TimeUnit;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-
+import  com.whaleal.mars.core.query.Sort;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
- * @author wh
+ * Performs operations on a specified span of documents in a collection, known as a window, and returns the results based on the chosen
+ * window operator.
  */
 public class SetWindowFields extends Stage {
-    protected SetWindowFields( String stageName ) {
-        super(stageName);
-    }
-
     private Expression partition;
-    private Sort sorts;
+    private Sort[] sorts;
     private Output[] outputs;
 
     protected SetWindowFields() {
@@ -32,19 +29,10 @@ public class SetWindowFields extends Stage {
         return this;
     }
 
-    /**
-     * @return the outputs
-     * 
-     */
-    
     public Output[] outputs() {
         return outputs;
     }
 
-    /**
-     * @return the partition
-     * 
-     */
     @Nullable
     public Expression partition() {
         return partition;
@@ -61,17 +49,16 @@ public class SetWindowFields extends Stage {
         return this;
     }
 
-    public SetWindowFields sortBy(Sort  sort) {
-        this.sorts = sort;
+    public SetWindowFields sortBy(Sort... sorts) {
+        this.sorts = sorts;
         return this;
     }
 
     /**
      * @return the sort values
-     * 
      */
     @Nullable
-    public Sort sorts() {
+    public Sort[] sorts() {
         return sorts;
     }
 
@@ -90,18 +77,17 @@ public class SetWindowFields extends Stage {
 
         /**
          * @return the name
-         * 
          */
-        
+
         public String name() {
             return name;
         }
 
         /**
          * @return the operator
-         * 
          */
         @Nullable
+
         public Expression operator() {
             return operator;
         }
@@ -118,9 +104,9 @@ public class SetWindowFields extends Stage {
 
         /**
          * @return the window
-         * 
          */
         @Nullable
+
         public Window windowDef() {
             return window;
         }
@@ -143,7 +129,6 @@ public class SetWindowFields extends Stage {
 
         /**
          * @return the documents
-         * 
          */
         @Nullable
         public List<Object> documents() {
@@ -163,16 +148,15 @@ public class SetWindowFields extends Stage {
 
         /**
          * @return the range
-         * 
          */
         @Nullable
+
         public List<Object> range() {
             return range;
         }
 
         /**
          * @return the unit
-         * 
          */
         @Nullable
         public TimeUnit unit() {
