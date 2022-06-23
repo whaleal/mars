@@ -81,8 +81,8 @@ public class LookUpAndMergeTest {
                 .as("fromItems"));
 
 //        pipeline.replaceRoot(ReplaceRoot.with().field("newRoot",mergeObjects().add(elementAt(field("fromItems"),value(0))).add(value("$$ROOT"))));
-        pipeline.replaceRoot(ReplaceRoot.with(mergeObjects().add(elementAt(field("fromItems"),value(0))).add(SystemVariables.ROOT)));
-        pipeline.project(Projection.of().exclude("fromItems"));
+        pipeline.replaceRoot(ReplaceRoot.replaceRoot(mergeObjects().add(elementAt(field("fromItems"),value(0))).add(SystemVariables.ROOT)));
+        pipeline.project(Projection.project().exclude("fromItems"));
 
         QueryCursor orders = mars.aggregate(pipeline, "orders");
         while (orders.hasNext()){

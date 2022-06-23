@@ -52,15 +52,10 @@ public class PushTest {
 
         Update update = new Update();
 
-        List<Document> list1 = CreateDataUtil.parseString(" { wk: 5, score: 8 }\n" +
-                " { wk: 6, score: 7 }\n" +
-                "{ wk: 7, score: 6 } \n");
 
-
-//        Sort score = Sort.descending("score");
-        update.push("quizzes").each(list1);
-        update.push("quizzes").sort(Sort.ascending("score"));
-        update.push("quizzes").slice(3);
+        update.push("quizzes").each(new Document("wk","5").append("score","8"),new Document("wk","6").append("score","7"),new Document("wk","7").append("score","6"));
+        update.push("quizzes").sort(Sort.descending("score"));
+//        update.push("quizzes").slice(3);
 
         System.out.println(update.getUpdateObject());
 

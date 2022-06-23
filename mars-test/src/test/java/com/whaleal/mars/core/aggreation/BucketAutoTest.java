@@ -56,7 +56,7 @@ public class BucketAutoTest {
 
     @Test
     public void testForSingleFacet(){
-        pipeline.autoBucket(AutoBucket.of().groupBy(field("price"))
+        pipeline.autoBucket(AutoBucket.autoBucket().groupBy(field("price"))
                 .buckets(4));
 
         QueryCursor<Document> artwork = mars.aggregate(pipeline, "artwork");
@@ -68,9 +68,9 @@ public class BucketAutoTest {
 
     @Test
     public void testForMultiFaceted(){
-        pipeline.facet(Facet.of().field("price",AutoBucket.of().groupBy(field("price")).buckets(4))
-                .field("year",AutoBucket.of().groupBy(field("year")).buckets(3).outputField("count",sum(value(1))).outputField("years",push(field("year"))))
-                .field("area",AutoBucket.of().groupBy(multiply(field("dimensions.height"),field("dimensions.width"))).buckets(4).outputField("count",sum(value(1))).outputField("titles",push(field("title")))));
+        pipeline.facet(Facet.facet().field("price",AutoBucket.autoBucket().groupBy(field("price")).buckets(4))
+                .field("year",AutoBucket.autoBucket().groupBy(field("year")).buckets(3).outputField("count",sum(value(1))).outputField("years",push(field("year"))))
+                .field("area",AutoBucket.autoBucket().groupBy(multiply(field("dimensions.height"),field("dimensions.width"))).buckets(4).outputField("count",sum(value(1))).outputField("titles",push(field("title")))));
 
         QueryCursor<Document> artwork = mars.aggregate(pipeline, "artwork");
         while (artwork.hasNext()){

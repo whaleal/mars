@@ -82,14 +82,13 @@ public class LookUpAndMultipleJoinsTest {
      *     }
      * ] )
      */
-    //todo
     @Test
     public void testForMultipleJoins(){
         pipeline.lookup(Lookup.lookup("warehouses")
                 .let("order_item",field("item"))
                 .let("order_qty",field("ordered"))
-                .pipeline(Match.on(Filters.expr(and(eq(field("$stock_item"),value("$$order_item")),gte(field("instock"),value("$$order_item"))))),
-                        Projection.of().exclude("stock_item").exclude("_id"))
+                .pipeline(Match.match(Filters.expr(and(eq(field("$stock_item"),value("$$order_item")),gte(field("instock"),value("$$order_item"))))),
+                        Projection.project().exclude("stock_item").exclude("_id"))
                 .as("stockdata"));
 
         QueryCursor orders = mars.aggregate(pipeline, "orders");

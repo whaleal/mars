@@ -64,7 +64,7 @@ public class LookUpAndArrayTest {
     @Test
     public void testForArray(){
 
-        pipeline.lookup(Lookup.from("members")
+        pipeline.lookup(Lookup.lookup("members")
                 .localField("enrollmentlist")
                 .foreignField("name")
                 .as("enrollee_info"));
@@ -74,4 +74,5 @@ public class LookUpAndArrayTest {
             System.out.println(classes.next());
         }
     }
+
 }

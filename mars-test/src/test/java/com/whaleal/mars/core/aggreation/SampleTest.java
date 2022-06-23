@@ -7,6 +7,7 @@ import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,10 +52,9 @@ public class SampleTest {
     public void testFor(){
         pipeline.sample(3);
 
-        QueryCursor users = mars.aggregate(pipeline, "users");
-        while (users.hasNext()){
-            System.out.println(users.next());
-        }
+        Object users = mars.aggregate(pipeline, "users").tryNext();
+        Assert.assertNotNull(users);
+
 
 
     }

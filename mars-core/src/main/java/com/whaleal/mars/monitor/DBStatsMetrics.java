@@ -16,17 +16,23 @@ public class DBStatsMetrics{
 
     private String dbName;
 
+    //指定监控指标的单位1->byte 1024->kb
     private int scale;
 
     /**
      * 如果不提供数据，则默认为test
      * @param mongoClient
-     * @param scale
      */
-    public DBStatsMetrics(MongoClient mongoClient,int scale){
+    public DBStatsMetrics(MongoClient mongoClient){
         this.mongoClient = mongoClient;
-        this.scale = scale;
+        this.scale = 1;
         this.dbName = "test";
+    }
+
+    public DBStatsMetrics(MongoClient mongoClient,String dbName){
+        this.mongoClient = mongoClient;
+        this.scale = 1;
+        this.dbName = dbName;
     }
 
     public DBStatsMetrics(MongoClient mongoClient,String dbName,int scale){

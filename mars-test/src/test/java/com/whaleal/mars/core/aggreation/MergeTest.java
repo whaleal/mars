@@ -95,7 +95,7 @@ public class MergeTest {
      */
     @Test
     public void testForInit(){
-        pipeline.group(Group.of(id(Expressions.value(new Document("fiscal_year","$fiscal_year").append("dept","$dept"))))
+        pipeline.group(Group.group(id(Expressions.value(new Document("fiscal_year","$fiscal_year").append("dept","$dept"))))
                 .field("salaries",sum(field("salary"))));
         pipeline.merge(Merge.into("budgets")
                 .on("_id")
@@ -119,7 +119,7 @@ public class MergeTest {
     @Test
     public void testForReplace(){
         pipeline.match(Filters.gte("fiscal_year",2019));
-        pipeline.group(Group.of(id(Expressions.value(new Document("fiscal_year","$fiscal_year").append("dept","$dept"))))
+        pipeline.group(Group.group(id(Expressions.value(new Document("fiscal_year","$fiscal_year").append("dept","$dept"))))
                 .field("salaries",sum(field("salary"))));
         pipeline.merge(Merge.into("budgets")
                 .on("_id")
@@ -147,7 +147,7 @@ public class MergeTest {
     public void testForOnlyInsert(){
         mars.createIndex(new Index().on("fiscal_year", IndexDirection.ASC).on("dept",IndexDirection.ASC).on("unique",IndexDirection.fromValue(true)),"orgArchive");
         pipeline.match(Filters.eq("fiscal_year",2019));
-        pipeline.group(Group.of(id(Expressions.value(new Document("fiscal_year","$fiscal_year").append("dept","$dept"))))
+        pipeline.group(Group.group(id(Expressions.value(new Document("fiscal_year","$fiscal_year").append("dept","$dept"))))
                 .field("employees",push(field("employee"))));
         pipeline.project(Projection.of().exclude("_id")
                 .include("dept",field("_id.dept"))

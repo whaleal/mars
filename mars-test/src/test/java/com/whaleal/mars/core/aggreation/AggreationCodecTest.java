@@ -68,7 +68,7 @@ public class AggreationCodecTest {
     @Test
     public void testGroupCount() {
         AggregationPipeline pipeline = AggregationPipeline.create();
-        pipeline.group(Group.of(id("address.city.name"))
+        pipeline.group(Group.group(id("address.city.name"))
                 .field("counter", sum(field("age"))));
         QueryCursor< Document > aggregate = mars.aggregate(pipeline, "person");
 

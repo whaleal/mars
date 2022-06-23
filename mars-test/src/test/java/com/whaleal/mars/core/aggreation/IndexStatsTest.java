@@ -34,29 +34,22 @@ public class IndexStatsTest {
                 "{ \"_id\" : 3, \"item\" : \"abc\", \"price\" : 10, \"quantity\" : 5, \"type\": \"apparel\" }";
         List<Document> documents = CreateDataUtil.parseString(s);
         mars.insert(documents,"orders");
-    }
 
-    @After
-    public void dropCollection(){
-        mars.dropCollection("orders");
-    }
 
-    /**
-     * db.orders.createIndex( { item: 1, quantity: 1 } )
-     * db.orders.createIndex( { type: 1, item: 1 } )
-     */
-    @Test
-    public void createIndex(){
+        /**
+         * db.orders.createIndex( { item: 1, quantity: 1 } )
+         * db.orders.createIndex( { type: 1, item: 1 } )
+         */
         mars.createIndex(new Index("item",IndexDirection.ASC).on("quantity",IndexDirection.ASC),"orders");
         mars.createIndex(new Index("type",IndexDirection.ASC).on("item",IndexDirection.ASC),"orders");
-    }
 
-    /**
-     * db.orders.find( { type: "apparel"} )
-     * db.orders.find( { item: "abc" } ).sort( { quantity: 1 } )
-     */
-    @Test
-    public void query(){
+
+
+        /**
+         * db.orders.find( { type: "apparel"} )
+         * db.orders.find( { item: "abc" } ).sort( { quantity: 1 } )
+         */
+
         Criteria criteria = Criteria.where("type").is("apparel");
         Query query = new Query(criteria);
         QueryCursor<Document> orders = mars.findAll(query, Document.class, "orders");
@@ -74,6 +67,13 @@ public class IndexStatsTest {
             System.out.println(orders1.next());
         }
     }
+
+    @After
+    public void dropCollection(){
+        mars.dropCollection("orders");
+    }
+
+
 
     /**
      * db.orders.aggregate( [ { $indexStats: { } } ] )

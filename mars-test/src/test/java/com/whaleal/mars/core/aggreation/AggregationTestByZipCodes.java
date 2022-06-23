@@ -54,7 +54,7 @@ public class AggregationTestByZipCodes {
     @Test
     public void testForZipCode(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create(Document.class);
-        pipeline.group(Group.of(id("state")).field("totalPop",sum(field("pop"))));
+        pipeline.group(Group.group(id("state")).field("totalPop",sum(field("pop"))));
 
         pipeline.match(Filters.gte("totalPop",10*1000*1000));
 
@@ -70,20 +70,10 @@ public class AggregationTestByZipCodes {
     public void testForAvgPop(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.group(Group.of(id(Expressions.value(new Document("state","$state").append("city","$city"))))
+        pipeline.group(Group.group(id(Expressions.value(new Document("state","$state").append("city","$city"))))
                 .field("pop",sum(field("pop"))));
-//        pipeline.group(Group.of(id().field("state",field("state")).field("city",field("city")))
-//                .field("pop",sum(field("pop"))));
 
-        pipeline.group(Group.of(id(field("_id.state"))).field("avgCityPop",avg(field("pop"))));
-
-//        List<Stage> innerStage = pipeline.getInnerStage();
-//
-//        for (Stage stage : innerStage){
-//            System.out.println(stage.getStageName());
-//            System.out.println(stage.toString());
-//            System.out.println(stage);
-//        }
+        pipeline.group(Group.group(id(field("_id.state"))).field("avgCityPop",avg(field("pop"))));
 
         QueryCursor<Document> zipCodes = mars.aggregate(pipeline, "zipCodes");
         while (zipCodes.hasNext()){
@@ -126,18 +116,18 @@ public class AggregationTestByZipCodes {
     public void testForCity(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.group(Group.of(id(value(Document.parse("{ state: \"$state\", city: \"$city\" }"))))
+        pipeline.group(Group.group(id(value(Document.parse("{ state: \"$state\", city: \"$city\" }"))))
                 .field("pop",sum(field("pop"))));
 
-        pipeline.sort(Sort.on().ascending("pop"));
+        pipeline.sort(Sort.sort().ascending("pop"));
 
-        pipeline.group(Group.of(id("_id.state"))
+        pipeline.group(Group.group(id("_id.state"))
                 .field("biggestCity",last(field("_id.city")))
                 .field("biggestPop",last(field("pop")))
                 .field("smallestCity",first(field("_id.city")))
                 .field("smallestPop",first(field("pop"))));
 
-        pipeline.project(Projection.of().exclude("_id")
+        pipeline.project(Projection.project().exclude("_id")
                 .include("state",field("_id"))
                 .include("biggestCity",value(Document.parse("{ name: \"$biggestCity\",  pop: \"$biggestPop\" }")))
                 .include("smallestCity",value(Document.parse("{ name: \"$smallestCity\", pop: \"$smallestPop\" }"))));

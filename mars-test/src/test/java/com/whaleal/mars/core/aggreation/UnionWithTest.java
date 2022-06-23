@@ -110,9 +110,9 @@ public class UnionWithTest {
 
     @Test
     public void testForDuplicatesResults(){
-        pipeline.project(Projection.of().include("state").exclude("_id"));
-        pipeline.unionWith("warehouses",Projection.of().include("state").exclude("_id"));
-        pipeline.group(Group.of(id(field("$state"))));
+        pipeline.project(Projection.project().include("state").exclude("_id"));
+        pipeline.unionWith("warehouses",Projection.project().include("state").exclude("_id"));
+        pipeline.group(Group.group(id(field("$state"))));
 
         QueryCursor suppliers = mars.aggregate(pipeline, "suppliers");
         while (suppliers.hasNext()){
@@ -132,9 +132,11 @@ public class UnionWithTest {
     //todo 缺少pipeline类型的stage
     @Test
     public void testForReport1(){
-        pipeline.set(AddFields.of().field("_id",value("2019Q1")));
-//        pipeline.unionWith("sales2019q2", Stage)
-        pipeline.sort(Sort.on().ascending("_id").ascending("store").ascending("item"));
+        pipeline.set(AddFields.addFields().field("_id",value("2019Q1")));
+        pipeline.unionWith("sales2019q2", Set.set().field("_id",value("2019Q2")));
+        pipeline.unionWith("sales2019q3", Set.set().field("_id",value("2019Q3")));
+        pipeline.unionWith("sales2019q4", Set.set().field("_id",value("2019Q4")));
+        pipeline.sort(Sort.sort().ascending("_id").ascending("store").ascending("item"));
         QueryCursor sales2019q1 = mars.aggregate(pipeline, "sales2019q1");
         while (sales2019q1.hasNext()){
             System.out.println(sales2019q1.next());

@@ -71,7 +71,7 @@ public class MarsAggregationTest {
         mars.insert(student1);
 
         AggregationPipeline< Student > pipeline = AggregationPipeline.create(Student.class);
-        pipeline.group(Group.of(id("stuName"))
+        pipeline.group(Group.group(id("stuName"))
                 .field("age", sum(field("age"))));
         QueryCursor< Student > aggregate = mars.aggregate(pipeline);
         while (aggregate.hasNext()) {

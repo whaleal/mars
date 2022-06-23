@@ -12,6 +12,7 @@ import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.IndexOptions;
 import org.bson.Document;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -82,7 +83,10 @@ public class PlanCacheStatsTest {
 //        Criteria criteria = Criteria.where("item").is("abc").and("price").gte(5);
 //        Criteria criteria = Criteria.where("quantity").gte(20);
         Criteria criteria = Criteria.where("quantity").gte(5).and("type").is("apparel");
-        mars.findAll(new Query(criteria),Document.class,"orders");
+        QueryCursor<Document> orders = mars.findAll(new Query(criteria), Document.class, "orders");
+        while (orders.hasNext()){
+            System.out.println(orders.next());
+        }
     }
 
     /**
@@ -93,9 +97,7 @@ public class PlanCacheStatsTest {
     @Test
     public void testForCache(){
         pipeline.planCacheStats();
-        QueryCursor aggregate = mars.aggregate(pipeline,"orders");
-        while (aggregate.hasNext()){
-            System.out.println(aggregate.next());
-        }
+        Object orders = mars.aggregate(pipeline, "orders").tryNext();
+        Assert.assertNotNull(orders);
     }
 }

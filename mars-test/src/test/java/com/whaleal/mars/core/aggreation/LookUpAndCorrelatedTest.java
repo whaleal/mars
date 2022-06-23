@@ -74,9 +74,9 @@ public class LookUpAndCorrelatedTest {
     public void testForCorrelatedSubquer(){
 
         pipeline.lookup(Lookup.lookup("holidays")
-                .pipeline(Match.on(Filters.eq("year",2018)),
-                        Projection.of().exclude("_id").include("date",value(Document.parse("{ name: \"$name\", date: \"$date\" }")))
-                ,ReplaceRoot.with(field("date")))
+                .pipeline(Match.match(Filters.eq("year",2018)),
+                        Projection.project().exclude("_id").include("date",value(Document.parse("{ name: \"$name\", date: \"$date\" }")))
+                ,ReplaceRoot.replaceRoot(field("date")))
                 .as("holidays"));
 
         QueryCursor absences = mars.aggregate(pipeline, "absences");

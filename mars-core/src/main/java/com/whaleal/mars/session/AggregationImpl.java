@@ -138,29 +138,15 @@ public abstract class AggregationImpl {
 
     }
 
-
-    //todo 问题
     @SuppressWarnings({"unchecked", "rawtypes"})
     private List<Document> getDocuments(List<Stage> stages) {
-        List list = new ArrayList();
-        for (Stage stage : stages){
-            Codec codec = mapper.getCodecRegistry().get(stage.getClass());
-            DocumentWriter writer = new DocumentWriter(mapper);
-            System.out.println(writer);
-            codec.encode(writer, stage, EncoderContext.builder().build());
-            list.add(writer.getDocument());
-        }
-
-        return list;
-//        return stages.stream()
-//                .map(s -> {
-//                    Codec codec = mapper.getCodecRegistry().get(s.getClass());
-//                    DocumentWriter writer = new DocumentWriter();
-//                    codec.encode(writer, s, EncoderContext.builder().build());
-//                    return writer.getDocument();
-//                })
-//                .collect(Collectors.toList());
+        return stages.stream()
+                .map(s -> {
+                    Codec codec = mapper.getCodecRegistry().get(s.getClass());
+                    DocumentWriter writer = new DocumentWriter(mapper);
+                    codec.encode(writer, s, EncoderContext.builder().build());
+                    return writer.getDocument();
+                })
+                .collect(Collectors.toList());
     }
-
-
 }

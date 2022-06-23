@@ -57,7 +57,7 @@ public class OutTest {
      */
     @Test
     public void testForSameDataBase(){
-        pipeline.group(Group.of(id(field("author")))
+        pipeline.group(Group.group(id(field("author")))
                 .field("books",push(field("title"))));
 
         pipeline.out(Out.to("authors"));
@@ -74,7 +74,7 @@ public class OutTest {
     //todo 不支持插入到外部数据库中，暂时不考虑
     @Test
     public void testForOtherDatabase(){
-        pipeline.group(Group.of(id(field("author")))
+        pipeline.group(Group.group(id(field("author")))
                 .field("books",push(field("title"))));
         pipeline.out(Out.to(""));
     }

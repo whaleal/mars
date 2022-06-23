@@ -124,7 +124,7 @@ public class ReplaceRootTest {
      */
     @Test
     public void testForContactsDocument(){
-        pipeline.replaceRoot(ReplaceRoot.with(value(Document.parse("{full_name: {$concat : [ \"$first_name\", \" \", \"$last_name\" ]}}"))));
+        pipeline.replaceRoot(ReplaceRoot.replaceRoot(value(Document.parse("{full_name: {$concat : [ \"$first_name\", \" \", \"$last_name\" ]}}"))));
 //        QueryCursor<Document> authors = mars.findAll(new Query(), Document.class, "authors");
 //        while (authors.hasNext()){
 //            System.out.println(authors.next());
