@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.codecs.writer;
 
+import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
@@ -38,8 +39,7 @@ import org.bson.types.ObjectId;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+
 
 
 @SuppressWarnings("unchecked")
@@ -47,26 +47,36 @@ public class DocumentWriter implements BsonWriter {
     private final RootState root;
     private WriteState state;
 
+    private MongoMappingContext mapper;
 
     /**
-     * Creates a new Writer
-     *
-     *
+     * 生成新的DocumentWrite对象
      */
     public DocumentWriter() {
-
         root = new RootState(this);
         state = root;
     }
 
     /**
-     * Creates a new Writer with a seeded Document
-     *
+     * 生成包含seeded Document的DocumentWrite对象
      *
      * @param seed   the seed Document
      */
     public DocumentWriter(Document seed) {
         root = new RootState(this, seed);
+        state = root;
+    }
+
+
+    public DocumentWriter(MongoMappingContext mapper) {
+        this.mapper = mapper;
+        root = new RootState(this);
+        state = root;
+    }
+
+    public DocumentWriter(MongoMappingContext mapper,Document seed) {
+        this.mapper = mapper;
+        root = new RootState(this,seed);
         state = root;
     }
 
@@ -120,9 +130,10 @@ public class DocumentWriter implements BsonWriter {
         state.name(name).value(value);
     }
 
+
     @Override
     public void writeDateTime(long value) {
-        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.of("UTC")));
+        state.value(LocalDateTime.ofInstant(Instant.ofEpochMilli(value), mapper.getDateStorage().getZone()));
     }
 
     @Override

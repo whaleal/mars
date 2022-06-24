@@ -4,9 +4,9 @@ import com.mongodb.client.MongoCollection;
 import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.mars.bean.Parent;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.aggregation.stages.Sort;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
+import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.result.DeleteResult;
@@ -191,7 +191,8 @@ public class ParentTest {
         mars.insert(p2);
         mars.insert(p);
         Criteria age = Criteria.where("age").lte(100);
-        QueryCursor< Parent > all = mars.findAll(new Query(age).with(Sort.on().descending("age")), Parent.class);
+//        with(Sort.on().descending("age"))
+        QueryCursor< Parent > all = mars.findAll(new Query(age).with(Sort.descending("age")), Parent.class);
         List< Parent > parents = all.toList();
         Parent first = parents.get(0);
 

@@ -41,6 +41,7 @@ import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,7 +131,6 @@ public abstract class AggregationImpl {
             collection = options.prepare(collection);
         }
 
-
         MongoCursor<T> cursor = collection.aggregate(getDocuments(pipeline.getInnerStage()), resultType).iterator();
 
         return new QueryCursor<T>(cursor);
@@ -138,18 +138,15 @@ public abstract class AggregationImpl {
 
     }
 
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     private List<Document> getDocuments(List<Stage> stages) {
         return stages.stream()
                 .map(s -> {
                     Codec codec = mapper.getCodecRegistry().get(s.getClass());
-                    DocumentWriter writer = new DocumentWriter();
+                    DocumentWriter writer = new DocumentWriter(mapper);
                     codec.encode(writer, s, EncoderContext.builder().build());
                     return writer.getDocument();
                 })
                 .collect(Collectors.toList());
     }
-
-
 }

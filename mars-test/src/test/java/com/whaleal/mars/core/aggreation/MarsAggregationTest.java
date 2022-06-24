@@ -6,7 +6,7 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.junit.After;
 import org.junit.Assert;
@@ -71,7 +71,7 @@ public class MarsAggregationTest {
         mars.insert(student1);
 
         AggregationPipeline< Student > pipeline = AggregationPipeline.create(Student.class);
-        pipeline.group(Group.of(id("stuName"))
+        pipeline.group(Group.group(id("stuName"))
                 .field("age", sum(field("age"))));
         QueryCursor< Student > aggregate = mars.aggregate(pipeline);
         while (aggregate.hasNext()) {

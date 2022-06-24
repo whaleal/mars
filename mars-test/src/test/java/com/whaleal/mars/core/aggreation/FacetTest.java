@@ -5,7 +5,7 @@ import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.*;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -54,13 +54,13 @@ public class FacetTest {
 
     @Test
     public void testForFacet(){
-        pipeline.facet(Facet.of().field("categorizedByTags", Unwind.on("tags"), SortByCount.on(field("tags")))
-                .field("categorizedByPrice", Match.on(Filters.exists("price")), Bucket.of().groupBy(field("price"))
+        pipeline.facet(Facet.of().field("categorizedByTags", Unwind.unwind("tags"), SortByCount.sortByCount(field("tags")))
+                .field("categorizedByPrice", Match.match(Filters.exists("price")), Bucket.bucket().groupBy(field("price"))
                                 .boundaries(value(0), value(150), value(200), value(300), value(400))
                                 .defaultValue("Other")
                                 .outputField("count",sum(value(1)))
                                 .outputField("titles",push(field("title"))))
-                .field("categorizedByYears(Auto)",AutoBucket.of().groupBy(field("year")).buckets(4)));
+                .field("categorizedByYears(Auto)",AutoBucket.autoBucket().groupBy(field("year")).buckets(4)));
 
         QueryCursor artwork = mars.aggregate(pipeline, "artwork");
         while (artwork.hasNext()){

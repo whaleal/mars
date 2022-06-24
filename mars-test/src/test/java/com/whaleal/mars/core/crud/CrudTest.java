@@ -17,6 +17,7 @@ import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testng.Assert;
@@ -57,6 +58,11 @@ public class CrudTest {
         student = StudentGenerator.getInstance(10000);
     }
 
+    @After
+    public void dropCollection(){
+        mars.dropCollection(Student.class);
+    }
+
 
     @Test
     public void findAll() {
@@ -93,6 +99,7 @@ public class CrudTest {
 
     @Test
     public void insertOption() {
+        mars.dropCollection(Student.class);
         System.out.println("getTime: " + System.currentTimeMillis());
         mars.insert(student,new InsertOneOptions());
         System.out.println("endTime: " + System.currentTimeMillis());
@@ -108,6 +115,8 @@ public class CrudTest {
 
     @Test
     public void update() {
+        mars.dropCollection(Student.class);
+
         Student student = StudentGenerator.getInstance(stuNo);
         student.setStuName("cName");
 

@@ -30,14 +30,13 @@ public class RevokeRolesFromRoleTest {
         System.out.println("===============开始回收角色================");
         mars.executeCommand(" { revokeRolesFromRole: \"service\",\n" +
                 "                 roles: [\n" +
-                "                          \"writeOrdersCollection\",\n" +
-                "                          \"readOrdersCollection\"\n" +
+                "                          \"read\",\n" +
                 "                        ],\n" +
                 "                  writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
                 "             } ");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"purchaseAgents\", db: \"admin\" },\n" +
+                        "      rolesInfo: { role: \"service\", db: \"mars\" },\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );

@@ -9,17 +9,19 @@ import java.util.List;
 
 /**
  * @author lyz
- * @description
+ * @description 执行db.adminCommand( { replSetGetStatus: 1 } ) 命令，解析执行结果
  * @date 2022-06-15 16:45
  **/
 //todo 部分参数可以进行深度解析
-public class ReplSetGetStatusMetrics extends AbstractMonitor{
+public class ReplSetGetStatusMetrics{
+
+    private final MongoClient mongoClient;
 
     /**
      * @param mongoClient must not be {@literal null}.
      */
-    protected ReplSetGetStatusMetrics(MongoClient mongoClient) {
-        super(mongoClient);
+    public ReplSetGetStatusMetrics(MongoClient mongoClient) {
+        this.mongoClient = mongoClient;
     }
 
     public Integer getSetName(){
@@ -85,5 +87,14 @@ public class ReplSetGetStatusMetrics extends AbstractMonitor{
     public Document getClusterTime(){
         return getReplSetGetStatus().get("$clusterTime",Document.class);
     }
+
+    /**
+     * 执行db.adminCommand( { replSetGetStatus: 1 } ) 命令
+     * @return
+     */
+    private Document getReplSetGetStatus(){
+        return mongoClient.getDatabase("admin").runCommand(new Document("replSetGetStatus",1));
+    }
+
 
 }

@@ -68,7 +68,7 @@ public class SetAndUnsetTest {
                 .field("totalHomework",sum(field("homework")))
                 .field("totalQuiz",sum(field("quiz"))));
 
-        pipeline.set(AddFields.of().field("totalScore",add(field("totalHomework"),field("totalQuiz"),field("extraCredit"))));
+        pipeline.set(AddFields.addFields().field("totalScore",add(field("totalHomework"),field("totalQuiz"),field("extraCredit"))));
 
         QueryCursor scores = mars.aggregate(pipeline, "scores");
         while (scores.hasNext()){

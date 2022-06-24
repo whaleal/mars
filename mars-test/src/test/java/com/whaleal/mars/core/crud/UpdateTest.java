@@ -2,10 +2,14 @@ package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Update;
+import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.UpdateOptions;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Before;
 import org.testng.annotations.Test;
 
 
@@ -14,9 +18,21 @@ import org.testng.annotations.Test;
  */
 public class UpdateTest {
 
+    private Mars mars = new Mars(Constant.connectionStr);
+
     public static void main( String[] args ) {
 
 
+    }
+
+    @Before
+    public void createCollection(){
+        mars.insert(Document.parse("{ _id: 1, letters: [\"a\", \"b\"] }"),"letters");
+    }
+
+    @After
+    public void dropCollection(){
+        mars.dropCollection("letters");
     }
 
 
@@ -44,5 +60,17 @@ public class UpdateTest {
         System.out.println(update.getUpdateObject());
 
 
+    }
+
+    @Test
+    public void testForAddToSet(){
+        Criteria id = Criteria.where("id").is(1);
+
+        Query query = new Query(id);
+
+        QueryCursor<Document> letters = mars.findAll(query, Document.class, "letters");
+        while (letters.hasNext()){
+            System.out.println(letters.next());
+        }
     }
 }

@@ -30,7 +30,9 @@
 package com.whaleal.mars.core.query.updates;
 
 
-import com.whaleal.mars.core.aggregation.stages.filters.Filter;
+
+
+import com.whaleal.mars.core.query.filters.Filter;
 
 import java.time.temporal.Temporal;
 import java.util.Date;

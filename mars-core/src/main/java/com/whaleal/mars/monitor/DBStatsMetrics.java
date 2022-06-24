@@ -7,23 +7,36 @@ import org.bson.Document;
 
 /**
  * @author lyz
- * @description
+ * @description 解析db.runCommand( {dbStats: 1,scale: <number>,freeStorage: 0} )
  * @date 2022-06-15 15:29
  **/
-public class DBStatsMetrics extends AbstractMonitor{
+public class DBStatsMetrics{
+
+    private MongoClient mongoClient;
 
     private String dbName;
 
+    //指定监控指标的单位1->byte 1024->kb
     private int scale;
 
-    public DBStatsMetrics(MongoClient mongoClient,int scale){
-        super(mongoClient);
-        this.scale = scale;
+    /**
+     * 如果不提供数据，则默认为test
+     * @param mongoClient
+     */
+    public DBStatsMetrics(MongoClient mongoClient){
+        this.mongoClient = mongoClient;
+        this.scale = 1;
         this.dbName = "test";
     }
 
+    public DBStatsMetrics(MongoClient mongoClient,String dbName){
+        this.mongoClient = mongoClient;
+        this.scale = 1;
+        this.dbName = dbName;
+    }
+
     public DBStatsMetrics(MongoClient mongoClient,String dbName,int scale){
-        super(mongoClient);
+        this.mongoClient = mongoClient;
         this.dbName = dbName;
         this.scale = scale;
     }
@@ -32,11 +45,11 @@ public class DBStatsMetrics extends AbstractMonitor{
         return dbName;
     }
 
-    public int getCollectionCount(){
+    public Integer getCollectionCount(){
         return getDbBStatsData("collections",Integer.class);
     }
 
-    public int getViewCount(){
+    public Integer getViewCount(){
         return getDbBStatsData("views",Integer.class);
     }
 
@@ -88,10 +101,8 @@ public class DBStatsMetrics extends AbstractMonitor{
         return getDbBStatsData("fsUsedSize",Double.class);
     }
 
-
-
     private <T> T getDbBStatsData(String key,Class<T> targetClass){
-        Document dbStats = (Document)getDb(dbName).runCommand(new Document("dbStats",1).append("scale",scale).append("freeStorage",0));
+        Document dbStats = mongoClient.getDatabase(dbName).runCommand(new Document("dbStats",1).append("scale",scale).append("freeStorage",0));
 
         return (T) dbStats.get(key,targetClass);
     }

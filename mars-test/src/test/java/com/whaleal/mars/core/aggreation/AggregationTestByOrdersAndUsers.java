@@ -11,10 +11,12 @@ import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.aggregation.stages.Sort;
 import com.whaleal.mars.core.aggregation.stages.Unwind;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.Query;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -88,9 +90,11 @@ public class AggregationTestByOrdersAndUsers {
         AggregationPipeline<Orders> pipeline = AggregationPipeline.create(Orders.class);
         pipeline.match(Filters.eq("size", "medium"));
 
-        pipeline.group(Group.of(id("name"))
+        pipeline.group(Group.group(id("name"))
                 .field("quantity",sum(field("quantity"))));
 
+//        pipeline.project(Projection.project().exclude("name").exclude("size").exclude("price").exclude("date"));
+        pipeline.project(Projection.project().include("_id").include("totalQuantity"));
 
         QueryCursor<Orders> aggregate = mars.aggregate(pipeline);
 
@@ -134,17 +138,15 @@ public class AggregationTestByOrdersAndUsers {
         pipeline.match(Filters.gte("date",new Date(2020, Calendar.JANUARY,30)),
                 Filters.lte("date",new Date(2022, Calendar.JANUARY,30)));
 
-        pipeline.group(Group.of(id(dateToString().format("%Y-%m-%d").date(field("date"))))
+        pipeline.group(Group.group(id(dateToString().format("%Y-%m-%d").date(field("date"))))
                 .field("totalOrderValue",sum(multiply(field("price"),field("quantity"))))
                 .field("averageOrderQuantity",avg(field("quantity"))));
 
-        pipeline.sort(Sort.on().descending("totalOrderValue"));
+        pipeline.sort(Sort.sort().descending("totalOrderValue"));
 
-        pipeline.getInnerStage();
 
         QueryCursor<Document> aggregate = mars.aggregate(pipeline,"orders");
         while (aggregate.hasNext()){
-//            Assert.assertNotNull(aggregate.next());
             System.out.println(aggregate.next());
         }
     }
@@ -153,8 +155,8 @@ public class AggregationTestByOrdersAndUsers {
     public void testForNormalize(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.project(Projection.of().exclude("_id").include("name",toUpper(field("_id"))));
-        pipeline.sort(Sort.on().ascending("name"));
+        pipeline.project(Projection.project().exclude("_id").include("name",toUpper(field("_id"))));
+        pipeline.sort(Sort.sort().ascending("name"));
 
         QueryCursor<Document> users = mars.aggregate(pipeline, "users");
         while(users.hasNext()){
@@ -166,11 +168,11 @@ public class AggregationTestByOrdersAndUsers {
     public void testForJoinMonth(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.project(Projection.of().include("month_joined",month(field("joined")))
+        pipeline.project(Projection.project().include("month_joined",month(field("joined")))
                 .include("name",field("_id"))
                 .exclude("_id"));
 
-        pipeline.sort(Sort.on().ascending("month_joined"));
+        pipeline.sort(Sort.sort().ascending("month_joined"));
 
         QueryCursor<Document> users = mars.aggregate(pipeline, "users");
         while (users.hasNext()){
@@ -191,11 +193,11 @@ public class AggregationTestByOrdersAndUsers {
     public void testForJoinSumByMonth(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.project(Projection.of().include("month_joined",month(field("joined"))));
+        pipeline.project(Projection.project().include("month_joined",month(field("joined"))));
 
-        pipeline.group(Group.of(id(Expressions.value(new Document("month_joined","$month_joined")))).field("number",sum(Expressions.value(1))));
+        pipeline.group(Group.group(id(Expressions.value(new Document("month_joined","$month_joined")))).field("number",sum(Expressions.value(1))));
 
-        pipeline.sort(Sort.on().ascending("_id.month_joined"));
+        pipeline.sort(Sort.sort().ascending("_id.month_joined"));
 
         QueryCursor<Document> users = mars.aggregate(pipeline, "users");
 
@@ -220,15 +222,28 @@ public class AggregationTestByOrdersAndUsers {
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
         pipeline.unwind(Unwind.on("likes"));
-        pipeline.group(Group.of(id("likes")).field("number",sum(value(1))));
+        pipeline.group(Group.group(id("likes")).field("number",sum(value(1))));
 
         pipeline.sort(Sort.on().descending("number"));
         pipeline.limit(5);
         QueryCursor<Document> users = mars.aggregate(pipeline, "users");
-        while (users.hasNext()){
+        while (users.hasNext()) {
             System.out.println(users.next());
+
         }
-
-
     }
+
+    @Test
+    public void testForSinglePurpose(){
+        long orders = mars.estimatedCount("orders");
+        Assert.assertEquals(orders,8);
+
+
+        long orders1 = mars.count(new Query(), "orders");
+        Assert.assertEquals(orders1,8);
+
+        //todo 缺少db.collection().distinct
+//        mars.distinct
+    }
+
 }

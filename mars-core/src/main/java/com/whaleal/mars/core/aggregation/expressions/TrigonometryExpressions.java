@@ -1,37 +1,10 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.expressions;
 
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
-import java.util.Arrays;
+
+import com.whaleal.icefrog.core.collection.ListUtil;
+import com.whaleal.mars.core.aggregation.expressions.impls.*;
+import java.util.List;
 
 /**
  * Defines helper methods for the trigonometry expressions
@@ -47,7 +20,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $acos
+     * @aggregation.expression $acos
      */
     public static Expression acos(Expression value) {
         return new Expression("$acos", value);
@@ -58,7 +31,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $acosh
+     * @aggregation.expression $acosh
      */
     public static Expression acosh(Expression value) {
         return new Expression("$acosh", value);
@@ -69,7 +42,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $asin
+     * @aggregation.expression $asin
      */
     public static Expression asin(Expression value) {
         return new Expression("$asin", value);
@@ -80,7 +53,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $asinh
+     * @aggregation.expression $asinh
      */
     public static Expression asinh(Expression value) {
         return new Expression("$asinh", value);
@@ -91,7 +64,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $atan
+     * @aggregation.expression $atan
      */
     public static Expression atan(Expression value) {
         return new Expression("$atan", value);
@@ -104,10 +77,10 @@ public final class TrigonometryExpressions {
      * @param yValue the y value
      * @param xValue the x value
      * @return the new expression
-     *  $atan2
+     * @aggregation.expression $atan2
      */
     public static Expression atan2(Expression yValue, Expression xValue) {
-        return new Expression("$atan2", Arrays.asList(yValue, xValue));
+        return new Expression("$atan2", new ExpressionList(ListUtil.of(yValue, xValue)));
     }
 
     /**
@@ -115,7 +88,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $atanh
+     * @aggregation.expression $atanh
      */
     public static Expression atanh(Expression value) {
         return new Expression("$atanh", value);
@@ -126,7 +99,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $cos
+     * @aggregation.expression $cos
      */
     public static Expression cos(Expression value) {
         return new Expression("$cos", value);
@@ -137,7 +110,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $cosh
+     * @aggregation.expression $cosh
      */
     public static Expression cosh(Expression value) {
         return new Expression("$cosh", value);
@@ -148,7 +121,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $degreesToRadians
+     * @aggregation.expression $degreesToRadians
      */
     public static Expression degreesToRadians(Expression value) {
         return new Expression("$degreesToRadians", value);
@@ -159,7 +132,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $radiansToDegrees
+     * @aggregation.expression $radiansToDegrees
      */
     public static Expression radiansToDegrees(Expression value) {
         return new Expression("$radiansToDegrees", value);
@@ -170,7 +143,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $sin
+     * @aggregation.expression $sin
      */
     public static Expression sin(Expression value) {
         return new Expression("$sin", value);
@@ -181,7 +154,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $sinh
+     * @aggregation.expression $sinh
      */
     public static Expression sinh(Expression value) {
         return new Expression("$sinh", value);
@@ -192,7 +165,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $tan
+     * @aggregation.expression $tan
      */
     public static Expression tan(Expression value) {
         return new Expression("$tan", value);
@@ -203,7 +176,7 @@ public final class TrigonometryExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $tanh
+     * @aggregation.expression $tanh
      */
     public static Expression tanh(Expression value) {
         return new Expression("$tanh", value);

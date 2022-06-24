@@ -15,7 +15,6 @@ public class CurrentOpTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
-    //todo 实际数据测试未做
     /**
      * { currentOp: 1 }
      */
@@ -24,14 +23,14 @@ public class CurrentOpTest {
         // 3.2.9版本开始能够使用
         Document document = mars.executeCommand("{ currentOp: 1, \"$ownOps\": 1 }");
         System.out.println(document);
-        System.out.println("=============================================");
+        System.out.println("======================查看所有当前命令=======================");
         //查看所有当前命令
         Document document1 = mars.executeCommand("{\n" +
                 "     currentOp: true,\n" +
                 "     \"$all\": true\n" +
                 "   }");
         System.out.println(document1);
-        System.out.println("=============================================");
+        System.out.println("=====================能够看到被阻塞的写操作========================");
         //能够看到被阻塞的写操作
         Document document2 = mars.executeCommand("{\n" +
                 "     currentOp: true,\n" +
@@ -50,7 +49,7 @@ public class CurrentOpTest {
                 "     \"waitingForLock\" : false\n" +
                 "   }");
         System.out.println(document3);
-        System.out.println("=============================================");
+        System.out.println("=====================指定数据库上活动的操作========================");
         //指定数据库上活动的操作
         Document document4 = mars.executeCommand("{\n" +
                 "     currentOp: true,\n" +
@@ -59,7 +58,7 @@ public class CurrentOpTest {
                 "     \"ns\" : /^person\\./\n" +
                 "   }");
         System.out.println(document4);
-        System.out.println("=============================================");
+        System.out.println("=====================索引创建的操作========================");
         //索引创建的操作
         Document document5 = mars.executeCommand("{\n" +
                 "      currentOp: true,\n" +

@@ -53,19 +53,21 @@ public abstract class AbstractMonitor {
         this.mongoClient = mongoClient;
     }
 
-
+    /**
+     * 执行db.serverStatus()命令
+     * @return
+     */
     public Document getServerStatus() {
         return getDb("admin").runCommand(new Document("serverStatus", 1).append("rangeDeleter", 1).append("repl", 1));
     }
 
+    /**
+     * 执行db.runCommand( { "connPoolStats" : 1 } )命令
+     * @return
+     */
     protected Document getConnPoolStats(){
         return getDb("admin").runCommand(new Document("connPoolStats",1));
     }
-
-    protected Document getReplSetGetStatus(){
-        return getDb("admin").runCommand(new Document("replSetGetStatus",1));
-    }
-
 
     public MongoDatabase getDb(String databaseName) {
         return mongoClient.getDatabase(databaseName);

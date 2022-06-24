@@ -1,7 +1,11 @@
 package com.whaleal.mars.core.command;
 
+import com.mongodb.client.ListCollectionsIterable;
+import com.mongodb.client.MongoClient;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.base.CreateDataUtil;
+import com.whaleal.mars.bean.Book;
+import com.whaleal.mars.bean.Weather;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.stages.Sort;
 import com.whaleal.mars.core.query.Collation;
@@ -9,6 +13,7 @@ import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.CollectionOptions;
 import org.bson.Document;
+import org.junit.After;
 import org.junit.Test;
 
 import java.util.List;
@@ -42,7 +47,7 @@ public class CreateCollectionTest {
     @Test
     public void testForQuery(){
         Query query = new Query();
-        query.with(Sort.on().ascending("name"));
+//        query.with(Sort.on().ascending("name"));
 
         QueryCursor<Document> person = mars.findAll(query, Document.class, "person");
         while (person.hasNext()){
@@ -52,4 +57,32 @@ public class CreateCollectionTest {
         Collation person1 = Collation.parse("person");
         System.out.println(person1.toDocument());
     }
+
+    @Test
+    public void deleteCollection(){
+//        mars.dropCollection("testCreate");
+        mars.dropCollection("weather");
+    }
+
+
+    @Test
+    public void testForCreateCollection(){
+//        mars.createCollection("testCreate");
+
+        mars.createCollection(Weather.class);
+
+//        MongoClient mongoClient = mars.getMongoClient();
+//        ListCollectionsIterable<Document> documents = mongoClient.getDatabase(mars.getDatabase().getName()).listCollections();
+//        for (Document document : documents){
+//            System.out.println(document.toJson());
+//        }
+
+    }
+
+    @Test
+    public void testFor(){
+
+
+    }
+
 }

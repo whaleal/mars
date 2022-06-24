@@ -7,7 +7,7 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.MarsCursor;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
@@ -68,7 +68,7 @@ public class AggreationCodecTest {
     @Test
     public void testGroupCount() {
         AggregationPipeline pipeline = AggregationPipeline.create();
-        pipeline.group(Group.of(id("address.city.name"))
+        pipeline.group(Group.group(id("address.city.name"))
                 .field("counter", sum(field("age"))));
         QueryCursor< Document > aggregate = mars.aggregate(pipeline, "person");
 

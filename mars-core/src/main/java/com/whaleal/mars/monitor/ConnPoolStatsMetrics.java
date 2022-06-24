@@ -16,36 +16,36 @@ public class ConnPoolStatsMetrics extends AbstractMonitor{
         super(mongoClient);
     }
 
-    public int getClientConnections(){
-        return (int)getConnStatsData("numClientConnections");
+    public Integer getClientConnections(){
+        return getConnStatsData("numClientConnections",Integer.class);
     }
 
-    public int getAScopedConnections(){
-        return (int) getConnStatsData("numAScopedConnections");
+    public Integer getAScopedConnections(){
+        return getConnStatsData("numAScopedConnections",Integer.class);
     }
 
-    public int getTotalInUse(){
-        return (int) getConnStatsData("totalInUse");
+    public Integer getTotalInUse(){
+        return  getConnStatsData("totalInUse",Integer.class);
     }
 
-    public int getTotalAvailable(){
-        return (int) getConnStatsData("totalAvailable");
+    public Integer getTotalAvailable(){
+        return  getConnStatsData("totalAvailable",Integer.class);
     }
 
-    public int getTotalCreated(){
-        return (int) getConnStatsData("totalCreated");
+    public Integer getTotalCreated(){
+        return getConnStatsData("totalCreated",Integer.class);
     }
 
-    public int getTotalRefreshing(){
-        return (int) getConnStatsData("totalRefreshing");
+    public Integer getTotalRefreshing(){
+        return getConnStatsData("totalRefreshing",Integer.class);
     }
 
     public String getStrategy(){
-        return (String) getConnStatsData("replicaSetMatchingStrategy");
+        return  getConnStatsData("replicaSetMatchingStrategy",String.class);
     }
 
-    private <T> T getConnStatsData(String key){
-        return (T)getConnPoolStats().get(key);
+    private <T> T getConnStatsData(String key,Class<T> targetClass){
+        return (T)getConnPoolStats().get(key,targetClass);
     }
 
     public Document getPoolsGlobal(){

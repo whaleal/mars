@@ -7,6 +7,7 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Merge;
+import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -50,8 +51,8 @@ public class MergeManyCollectionsTest {
 
     @After
     public void dropCollection(){
-//        mars.dropCollection("purchaseorders");
-//        mars.dropCollection("reportedsales");
+        mars.dropCollection("purchaseorders");
+        mars.dropCollection("reportedsales");
     }
 
     /**
@@ -62,12 +63,15 @@ public class MergeManyCollectionsTest {
      */
     @Test
     public void testForMerge(){
-        pipeline.group(Group.of(id(field("quarter")))
+        pipeline.group(Group.group(id(field("quarter")))
                 .field("purchased",sum(field("qty"))));
         pipeline.merge(Merge.into("quarterlyreport")
                 .on("_id")
                 .whenMatched(MergeOptions.WhenMatched.MERGE)
                 .whenNotMatched(MergeOptions.WhenNotMatched.INSERT));
-        mars.aggregate(pipeline,"purchaseorders");
+        QueryCursor purchaseorders = mars.aggregate(pipeline, "purchaseorders");
+        while (purchaseorders.hasNext()){
+            System.out.println(purchaseorders.next());
+        }
     }
 }

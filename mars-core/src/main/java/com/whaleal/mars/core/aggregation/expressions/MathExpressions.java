@@ -1,47 +1,16 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.expressions;
 
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import com.whaleal.mars.core.aggregation.expressions.impls.MathExpression;
+
+import com.whaleal.icefrog.core.collection.ListUtil;
+import com.whaleal.mars.core.aggregation.expressions.impls.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
 /**
  * Defines helper methods for the math expressions
- *
- * @mongodb.driver.manual reference/operator/aggregation/#arithmetic-expression-operators Arithmetic Expressions
  */
 public final class MathExpressions {
     protected MathExpressions() {
@@ -52,7 +21,7 @@ public final class MathExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $abs
+     * @aggregation.expression $abs
      */
     public static Expression abs(Expression value) {
         return new MathExpression("$abs", value);
@@ -65,7 +34,7 @@ public final class MathExpressions {
      * @param first      the first expression to sum
      * @param additional any subsequent expressions to include in the sum
      * @return the new expression
-     *  $add
+     * @aggregation.expression $add
      */
     public static MathExpression add(Expression first, Expression... additional) {
         List<Expression> expressions = new ArrayList<>();
@@ -79,7 +48,7 @@ public final class MathExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $ceil
+     * @aggregation.expression $ceil
      */
     public static Expression ceil(Expression value) {
         return new MathExpression("$ceil", value);
@@ -91,10 +60,10 @@ public final class MathExpressions {
      * @param numerator the numerator
      * @param divisor   the divisor
      * @return the new expression
-     *  $divide
+     * @aggregation.expression $divide
      */
     public static Expression divide(Expression numerator, Expression divisor) {
-        return new MathExpression("$divide", Arrays.asList(numerator, divisor));
+        return new MathExpression("$divide", ListUtil.of(numerator, divisor));
     }
 
     /**
@@ -102,7 +71,7 @@ public final class MathExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $exp
+     * @aggregation.expression $exp
      */
     public static Expression exp(Expression value) {
         return new MathExpression("$exp", value);
@@ -113,7 +82,7 @@ public final class MathExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $floor
+     * @aggregation.expression $floor
      */
     public static Expression floor(Expression value) {
         return new MathExpression("$floor", value);
@@ -124,7 +93,7 @@ public final class MathExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $ln
+     * @aggregation.expression $ln
      */
     public static Expression ln(Expression value) {
         return new MathExpression("$ln", value);
@@ -136,10 +105,10 @@ public final class MathExpressions {
      * @param number the number to log
      * @param base   the base to use
      * @return the new expression
-     *  $log
+     * @aggregation.expression $log
      */
     public static Expression log(Expression number, Expression base) {
-        return new MathExpression("$log", Arrays.asList(number, base));
+        return new MathExpression("$log", ListUtil.of(number, base));
     }
 
     /**
@@ -147,7 +116,7 @@ public final class MathExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $log10
+     * @aggregation.expression $log10
      */
     public static Expression log10(Expression value) {
         return new MathExpression("$log10", value);
@@ -159,10 +128,10 @@ public final class MathExpressions {
      * @param dividend the dividend
      * @param divisor  the divisor
      * @return the new expression
-     *  $mod
+     * @aggregation.expression $mod
      */
     public static Expression mod(Expression dividend, Expression divisor) {
-        return new MathExpression("$mod", Arrays.asList(dividend, divisor));
+        return new MathExpression("$mod", ListUtil.of(dividend, divisor));
     }
 
     /**
@@ -171,7 +140,7 @@ public final class MathExpressions {
      * @param first      the first expression to add
      * @param additional any additional expressions
      * @return the new expression
-     *  $multiply
+     * @aggregation.expression $multiply
      */
     public static Expression multiply(Expression first, Expression... additional) {
         List<Expression> expressions = new ArrayList<>(asList(first));
@@ -185,10 +154,10 @@ public final class MathExpressions {
      * @param number   the base name
      * @param exponent the exponent
      * @return the new expression
-     *  $pow
+     * @aggregation.expression $pow
      */
     public static Expression pow(Expression number, Expression exponent) {
-        return new MathExpression("$pow", Arrays.asList(number, exponent));
+        return new MathExpression("$pow", ListUtil.of(number, exponent));
     }
 
     /**
@@ -197,7 +166,7 @@ public final class MathExpressions {
      * @param number the value
      * @param place  the place to round to
      * @return the new expression
-     *  $round
+     * @aggregation.expression $round
      */
     public static Expression round(Expression number, Expression place) {
         return new MathExpression("$round", asList(number, place));
@@ -208,7 +177,7 @@ public final class MathExpressions {
      *
      * @param value the value
      * @return the new expression
-     *  $sqrt
+     * @aggregation.expression $sqrt
      */
     public static Expression sqrt(Expression value) {
         return new MathExpression("$sqrt", value);
@@ -223,10 +192,10 @@ public final class MathExpressions {
      * @param minuend    the number to subtract from
      * @param subtrahend the number to subtract
      * @return the new expression
-     *  $subtract
+     * @aggregation.expression $subtract
      */
     public static Expression subtract(Expression minuend, Expression subtrahend) {
-        return new MathExpression("$subtract", Arrays.asList(minuend, subtrahend));
+        return new MathExpression("$subtract", ListUtil.of(minuend, subtrahend));
     }
 
     /**
@@ -237,7 +206,7 @@ public final class MathExpressions {
      * @param number the value
      * @param place  the place to trunc to
      * @return the new expression
-     *  $trunc
+     * @aggregation.expression $trunc
      */
     public static Expression trunc(Expression number, Expression place) {
         ArrayList<Expression> params = new ArrayList<>();

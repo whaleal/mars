@@ -69,7 +69,7 @@ public class TestUpdate {
         Document[] documents = new Document[]{new Document("wk", 5).append("score", 8), new Document("wk", 6).append("score", 7), new Document("wk", 7).append("score", 6)};
 
         update.push("quizzes").each(documents);
-        update.push("quizzes").sort(Sort.on().descending("score"));
+//        update.push("quizzes").sort(Sort.on().descending("score"));
 //        update1.push("quizzes").sort(new Sort());
 
         update.push("quizzes").slice(3);
@@ -202,7 +202,7 @@ public class TestUpdate {
 
         update.push("cc").each("22", 33, 44);
 
-        update.push("cc").sort(Sort.on().ascending("score"));
+//        update.push("cc").sort(Sort.on().ascending("score"));
 
         MongoMappingContext context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
 
@@ -218,7 +218,7 @@ public class TestUpdate {
         Update up = new Update();
         up.push("cc").each("1", 2, 33, 56);
         up.push("aa").each("12", 13, 15);
-        up.push("cc").sort(Sort.on().ascending("name"));
+//        up.push("cc").sort(Sort.on().ascending("name"));
         up.push("cc").slice(3);
         up.push("aa").slice(5);
 

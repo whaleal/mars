@@ -1,54 +1,91 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.expressions;
+
+
+
+
+
+
+
+
+
 
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.aggregation.expressions.impls.*;
+
+
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
 /**
  * Defines helper methods for the date expressions
  *
- * @mongodb.driver.manual reference/operator/aggregation/#date-expression-operators Date Expressions
  */
 public final class DateExpressions {
     private DateExpressions() {
     }
 
     /**
+     * Increments a Date object by a specified number of time units.
+     *
+     * @param startDate The beginning date, in UTC, for the addition operation. The startDate can be any expression that resolves to a
+     *                  Date, a Timestamp, or an ObjectID.
+     * @param amount    The number of units added to the startDate.
+     * @param unit      The unit used to measure the amount of time added to the startDate.
+     * @return the new expression
+     * @aggregation.expression $dateAdd
+     */
+    public static DateDeltaExpression dateAdd(Expression startDate, long amount, TimeUnit unit) {
+        return new DateDeltaExpression("$dateAdd", startDate, amount, unit);
+    }
+
+    /**
+     * Decrements a Date object by a specified number of time units.
+     *
+     * @param startDate The beginning date, in UTC, for the subtraction operation. The startDate can be any expression that resolves to a
+     *                  Date, a Timestamp, or an ObjectID.
+     * @param amount    The number of units subtracted to the startDate.
+     * @param unit      The unit used to measure the amount of time subtracted to the startDate.
+     * @return the new expression
+     * @aggregation.expression $dateSubtract
+     */
+    public static DateDeltaExpression dateSubtract(Expression startDate, long amount, TimeUnit unit) {
+        return new DateDeltaExpression("$dateSubtract", startDate, amount, unit);
+    }
+
+    /**
+     * Returns the difference between two dates.
+     *
+     * @param startDate The beginning date, in UTC, for the addition operation. The startDate can be any expression that resolves to a
+     *                  Date, a Timestamp, or an ObjectID.
+     * @param endDate   The beginning date, in UTC, for the addition operation. The endDate can be any expression that resolves to a
+     *                  Date, a Timestamp, or an ObjectID.
+     * @param unit      The unit used to measure the amount of time added to the startDate.
+     * @return the new expression
+     * @aggregation.expression $dateDiff
+     */
+    public static DateDiffExpression dateDiff(Expression startDate, Expression endDate, TimeUnit unit) {
+        return new DateDiffExpression(startDate, endDate, unit);
+    }
+
+    /**
+     * Truncates a date.
+     *
+     * @param date The date to truncate, specified in UTC. The date can be any expression that resolves to a Date, a Timestamp, or an
+     *             ObjectID.
+     * @param unit The unit used to measure the amount of time added to the startDate.
+     * @return the new expression
+     * @aggregation.expression $dateTrunc
+     */
+    public static DateTruncExpression dateTrunc(Expression date, TimeUnit unit) {
+        return new DateTruncExpression(date, unit);
+    }
+
+    /**
      * Constructs and returns a Date object given the date’s constituent properties.
      *
      * @return the new expression
-     *  $dateFromParts
+     * @aggregation.expression $dateFromParts
      */
     public static DateFromParts dateFromParts() {
         return new DateFromParts();
@@ -58,7 +95,7 @@ public final class DateExpressions {
      * Converts a date/time string to a date object.
      *
      * @return the new expression
-     *  $dateFromString
+     * @aggregation.expression $dateFromString
      */
     public static DateFromString dateFromString() {
         return new DateFromString();
@@ -69,7 +106,7 @@ public final class DateExpressions {
      *
      * @param date The input date for which to return parts.
      * @return the new expression
-     *  $dateToParts
+     * @aggregation.expression $dateToParts
      */
     public static DateToParts dateToParts(Expression date) {
         return new DateToParts(date);
@@ -79,7 +116,7 @@ public final class DateExpressions {
      * Returns the date as a formatted string.
      *
      * @return the new expression
-     *  $dateToString
+     * @aggregation.expression $dateToString
      */
     public static DateToString dateToString() {
         return new DateToString();
@@ -90,7 +127,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $dayOfMonth
+     * @aggregation.expression $dayOfMonth
      */
     public static DateExpression dayOfMonth(Expression value) {
         return new DateExpression("$dayOfMonth", value);
@@ -101,7 +138,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $dayOfWeek
+     * @aggregation.expression $dayOfWeek
      */
     public static DateExpression dayOfWeek(Expression value) {
         return new DateExpression("$dayOfWeek", value);
@@ -112,7 +149,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $dayOfYear
+     * @aggregation.expression $dayOfYear
      */
     public static DateExpression dayOfYear(Expression value) {
         return new DateExpression("$dayOfYear", value);
@@ -123,7 +160,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $hour
+     * @aggregation.expression $hour
      */
     public static DateExpression hour(Expression value) {
         return new DateExpression("$hour", value);
@@ -134,7 +171,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $isoDayOfWeek
+     * @aggregation.expression $isoDayOfWeek
      */
     public static IsoDates isoDayOfWeek(Expression value) {
         return new IsoDates("$isoDayOfWeek", value);
@@ -146,7 +183,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $isoWeek
+     * @aggregation.expression $isoWeek
      */
     public static IsoDates isoWeek(Expression value) {
         return new IsoDates("$isoWeek", value);
@@ -159,7 +196,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $isoWeekYear
+     * @aggregation.expression $isoWeekYear
      */
     public static IsoDates isoWeekYear(Expression value) {
         return new IsoDates("$isoWeekYear", value);
@@ -170,7 +207,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $millisecond
+     * @aggregation.expression $millisecond
      */
     public static DateExpression milliseconds(Expression value) {
         return new DateExpression("$millisecond", value);
@@ -181,7 +218,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $minute
+     * @aggregation.expression $minute
      */
     public static DateExpression minute(Expression value) {
         return new DateExpression("$minute", value);
@@ -192,7 +229,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $month
+     * @aggregation.expression $month
      */
     public static DateExpression month(Expression value) {
         return new DateExpression("$month", value);
@@ -203,7 +240,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $second
+     * @aggregation.expression $second
      */
     public static DateExpression second(Expression value) {
         return new DateExpression("$second", value);
@@ -215,7 +252,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $toDate
+     * @aggregation.expression $toDate
      */
     public static DateExpression toDate(Expression value) {
         return new DateExpression("$toDate", value);
@@ -227,7 +264,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $week
+     * @aggregation.expression $week
      */
     public static DateExpression week(Expression value) {
         return new DateExpression("$week", value);
@@ -238,7 +275,7 @@ public final class DateExpressions {
      *
      * @param value the expression containing the date value
      * @return the new expression
-     *  $year
+     * @aggregation.expression $year
      */
     public static DateExpression year(Expression value) {
         return new DateExpression("$year", value);
@@ -246,8 +283,6 @@ public final class DateExpressions {
 
     /**
      * Base class for the date expressions
-     *
-     * @mongodb.driver.manual reference/operator/aggregation/#date-expression-operators Date Expressions
      */
     public static class DateExpression extends Expression {
         protected DateExpression(String operation, Expression value) {
@@ -255,8 +290,8 @@ public final class DateExpressions {
         }
 
         @Override
-        public void encode(MongoMappingContext mapper, BsonWriter writer, EncoderContext encoderContext) {
-            ExpressionHelper.document(writer, () -> ExpressionHelper.expression(mapper, writer, getOperation(), (Expression) getValue(), encoderContext));
+        public void encode( MongoMappingContext mapper, BsonWriter writer, EncoderContext encoderContext) {
+            ExpressionHelper.expression(mapper, writer, getOperation(), getValue(), encoderContext);
         }
     }
 }

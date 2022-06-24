@@ -36,8 +36,11 @@ import java.util.Date;
 
 /**
  * JMX Metrics for Background Flushing
+ *
+ * 此项指标不支持v3.6及之后的版本
+ * backgroundFlushing information only appears for instances that use the MMAPv1 storage engine.
+ * @link{https://www.mongodb.com/docs/v3.6/reference/command/serverStatus/}
  */
-//todo 参数均不存在
 public class BackgroundFlushingMetrics extends AbstractMonitor {
 
     /**
@@ -47,19 +50,19 @@ public class BackgroundFlushingMetrics extends AbstractMonitor {
         super(mongoClient);
     }
 
-    public int getFlushes() {
+    public Integer getFlushes() {
         return getFlushingData("flushes", Integer.class);
     }
 
-    public int getTotalMs() {
+    public Integer getTotalMs() {
         return getFlushingData("total_ms", Integer.class);
     }
 
-    public double getAverageMs() {
+    public Double getAverageMs() {
         return getFlushingData("average_ms", Double.class);
     }
 
-    public int getLastMs() {
+    public Integer getLastMs() {
         return getFlushingData("last_ms", Integer.class);
     }
 

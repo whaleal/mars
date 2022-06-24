@@ -37,7 +37,7 @@ public class CloneCollectionAsCappedTest {
                 "  comment: \"test\"\n" +
                 "}");
         Query query = new Query();
-        query.with(Sort.on().ascending("name"));
+//        query.with(Sort.on().ascending("name"));
 
         QueryCursor<Document> person = mars.findAll(query, Document.class, "PersonCapped");
         while (person.hasNext()){

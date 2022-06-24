@@ -44,7 +44,7 @@ public class DropTest {
     public void testForDrop(){
 
         Query query = new Query();
-        query.with(Sort.on().ascending("name"));
+//        query.with(Sort.on().ascending("name"));
 
         QueryCursor<Document> person = mars.findAll(query, Document.class, "test1");
         while (person.hasNext()){
@@ -61,7 +61,7 @@ public class DropTest {
                 "   }");
         System.out.println(document);
         Query query1 = new Query();
-        query.with(Sort.on().ascending("name"));
+//        query.with(Sort.on().ascending("name"));
 
         QueryCursor<Document> person2 = mars.findAll(query1, Document.class, "test1");
         while (person2.hasNext()){

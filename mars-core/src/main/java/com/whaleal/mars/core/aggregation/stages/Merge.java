@@ -1,52 +1,31 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
 import com.mongodb.client.model.MergeOptions.WhenMatched;
 import com.mongodb.client.model.MergeOptions.WhenNotMatched;
+import com.mongodb.lang.Nullable;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
 
-
+/**
+ * Writes the results of the aggregation pipeline to a specified collection. The $merge operator must be the last stage in the pipeline.
+ *
+ * @param <M> the entity type
+ * @aggregation.expression $merge
+ */
 public class Merge<M> extends Stage {
     private Class<M> type;
     private String database;
     private String collection;
     private List<String> on;
-    private Map<String, Expression> variables;
+    private Map<String, Expression > variables;
     private WhenMatched whenMatched;
     private List<Stage> whenMatchedPipeline;
     private WhenNotMatched whenNotMatched;
@@ -71,59 +50,103 @@ public class Merge<M> extends Stage {
         this.collection = collection;
     }
 
-
+    /**
+     * Creates a new stage targeting the collection mapped for the given type
+     *
+     * @param type the target type
+     * @param <M>  the entity type
+     * @return the new stage
+     */
     public static <M> Merge<M> into(Class<M> type) {
         return new Merge<>(type);
     }
 
-
+    /**
+     * Creates a new stage targeting the collection
+     *
+     * @param collection the target collection
+     * @return the new stage
+     */
     public static Merge<?> into(String collection) {
         return new Merge<>(collection);
     }
 
-
+    /**
+     * Creates a new stage targeting the database and collection
+     *
+     * @param database   the target database
+     * @param collection the target collection
+     * @return the new stage
+     */
     public static Merge<?> into(String database, String collection) {
         return new Merge<>(database, collection);
     }
 
-
+    /**
+     * @return the value
+     */
     public String getCollection() {
         return collection;
     }
 
-
+    /**
+     * @return the value
+     */
+    @Nullable
     public String getDatabase() {
         return database;
     }
 
-
+    /**
+     * @return the value
+     */
     public List<String> getOn() {
         return on;
     }
 
+    /**
+     * @return the value
+     */
+    @Nullable
     public Class<M> getType() {
         return type;
     }
 
+    /**
+     * @return the value
+     */
     public Map<String, Expression> getVariables() {
         return variables;
     }
 
+    /**
+     * @return the value
+     */
     public WhenMatched getWhenMatched() {
         return whenMatched;
     }
 
-
+    /**
+     * @return the value
+     */
     public List<Stage> getWhenMatchedPipeline() {
         return whenMatchedPipeline;
     }
 
-
+    /**
+     * @return the value
+     */
     public WhenNotMatched getWhenNotMatched() {
         return whenNotMatched;
     }
 
-
+    /**
+     * Specifies a variable accessible for use in the whenMatched pipeline
+     *
+     * @param variable the variable name
+     * @param value    the value expression
+     * @return this
+     */
     public Merge<M> let(String variable, Expression value) {
         if (variables == null) {
             variables = new LinkedHashMap<>();
@@ -132,7 +155,14 @@ public class Merge<M> extends Stage {
         return this;
     }
 
-
+    /**
+     * Optional. Field or fields that act as a unique identifier for a document. The identifier determines if a results document matches
+     * an already existing document in the output collection.
+     *
+     * @param field  the first field
+     * @param fields the other fields
+     * @return this
+     */
     public Merge<M> on(String field, String... fields) {
         List<String> list = new ArrayList<>();
         list.add(field);
@@ -141,19 +171,35 @@ public class Merge<M> extends Stage {
         return this;
     }
 
-
+    /**
+     * Optional. The behavior of $merge if a result document and an existing document in the collection have the same value for the
+     * specified on field(s).
+     *
+     * @param whenMatched the behavior
+     * @return this
+     */
     public Merge<M> whenMatched(WhenMatched whenMatched) {
         this.whenMatched = whenMatched;
         return this;
     }
 
-
+    /**
+     * Optional. An aggregation pipeline to update the document in the collection.
+     *
+     * @param pipeline the pipeline
+     * @return this
+     */
     public Merge<M> whenMatched(List<Stage> pipeline) {
-        this.whenMatchedPipeline = pipeline;
+        this.whenMatchedPipeline = Collections.unmodifiableList(pipeline);
         return this;
     }
 
-
+    /**
+     * Optional. The behavior of $merge if a result document does not match an existing document in the out collection.
+     *
+     * @param whenNotMatched the behavior
+     * @return this
+     */
     public Merge<M> whenNotMatched(WhenNotMatched whenNotMatched) {
         this.whenNotMatched = whenNotMatched;
         return this;

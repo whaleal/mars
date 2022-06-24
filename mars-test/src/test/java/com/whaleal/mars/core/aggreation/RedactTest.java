@@ -5,10 +5,11 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.Redact;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -92,10 +93,9 @@ public class RedactTest {
         Expression expression = setIntersection(field("tags"), array(value("STLW"),value("G")));
         pipeline.redact(Redact.on(condition(gt(size(expression),value(0)), value("$$DESCEND"),value("$$PRUNE"))));
 
-        QueryCursor forecasts = mars.aggregate(pipeline, "forecasts");
-        while (forecasts.hasNext()){
-            System.out.println(forecasts.next());
-        }
+        Object forecasts = mars.aggregate(pipeline, "forecasts").tryNext();
+
+        Assert.assertNotNull(forecasts);
     }
 
 }

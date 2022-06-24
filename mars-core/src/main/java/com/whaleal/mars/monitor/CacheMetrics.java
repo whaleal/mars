@@ -5,7 +5,7 @@ import org.bson.Document;
 
 /**
  * @author lyz
- * @description
+ * @description 解析db.serverStatus()的cache参数
  * @date 2022-06-14 15:22
  **/
 public class CacheMetrics extends AbstractMonitor{
@@ -16,19 +16,19 @@ public class CacheMetrics extends AbstractMonitor{
         super(mongoClient);
     }
 
-    public long getReadBytesIntoCache(){
+    public Integer getReadBytesIntoCache(){
         return getCacheData("bytes read into cache");
     }
 
-    public long getWrittenBytesFromCache(){
+    public Integer getWrittenBytesFromCache(){
         return getCacheData("bytes written from cache");
     }
 
 
-    private long getCacheData(String key) {
+    private Integer getCacheData(String key) {
         Document Preconditions = getServerStatus().get("wiredTiger",Document.class).get("cache",Document.class);
         // Class c = btree.get(key).getClass();
-        return (long) Preconditions.get(key);
+        return  Preconditions.getInteger(key);
     }
 
 

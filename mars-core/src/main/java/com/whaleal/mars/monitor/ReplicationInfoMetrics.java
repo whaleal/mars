@@ -13,16 +13,18 @@ import java.util.List;
 
 /**
  * @author lyz
- * @description
+ * @description 执行db.getReplicationInfo()，并获取执行结果
  * @date 2022-06-16 11:03
  **/
-public class ReplicationInfoMetrics extends AbstractMonitor {
+public class ReplicationInfoMetrics{
+
+    private final MongoClient mongoClient;
 
     /**
      * @param mongoClient must not be {@literal null}.
      */
     protected ReplicationInfoMetrics(MongoClient mongoClient) {
-        super(mongoClient);
+        this.mongoClient = mongoClient;
     }
 
     /**
@@ -31,12 +33,12 @@ public class ReplicationInfoMetrics extends AbstractMonitor {
     @Nullable
     public Document getReplication() {
         Document document = new Document();
-        MongoDatabase db = getDb("local");
+        MongoDatabase db = mongoClient.getDatabase("local");
 
         List<String> into = db.listCollectionNames().into(new ArrayList<>());
 
         if (!CollUtil.safeContains(into, "oplog.rs")) {
-            return null;
+            throw new RuntimeException("neither master/slave nor replica set replication detected");
         }
         MongoCollection<Document> opLog = db.getCollection("oplog.rs");
         Document ol = db.runCommand(new Document("collStats", "oplog.rs"));
@@ -61,26 +63,23 @@ public class ReplicationInfoMetrics extends AbstractMonitor {
                 BsonTimestamp tlast = last.get("ts", BsonTimestamp.class);
                 if (ObjectUtil.isAllNotEmpty(tfirst, tlast)) {
                     long timeDiff = tlast.getTime() - tfirst.getTime();
-                    double timeDiffHours = timeDiff / 3600;
 
-                    String longTime = timeDiff + "secs (" + timeDiffHours + ")hrs";
-                    document.put("log length start to end", longTime);
+                    document.put("log length", timeDiff);
 
                     Date tFirst = new Date(tfirst.getTime());
                     Date tLast = new Date(tlast.getTime());
-                    document.put("first", tFirst.toString());
-                    document.put("last", tLast.toString());
-                    document.put("now", new Date().toString());
+                    document.put("first", tFirst);
+                    document.put("last", tLast);
+                    document.put("now", new Date());
                 } else {
-                    document.put("errMsg", "ts element not found in oplog objects");
+                    throw new RuntimeException("ts element not found in oplog objects");
                 }
             } else {
-                document.put("errMsg", "objects not found in local.oplog.$main -- is this a new and empty db instance?");
+                throw new RuntimeException("objects not found in local.oplog.$main -- is this a new and empty db instance?");
             }
         } else {
-            String errMsg = "Could not get stats for local." + "oplog.rs" + " collection. " +
-                    "collstats returned: " + ol.toJson();
-            document.put("errMsg", errMsg);
+            throw new RuntimeException("Could not get stats for local." + "oplog.rs" + " collection. " +
+                    "collstats returned: " + ol.toJson());
         }
         return document;
     }

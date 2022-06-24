@@ -6,7 +6,7 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.ReplaceWith;
 import com.whaleal.mars.core.aggregation.stages.Unwind;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -70,7 +70,7 @@ public class ReplaceWithTest {
      */
     @Test
     public void testForEmbeddedDocumentation(){
-        pipeline.replaceWith(ReplaceWith.with(mergeObjects().add(value(Document.parse("{ dogs: 0, cats: 0, birds: 0, fish: 0 }")))
+        pipeline.replaceWith(ReplaceWith.replaceWith(mergeObjects().add(value(Document.parse("{ dogs: 0, cats: 0, birds: 0, fish: 0 }")))
                 .add(field("pets"))));
 
         QueryCursor people = mars.aggregate(pipeline, "people");
@@ -90,7 +90,7 @@ public class ReplaceWithTest {
     public void testForEmbedArray(){
         pipeline.unwind(Unwind.on("grades"));
         pipeline.match(Filters.gte("grades.grade",90));
-        pipeline.replaceWith(ReplaceWith.with(field("grades")));
+        pipeline.replaceWith(ReplaceWith.replaceWith(field("grades")));
 
         QueryCursor students = mars.aggregate(pipeline, "students");
         while (students.hasNext()){

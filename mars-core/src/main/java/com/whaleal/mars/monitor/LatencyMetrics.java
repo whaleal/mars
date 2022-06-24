@@ -16,80 +16,79 @@ public class LatencyMetrics extends AbstractMonitor{
         super(mongoClient);
     }
 
-    public int getFileReadLatencyBucketOne(){
+    public Integer getFileReadLatencyBucketOne(){
         return getLatencyData("file system read latency histogram (bucket 1) - 10-49ms");
     }
-    public int getFileReadLatencyBucketTwo(){
+    public Integer getFileReadLatencyBucketTwo(){
         return getLatencyData("file system read latency histogram (bucket 2) - 50-99ms");
     }
-    public int getFileReadLatencyBucketThree(){
+    public Integer getFileReadLatencyBucketThree(){
         return getLatencyData("file system read latency histogram (bucket 3) - 100-249ms");
     }
-    public int getFileReadLatencyBucketFour(){
+    public Integer getFileReadLatencyBucketFour(){
         return getLatencyData("file system read latency histogram (bucket 4) - 250-499ms");
     }
-    public int getFileReadLatencyBucketFive(){
+    public Integer getFileReadLatencyBucketFive(){
         return getLatencyData("file system read latency histogram (bucket 5) - 500-999ms");
     }
-    public int getFileReadLatencyBucketSix(){
+    public Integer getFileReadLatencyBucketSix(){
         return getLatencyData("file system read latency histogram (bucket 6) - 1000ms+");
     }
-    public int getFileWriteLatencyBucketOne(){
+    public Integer getFileWriteLatencyBucketOne(){
         return getLatencyData("file system write latency histogram (bucket 1) - 10-49ms");
     }
-    public int getFileWriteLatencyBucketTwo(){
+    public Integer getFileWriteLatencyBucketTwo(){
         return getLatencyData("file system write latency histogram (bucket 2) - 50-99ms");
     }
-    public int getFileWriteLatencyBucketThree(){
+    public Integer getFileWriteLatencyBucketThree(){
         return getLatencyData("file system write latency histogram (bucket 3) - 100-249ms");
     }
-    public int getFileWriteLatencyBucketFour(){
+    public Integer getFileWriteLatencyBucketFour(){
         return getLatencyData("file system write latency histogram (bucket 4) - 250-499ms");
     }
-    public int getFileWriteLatencyBucketFive(){
+    public Integer getFileWriteLatencyBucketFive(){
         return getLatencyData("file system write latency histogram (bucket 5) - 500-999ms");
     }
-    public int getFileWriteLatencyBucketSix(){
+    public Integer getFileWriteLatencyBucketSix(){
         return getLatencyData("file system write latency histogram (bucket 6) - 1000ms+");
     }
 
-    public int getOperationReadLatencyBucketOne(){
+    public Integer getOperationReadLatencyBucketOne(){
         return getLatencyData("operation read latency histogram (bucket 1) - 100-249us");
     }
-    public int getOperationReadLatencyBucketTwo(){
+    public Integer getOperationReadLatencyBucketTwo(){
         return getLatencyData("operation read latency histogram (bucket 2) - 250-499us");
     }
-    public int getOperationReadLatencyBucketThree(){
+    public Integer getOperationReadLatencyBucketThree(){
         return getLatencyData("operation read latency histogram (bucket 3) - 500-999us");
     }
-    public int getOperationReadLatencyBucketFour(){
+    public Integer getOperationReadLatencyBucketFour(){
         return getLatencyData("operation read latency histogram (bucket 4) - 1000-9999us");
     }
-    public int getOperationReadLatencyBucketFive(){
+    public Integer getOperationReadLatencyBucketFive(){
         return getLatencyData("operation read latency histogram (bucket 5) - 10000us+");
     }
 
-    public int getOperationWriteLatencyBucketOne(){
+    public Integer getOperationWriteLatencyBucketOne(){
         return getLatencyData("operation write latency histogram (bucket 1) - 100-249us");
     }
-    public int getOperationWriteLatencyBucketTwo(){
+    public Integer getOperationWriteLatencyBucketTwo(){
         return getLatencyData("operation write latency histogram (bucket 2) - 250-499us");
     }
-    public int getOperationWriteLatencyBucketThree(){
+    public Integer getOperationWriteLatencyBucketThree(){
         return getLatencyData("operation write latency histogram (bucket 3) - 500-999us");
     }
-    public int getOperationWriteLatencyBucketFour(){
+    public Integer getOperationWriteLatencyBucketFour(){
         return getLatencyData("operation write latency histogram (bucket 4) - 1000-9999us");
     }
-    public int getOperationWriteLatencyBucketFive(){
+    public Integer getOperationWriteLatencyBucketFive(){
         return getLatencyData("operation write latency histogram (bucket 5) - 10000us+");
     }
 
-
-    private int getLatencyData(String key){
+    private Integer getLatencyData(String key){
         Document databaseLocks = getServerStatus().get("wiredTiger", Document.class)
                 .get("perf", Document.class);
 
-        return (int)databaseLocks.get(key);
+        return databaseLocks.getInteger(key);
     }
 }

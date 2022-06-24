@@ -7,7 +7,7 @@ import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.AddFields;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Sort;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -78,11 +78,12 @@ public class GroupTest {
     public void dropCollections(){
         mars.dropCollection("sales");
 //        mars.dropCollection("books");
+        mars.dropCollection("books");
     }
 
     @Test
     public void testForDocumentCount(){
-        pipeline.group(Group.of(id("null")).field("count",sum(value(1))));
+        pipeline.group(Group.group(id("null")).field("count",sum(value(1))));
 
         Object sales = mars.aggregate(pipeline, "sales").tryNext();
         System.out.println(sales);
@@ -93,7 +94,7 @@ public class GroupTest {
      */
     @Test
     public void testForDiffValue(){
-        pipeline.group(Group.of(id(field("item"))));
+        pipeline.group(Group.group(id(field("item"))));
 
         QueryCursor sales = mars.aggregate(pipeline, "sales");
 
@@ -122,7 +123,7 @@ public class GroupTest {
      */
     @Test
     public void testForGroupByItem(){
-        pipeline.group(Group.of(id(field("item"))).
+        pipeline.group(Group.group(id(field("item"))).
                 field("totalSaleAmount",sum(multiply(field("price"),field("quantity")))));
 
         pipeline.match(Filters.gte("totalSaleAmount",100));
@@ -154,6 +155,7 @@ public class GroupTest {
      *   }
      *  ])
      */
+    //todo 有误
     @Test
     public void testForGroupByYear() throws ParseException {
 
@@ -161,12 +163,12 @@ public class GroupTest {
         Date beginDate = dateFormat.parse("2014-01-01");
         Date endDate = dateFormat.parse("2015-01-01");
 
-        pipeline.match(Filters.gte("date",beginDate)).match(Filters.lte("date",endDate));
-        pipeline.group(Group.of(id(dateToString().format("%Y-%m-%d").date(field("date"))))
+        pipeline.match(Filters.gte("date",beginDate),Filters.lte("date",endDate));
+        pipeline.group(Group.group(id(dateToString().format("%Y-%m-%d").date(field("date"))))
                 .field("totalSaleAmount",sum(multiply(field("price"),field("quantity"))))
                 .field("averageQuantity",avg(field("quantity")))
                 .field("count",sum(value(1))));
-        pipeline.sort(Sort.on().descending("totalSaleAmount"));
+        pipeline.sort(Sort.sort().descending("totalSaleAmount"));
 
         QueryCursor sales = mars.aggregate(pipeline, "sales");
         while (sales.hasNext()){
@@ -188,7 +190,7 @@ public class GroupTest {
      */
     @Test
     public void testForGroupByNull(){
-        pipeline.group(Group.of(id("null"))
+        pipeline.group(Group.group(id("null"))
                 .field("totalSaleAmount",sum(multiply(field("price"),field("quantity"))))
                 .field("averageQuantity",avg(field("quantity")))
                 .field("count",sum(value(1))));
@@ -205,7 +207,7 @@ public class GroupTest {
      */
     @Test
     public void testForPivotData(){
-        pipeline.group(Group.of(id(field("author")))
+        pipeline.group(Group.group(id(field("author")))
                 .field("books",push(field("title"))));
 
         QueryCursor books = mars.aggregate(pipeline, "books");
@@ -229,11 +231,9 @@ public class GroupTest {
      *    }
      *  ])
      */
-    //todo 测试结果与预期不符
-    //todo 测试不正确
     @Test
     public void testForGroupByAuthor(){
-        pipeline.group(Group.of(id(field("author")))
+        pipeline.group(Group.group(id(field("author")))
 //                .field("books",push(field(field("ROOT").toString()))));
                 .field("books",push(value("$$ROOT"))));
 

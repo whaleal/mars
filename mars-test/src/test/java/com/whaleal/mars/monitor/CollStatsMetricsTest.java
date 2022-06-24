@@ -36,6 +36,8 @@ public class CollStatsMetricsTest {
         System.out.println(collectionStatsMetrics.getNIndexes());
         System.out.println(collectionStatsMetrics.getTotalIndexSize());
         System.out.println(collectionStatsMetrics.getIndexSize());
+        System.out.println(collectionStatsMetrics.getTotalSize());
+        System.out.println(collectionStatsMetrics.isCapped());
 
 
     }

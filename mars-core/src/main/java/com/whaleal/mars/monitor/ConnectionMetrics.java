@@ -45,11 +45,11 @@ public class ConnectionMetrics extends AbstractMonitor {
         super(mongoClient);
     }
 
-    public int getCurrent() {
+    public Integer getCurrent() {
         return getConnectionData("current");
     }
 
-    public int getAvailable() {
+    public Integer getAvailable() {
         return getConnectionData("available");
     }
 

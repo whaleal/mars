@@ -7,7 +7,7 @@ import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Lookup;
 import com.whaleal.mars.core.aggregation.stages.Match;
 import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -82,14 +82,13 @@ public class LookUpAndMultipleJoinsTest {
      *     }
      * ] )
      */
-    //todo
     @Test
     public void testForMultipleJoins(){
         pipeline.lookup(Lookup.lookup("warehouses")
                 .let("order_item",field("item"))
                 .let("order_qty",field("ordered"))
-                .pipeline(Match.on(Filters.expr(and(eq(field("$stock_item"),value("$$order_item")),gte(field("instock"),value("$$order_item"))))),
-                        Projection.of().exclude("stock_item").exclude("_id"))
+                .pipeline(Match.match(Filters.expr(and(eq(field("$stock_item"),value("$$order_item")),gte(field("instock"),value("$$order_item"))))),
+                        Projection.project().exclude("stock_item").exclude("_id"))
                 .as("stockdata"));
 
         QueryCursor orders = mars.aggregate(pipeline, "orders");

@@ -6,7 +6,7 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.ReplaceRoot;
 import com.whaleal.mars.core.aggregation.stages.Unwind;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -124,7 +124,7 @@ public class ReplaceRootTest {
      */
     @Test
     public void testForContactsDocument(){
-        pipeline.replaceRoot(ReplaceRoot.with(value(Document.parse("{full_name: {$concat : [ \"$first_name\", \" \", \"$last_name\" ]}}"))));
+        pipeline.replaceRoot(ReplaceRoot.replaceRoot(value(Document.parse("{full_name: {$concat : [ \"$first_name\", \" \", \"$last_name\" ]}}"))));
 //        QueryCursor<Document> authors = mars.findAll(new Query(), Document.class, "authors");
 //        while (authors.hasNext()){
 //            System.out.println(authors.next());

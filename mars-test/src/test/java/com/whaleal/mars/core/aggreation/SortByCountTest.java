@@ -50,7 +50,7 @@ public class SortByCountTest {
      */
     @Test
     public void testForSortByCount(){
-        pipeline.unwind(Unwind.on("tags"));
+        pipeline.unwind(Unwind.unwind("tags"));
         pipeline.sortByCount(field("tags"));
 
         QueryCursor exhibits = mars.aggregate(pipeline, "exhibits");

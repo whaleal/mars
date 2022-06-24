@@ -7,13 +7,16 @@ import com.whaleal.mars.bean.Vehicles;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.AddFields;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.print.Doc;
 
 import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
 import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.array;
@@ -46,7 +49,7 @@ public class AddFieldTest {
         vehicles.setType("jet ski");
         mars.insert(vehicles,"vehicles");
 
-        mars.insert(new Document("id",1).append("dogs",10).append("cats",15),"animals");
+        mars.insert(new Document("_id","1").append("dogs",10).append("cats",15),"animals");
 
         mars.insert(new Document("_id","1").append("item","tangerine").append("type","citrus"),"fruit");
         mars.insert(new Document("_id","2").append("item","lemon").append("type","citrus"),"fruit");
@@ -90,14 +93,13 @@ public class AddFieldTest {
     public void testForSample(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.addFields(AddFields.of().field("totalHomework",sum(field("homework"))).field("totalQuiz",sum(field("quiz"))));
+        pipeline.addFields(AddFields.addFields().field("totalHomework",sum(field("homework"))).field("totalQuiz",sum(field("quiz"))));
 
-        pipeline.addFields(AddFields.of().field("totalScore",add(field("totalHomework"),field("totalQuiz"),field("extraCredit"))));
+        pipeline.addFields(AddFields.addFields().field("totalScore",add(field("totalHomework"),field("totalQuiz"),field("extraCredit"))));
 
-        QueryCursor<Document> scores = mars.aggregate(pipeline, "scores");
-        while (scores.hasNext()){
-            System.out.println(scores.next());
-        }
+        Document document = mars.aggregate(pipeline, "scores").tryNext();
+        Document parse = Document.parse("{\"_id\": 1, \"extraCredit\": 0, \"homework\": [10, 5, 10], \"quiz\": [10, 8], \"student\": \"Maya\", \"totalHomework\": 25, \"totalQuiz\": 18, \"totalScore\": 43}");
+        Assert.assertEquals(document,parse);
 
     }
 
@@ -106,25 +108,26 @@ public class AddFieldTest {
     public void testForEmbed(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.addFields(AddFields.of().field("specs.fuel_type",value("unleaded")));
+        pipeline.addFields(AddFields.addFields().field("specs.fuel_type",value("unleaded")));
 
-        QueryCursor<Document> vehicles = mars.aggregate(pipeline, "vehicles");
-        while (vehicles.hasNext()){
-            System.out.println(vehicles.next());
-        }
+        Document document = mars.aggregate(pipeline, "vehicles").tryNext();
+        Document parse = Document.parse("{\"_id\": 1, \"specs\": {\"doors\": 4, \"wheels\": 4, \"fuel_type\": \"unleaded\"}, \"type\": \"car\"}");
+
+        Assert.assertEquals(document,parse);
     }
 
     @Test
     public void testForCover(){
+
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.addFields(AddFields.of().field("cats",value(20)));
+        pipeline.addFields(AddFields.addFields().field("cats",value(20)));
 
-        QueryCursor<Document> aggregate = mars.aggregate(pipeline,"animals");
+        Document document = mars.aggregate(pipeline, "animals").tryNext();
+        System.out.println(document.toJson());
+        Document parse = Document.parse("{\"_id\": 1, \"dogs\": 10, \"cats\": 20}");
 
-        while (aggregate.hasNext()){
-            System.out.println(aggregate.next());
-        }
+        Assert.assertEquals(document,parse);
 
     }
 
@@ -132,13 +135,13 @@ public class AddFieldTest {
     public void testForReplace(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.addFields(AddFields.of().field("_id",field("item")).field("item",value("fruit")));
+        pipeline.addFields(AddFields.addFields().field("_id",field("item")).field("item",value("fruit")));
 
-        QueryCursor<Document> fruit = mars.aggregate(pipeline, "fruit");
+        Document document = mars.aggregate(pipeline, "fruit").tryNext();
 
-        while (fruit.hasNext()){
-            System.out.println(fruit.next());
-        }
+        Document parse = Document.parse("{\"_id\": \"tangerine\", \"item\": \"fruit\", \"type\": \"citrus\"}");
+
+        Assert.assertEquals(document,parse);
     }
 
     /**

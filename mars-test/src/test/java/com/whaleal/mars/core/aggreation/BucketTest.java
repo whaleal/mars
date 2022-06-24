@@ -5,7 +5,8 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Bucket;
 import com.whaleal.mars.core.aggregation.stages.Facet;
-import com.whaleal.mars.core.aggregation.stages.filters.Filters;
+
+import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
@@ -115,8 +116,8 @@ public class BucketTest {
     public void testForBucket(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.bucket(Bucket.of().groupBy(field("year_born"))
-                .boundaries(value(1840),value(1850),value(1860), value(1870), value(1880))
+        pipeline.bucket(Bucket.bucket().groupBy(field("year_born"))
+                .boundaries(value("1840"),value("1850"),value("1860"), value("1870"), value("1880"))
                 .defaultValue(value("other"))
                 .outputField("count",sum(value(1)))
                 .outputField("artists",push().field("name",concat(field("first_name"),field("last_name"))).field("year_born",field("year_born")))
@@ -170,14 +171,15 @@ public class BucketTest {
     public void testForMulti(){
         AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
-        pipeline.facet(Facet.of().field("price",Bucket.of().groupBy(field("price"))
+        pipeline.facet(Facet.facet()
+                .field("price",Bucket.bucket().groupBy(field("price"))
                 .boundaries(value(0), value(200), value(400))
                 .defaultValue("Other")
                 .outputField("count",sum(value(1)))
                 .outputField("artwork",push().field("title",field("title")).field("price",field("price")))
-                .outputField("averagePrice",avg(field("price")))
-                )
-                .field("year",Bucket.of().groupBy(field("year"))
+                .outputField("averagePrice",avg(field("price"))))
+
+                .field("year",Bucket.bucket().groupBy(field("year"))
                 .boundaries(value( 1890), value(1910), value(1920), value(1940 ))
                 .defaultValue("unknown")
                 .outputField("count",sum(value(1)))

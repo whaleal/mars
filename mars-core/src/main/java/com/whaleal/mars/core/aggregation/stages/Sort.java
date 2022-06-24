@@ -1,43 +1,18 @@
-/**
- *    Copyright 2020-present  Shanghai Jinmu Information Technology Co., Ltd.
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the Server Side Public License, version 1,
- *    as published by Shanghai Jinmu Information Technology Co., Ltd.(The name of the development team is Whaleal.)
- *
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    Server Side Public License for more details.
- *
- *    You should have received a copy of the Server Side Public License
- *    along with this program. If not, see
- *    <http://www.whaleal.com/licensing/server-side-public-license>.
- *
- *    As a special exception, the copyright holders give permission to link the
- *    code of portions of this program with the OpenSSL library under certain
- *    conditions as described in each individual source file and distribute
- *    linked combinations including the program with the OpenSSL library. You
- *    must comply with the Server Side Public License in all respects for
- *    all of the code used other than as permitted herein. If you modify file(s)
- *    with this exception, you may extend this exception to your version of the
- *    file(s), but you are not obligated to do so. If you do not wish to do so,
- *    delete this exception statement from your version. If you delete this
- *    exception statement from all source files in the program, then also delete
- *    it in the license file.
- */
 package com.whaleal.mars.core.aggregation.stages;
 
-import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import org.bson.BsonWriter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 
+
+/**
+ * Sorts all input documents and returns them to the pipeline in sorted order.
+ *
+ * @aggregation.expression $sort
+ */
 public class Sort extends Stage {
     private final List<SortType> sorts = new ArrayList<>();
 
@@ -45,17 +20,33 @@ public class Sort extends Stage {
         super("$sort");
     }
 
-    public Sort( List< SortType> sorts ) {
-        super("$sort");
-        this.sorts.addAll(sorts);
-    }
-
-
+    /**
+     * Creates a sort stage.
+     *
+     * @return the new stage
+     * @deprecated use {@link #sort()}
+     */
+    @Deprecated()
     public static Sort on() {
         return new Sort();
     }
 
+    /**
+     * Creates a sort stage.
+     *
+     * @return the new stage
+     */
+    public static Sort sort() {
+        return new Sort();
+    }
 
+    /**
+     * Adds an ascending sort definition on the field.
+     *
+     * @param field      the sort field
+     * @param additional any additional fields to sort on
+     * @return this
+     */
     public Sort ascending(String field, String... additional) {
         sorts.add(new SortType(field, Direction.ASCENDING));
         for (String another : additional) {
@@ -64,7 +55,13 @@ public class Sort extends Stage {
         return this;
     }
 
-
+    /**
+     * Adds an descending sort definition on the field.
+     *
+     * @param field      the sort field
+     * @param additional any additional fields to sort on
+     * @return this
+     */
     public Sort descending(String field, String... additional) {
         sorts.add(new SortType(field, Direction.DESCENDING));
         for (String another : additional) {
@@ -73,63 +70,23 @@ public class Sort extends Stage {
         return this;
     }
 
-
+    /**
+     * @return the sorts
+     */
     public List<SortType> getSorts() {
         return sorts;
     }
 
-
+    /**
+     * Adds a sort by the computed textScore metadata in descending order.
+     *
+     * @param field the sort field
+     * @return this
+     */
     public Sort meta(String field) {
         sorts.add(new SortType(field, Direction.META));
         return this;
     }
-
-    /**
-     * Returns a new {@link Sort} consisting of the {@link SortType}s of the current {@link Sort} combined with the given
-     * ones.
-     *
-     * @param sort must not be {@literal null}.
-     * @return
-     */
-    public Sort and(Sort sort) {
-
-        Precondition.notNull(sort, "Sort must not be null!");
-
-        ArrayList<SortType> these = new ArrayList<>(this.sorts);
-
-        for (SortType order : sort.sorts) {
-            these.add(order);
-        }
-
-        return Sort.by(these);
-    }
-
-    /**
-     * Creates a new {@link Sort} for the given {@link SortType}s.
-     *
-     * @param orders must not be {@literal null}.
-     * @return
-     */
-    public static Sort by(List<SortType> orders) {
-
-        Precondition.notNull(orders, "Orders must not be null!");
-
-        return orders.isEmpty() ? Sort.on() : new Sort(orders);
-    }
-
-    /**
-     * Creates a new {@link Sort} for the given {@link SortType}s.
-     *
-     * @param orders must not be {@literal null}.
-     * @return
-     */
-    public static Sort by(SortType... orders) {
-
-        Precondition.notNull(orders, "Orders must not be null!");
-
-        return new Sort(Arrays.asList(orders));
-    }
-
 
     /**
      * The sort types
@@ -150,14 +107,18 @@ public class Sort extends Stage {
         META {
             @Override
             public void encode(BsonWriter writer) {
-                ExpressionHelper.document(writer, () -> writer.writeString("$meta", "textScore"));
+                document(writer, () -> writer.writeString("$meta", "textScore"));
             }
         };
 
+        /**
+         * @param writer the writer to use
+         */
         public abstract void encode(BsonWriter writer);
     }
 
-
+    /**
+     */
     public class SortType {
         private final String field;
         private final Direction direction;
@@ -167,12 +128,16 @@ public class Sort extends Stage {
             this.direction = direction;
         }
 
-
+        /**
+         * @return the direction
+         */
         public Direction getDirection() {
             return direction;
         }
 
-
+        /**
+         * @return the field
+         */
         public String getField() {
             return field;
         }
