@@ -29,13 +29,11 @@
  */
 package com.whaleal.mars.session.option;
 
-import com.mongodb.client.model.TimeSeriesGranularity;
+import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.OptionalUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
-import com.whaleal.mars.core.query.Collation;
 import com.whaleal.mars.core.validation.Validator;
 
 

@@ -25,7 +25,7 @@ public class DropTest {
 
     @Before
     public void createData(){
-        mars.createCollection("test1", CollectionOptions.just(Collation.of("zh")));
+//        mars.createCollection("test1", CollectionOptions.just(Collation.of("zh")));
 
         String s = "{ \"_id\" : ObjectId(\"586b98980cec8d86881cffac\"), \"name\" : \"张七\" }\n" +
                 "{ \"_id\" : ObjectId(\"586b98980cec8d86881cffa8\"), \"name\" : \"张三\" }\n" +

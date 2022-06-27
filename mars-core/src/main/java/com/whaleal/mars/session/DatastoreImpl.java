@@ -52,7 +52,7 @@ import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
 import com.whaleal.mars.codecs.pojo.annotations.CappedAt;
 import com.whaleal.mars.codecs.pojo.annotations.Concern;
-import com.whaleal.mars.codecs.pojo.annotations.Language;
+import com.whaleal.mars.codecs.pojo.annotations.Collation;
 import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.index.Index;
@@ -82,7 +82,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import static com.mongodb.client.model.TimeSeriesGranularity.SECONDS;
 import static com.whaleal.icefrog.core.lang.Precondition.isTrue;
 import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
@@ -140,7 +139,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             return null;
         }
 
-        return Collation.from(source).toMongoCollation();
+        return com.whaleal.mars.core.query.Collation.from(source).toMongoCollation();
     }
 
     public MongoClient getMongoClient() {
@@ -938,7 +937,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             collectionOptions.getCapped().ifPresent(val -> document.put("capped", val));
             collectionOptions.getSize().ifPresent(val -> document.put("size", val));
             collectionOptions.getMaxDocuments().ifPresent(val -> document.put("max", val));
-            collectionOptions.getCollation().ifPresent(val -> document.append("collation", val.toDocument()));
+            collectionOptions.getCollation().ifPresent(val -> document.append("collation", val.asDocument()));
 
             collectionOptions.getValidationOptions().ifPresent(it -> {
                 it.getValidationLevel().ifPresent(val -> document.append("validationLevel", val.getValue()));
@@ -959,10 +958,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
                 if (ObjectUtil.isNotEmpty(timeSeriesOptions.getGranularity())){
                     document1.append("granularity",timeSeriesOptions.getGranularity());
-                }
-
-                if (ObjectUtil.isNotEmpty(timeSeriesOptions.getEnableExpire())){
-                    document1.append("enableExpire",timeSeriesOptions.getEnableExpire());
                 }
 
                 if (ObjectUtil.isNotEmpty(timeSeriesOptions.getExpireAfterSeconds())){
@@ -992,7 +987,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
             //如果选项里面有关于collation方面的操作，
             if (collectionOptions.containsKey("collation")) {
-                co.collation(fromDocument(collectionOptions.get("collation", Document.class)));
+                co.collation(fromDocument(Document.parse(collectionOptions.get("collation").toString())));
             }
 
             if (collectionOptions.containsKey("validator")) {
@@ -1029,10 +1024,8 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 }
 
                 //需要先判断是否开启TTL，如果开启了并且传入了过期时间，则指定
-                if(ObjectUtil.isNotEmpty(timeseries.get("enableExpire"))) {
-                    if (ObjectUtil.isNotEmpty(timeseries.getLong("expireAfterSeconds"))) {
-                        co.expireAfter(timeseries.getLong("expireAfterSeconds"), TimeUnit.SECONDS);
-                    }
+                if(ObjectUtil.isNotEmpty(timeseries.getLong("expireAfterSeconds"))){
+                    co.expireAfter(timeseries.getLong("expireAfterSeconds"), TimeUnit.SECONDS);
                 }
                 co.timeSeriesOptions(timeSeriesOptions);
 
@@ -1097,13 +1090,25 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             options = options.maxDocuments(capped.count());
         }
 
-        Language language = (Language) entityModel.getAnnotation(Language.class);
+        Collation collation = (Collation) entityModel.getAnnotation(Collation.class);
 
-        if (!ObjectUtil.isEmpty(language)) {
-            Collation locale = Collation.of(language.value());
-            options = options.collation(locale);
+        if (!ObjectUtil.isEmpty(collation)) {
+            com.mongodb.client.model.Collation collationOption = com.mongodb.client.model.Collation.builder()
+                    .locale(collation.locale())
+                    .caseLevel(collation.caseLevel())
+                    .collationCaseFirst(collation.caseFirst())
+                    .collationStrength(collation.strength())
+                    .numericOrdering(collation.numericOrdering())
+                    .collationAlternate(collation.alternate())
+                    .collationMaxVariable(collation.maxVariable())
+                    .backwards(collation.backwards())
+                    .normalization(collation.normalization())
+                    .build();
+
+            System.out.println(collationOption);
+            options = options.collation(collationOption);
+
         }
-
 
         TimeSeries timeSeries = (TimeSeries) entityModel.getAnnotation(TimeSeries.class);
 
@@ -1124,11 +1129,9 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             }
 
             if(ObjectUtil.equal(timeSeries.enableExpire(),true)){
-                toptions = toptions.enableExpire(timeSeries.enableExpire());
-            }
-
-            if (ObjectUtil.isNotEmpty(timeSeries.expireAfterSeconds())){
-                toptions = toptions.expireAfterSeconds(timeSeries.expireAfterSeconds());
+                if (ObjectUtil.isNotEmpty(timeSeries.expireAfterSeconds())){
+                    toptions = toptions.expireAfterSeconds(timeSeries.expireAfterSeconds());
+                }
             }
 
             options = options.timeSeries(toptions);
@@ -1576,7 +1579,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             }
             if (indexDocument.get("collation") != null) {
                 Document document = (Document) indexDocument.get("collation");
-                Collation collation = Collation.from(document);
+                com.whaleal.mars.core.query.Collation collation = com.whaleal.mars.core.query.Collation.from(document);
                 indexOptions.collation(collation.toMongoCollation());
             }
             /*if (indexDocument.get("version") != null) {         官方文档也没有这个Index偏好设置，只在IndexOptions类里面有

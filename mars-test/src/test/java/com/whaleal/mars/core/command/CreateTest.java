@@ -54,7 +54,7 @@ public class CreateTest {
 
     @Test
     public void testForCreateView(){
-        mars.createCollection("survey", CollectionOptions.just(Collation.of("zh")));
+//        mars.createCollection("survey", CollectionOptions.just(Collation.of("zh")));
 
         String s = "{ _id: 1, empNumber: \"abc123\", feedback: { management: 3, environment: 3 }, department: \"A\" }\n" +
                 "{ _id: 2, empNumber: \"xyz987\", feedback: { management: 2, environment: 3 }, department: \"B\" }\n" +

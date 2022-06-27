@@ -51,7 +51,7 @@ import java.util.Optional;
  * query itself specifies the same collation.
  */
 
-@Deprecated
+//@Deprecated
 public class Collation {
 
     private static final Collation SIMPLE = of("simple");
