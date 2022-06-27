@@ -48,14 +48,14 @@ public @interface TimeSeries {
      * Time Series Collections (TTL) for more information.
      * @return expireAfterSeconds
      */
-    long expireAfterSeconds() ;
+    long expireAfterSeconds() default 0;
 
     /**
      * 是否开启 过期
      * 限制 expireAfterSeconds 的启用
      * @return false  default
      */
-    boolean enableExpire()default  false ;
+    boolean enableExpire() default false ;
 
 
 }

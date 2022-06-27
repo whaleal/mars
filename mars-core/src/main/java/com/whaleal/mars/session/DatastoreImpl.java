@@ -82,6 +82,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+import static com.mongodb.client.model.TimeSeriesGranularity.SECONDS;
 import static com.whaleal.icefrog.core.lang.Precondition.isTrue;
 import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
@@ -959,6 +960,14 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 if (ObjectUtil.isNotEmpty(timeSeriesOptions.getGranularity())){
                     document1.append("granularity",timeSeriesOptions.getGranularity());
                 }
+
+                if (ObjectUtil.isNotEmpty(timeSeriesOptions.getEnableExpire())){
+                    document1.append("enableExpire",timeSeriesOptions.getEnableExpire());
+                }
+
+                if (ObjectUtil.isNotEmpty(timeSeriesOptions.getExpireAfterSeconds())){
+                    document1.append("expireAfterSeconds",timeSeriesOptions.getExpireAfterSeconds());
+                }
                 document.append("timeseries",document1);
             }
         }
@@ -966,6 +975,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     protected MongoCollection< Document > doCreateCollection( String collectionName, Document collectionOptions ) {
+        Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
         lock.lock();
         try {
             com.mongodb.client.model.CreateCollectionOptions co = new com.mongodb.client.model.CreateCollectionOptions();
@@ -1003,21 +1013,27 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 Document timeseries = collectionOptions.get("timeseries", Document.class);
 
                 com.mongodb.client.model.TimeSeriesOptions timeSeriesOptions = null ;
-                if(ObjectUtil.isNotEmpty(timeseries.get("timeField"))){
-                    timeSeriesOptions = new com.mongodb.client.model.TimeSeriesOptions(timeseries.getString("timeField"));
+                String timeField = timeseries.getString("timeField");
+                String metaField = timeseries.getString("metaField");
+                if(ObjectUtil.isNotEmpty(timeField)){
+                    timeSeriesOptions = new com.mongodb.client.model.TimeSeriesOptions(timeField);
+                }
+
+                //不需要手动对这个参数进行合法性校验
+                if(ObjectUtil.isNotEmpty(metaField)){
+                    timeSeriesOptions.metaField(timeseries.getString("metaField"));
                 }
 
                 if(ObjectUtil.isNotEmpty(timeseries.get("granularity"))){
                     timeSeriesOptions.granularity(timeseries.get("granularity", TimeSeriesGranularity.class));
                 }
-                if(ObjectUtil.isNotEmpty(timeseries.getString("metaField"))){
-                    timeSeriesOptions.metaField(timeseries.getString("metaField"));
+
+                //需要先判断是否开启TTL，如果开启了并且传入了过期时间，则指定
+                if(ObjectUtil.isNotEmpty(timeseries.get("enableExpire"))) {
+                    if (ObjectUtil.isNotEmpty(timeseries.getLong("expireAfterSeconds"))) {
+                        co.expireAfter(timeseries.getLong("expireAfterSeconds"), TimeUnit.SECONDS);
+                    }
                 }
-
-//                if(ObjectUtil.isNotEmpty(timeseries.getString("expireAfterSeconds"))){
-//                    timeSeriesOptions = timeSeriesOptions(timeseries.getLong("expireAfterSeconds"));
-//                }
-
                 co.timeSeriesOptions(timeSeriesOptions);
 
             }
@@ -1025,6 +1041,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             this.database.createCollection(collectionName, co);
 
             MongoCollection< Document > coll = database.getCollection(collectionName, Document.class);
+            //如果配置文件中开启了自动创建索引，则在表创建成功后创建索引
+            if(this.mapper.isAutoIndexCreation()){
+                ensureIndexes(entity,coll.getNamespace().getCollectionName());
+            }
             return coll;
         } finally {
             lock.unlock();
@@ -1101,6 +1121,14 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             if (!ObjectUtil.isNull(timeSeries.granularity())) {
                 toptions = toptions.granularity(timeSeries.granularity());
 
+            }
+
+            if(ObjectUtil.equal(timeSeries.enableExpire(),true)){
+                toptions = toptions.enableExpire(timeSeries.enableExpire());
+            }
+
+            if (ObjectUtil.isNotEmpty(timeSeries.expireAfterSeconds())){
+                toptions = toptions.expireAfterSeconds(timeSeries.expireAfterSeconds());
             }
 
             options = options.timeSeries(toptions);

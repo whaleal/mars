@@ -15,8 +15,7 @@ import java.util.Date;
  **/
 @Data
 @NoArgsConstructor
-@Entity("test")
-//@TimeSeries(timeField = "timestamp",expireAfterSeconds = 60)
+@TimeSeries(timeField = "timestamp",enableExpire = true,expireAfterSeconds = 60)
 public class Weather {
 
     private int SensorId;

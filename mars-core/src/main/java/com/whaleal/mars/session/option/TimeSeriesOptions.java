@@ -24,18 +24,23 @@ public class TimeSeriesOptions {
 
     private final String timeField;
 
-    private @Nullable
-    final String metaField;
+    private @Nullable final String metaField;
 
     private final TimeSeriesGranularity granularity;
 
-    private TimeSeriesOptions(String timeField, @Nullable String metaField, TimeSeriesGranularity granularity) {
+    private final boolean enableExpire ;
+
+    private final long expireAfterSeconds;
+
+    private TimeSeriesOptions(String timeField, @Nullable String metaField, TimeSeriesGranularity granularity,boolean enableExpire,long expireAfterSeconds) {
 
         Precondition.hasText(timeField, "Time field must not be empty or null!");
 
         this.timeField = timeField;
         this.metaField = metaField;
         this.granularity = granularity;
+        this.enableExpire = enableExpire;
+        this.expireAfterSeconds = expireAfterSeconds;
     }
 
     /**
@@ -47,7 +52,7 @@ public class TimeSeriesOptions {
      * @return new instance of {@link TimeSeriesOptions}.
      */
     public static TimeSeriesOptions timeSeries(String timeField) {
-        return new TimeSeriesOptions(timeField, null, null);
+        return new TimeSeriesOptions(timeField, null, null,false,0);
     }
 
     /**
@@ -60,7 +65,7 @@ public class TimeSeriesOptions {
      * @return new instance of {@link TimeSeriesOptions}.
      */
     public TimeSeriesOptions metaField(String metaField) {
-        return new TimeSeriesOptions(timeField, metaField, granularity);
+        return new TimeSeriesOptions(timeField, metaField, granularity,enableExpire,expireAfterSeconds);
     }
 
     /**
@@ -71,8 +76,17 @@ public class TimeSeriesOptions {
      * @see TimeSeriesGranularity
      */
     public TimeSeriesOptions granularity(TimeSeriesGranularity granularity) {
-        return new TimeSeriesOptions(timeField, metaField, granularity);
+        return new TimeSeriesOptions(timeField, metaField, granularity,enableExpire,expireAfterSeconds);
     }
+
+    public TimeSeriesOptions enableExpire(Boolean enableExpire) {
+        return new TimeSeriesOptions(timeField, metaField, granularity,enableExpire,expireAfterSeconds);
+    }
+
+    public TimeSeriesOptions expireAfterSeconds(long expireAfterSeconds) {
+        return new TimeSeriesOptions(timeField, metaField, granularity,enableExpire,expireAfterSeconds);
+    }
+
 
     /**
      * @return never {@literal null}.
@@ -95,6 +109,14 @@ public class TimeSeriesOptions {
      */
     public TimeSeriesGranularity getGranularity() {
         return granularity;
+    }
+
+    public boolean getEnableExpire(){
+        return enableExpire;
+    }
+
+    public long getExpireAfterSeconds(){
+        return expireAfterSeconds;
     }
 }
 

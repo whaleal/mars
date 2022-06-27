@@ -98,7 +98,6 @@ public class MongoMappingContext {
     private final DateStorage dateStorage = DateStorage.UTC;
 
 
-
     //所有扫描到的带有@Entity的类的集合
     private Set<? extends Class<?>> initialEntitySet;
 
@@ -106,7 +105,7 @@ public class MongoMappingContext {
         this.initialEntitySet = initialEntitySet;
     }
 
-
+    //是否开启自动创建注解
     private boolean autoIndexCreation = false;
 
     public MongoMappingContext( MongoDatabase database ) {
@@ -142,6 +141,8 @@ public class MongoMappingContext {
 
 
         );
+
+//        this.autoIndexCreation = isAutoIndexCreation();
 
     }
 
