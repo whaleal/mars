@@ -1,8 +1,8 @@
 package com.whaleal.mars.bean;
 
-import com.mongodb.client.model.TimeSeriesGranularity;
-import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
+import com.whaleal.mars.core.index.IndexDirection;
+import com.whaleal.mars.core.index.annotation.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,10 +15,10 @@ import java.util.Date;
  **/
 @Data
 @NoArgsConstructor
-@TimeSeries(timeField = "timestamp")
+@Indexes(@Index(fields = @Field(value = "sensorId",type = IndexDirection.ASC),options = @IndexOptions(collation = @Collation(locale = "zh"))))
 public class Weather {
 
-    private int SensorId;
+    private int sensorId;
 
     private Date timestamp;
 
