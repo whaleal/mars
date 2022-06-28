@@ -2,10 +2,6 @@ package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.aggregation.stages.Sort;
-import com.whaleal.mars.core.query.Collation;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.Test;
 
