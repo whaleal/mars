@@ -71,7 +71,7 @@ public class EntityModelBuilder<T> {
 
     public EntityModelBuilder(final Class<T> type) {
         MarsBuilderHelper.configureClassModelBuilder(this, notNull("type", type));
-        initColelctionName();
+        initCollectionName();
     }
 
 
@@ -231,7 +231,7 @@ public class EntityModelBuilder<T> {
     }
 
 
-    private void initColelctionName() {
+    private void initCollectionName() {
 
         Entity anno = null;
 
