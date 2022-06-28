@@ -49,7 +49,7 @@ public class ReplicationInfoMetrics{
             Long logSizeMB = maxSize / (1024 * 1024);
             document.put("size", logSizeMB);
 
-            double size = ol.getDouble("size");
+            double size = ol.getInteger("size");
             double usedMB = size / (1024 * 1024);
             usedMB = Math.ceil(usedMB * 100) / 100;
             document.put("used", usedMB);
