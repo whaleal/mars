@@ -56,7 +56,7 @@ public class Query {
     // projection
     private Projection projectionSpec = null;
     // sorting
-    private List<Sort> sorts;
+    private List<Sort> sorts = new ArrayList<>();
     private long skip;
     private int limit;
 
@@ -443,7 +443,7 @@ public class Query {
      * @param collation can be {@literal null}.
      * @return this.
      */
-    public Query collation( Collation collation ) {
+    public Query collation(Collation collation ) {
 
         this.collation = Optional.ofNullable(collation);
         return this;

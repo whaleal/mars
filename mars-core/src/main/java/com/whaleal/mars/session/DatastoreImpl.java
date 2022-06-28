@@ -1200,6 +1200,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             findIterable = findIterable.sort(query.getSortObject());
         }
 
+        if (query.getCollation() != null){
+            findIterable = findIterable.collation(query.getCollation().get().toMongoCollation());
+        }
+
         if (query.getSkip() > 0) {
             findIterable = findIterable.skip((int) query.getSkip());
         }
