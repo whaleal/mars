@@ -50,8 +50,7 @@ import java.util.Optional;
  * <strong>NOTE:</strong> Please keep in mind that queries will only make use of an index with collation settings if the
  * query itself specifies the same collation.
  */
-
-@Deprecated
+//@Deprecated
 public class Collation {
 
     private static final Collation SIMPLE = of("simple");

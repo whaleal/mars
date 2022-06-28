@@ -46,7 +46,7 @@ public @interface Index {
      */
     Field[] fields() default {};
 
-    /**
+    /**x
      * @return Options to apply to the index.  Use of this field will ignore any of the deprecated options defined on {@link Index}
      * directly.
      */

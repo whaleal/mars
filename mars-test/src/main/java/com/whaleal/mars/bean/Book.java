@@ -1,10 +1,14 @@
 package com.whaleal.mars.bean;
 
-import com.mongodb.client.model.TimeSeriesGranularity;
+import com.mongodb.client.model.*;
 import com.whaleal.mars.codecs.pojo.annotations.CappedAt;
-import com.whaleal.mars.codecs.pojo.annotations.Concern;
+import com.whaleal.mars.codecs.pojo.annotations.Collation;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 
 /**
  * @author lyz
@@ -12,8 +16,15 @@ import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
  * @date 2022-06-17 10:56
  **/
 @Entity("book")
-@TimeSeries(timeField = "create_time",granularity = TimeSeriesGranularity.HOURS,expireAfterSeconds = 60)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Collation(locale = "zh",strength = CollationStrength.TERTIARY,caseLevel = true,caseFirst = CollationCaseFirst.UPPER,numericOrdering = true,alternate = CollationAlternate.SHIFTED,
+maxVariable = CollationMaxVariable.PUNCT,backwards = true,normalization = true)
 public class Book {
+
+    @Id
+    private ObjectId objectId;
 
     private String name;
 

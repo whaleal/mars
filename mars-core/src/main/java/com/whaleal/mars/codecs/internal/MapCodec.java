@@ -78,6 +78,7 @@ public class MapCodec implements Codec<Map<String, Object>>, OverridableUuidRepr
      * value decoded as a Entity with an instance of a special purpose class (e.g., one representing a DBRef in MongoDB).
      * 使用给定的注册表和 BSON 类型类映射构造一个新实例。 转换器用作解码值时的最后一步，允许此编解码器的用户控制解码过程。
      * 例如，此类的用户可以用特殊用途类的实例（例如，代表 MongoDB 中的 DBRef 的实例）替换解码为 Entity 的值。
+     * 举例中的DBref 相关内容已删除
      */
     public MapCodec(final CodecRegistry registry, final BsonTypeClassMap bsonTypeClassMap, final Transformer valueTransformer) {
         this(registry, new BsonTypeCodecMap(notNull("bsonTypeClassMap", bsonTypeClassMap), registry), valueTransformer,

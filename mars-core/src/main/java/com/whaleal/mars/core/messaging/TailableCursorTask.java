@@ -32,8 +32,9 @@ package com.whaleal.mars.core.messaging;
 import com.mongodb.CursorType;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Collation;
+//import com.mongodb.client.model.Collation;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.core.query.Collation;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.internal.ErrorHandler;
 import org.bson.Document;
@@ -54,7 +55,7 @@ class TailableCursorTask extends CursorReadingTask<Document, Object> {
     protected MongoCursor<Document> initCursor(Mars mars, SubscriptionRequest.RequestOptions options, Class<?> targetType) {
 
         Document filter = new Document();
-        Collation collation = null;
+        com.mongodb.client.model.Collation collation = null;
 
         if (options instanceof TailableCursorRequest.TailableCursorRequestOptions) {
 

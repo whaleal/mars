@@ -52,7 +52,7 @@ import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
 import com.whaleal.mars.codecs.pojo.annotations.CappedAt;
 import com.whaleal.mars.codecs.pojo.annotations.Concern;
-import com.whaleal.mars.codecs.pojo.annotations.Language;
+import com.whaleal.mars.codecs.pojo.annotations.Collation;
 import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.index.Index;
@@ -139,7 +139,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             return null;
         }
 
-        return Collation.from(source).toMongoCollation();
+        return com.whaleal.mars.core.query.Collation.from(source).toMongoCollation();
     }
 
     public MongoClient getMongoClient() {
@@ -937,7 +937,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             collectionOptions.getCapped().ifPresent(val -> document.put("capped", val));
             collectionOptions.getSize().ifPresent(val -> document.put("size", val));
             collectionOptions.getMaxDocuments().ifPresent(val -> document.put("max", val));
-            collectionOptions.getCollation().ifPresent(val -> document.append("collation", val.toDocument()));
+            collectionOptions.getCollation().ifPresent(val -> document.append("collation", val.asDocument()));
 
             collectionOptions.getValidationOptions().ifPresent(it -> {
                 it.getValidationLevel().ifPresent(val -> document.append("validationLevel", val.getValue()));
@@ -959,6 +959,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 if (ObjectUtil.isNotEmpty(timeSeriesOptions.getGranularity())){
                     document1.append("granularity",timeSeriesOptions.getGranularity());
                 }
+
+                if (ObjectUtil.isNotEmpty(timeSeriesOptions.getExpireAfterSeconds())){
+                    document1.append("expireAfterSeconds",timeSeriesOptions.getExpireAfterSeconds());
+                }
                 document.append("timeseries",document1);
             }
         }
@@ -966,6 +970,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     protected MongoCollection< Document > doCreateCollection( String collectionName, Document collectionOptions ) {
+        Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
         lock.lock();
         try {
             com.mongodb.client.model.CreateCollectionOptions co = new com.mongodb.client.model.CreateCollectionOptions();
@@ -982,7 +987,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
             //如果选项里面有关于collation方面的操作，
             if (collectionOptions.containsKey("collation")) {
-                co.collation(fromDocument(collectionOptions.get("collation", Document.class)));
+                co.collation(fromDocument(Document.parse(collectionOptions.get("collation").toString())));
             }
 
             if (collectionOptions.containsKey("validator")) {
@@ -1003,21 +1008,25 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 Document timeseries = collectionOptions.get("timeseries", Document.class);
 
                 com.mongodb.client.model.TimeSeriesOptions timeSeriesOptions = null ;
-                if(ObjectUtil.isNotEmpty(timeseries.get("timeField"))){
-                    timeSeriesOptions = new com.mongodb.client.model.TimeSeriesOptions(timeseries.getString("timeField"));
+                String timeField = timeseries.getString("timeField");
+                String metaField = timeseries.getString("metaField");
+                if(ObjectUtil.isNotEmpty(timeField)){
+                    timeSeriesOptions = new com.mongodb.client.model.TimeSeriesOptions(timeField);
+                }
+
+                //不需要手动对这个参数进行合法性校验
+                if(ObjectUtil.isNotEmpty(metaField)){
+                    timeSeriesOptions.metaField(timeseries.getString("metaField"));
                 }
 
                 if(ObjectUtil.isNotEmpty(timeseries.get("granularity"))){
                     timeSeriesOptions.granularity(timeseries.get("granularity", TimeSeriesGranularity.class));
                 }
-                if(ObjectUtil.isNotEmpty(timeseries.getString("metaField"))){
-                    timeSeriesOptions.metaField(timeseries.getString("metaField"));
+
+                //需要先判断是否开启TTL，如果开启了并且传入了过期时间，则指定
+                if(ObjectUtil.isNotEmpty(timeseries.getLong("expireAfterSeconds"))){
+                    co.expireAfter(timeseries.getLong("expireAfterSeconds"), TimeUnit.SECONDS);
                 }
-
-//                if(ObjectUtil.isNotEmpty(timeseries.getString("expireAfterSeconds"))){
-//                    timeSeriesOptions = timeSeriesOptions(timeseries.getLong("expireAfterSeconds"));
-//                }
-
                 co.timeSeriesOptions(timeSeriesOptions);
 
             }
@@ -1025,6 +1034,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             this.database.createCollection(collectionName, co);
 
             MongoCollection< Document > coll = database.getCollection(collectionName, Document.class);
+            //如果配置文件中开启了自动创建索引，则在表创建成功后创建索引
+            if(this.mapper.isAutoIndexCreation()){
+                ensureIndexes(entity,coll.getNamespace().getCollectionName());
+            }
             return coll;
         } finally {
             lock.unlock();
@@ -1077,13 +1090,25 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             options = options.maxDocuments(capped.count());
         }
 
-        Language language = (Language) entityModel.getAnnotation(Language.class);
+        Collation collation = (Collation) entityModel.getAnnotation(Collation.class);
 
-        if (!ObjectUtil.isEmpty(language)) {
-            Collation locale = Collation.of(language.value());
-            options = options.collation(locale);
+        if (!ObjectUtil.isEmpty(collation)) {
+            com.mongodb.client.model.Collation collationOption = com.mongodb.client.model.Collation.builder()
+                    .locale(collation.locale())
+                    .caseLevel(collation.caseLevel())
+                    .collationCaseFirst(collation.caseFirst())
+                    .collationStrength(collation.strength())
+                    .numericOrdering(collation.numericOrdering())
+                    .collationAlternate(collation.alternate())
+                    .collationMaxVariable(collation.maxVariable())
+                    .backwards(collation.backwards())
+                    .normalization(collation.normalization())
+                    .build();
+
+            System.out.println(collationOption);
+            options = options.collation(collationOption);
+
         }
-
 
         TimeSeries timeSeries = (TimeSeries) entityModel.getAnnotation(TimeSeries.class);
 
@@ -1101,6 +1126,12 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             if (!ObjectUtil.isNull(timeSeries.granularity())) {
                 toptions = toptions.granularity(timeSeries.granularity());
 
+            }
+
+            if(ObjectUtil.equal(timeSeries.enableExpire(),true)){
+                if (ObjectUtil.isNotEmpty(timeSeries.expireAfterSeconds())){
+                    toptions = toptions.expireAfterSeconds(timeSeries.expireAfterSeconds());
+                }
             }
 
             options = options.timeSeries(toptions);
@@ -1167,6 +1198,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         if (query.getSortObject() != null) {
             findIterable = findIterable.sort(query.getSortObject());
+        }
+
+        if (query.getCollation().orElse(null) != null){
+            findIterable = findIterable.collation(query.getCollation().get().toMongoCollation());
         }
 
         if (query.getSkip() > 0) {
@@ -1548,7 +1583,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             }
             if (indexDocument.get("collation") != null) {
                 Document document = (Document) indexDocument.get("collation");
-                Collation collation = Collation.from(document);
+                com.whaleal.mars.core.query.Collation collation = com.whaleal.mars.core.query.Collation.from(document);
                 indexOptions.collation(collation.toMongoCollation());
             }
             /*if (indexDocument.get("version") != null) {         官方文档也没有这个Index偏好设置，只在IndexOptions类里面有
@@ -1567,7 +1602,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 indexOptions.defaultLanguage((String) indexDocument.get("default_language"));
             }
             if (indexDocument.get("expireAfterSeconds") != null) {
-                Long expireAfter = (Long) indexDocument.get("expireAfterSeconds");//秒以下会丢失
+                Long expireAfter = ((Integer) indexDocument.get("expireAfterSeconds")).longValue();//秒以下会丢失
                 indexOptions.expireAfter(expireAfter, TimeUnit.SECONDS);
             }
             if (indexDocument.get("hidden") != null) {
