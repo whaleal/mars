@@ -3,6 +3,9 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -15,6 +18,20 @@ public class RevokeRolesFromRoleTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
+    @Before
+    public void createData(){
+        mars.executeCommand("{ createRole: \"book\",\n" +
+                "                privileges: [],\n" +
+                "            roles: [],\n" +
+                "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "        }");
+        mars.executeCommand("{ grantRolesToRole: \"book\",\n" +
+                "     roles: [\n" +
+                "              \"read\"\n" +
+                "     ],\n" +
+                "     writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "   }");
+    }
     /**
      * { revokeRolesFromRole: "<role>",
      *   roles: [
@@ -27,20 +44,23 @@ public class RevokeRolesFromRoleTest {
      */
     @Test
     public void testForRevokeRolesFromRole(){
-        System.out.println("===============开始回收角色================");
-        mars.executeCommand(" { revokeRolesFromRole: \"service\",\n" +
+        Document document = mars.executeCommand(" { revokeRolesFromRole: \"book\",\n" +
                 "                 roles: [\n" +
                 "                          \"read\",\n" +
                 "                        ],\n" +
                 "                  writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
                 "             } ");
-        Document document = mars.executeCommand(
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result,document);
+
+    }
+    @After
+    public void dropRoles(){
+        mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"mars\" },\n" +
-                        "      showPrivileges: true\n" +
-                        "    }"
+                        "     dropRole: \"book\",\n" +
+                        "     writeConcern: { w: \"majority\" }\n" +
+                        "   }"
         );
-        System.out.println("================查看角色==================");
-        System.out.println(document);
     }
 }

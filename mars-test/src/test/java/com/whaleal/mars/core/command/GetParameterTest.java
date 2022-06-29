@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public class GetParameterTest {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
     /**
      * {
@@ -26,7 +26,7 @@ public class GetParameterTest {
     @Test
     public void testForGetSingleParameter(){
         Document document = mars.executeCommand("{ getParameter : 1, \"saslHostName\" : 1 }");
-        Document result = Document.parse("{ \"saslHostName\" : \"WhaleFalls0807\", \"ok\" : 1 }");
+        Document result = Document.parse("{ \"saslHostName\" : \"test\", \"ok\" : 1.0 }");
         Assert.assertEquals(document,result);
     }
 

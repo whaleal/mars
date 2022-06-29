@@ -14,6 +14,20 @@ import org.junit.Test;
 public class UpdateUserTest {
     private Mars mars = new Mars(Constant.connectionStr);
 
+    @Test
+    public void createData(){
+        mars.executeCommand("{\n" +
+                "       createUser: \"testUser\",\n" +
+                "       pwd: \"testPwd\",\n" +
+                "       customData: { employeeId: 12345 },\n" +
+                "       roles: [\n" +
+                "                { role: \"clusterAdmin\", db: \"admin\" },\n" +
+                "                { role: \"readAnyDatabase\", db: \"admin\" },\n" +
+                "                \"readWrite\"\n" +
+                "              ],\n" +
+                "       writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "}");
+    }
     /**
      * {
      *   updateUser: "<username>",

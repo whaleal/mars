@@ -20,6 +20,6 @@ public class ListCommandsTest {
     @Test
     public void testForListCommands(){
         Document document = mars.executeCommand(" { listCommands: 1 }");
-        System.out.println(document.toJson());
+        System.out.println(document);
     }
 }

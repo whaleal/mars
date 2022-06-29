@@ -4,12 +4,9 @@ package com.whaleal.mars.core;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.bean.Book;
-import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.FindOneAndUpdateOptions;
-import com.whaleal.mars.session.option.UpdateOptions;
-import com.whaleal.mars.session.result.UpdateResult;
 import org.bson.Document;
 import org.junit.Test;
 
@@ -30,8 +27,8 @@ public class TestCollation {
     @Test
     public void testForCreateCollection(){
         mars.createCollection(Book.class);
-//        //注解索引生效
-//        mars.ensureIndexes(Child.class);
+        //注解索引生效
+        mars.ensureIndexes(Book.class);
     }
     //删除集合
     @Test
@@ -102,6 +99,8 @@ public class TestCollation {
         Document document1 = mars.executeCommand(document);
         System.out.println(document1);
     }
+
+
 
 
 

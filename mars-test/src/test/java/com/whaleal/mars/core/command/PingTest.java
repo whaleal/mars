@@ -3,6 +3,7 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -21,6 +22,7 @@ public class PingTest {
     @Test
     public void testForPing(){
         Document document = mars.executeCommand("{ ping: 'www.baidu.com' }");
-        System.out.println(document);
+        Document result = Document.parse("{ \"ok\" : 1.0 }");
+        Assert.assertEquals(result,document);
     }
 }

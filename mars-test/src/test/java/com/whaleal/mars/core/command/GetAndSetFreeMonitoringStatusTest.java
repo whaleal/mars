@@ -3,6 +3,7 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -12,7 +13,7 @@ import org.junit.Test;
  * Description:
  */
 public class GetAndSetFreeMonitoringStatusTest {
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
     /**
      * db.adminCommand( { getFreeMonitoringStatus: 1 } )
@@ -21,13 +22,15 @@ public class GetAndSetFreeMonitoringStatusTest {
     public void testForGetFreeMonitoringStatus(){
         //todo 复制集环境没测
         Document document = mars.executeCommand("{ getFreeMonitoringStatus: 1 }");
-        System.out.println(document);
+        Document result = Document.parse("{ \"state\" : \"undecided\", \"ok\" : 1.0 }\n");
+        Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForSetFreeMonitoringStatus(){
         //todo 复制集环境没测
         Document document = mars.executeCommand("{ setFreeMonitoring: 1, action: \"disable\" }");
-        System.out.println(document);
+        Document result = Document.parse("{ \"ok\" : 1.0 }\n");
+        Assert.assertEquals(result,document);
     }
 }

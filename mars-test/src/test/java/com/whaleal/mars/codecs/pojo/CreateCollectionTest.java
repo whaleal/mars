@@ -53,24 +53,6 @@ public class CreateCollectionTest {
         mars.createCollection(Weather.class);
     }
 
-    @Test
-    public void testForCreateTimeSeriesByCommand(){
-        mars.executeCommand("db.createCollection(\n" +
-                "    \"weather\",\n" +
-                "    {\n" +
-                "       timeseries: {\n" +
-                "          timeField: \"timestamp\",\n" +
-                "          metaField: \"metadata\",\n" +
-                "          granularity: \"hours\"\n" +
-                "       }\n" +
-                "    }\n" +
-                ")");
-    }
-
-    @Test
-    public void testForCreateCollation(){
-        mars.createCollection(Weather.class);
-    }
 
     @Test
     public void testForProperty(){
