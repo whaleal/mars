@@ -1602,7 +1602,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 indexOptions.defaultLanguage((String) indexDocument.get("default_language"));
             }
             if (indexDocument.get("expireAfterSeconds") != null) {
-                Long expireAfter = (Long) indexDocument.get("expireAfterSeconds");//秒以下会丢失
+                Long expireAfter = ((Integer) indexDocument.get("expireAfterSeconds")).longValue();//秒以下会丢失
                 indexOptions.expireAfter(expireAfter, TimeUnit.SECONDS);
             }
             if (indexDocument.get("hidden") != null) {
