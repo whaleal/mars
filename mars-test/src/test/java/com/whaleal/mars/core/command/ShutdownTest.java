@@ -1,6 +1,5 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
 import org.junit.Test;
@@ -12,7 +11,7 @@ import org.junit.Test;
  * Description:
  */
 public class ShutdownTest {
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://admin:123456@192.168.200.139:27017/admin");
 
     /**
      * db.adminCommand({

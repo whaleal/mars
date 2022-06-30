@@ -13,7 +13,7 @@ import org.junit.Test;
  * Description:
  */
 public class KillOpTest {
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
     /**
      * { "killOp": 1, "op": <opid>, comment: <any> }
@@ -21,8 +21,7 @@ public class KillOpTest {
     @Test
     public void testForKillOp(){
         Document document = mars.executeCommand("{ \"killOp\": 1, \"op\": 3478 }");
-        System.out.println(document);
-        Document result = Document.parse("{ \"info\" : \"attempting to kill op\", \"ok\" : 1 }");
+        Document result = Document.parse("{ \"info\" : \"attempting to kill op\", \"ok\" : 1.0 }");
         Assert.assertEquals(document,result);
     }
 }

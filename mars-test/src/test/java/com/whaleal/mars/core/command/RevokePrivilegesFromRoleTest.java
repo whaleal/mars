@@ -1,8 +1,10 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -13,8 +15,26 @@ import org.junit.Test;
  */
 public class RevokePrivilegesFromRoleTest {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
+    @Before
+    public void createData(){
+        mars.executeCommand("{ createRole: \"book\",\n" +
+                "     privileges:\n" +
+                "      [\n" +
+                "        {\n" +
+                "          resource: { db: \"admin\", collection: \"\" },\n" +
+                "          actions: [ \"createCollection\", \"createIndex\", \"find\" ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "          resource: { db: \"admin\", collection: \"orders\" },\n" +
+                "          actions: [ \"insert\" ]\n" +
+                "        }\n" +
+                "      ],\n" +
+                "       roles:[]\n" +
+                "     writeConcern: { w: \"majority\" }\n" +
+                "       }");
+    }
     /**
      * {
      *   revokePrivilegesFromRole: "<role>",
@@ -30,9 +50,8 @@ public class RevokePrivilegesFromRoleTest {
 
     @Test
     public void testForRevokePrivilegesFromRole(){
-        System.out.println("================开始收回权限=================");
-        mars.executeCommand("{\n" +
-                "     revokePrivilegesFromRole: \"service\",\n" +
+        Document document = mars.executeCommand("{\n" +
+                "     revokePrivilegesFromRole: \"book\",\n" +
                 "     privileges:\n" +
                 "      [\n" +
                 "        {\n" +
@@ -46,13 +65,16 @@ public class RevokePrivilegesFromRoleTest {
                 "      ],\n" +
                 "     writeConcern: { w: \"majority\" }\n" +
                 "   }");
-        Document document = mars.executeCommand(
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result,document);
+    }
+    @After
+    public void dropRole(){
+        mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"admin\" },\n" +
-                        "      showPrivileges: true\n" +
-                        "    }"
+                        "     dropRole: \"book\",\n" +
+                        "     writeConcern: { w: \"majority\" }\n" +
+                        "   }"
         );
-        System.out.println("================查看角色==================");
-        System.out.println(document);
     }
 }

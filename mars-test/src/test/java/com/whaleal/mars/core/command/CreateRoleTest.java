@@ -1,8 +1,9 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -13,7 +14,7 @@ import org.junit.Test;
  */
 public class CreateRoleTest {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
 
     /**
@@ -39,19 +40,29 @@ public class CreateRoleTest {
      */
     @Test
     public void testForCreateRole(){
-        System.out.println("============开始创建角色=============");
-        mars.executeCommand("{ createRole: \"service\",\n" +
-                "  privileges: [],\n" +
-                "  roles: [],\n" +
-                "  writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "}");
-        Document document = mars.executeCommand(
+        Document document = mars.executeCommand("{ createRole: \"book\",\n" +
+                "                privileges: [\n" +
+                "            { resource: { cluster: true }, actions: [ \"addShard\" ] },\n" +
+                "            { resource: { db: \"config\", collection: \"\" }, actions: [ \"find\", \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"users\", collection: \"usersCollection\" }, actions: [ \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"\", collection: \"\" }, actions: [ \"find\" ] }\n" +
+                "  ],\n" +
+                "            roles: [\n" +
+                "            { role: \"read\", db: \"admin\" }\n" +
+                "  ],\n" +
+                "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "        }");
+        Document result = Document.parse("{ \"ok\" : 1.0 }");
+        Assert.assertEquals(result,document);
+    }
+
+    @After
+    public void dropRoles(){
+        mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: 1,\n" +
-                        "      showPrivileges: true\n" +
-                        "    }"
+                        "     dropRole: \"book\",\n" +
+                        "     writeConcern: { w: \"majority\" }\n" +
+                        "   }"
         );
-        System.out.println("================查看角色==================");
-        System.out.println(document);
     }
 }

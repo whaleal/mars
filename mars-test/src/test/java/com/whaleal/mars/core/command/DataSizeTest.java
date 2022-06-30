@@ -1,8 +1,12 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
+import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -15,6 +19,10 @@ public class DataSizeTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
+    @Before
+    public void createData(){
+        mars.createCollection(Book.class);
+    }
     /**
      * {
      *    dataSize: <string>,
@@ -26,8 +34,13 @@ public class DataSizeTest {
      */
     @Test
     public void testForDataSize(){
-//        Document document = mars.executeCommand("{ dataSize: \"database.collection\", keyPattern: { field: 1 }, min: { field: 10 }, max: { field: 100 } }");
-        Document document = mars.executeCommand("{ dataSize: \"mars.document\", keyPattern: { price: 1 }, min: { price: 10 }, max: { price: 100 } }");
-        System.out.println(document);
+        Document document = mars.executeCommand("{ dataSize: \"mars.book\", keyPattern: { price: 1 }, min: { price: 10 }, max: { price: 100 } }");
+        Document result = Document.parse("{ \"size\" : 0, \"numObjects\" : 0, \"millis\" : 0, \"ok\" : 1.0 }\n");
+        Assert.assertEquals(result,document);
+    }
+
+    @After
+    public void dropCollection(){
+        mars.dropCollection("book");
     }
 }

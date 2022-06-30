@@ -3,6 +3,7 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -21,6 +22,7 @@ public class LogoutTest {
     @Test
     public void testForLogout(){
         Document document = mars.executeCommand(" { logout: 1 }");
-        System.out.println(document);
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result,document);
     }
 }
