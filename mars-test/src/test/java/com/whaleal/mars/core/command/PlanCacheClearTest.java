@@ -3,6 +3,7 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -29,18 +30,19 @@ public class PlanCacheClearTest {
     @Test
     public void testForPlanCacheClear(){
         //按query shape清除
-        System.out.println("按query shape清除");
         Document document = mars.executeCommand("{\n" +
-                "      planCacheClear: \"orders\",\n" +
+                "      planCacheClear: \"book\",\n" +
                 "      query: { \"qty\" : { \"$gt\" : 10 } },\n" +
                 "      sort: { \"ord_date\" : 1 }\n" +
                 "   }");
-        System.out.println(document);
+
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result,document);
         //清除所有的缓存
-        System.out.println("清除所有");
         Document document1 = mars.executeCommand("{\n" +
-                "      planCacheClear: \"orders\"\n" +
+                "      planCacheClear: \"book\"\n" +
                 "   }");
-        System.out.println(document1);
+        Document result1 = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result1,document1);
     }
 }

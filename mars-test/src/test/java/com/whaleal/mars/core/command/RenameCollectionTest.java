@@ -1,8 +1,10 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -12,8 +14,12 @@ import org.junit.Test;
  * Description:
  */
 public class RenameCollectionTest {
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
+    @Before
+    public void createData(){
+        mars.createCollection(Document.class);
+    }
     /**
      * { renameCollection: "<source_namespace>",
      *   to: "<target_namespace>",
@@ -23,7 +29,12 @@ public class RenameCollectionTest {
      */
     @Test
     public void testForRenameCollection(){
-        Document document = mars.executeCommand("{ renameCollection: \"mars.document01\", to: \"mars.document\" }");
-        System.out.println(document);
+        Document document = mars.executeCommand("{ renameCollection: \"admin.document\", to: \"admin.document01\" }");
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result,document);
+    }
+    @After
+    public void dropCollection(){
+        mars.dropCollection("document01");
     }
 }

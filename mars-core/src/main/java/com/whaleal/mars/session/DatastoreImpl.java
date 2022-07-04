@@ -129,6 +129,20 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         super(mapper.getDatabase(),mapper);
         this.mongoClient = mongoClient ;
         this.defaultGridFSBucket = GridFSBuckets.create(super.database);
+
+        for (Class<?> entity : mapper.getInitialEntitySet()){
+//            createCollection(entity);
+            if (mapper.isAutoIndexCreation()){
+                lock.lock();
+                try {
+                    ensureIndexes(entity);
+                }finally {
+                    lock.unlock();
+                }
+            }
+        }
+
+
     }
 
 

@@ -37,6 +37,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Collation;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +57,14 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
     private ReadConcern readConcern;
     private WriteConcern writeConcern;
     private Document hint;
+    private String comment;
+    private String hintString;
+    private Bson let;
+
+
+    public AggregationOptions(){
+
+    }
 
     /**
      * @return the configuration value
@@ -74,6 +83,18 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
         this.allowDiskUse = allowDiskUse;
         return this;
     }
+
+    public AggregationOptions hintString(String hintString) {
+        this.hintString = hintString;
+        return this;
+    }
+
+    public AggregationOptions let(Bson let) {
+        this.let = let;
+        return this;
+    }
+
+
 
     /**
      * Applies the configured options to the collection.
@@ -106,8 +127,18 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
         if (maxTimeMS != null) {
             aggregate.maxTime(getMaxTime(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
         }
+
         if (hint != null) {
             aggregate.hint(hint);
+        }
+        if(comment != null){
+            aggregate.comment(comment);
+        }
+        if(hintString != null){
+            aggregate.hintString(hintString);
+        }
+        if(let != null){
+            aggregate.let(let);
         }
 
         return aggregate;
@@ -219,6 +250,10 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
         return unit.convert(maxTimeMS, TimeUnit.MILLISECONDS);
     }
 
+    public String getComment(){
+        return comment;
+    }
+
     /**
      * @return the configuration value
      */
@@ -254,8 +289,14 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
      * @param hint the hint
      * @return this
      */
-    public AggregationOptions hint(String hint) {
-        this.hint = new Document("hint", hint);
+    public AggregationOptions hint(Document hint) {
+//        this.hint = new Document("hint", hint);
+        this.hint = hint;
+        return this;
+    }
+
+    public AggregationOptions comment(String comment) {
+        this.comment = comment;
         return this;
     }
 

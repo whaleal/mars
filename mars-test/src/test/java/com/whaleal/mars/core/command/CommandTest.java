@@ -45,11 +45,11 @@ public class CommandTest {
         mars.dropCollection("orders");
     }
 
-    @Test
-    public void test(){
-        Document parse = Document.parse("");
-        Document document = mars.executeCommand(parse);
-    }
+//    @Test
+//    public void test(){
+//        Document parse = Document.parse("");
+//        Document document = mars.executeCommand(parse);
+//    }
 
     @Test
     public void testForHello(){

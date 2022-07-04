@@ -59,8 +59,8 @@ public class GeoSearchTest {
         System.out.println(document);
     }
 
-    @Test
-    public void testForReadConcern(){
-
-    }
+//    @Test
+//    public void testForReadConcern(){
+//
+//    }
 }

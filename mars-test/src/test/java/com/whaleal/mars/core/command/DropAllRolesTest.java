@@ -4,6 +4,7 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -14,8 +15,35 @@ import org.junit.Test;
  */
 public class DropAllRolesTest {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
+    @Before
+    public void createData(){
+        mars.executeCommand("{ createRole: \"book01\",\n" +
+                "                privileges: [\n" +
+                "            { resource: { cluster: true }, actions: [ \"addShard\" ] },\n" +
+                "            { resource: { db: \"config\", collection: \"\" }, actions: [ \"find\", \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"users\", collection: \"usersCollection\" }, actions: [ \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"\", collection: \"\" }, actions: [ \"find\" ] }\n" +
+                "  ],\n" +
+                "            roles: [\n" +
+                "            { role: \"read\", db: \"admin\" }\n" +
+                "  ],\n" +
+                "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "        }");
+        mars.executeCommand("{ createRole: \"book02\",\n" +
+                "                privileges: [\n" +
+                "            { resource: { cluster: true }, actions: [ \"addShard\" ] },\n" +
+                "            { resource: { db: \"config\", collection: \"\" }, actions: [ \"find\", \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"users\", collection: \"usersCollection\" }, actions: [ \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"\", collection: \"\" }, actions: [ \"find\" ] }\n" +
+                "  ],\n" +
+                "            roles: [\n" +
+                "            { role: \"read\", db: \"admin\" }\n" +
+                "  ],\n" +
+                "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "        }");
+    }
     /**
      * {
      *   dropAllRolesFromDatabase: 1,
@@ -25,20 +53,11 @@ public class DropAllRolesTest {
      */
     @Test
     public void testForDropAllRoles(){
-        System.out.println("============开始删除所有角色=============");
         Document document = mars.executeCommand("{\n" +
                 "     dropAllRolesFromDatabase: 1,\n" +
                 "     writeConcern: { w: \"majority\" }\n" +
                 "   }");
-        Document document2 = mars.executeCommand(
-                "{\n" +
-                        "      rolesInfo: 1,\n" +
-                        "      showBuiltinRoles: true\n" +
-                        "    }"
-        );
-        System.out.println("================查看角色==================");
-        System.out.println(document2);
-        Document result = Document.parse("{ \"n\" : 4, \"ok\" : 1 }");
+        Document result = Document.parse("{ \"n\" : 2, \"ok\" : 1.0 }");
         Assert.assertEquals(document,result);
     }
 }

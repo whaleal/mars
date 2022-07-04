@@ -105,6 +105,11 @@ public class MongoMappingContext {
         this.initialEntitySet = initialEntitySet;
     }
 
+
+    public Set<? extends Class<?>> getInitialEntitySet(){
+        return initialEntitySet;
+    }
+
     //是否开启自动创建注解
     private boolean autoIndexCreation = false;
 

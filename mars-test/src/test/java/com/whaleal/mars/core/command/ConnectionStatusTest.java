@@ -3,6 +3,7 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -21,6 +22,14 @@ public class ConnectionStatusTest {
     @Test
     public void testForConnectionStatus(){
         Document document = mars.executeCommand(" { connectionStatus: 1, showPrivileges: true }");
-        System.out.println(document);
+        Document result = Document.parse("{\n" +
+                "\t\"authInfo\" : {\n" +
+                "\t\t\"authenticatedUsers\" : [ ],\n" +
+                "\t\t\"authenticatedUserRoles\" : [ ],\n" +
+                "\t\t\"authenticatedUserPrivileges\" : [ ]\n" +
+                "\t},\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
+        Assert.assertEquals(result,document);
     }
 }
