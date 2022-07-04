@@ -290,7 +290,8 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
      * @return this
      */
     public AggregationOptions hint(Document hint) {
-        this.hint = new Document("hint", hint);
+//        this.hint = new Document("hint", hint);
+        this.hint = hint;
         return this;
     }
 
