@@ -289,7 +289,7 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
      * @param hint the hint
      * @return this
      */
-    public AggregationOptions hint(String hint) {
+    public AggregationOptions hint(Document hint) {
         this.hint = new Document("hint", hint);
         return this;
     }
