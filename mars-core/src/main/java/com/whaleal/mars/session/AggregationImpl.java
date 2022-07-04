@@ -29,9 +29,11 @@
  */
 package com.whaleal.mars.session;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
@@ -132,7 +134,8 @@ public abstract class AggregationImpl {
             collection = options.prepare(collection);
         }
 
-        MongoCursor<T> cursor = collection.aggregate(getDocuments(pipeline.getInnerStage()), resultType).iterator();
+        AggregationOptions aggregationOptions = new AggregationOptions();
+        MongoCursor<T> cursor = aggregationOptions.apply(getDocuments(pipeline.getInnerStage()), collection, resultType).iterator();
 
         return new QueryCursor<T>(cursor);
 
