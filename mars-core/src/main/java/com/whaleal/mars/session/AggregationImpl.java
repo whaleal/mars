@@ -134,8 +134,7 @@ public abstract class AggregationImpl {
             collection = options.prepare(collection);
         }
 
-        AggregationOptions aggregationOptions = new AggregationOptions();
-        MongoCursor<T> cursor = aggregationOptions.apply(getDocuments(pipeline.getInnerStage()), collection, resultType).iterator();
+        MongoCursor<T> cursor = options.apply(getDocuments(pipeline.getInnerStage()), collection, resultType).iterator();
 
         return new QueryCursor<T>(cursor);
 

@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  */
 @SuppressWarnings("unused")
 public class AggregationOptions implements ReadConfigurable<AggregationOptions> {
-    private boolean allowDiskUse = false;
+    private boolean allowDiskUse;
     private Integer batchSize;
     private boolean bypassDocumentValidation;
     private Collation collation;
@@ -60,6 +60,11 @@ public class AggregationOptions implements ReadConfigurable<AggregationOptions> 
     private String comment;
     private String hintString;
     private Bson let;
+
+
+    public AggregationOptions(){
+
+    }
 
     /**
      * @return the configuration value
