@@ -31,6 +31,7 @@ package com.whaleal.mars.core.query;
 
 
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.map.MapUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 
 import com.whaleal.mars.codecs.writer.DocumentWriter;
@@ -491,7 +492,14 @@ public class Update implements UpdateDefinition {
             doc.append("$isolated", 1);
         }
 
-        return doc.toJson();
+        try{
+            return doc.toJson().replaceAll("\":", "\" :").replaceAll("\\{\"", "{ \"");
+        }catch (Exception e){
+
+           return MapUtil.toString((Map<?, ?>) doc);
+
+        }
+
     }
 
     public enum Position {
