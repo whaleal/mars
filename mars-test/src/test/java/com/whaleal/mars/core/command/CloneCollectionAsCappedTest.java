@@ -1,13 +1,12 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
+import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.aggregation.stages.Sort;
-import com.whaleal.mars.core.query.Collation;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.QueryCursor;
-import org.bson.Document;
+import com.whaleal.mars.monitor.CollStatsMetrics;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -20,6 +19,11 @@ public class CloneCollectionAsCappedTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
+    @Before
+    public void createData(){
+        mars.createCollection(Book.class);
+    }
+
     /**
      * { cloneCollectionAsCapped: <existing collection>,
      *   toCollection: <capped collection>,
@@ -30,27 +34,20 @@ public class CloneCollectionAsCappedTest {
      */
     @Test
     public void testForCloneCollectionAsCapped(){
-        mars.executeCommand("{ cloneCollectionAsCapped: \"person\",\n" +
-                "  toCollection: \"PersonCapped\",\n" +
+        mars.executeCommand("{ cloneCollectionAsCapped: \"book\",\n" +
+                "  toCollection: \"BookCapped\",\n" +
                 "  size: 10,\n" +
                 "  writeConcern: { w: \"majority\"}\n" +
                 "  comment: \"test\"\n" +
                 "}");
-        Query query = new Query();
-//        query.with(Sort.on().ascending("name"));
-
-        QueryCursor<Document> person = mars.findAll(query, Document.class, "PersonCapped");
-        while (person.hasNext()){
-            System.out.println(person.next());
-        }
-
-        Collation person1 = Collation.parse("PersonCapped");
-        System.out.println(person1.toDocument());
+        Boolean capped = new CollStatsMetrics(mars.getMongoClient(), "mars", "BookCapped").isCapped();
+        Assert.assertEquals(true,capped);
     }
 
     @After
     public void dropCollection(){
-        mars.dropCollection("PersonCapped");
+        mars.dropCollection("book");
+        mars.dropCollection("BookCapped");
     }
 
 }

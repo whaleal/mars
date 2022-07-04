@@ -3,6 +3,8 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -13,7 +15,16 @@ import org.junit.Test;
  */
 public class GrantPrivilegesToRoleTest {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+
+    @Before
+    public void createData(){
+        mars.executeCommand("{ createRole: \"book\",\n" +
+                "                privileges: [],\n" +
+                "            roles: [],\n" +
+                "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "        }");
+    }
 
     /**
      * {
@@ -33,13 +44,13 @@ public class GrantPrivilegesToRoleTest {
         System.out.println("====================开始授权======================");
         mars.executeCommand(
                 "{\n" +
-                        "     grantPrivilegesToRole: \"service\",\n" +
+                        "     grantPrivilegesToRole: \"book\",\n" +
                         "     privileges: [\n" +
                         "         {\n" +
-                        "           resource: { db: \"mars\", collection: \"\" }, actions: [ \"find\" ]\n" +
+                        "           resource: { db: \"admin\", collection: \"book\" }, actions: [ \"find\" ]\n" +
                         "         },\n" +
                         "         {\n" +
-                        "           resource: { db: \"mars\", collection: \"system.js\" }, actions: [ \"find\" ]\n" +
+                        "           resource: { db: \"admin\", collection: \"book\" }, actions: [ \"insert\" ]\n" +
                         "         }\n" +
                         "     ],\n" +
                         "     writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
@@ -48,10 +59,19 @@ public class GrantPrivilegesToRoleTest {
         System.out.println("====================查看角色======================");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"mars\" },\n" +
+                        "      rolesInfo: { role: \"book\", db: \"admin\" },\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );
         System.out.println(document);
+    }
+    @After
+    public void dropRole(){
+        mars.executeCommand(
+                "{\n" +
+                        "     dropRole: \"book\",\n" +
+                        "     writeConcern: { w: \"majority\" }\n" +
+                        "   }"
+        );
     }
 }

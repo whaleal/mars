@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public class InvalidateUserCacheTest {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
 
     /**
@@ -23,6 +23,7 @@ public class InvalidateUserCacheTest {
     @Test
     public void testForInvalidateUserCache(){
         Document document = mars.executeCommand("{ invalidateUserCache: 1 }");
-        System.out.println(document);
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result,document);
     }
 }

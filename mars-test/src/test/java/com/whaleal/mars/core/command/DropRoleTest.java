@@ -1,8 +1,9 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -12,7 +13,24 @@ import org.junit.Test;
  * Description:
  */
 public class DropRoleTest {
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+
+    @Before
+    public void createData(){
+        mars.executeCommand("{ createRole: \"book\",\n" +
+                "                privileges: [\n" +
+                "            { resource: { cluster: true }, actions: [ \"addShard\" ] },\n" +
+                "            { resource: { db: \"config\", collection: \"\" }, actions: [ \"find\", \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"users\", collection: \"usersCollection\" }, actions: [ \"update\", \"insert\", \"remove\" ] },\n" +
+                "            { resource: { db: \"\", collection: \"\" }, actions: [ \"find\" ] }\n" +
+                "  ],\n" +
+                "            roles: [\n" +
+                "            { role: \"read\", db: \"admin\" }\n" +
+                "  ],\n" +
+                "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
+                "        }");
+    }
+
     /**
      * {
      *   dropRole: "<role>",
@@ -22,20 +40,13 @@ public class DropRoleTest {
      */
     @Test
     public void testForDropRoles(){
-        System.out.println("============开始删除角色============");
-        mars.executeCommand(
+        Document document = mars.executeCommand(
                 "{\n" +
-                        "     dropRole: \"service\",\n" +
+                        "     dropRole: \"book\",\n" +
                         "     writeConcern: { w: \"majority\" }\n" +
                         "   }"
         );
-        System.out.println("=================查看角色==================");
-        Document document = mars.executeCommand(
-                "{\n" +
-                        "      rolesInfo: 1,\n" +
-                        "      showPrivileges: true\n" +
-                        "    }"
-        );
-        System.out.println(document);
+        Document result = Document.parse("{ \"ok\" : 1.0 }\n");
+        Assert.assertEquals(result,document);
     }
 }

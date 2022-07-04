@@ -3,6 +3,8 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -46,6 +48,15 @@ public class CreateUserTest {
                 "              ],\n" +
                 "       writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
                 "}");
-        System.out.println(document);
+        Document result = Document.parse("{ \"ok\" : 1.0 }\n");
+        Assert.assertEquals(result,document);
+    }
+
+    @After
+    public void dropUser(){
+        Document document = mars.executeCommand("{\n" +
+                "   dropUser: \"testUser\",\n" +
+                "   writeConcern: { w: \"majority\", wtimeout: 5000 }\n" +
+                "} ");
     }
 }

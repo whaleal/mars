@@ -3,6 +3,7 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -27,88 +28,397 @@ public class RoleInfoTest {
     @Test
     public void testForRoleInfo(){
         //查询admin库中单个角色信息,包含角色继承关系
-        System.out.println("============查询单个指定角色============");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"mars\" }\n" +
+                        "      rolesInfo: { role: \"read\", db: \"mars\" }\n" +
                         "    }"
         );
-        System.out.println("================查询角色结束==================");
-        System.out.println(document);
+        Document result = Document.parse("{\n" +
+                "\t\"roles\" : [\n" +
+                "\t\t{\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"role\" : \"read\",\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ],\n" +
+                "\t\t\t\"isBuiltin\" : true\n" +
+                "\t\t}\n" +
+                "\t],\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
+        Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForRoleInfoWithPrivileges(){
         //查询角色信息包含角色继承关系和权限
-        System.out.println("============查询单个指定角色包括权限============");
         Document document = mars.executeCommand(
                 "{\n" +
-                        "      rolesInfo: { role: \"service\", db: \"mars\" },\n" +
+                        "      rolesInfo: { role: \"read\", db: \"mars\" },\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );
-        System.out.println("================查询角色结束==================");
-        System.out.println(document);
+        Document result = Document.parse("{\n" +
+                "\t\"roles\" : [\n" +
+                "\t\t{\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"role\" : \"read\",\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"privileges\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"system.js\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ],\n" +
+                "\t\t\t\"inheritedPrivileges\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"system.js\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"isBuiltin\" : true\n" +
+                "\t\t}\n" +
+                "\t],\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
+        Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForSeveralRoles(){
         //查询两个不同库的角色信息
-        System.out.println("============查询不同库多个角色============");
         Document document = mars.executeCommand(
                 "{\n" +
                         "      rolesInfo: [\n" +
-                        "         { role: \"serivce\", db: \"mars\" },\n" +
-                        "         { role: \"root\", db: \"admin\" }\n" +
+                        "         { role: \"read\", db: \"admin\" },\n" +
+                        "         { role: \"read\", db: \"mars\" }\n" +
                         "      ]\n" +
                         "    }"
         );
-        System.out.println("================查询角色结束==================");
-        System.out.println(document);
+        Document result = Document.parse("{\n" +
+                "\t\"roles\" : [\n" +
+                "\t\t{\n" +
+                "\t\t\t\"db\" : \"admin\",\n" +
+                "\t\t\t\"role\" : \"read\",\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ],\n" +
+                "\t\t\t\"isBuiltin\" : true\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"role\" : \"read\",\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ],\n" +
+                "\t\t\t\"isBuiltin\" : true\n" +
+                "\t\t}\n" +
+                "\t],\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
+        Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForSeveralRolesWithPrivileges(){
         //查询两个不同库的角色信息包含权限信息
-        System.out.println("============查询不同库多个角色包括权限============");
         Document document = mars.executeCommand(
                 "{\n" +
                         "      rolesInfo: [\n" +
-                        "         { role: \"root\", db: \"admin\" },\n" +
-                        "         { role: \"service\", db: \"mars\" }\n" +
+                        "         { role: \"read\", db: \"admin\" },\n" +
+                        "         { role: \"read\", db: \"mars\" }\n" +
                         "      ],\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );
-        System.out.println("================查询角色结束==================");
-        System.out.println(document);
+        Document result = Document.parse("{\n" +
+                "\t\"roles\" : [\n" +
+                "\t\t{\n" +
+                "\t\t\t\"db\" : \"admin\",\n" +
+                "\t\t\t\"role\" : \"read\",\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"privileges\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"admin\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"admin\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"system.js\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ],\n" +
+                "\t\t\t\"inheritedPrivileges\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"admin\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"admin\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"system.js\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"isBuiltin\" : true\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"role\" : \"read\",\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"privileges\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"system.js\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ],\n" +
+                "\t\t\t\"inheritedPrivileges\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"resource\" : {\n" +
+                "\t\t\t\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\t\t\t\"collection\" : \"system.js\"\n" +
+                "\t\t\t\t\t},\n" +
+                "\t\t\t\t\t\"actions\" : [\n" +
+                "\t\t\t\t\t\t\"changeStream\",\n" +
+                "\t\t\t\t\t\t\"collStats\",\n" +
+                "\t\t\t\t\t\t\"dbHash\",\n" +
+                "\t\t\t\t\t\t\"dbStats\",\n" +
+                "\t\t\t\t\t\t\"find\",\n" +
+                "\t\t\t\t\t\t\"killCursors\",\n" +
+                "\t\t\t\t\t\t\"listCollections\",\n" +
+                "\t\t\t\t\t\t\"listIndexes\",\n" +
+                "\t\t\t\t\t\t\"planCacheRead\"\n" +
+                "\t\t\t\t\t]\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"isBuiltin\" : true\n" +
+                "\t\t}\n" +
+                "\t],\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
+        Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForAllRolesWithPrivileges(){
         //查询一个库的所有角色
-        System.out.println("============查询单个库所有角色包括权限============");
         Document document = mars.executeCommand(
                 "{\n" +
                         "      rolesInfo: 1,\n" +
                         "      showPrivileges: true\n" +
                         "    }"
         );
-        System.out.println("================查询角色结束==================");
-        System.out.println(document);
+        Document result = Document.parse("{ \"roles\" : [ ], \"ok\" : 1.0 }");
+        Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForAllRolesWithBuiltinRoles(){
         //查询一个库的所有角色，包含内嵌角色和权限
-        System.out.println("============查询单个库所有角色包括内嵌角色============");
-        Document document = mars.executeCommand(
-                "{\n" +
-                        "      rolesInfo: 1,\n" +
-                        "      showBuiltinRoles: true\n" +
-                        "    }"
-        );
-        System.out.println("================查询角色结束==================");
-        System.out.println(document);
+        Document document = mars.executeCommand("{rolesInfo: 1,showBuiltinRoles: true}");
+        Document result = Document.parse("{\n" +
+                "\t\"roles\" : [\n" +
+                "\t\t{\n" +
+                "\t\t\t\"role\" : \"enableSharding\",\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"isBuiltin\" : true,\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ]\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"role\" : \"dbOwner\",\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"isBuiltin\" : true,\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ]\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"role\" : \"read\",\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"isBuiltin\" : true,\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ]\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"role\" : \"userAdmin\",\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"isBuiltin\" : true,\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ]\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"role\" : \"dbAdmin\",\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"isBuiltin\" : true,\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ]\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"role\" : \"readWrite\",\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"isBuiltin\" : true,\n" +
+                "\t\t\t\"roles\" : [ ],\n" +
+                "\t\t\t\"inheritedRoles\" : [ ]\n" +
+                "\t\t}\n" +
+                "\t],\n" +
+                "\t\"ok\" : 1\n" +
+                "}\n");
+        Assert.assertEquals(result,document);
     }
 }

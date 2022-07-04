@@ -1,14 +1,13 @@
 package com.whaleal.mars.bean;
 
-import com.mongodb.client.model.*;
-import com.whaleal.mars.codecs.pojo.annotations.CappedAt;
-import com.whaleal.mars.codecs.pojo.annotations.Collation;
+
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.pojo.annotations.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+
 
 /**
  * @author lyz
@@ -19,8 +18,9 @@ import org.bson.types.ObjectId;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Collation(locale = "zh",strength = CollationStrength.TERTIARY,caseLevel = true,caseFirst = CollationCaseFirst.UPPER,numericOrdering = true,alternate = CollationAlternate.SHIFTED,
-maxVariable = CollationMaxVariable.PUNCT,backwards = true,normalization = true)
+//@Collation(locale = "zh",strength = CollationStrength.TERTIARY,caseLevel = true,caseFirst = CollationCaseFirst.UPPER,numericOrdering = true,alternate = CollationAlternate.SHIFTED,
+//maxVariable = CollationMaxVariable.PUNCT,backwards = true,normalization = true)
+//@Indexes(@Index(fields = @Field(value = "name",type = IndexDirection.ASC),options = @IndexOptions(collation = @Collation(locale = "zh"))))
 public class Book {
 
     @Id

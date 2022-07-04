@@ -35,8 +35,15 @@ public class TestTimeSeries {
     }
     @Test
     public void testForTTL(){
+
+        Weather weather = new Weather();
+        weather.setSensorId(1);
+        weather.setTimestamp(new Timestamp(1111L));
+        weather.setTemp("11");
+        weather.setType("temperature");
+        weather.setProp("test");
         //插入数据测试
-        mars.insert(new Weather(new ObjectId(),1,new Timestamp(111L),"temperature","11"));
+        mars.insert(weather);
     }
 
     @Test

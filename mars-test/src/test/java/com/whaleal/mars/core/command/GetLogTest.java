@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public class GetLogTest {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
     /**
      * db.adminCommand( { getLog: <value> } )
@@ -25,7 +25,7 @@ public class GetLogTest {
         //检索可用的日志
         Document document = mars.executeCommand("{ getLog:'*'} ");
         System.out.println(document);
-        Document result = Document.parse("{ \"names\" : [ \"global\", \"startupWarnings\" ], \"ok\" : 1 }");
+        Document result = Document.parse("{ \"names\" : [ \"global\", \"startupWarnings\" ], \"ok\" : 1.0 }");
         Assert.assertEquals(document,result);
     }
     @Test

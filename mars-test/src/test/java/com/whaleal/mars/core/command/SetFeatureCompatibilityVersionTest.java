@@ -1,8 +1,8 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -12,7 +12,7 @@ import org.junit.Test;
  * Description:
  */
 public class SetFeatureCompatibilityVersionTest {
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
 
     /**
      * db.adminCommand( {
@@ -23,13 +23,15 @@ public class SetFeatureCompatibilityVersionTest {
     @Test
     public void testForViewFeatureCompatibilityVersion(){
         Document document = mars.executeCommand("{ getParameter: 1, featureCompatibilityVersion: 1 }");
-        System.out.println(document);
+        Document result = Document.parse("{ \"featureCompatibilityVersion\" : { \"version\" : \"5.0\" }, \"ok\" : 1.0 }\n");
+        Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForSetFeatureCompatibilityVersion(){
         Document document = mars.executeCommand("{ setFeatureCompatibilityVersion: \"5.0\" }");
-        System.out.println(document);
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(result,document);
     }
 
     @Test
@@ -38,6 +40,7 @@ public class SetFeatureCompatibilityVersionTest {
                 "   setFeatureCompatibilityVersion: \"5.0\",\n" +
                 "   writeConcern: { wtimeout: 5000 }\n" +
                 "}");
-        System.out.println(document);
+        Document result = Document.parse("{ \"ok\" : 1.0 }");
+        Assert.assertEquals(result,document);
     }
 }
