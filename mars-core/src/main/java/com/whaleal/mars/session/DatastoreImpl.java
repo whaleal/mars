@@ -213,7 +213,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
 
         T result = findOneExecute(session, collection, query, null, null);
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled() ) {
             log.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
         }
@@ -224,6 +224,26 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         return Optional.ofNullable(result);
 
+    }
+
+    public <T> Optional<T> findById(Object id,Class<T> entityClass,String collectionName){
+        //
+
+        ClientSession session = this.startSession();
+        MongoCollection collection = this.getCollection(entityClass,collectionName);
+        Query query = new Query();
+//        entityClass.get
+        T result = findByIdExecute(session, collection, query, id,collectionName);
+        if(log.isDebugEnabled()){
+            log.debug("Executing query: {} sort: {} fields: {} in collection: {}",query.getQueryObject().toJson(),
+                    query.getSortObject(),query.getFieldsObject(),collectionName);
+        }
+
+        if(result == null){
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -463,9 +483,9 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
     @Override
     public String getCollectionName( Class< ? > entityClass ) {
-        
+
       return this.mapper.getEntityModel(entityClass).getCollectionName();
-        
+
     }
 
     private < T > T doFindAndModify( String collectionName, Query query, Class<T> entityClass, UpdateDefinition update, FindOneAndUpdateOptions optionsToUse ) {
@@ -664,7 +684,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         if (upload.getFileId() == null) {
             return (T) getGridFsBucket(bucketName).uploadFromStream(upload.getFilename(), upload.getContent(), uploadOptions);
         }
-        
+
         getGridFsBucket(bucketName).uploadFromStream(BsonUtil.simpleToBsonValue(upload.getFileId()), upload.getFilename(),
                 upload.getContent(), uploadOptions);
 
@@ -1104,6 +1124,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             options = options.maxDocuments(capped.count());
         }
 
+
         Collation collation = (Collation) entityModel.getAnnotation(Collation.class);
 
         if (!ObjectUtil.isEmpty(collation)) {
@@ -1248,8 +1269,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         if (session == null) {
 
-
-
             findIterable = collection.find(query.getQueryObject());
 
         } else {
@@ -1272,6 +1291,57 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         return (T) findIterable.first();
 
 
+    }
+
+
+
+    /**
+     * 根据id查询记录
+     * @param session
+     * @param collection
+     * @param <T>
+     * @return
+     */
+    private <T> T findByIdExecute(ClientSession session,MongoCollection collection,Query query,Object id,String collectionName){
+
+        FindIterable findIterable;
+        if(id instanceof String && String.valueOf(id).length()==24){
+            query.addCriteria(Criteria.where("_id").is(new ObjectId(String.valueOf(id))));
+        }else{
+            query.addCriteria(Criteria.where("_id").is(id));
+        }
+        if(session==null){
+            findIterable = collection.find(query.getQueryObject());
+        }else {
+            findIterable = collection.find(session,query.getQueryObject());
+        }
+
+        if (!query.getFieldsObject().isEmpty()) {
+            findIterable.projection(query.getFieldsObject());
+        }
+
+
+        if (query.getSortObject() != null) {
+            findIterable = findIterable.sort(query.getSortObject());
+        }
+
+        if (query.getCollation().orElse(null) != null){
+            findIterable = findIterable.collation(query.getCollation().get().toMongoCollation());
+        }
+
+        if (query.getSkip() > 0) {
+            findIterable = findIterable.skip((int) query.getSkip());
+        }
+
+        if (query.getLimit() > 0) {
+            findIterable = findIterable.limit(query.getLimit());
+        }
+
+        if((T)findIterable.first()!=null){
+            return (T)findIterable.first();
+        }else {
+            throw new NullPointerException();
+        }
     }
 
     private <T> T insertOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
@@ -1364,7 +1434,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             throw new ClassCastException();
         }
 
-        
+
 
         UpdateOptions option = (UpdateOptions) options;
 
