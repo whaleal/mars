@@ -151,16 +151,16 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param <T>
      * @return
      */
-    default <T> List<T> findDistinct(String field, Class<?> entityClass, Class<T> resultClass) {
+    default <T> QueryCursor<T> findDistinct(String field, Class<?> entityClass, Class<T> resultClass) {
         return this.findDistinct(new Query(), field, entityClass, resultClass);
     }
 
 
-    <T> List<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass);
+    <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass);
 
-    <T> List<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass);
+    <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass);
 
-    default <T> List<T> findDistinct(Query query, String field, String collection, Class<T> resultClass) {
+    default <T> QueryCursor<T> findDistinct(Query query, String field, String collection, Class<T> resultClass) {
         return this.findDistinct(query, field, collection, Object.class, resultClass);
     }
 
