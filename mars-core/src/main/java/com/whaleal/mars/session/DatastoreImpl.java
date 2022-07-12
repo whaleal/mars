@@ -1327,7 +1327,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
     private <T> QueryCursor<T> findDistinctExecute(ClientSession session,MongoCollection collection,Query query,String field,Class<T> resultClass){
 
-        DistinctIterable<T> distinctIterable = null;
+        DistinctIterable<T> distinctIterable;
         if(query!=null){
             distinctIterable = collection.distinct(session,field,query.getQueryObject(),resultClass);
             if (query.getCollation().orElse(null) != null){

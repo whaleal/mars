@@ -5,6 +5,7 @@ import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
+import org.bson.types.ObjectId;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -20,14 +21,14 @@ public class FindDistinctTest {
 
     @Test
     public void createData(){
-        mars.insert(new Book(1,"rrr",2.0,2),"book");
-        mars.insert(new Book(2,"rrr",3.0,3),"book");
-        mars.insert(new Book(3,"rrr",4.0,4),"book");
-        mars.insert(new Book(4,"rere",4.0,4),"book");
-        mars.insert(new Book(5,"eerr",4.0,4),"book");
-        mars.insert(new Book(6,"eerr",5.0,5),"book");
-        mars.insert(new Book(7,"eerr",5.0,5),"book");
-        mars.insert(new Book(8,"eerr",5.0,5),"book");
+        mars.insert(new Book(new ObjectId(),"rrr",2.0,2),"book");
+        mars.insert(new Book(new ObjectId(),"rrr",3.0,3),"book");
+        mars.insert(new Book(new ObjectId(),"rrr",4.0,4),"book");
+        mars.insert(new Book(new ObjectId(),"rere",4.0,4),"book");
+        mars.insert(new Book(new ObjectId(),"eerr",4.0,4),"book");
+        mars.insert(new Book(new ObjectId(),"eerr",5.0,5),"book");
+        mars.insert(new Book(new ObjectId(),"eerr",5.0,5),"book");
+        mars.insert(new Book(new ObjectId(),"eerr",5.0,5),"book");
     }
 
     @Test
