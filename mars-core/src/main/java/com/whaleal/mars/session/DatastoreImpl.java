@@ -230,20 +230,16 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         //
 
         ClientSession session = this.startSession();
-        MongoCollection collection = this.getCollection(entityClass,collectionName);
+        MongoCollection<T> collection = this.getCollection(entityClass,collectionName);
         Query query = new Query();
 //        entityClass.get
-        T result = findByIdExecute(session, collection, query, id,collectionName);
+        Optional<T> result = findByIdExecute(session, collection,  id);
         if(log.isDebugEnabled()){
             log.debug("Executing query: {} sort: {} fields: {} in collection: {}",query.getQueryObject().toJson(),
                     query.getSortObject(),query.getFieldsObject(),collectionName);
         }
 
-        if(result == null){
-            return Optional.empty();
-        }
-
-        return Optional.ofNullable(result);
+       return result;
     }
 
     @Override
@@ -1004,7 +1000,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     protected MongoCollection< Document > doCreateCollection( String collectionName, Document collectionOptions ) {
-        Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
         lock.lock();
         try {
             com.mongodb.client.model.CreateCollectionOptions co = new com.mongodb.client.model.CreateCollectionOptions();
@@ -1068,8 +1063,9 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             this.database.createCollection(collectionName, co);
 
             MongoCollection< Document > coll = database.getCollection(collectionName, Document.class);
-            //如果配置文件中开启了自动创建索引，则在表创建成功后创建索引
+            //如果配置文件中开启了自动创建索引，则在表创建成功后,根据实体类上的索引注解创建索引
             if(this.mapper.isAutoIndexCreation()){
+                Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
                 ensureIndexes(entity,coll.getNamespace().getCollectionName());
             }
             return coll;
@@ -1302,45 +1298,21 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
      * @param <T>
      * @return
      */
-    private <T> T findByIdExecute(ClientSession session,MongoCollection collection,Query query,Object id,String collectionName){
+    private<T> Optional<T> findByIdExecute(ClientSession session,MongoCollection<T> collection,Object id){
 
-        FindIterable findIterable;
-        if(id instanceof String && String.valueOf(id).length()==24){
-            query.addCriteria(Criteria.where("_id").is(new ObjectId(String.valueOf(id))));
-        }else{
-            query.addCriteria(Criteria.where("_id").is(id));
-        }
+        FindIterable<T> findIterable;
+        Document document = new Document("_id",id);
+
         if(session==null){
-            findIterable = collection.find(query.getQueryObject());
+            findIterable = collection.find(document);
         }else {
-            findIterable = collection.find(session,query.getQueryObject());
+            findIterable = collection.find(session,document);
         }
 
-        if (!query.getFieldsObject().isEmpty()) {
-            findIterable.projection(query.getFieldsObject());
-        }
-
-
-        if (query.getSortObject() != null) {
-            findIterable = findIterable.sort(query.getSortObject());
-        }
-
-        if (query.getCollation().orElse(null) != null){
-            findIterable = findIterable.collation(query.getCollation().get().toMongoCollation());
-        }
-
-        if (query.getSkip() > 0) {
-            findIterable = findIterable.skip((int) query.getSkip());
-        }
-
-        if (query.getLimit() > 0) {
-            findIterable = findIterable.limit(query.getLimit());
-        }
-
-        if((T)findIterable.first()!=null){
-            return (T)findIterable.first();
+        if(findIterable.first()!=null){
+            return Optional.of(findIterable.first());
         }else {
-            throw new NullPointerException();
+            return Optional.<T>empty();
         }
     }
 
