@@ -31,6 +31,8 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
+import com.whaleal.mars.core.query.Criteria;
+import com.whaleal.mars.core.query.Query;
 import org.bson.conversions.Bson;
 
 import java.util.List;
