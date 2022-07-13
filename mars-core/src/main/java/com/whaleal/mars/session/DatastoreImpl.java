@@ -227,18 +227,9 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     public <T> Optional<T> findById(Object id,Class<T> entityClass,String collectionName){
-        //
-
         ClientSession session = this.startSession();
-        MongoCollection<T> collection = this.getCollection(entityClass,collectionName);
-        Query query = new Query();
-//        entityClass.get
-        Optional<T> result = findByIdExecute(session, collection,  id);
-        if(log.isDebugEnabled()){
-            log.debug("Executing query: {} sort: {} fields: {} in collection: {}",query.getQueryObject().toJson(),
-                    query.getSortObject(),query.getFieldsObject(),collectionName);
-        }
-
+        MongoCollection collection = this.getCollection(entityClass,collectionName);
+        Optional<T> result = findByIdExecute(session, collection,id);
        return result;
     }
 
@@ -1298,22 +1289,54 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
      * @param <T>
      * @return
      */
-    private<T> Optional<T> findByIdExecute(ClientSession session,MongoCollection<T> collection,Object id){
+    private <T>Optional<T> findByIdExecute(ClientSession session,MongoCollection collection,Object id){
 
         FindIterable<T> findIterable;
-        Document document = new Document("_id",id);
-
+        Document document = new Document().append("_id", id);
         if(session==null){
             findIterable = collection.find(document);
         }else {
             findIterable = collection.find(session,document);
         }
 
-        if(findIterable.first()!=null){
-            return Optional.of(findIterable.first());
+        if((T)findIterable.first()!=null){
+            return (Optional<T>) findIterable.first();
         }else {
-            return Optional.<T>empty();
+            return Optional.empty();
         }
+    }
+
+    /**
+     * 查询去重
+     * @param query
+     * @param field
+     * @param entityClass
+     * @param resultClass
+     * @param <T>
+     * @return
+     */
+    public <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass) {
+        return this.findDistinct(query, field, this.getCollectionName(entityClass), entityClass, resultClass);
+    }
+
+    public <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass) {
+        ClientSession session = this.startSession();
+        MongoCollection collection = this.getCollection(entityClass,collectionName);
+        QueryCursor<T> result = this.findDistinctExecute(session, collection, query, field, resultClass);
+        return result;
+    }
+    private <T> QueryCursor<T> findDistinctExecute(ClientSession session,MongoCollection collection,Query query,String field,Class<T> resultClass){
+
+        DistinctIterable<T> distinctIterable;
+        if(query!=null){
+            distinctIterable = collection.distinct(session,field,query.getQueryObject(),resultClass);
+            if (query.getCollation().orElse(null) != null){
+                distinctIterable = distinctIterable.collation(query.getCollation().get().toMongoCollation());
+            }
+        }else {
+            distinctIterable = collection.distinct(session,field,null,resultClass);
+        }
+        return new QueryCursor<T>(distinctIterable.iterator(),resultClass);
     }
 
     private <T> T insertOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
