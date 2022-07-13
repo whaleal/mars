@@ -1,6 +1,7 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * @author lyz
@@ -9,8 +10,8 @@ import com.mongodb.client.MongoClient;
  **/
 public class CollTimeSeriesMetrics extends CollStatsMetrics{
 
-    public CollTimeSeriesMetrics(MongoClient mongoClient, String dbName, String collectionName) {
-        super(mongoClient, dbName, collectionName);
+    public CollTimeSeriesMetrics(MongoClient mongoClient, MongoDatabase db, String collectionName) {
+        super(mongoClient, db, collectionName);
     }
 
     public String getBucketsName(){

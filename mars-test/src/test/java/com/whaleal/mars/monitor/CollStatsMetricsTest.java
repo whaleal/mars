@@ -19,7 +19,7 @@ public class CollStatsMetricsTest {
 
     @Test
     public void testForColl(){
-        CollStatsMetrics collectionStatsMetrics = new CollStatsMetrics(mongoClient, "mars", "document");
+        CollStatsMetrics collectionStatsMetrics = new CollStatsMetrics(mongoClient, mars.getDatabase(), "document");
 
         System.out.println(collectionStatsMetrics.getCount());
         System.out.println(collectionStatsMetrics.getAvgObjSize());

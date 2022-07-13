@@ -991,7 +991,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     protected MongoCollection< Document > doCreateCollection( String collectionName, Document collectionOptions ) {
-        Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
         lock.lock();
         try {
             com.mongodb.client.model.CreateCollectionOptions co = new com.mongodb.client.model.CreateCollectionOptions();
@@ -1057,6 +1056,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             MongoCollection< Document > coll = database.getCollection(collectionName, Document.class);
             //如果配置文件中开启了自动创建索引，则在表创建成功后创建索引
             if(this.mapper.isAutoIndexCreation()){
+                Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
                 ensureIndexes(entity,coll.getNamespace().getCollectionName());
             }
             return coll;
