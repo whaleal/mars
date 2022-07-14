@@ -405,8 +405,9 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         notNull(entityClass, "EntityClass must not be null!");
         notNull(collectionName, "CollectionName must not be null!");
 
+
         //  do with collation
-        OptionalUtil.ifAllPresent(query.getCollation(), Optional.of(options.getCollation()), (l, r) -> {
+        OptionalUtil.ifAllPresent(query.getCollation(), options.getCollation(), (l, r) -> {
             throw new IllegalArgumentException(
                     "Both Query and FindOneAndModifyOptions define a collation. Please provide the collation only via one of the two.");
         });
