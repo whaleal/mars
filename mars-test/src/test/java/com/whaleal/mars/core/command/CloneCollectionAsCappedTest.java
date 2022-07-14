@@ -40,7 +40,7 @@ public class CloneCollectionAsCappedTest {
                 "  writeConcern: { w: \"majority\"}\n" +
                 "  comment: \"test\"\n" +
                 "}");
-        Boolean capped = new CollStatsMetrics(mars.getMongoClient(), "mars", "BookCapped").isCapped();
+        Boolean capped = new CollStatsMetrics(mars.getMongoClient(), mars.getDatabase(), "BookCapped").isCapped();
         Assert.assertEquals(true,capped);
     }
 

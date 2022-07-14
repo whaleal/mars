@@ -1,4 +1,4 @@
-package com.whaleal.mars.base;
+package com.whaleal.mars.util;
 
 import com.whaleal.mars.bean.Gender;
 import com.whaleal.mars.bean.Student;
