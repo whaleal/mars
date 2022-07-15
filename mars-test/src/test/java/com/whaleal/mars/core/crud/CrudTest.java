@@ -1,7 +1,7 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.StudentGenerator;
+import com.whaleal.mars.util.StudentGenerator;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;

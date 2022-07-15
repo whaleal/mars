@@ -31,15 +31,13 @@ import java.util.Optional;
 public class LocalCrudTest {
 
 
-    Mars mars;
-
+    Mars mars = new Mars(Constant.connectionStr);
 
     List< Person > people = new ArrayList<>();
 
 
     @Before
     public void init() {
-        mars = new Mars(Constant.connectionStr);
 
         Assert.assertNotNull(mars);
 
@@ -123,7 +121,7 @@ public class LocalCrudTest {
         options.upsert(true);
         options.multi(true);
 
-        UpdateResult result = mars.updateEntity(query, person, options, null);
+        UpdateResult result = mars.updateEntity(query, person, options, "person");
         //mars.update(query, person);
 
         System.out.println(result);
@@ -247,7 +245,7 @@ public class LocalCrudTest {
         options.upsert(true);
         options.multi(true);
 
-        UpdateResult result = mars.updateEntity(query, person, options, null);
+        UpdateResult result = mars.updateEntity(query, person, options, "person");
         //mars.update(query, person);
 
         System.out.println(result);

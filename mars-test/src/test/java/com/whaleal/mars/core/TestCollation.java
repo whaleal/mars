@@ -2,7 +2,7 @@ package com.whaleal.mars.core;
 
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
+import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.QueryCursor;

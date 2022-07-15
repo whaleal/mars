@@ -2,7 +2,7 @@ package com.whaleal.mars.core.aggreation;
 
 import com.mongodb.client.model.MergeOptions;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
+import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
@@ -13,6 +13,7 @@ import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.session.option.IndexOptions;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -83,7 +84,7 @@ public class MergeTest {
     public void dropCollection(){
         mars.dropCollection("salaries");
         mars.dropCollection("budgets");
-//        mars.dropCollection("orgArchive");
+        mars.dropCollection("orgArchive");
     }
 
 
@@ -145,7 +146,7 @@ public class MergeTest {
      */
     @Test
     public void testForOnlyInsert(){
-        mars.createIndex(new Index().on("fiscal_year", IndexDirection.ASC).on("dept",IndexDirection.ASC).on("unique",IndexDirection.fromValue(true)),"orgArchive");
+        mars.createIndex(new Index().on("fiscal_year", IndexDirection.ASC).on("dept",IndexDirection.ASC).setOptions(new IndexOptions().unique(true)),"orgArchive");
         pipeline.match(Filters.eq("fiscal_year",2019));
         pipeline.group(Group.group(id(Expressions.value(new Document("fiscal_year","$fiscal_year").append("dept","$dept"))))
                 .field("employees",push(field("employee"))));

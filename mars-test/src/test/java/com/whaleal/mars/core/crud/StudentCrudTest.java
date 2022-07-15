@@ -2,7 +2,7 @@ package com.whaleal.mars.core.crud;
 
 import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.StudentGenerator;
+import com.whaleal.mars.util.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;

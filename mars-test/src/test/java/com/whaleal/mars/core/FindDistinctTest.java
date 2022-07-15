@@ -5,8 +5,16 @@ import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
+import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,34 +26,32 @@ public class FindDistinctTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
-    @Test
+    @Before
     public void createData(){
-        mars.insert(new Book(1,"rrr",2.0,2),"book");
-        mars.insert(new Book(2,"rrr",3.0,3),"book");
-        mars.insert(new Book(3,"rrr",4.0,4),"book");
-        mars.insert(new Book(4,"rere",4.0,4),"book");
-        mars.insert(new Book(5,"eerr",4.0,4),"book");
-        mars.insert(new Book(6,"eerr",5.0,5),"book");
-        mars.insert(new Book(7,"eerr",5.0,5),"book");
-        mars.insert(new Book(8,"eerr",5.0,5),"book");
+        mars.insert(new Book(1,"rrr",2.0,2));
+        mars.insert(new Book(2,"rrr",3.0,3));
+        mars.insert(new Book(3,"rrr",4.0,4));
+        mars.insert(new Book(4,"rere",4.0,4));
+        mars.insert(new Book(5,"eerr",4.0,4));
+        mars.insert(new Book(6,"eerr",5.0,5));
+        mars.insert(new Book(7,"eerr",5.0,5));
+        mars.insert(new Book(8,"eerr",5.0,5));
     }
 
     @Test
     public  void test(){
-//        QueryCursor<Double> cursor = mars.findDistinct(new Query(), "price", Book.class, Double.class);
         Query query = new Query();
-        query.addCriteria(Criteria.where("name").is("rrr"));
         QueryCursor<Book> all = mars.findAll(query, Book.class);
-        while(all.hasNext()){
-            System.out.println(all.next());
-        }
-        QueryCursor<Double> cursor = mars.findDistinct(query,"price", Book.class, Double.class);
-        while (cursor.hasNext()){
-            System.out.println(cursor.next());
-        }
+
+        List<Double> price = mars.findDistinct(query, "price", Book.class, Double.class).toList();
+
+        Double[] doubles = {2.0, 3.0, 4.0, 5.0};
+        List<Double> doubles1 = Arrays.asList(doubles);
+
+        Assert.assertEquals(price,doubles1);
     }
 
-    @Test
+    @After
     public void drop(){
         mars.dropCollection("book");
     }

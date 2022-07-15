@@ -3,6 +3,7 @@ package com.whaleal.mars.core.index;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Address;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
@@ -17,12 +18,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-@SpringBootTest
+//@SpringBootTest
 public class IndexTest {
 
 
-    @Autowired
-    Mars mars;
+//    @Autowired
+    Mars mars = new Mars(Constant.connectionStr);
 
     String coll = "coll";
 

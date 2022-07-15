@@ -1,7 +1,7 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.SerializationUtil;
+import com.whaleal.mars.util.SerializationUtil;
 import com.whaleal.mars.bean.*;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;

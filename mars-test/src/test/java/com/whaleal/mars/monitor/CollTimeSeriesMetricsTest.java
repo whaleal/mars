@@ -15,7 +15,7 @@ public class CollTimeSeriesMetricsTest {
     public void testFor(){
         Mars mars = new Mars(Constant.connectionStr);
 
-        CollTimeSeriesMetrics collTimeSeriesMetrics = new CollTimeSeriesMetrics(mars.getMongoClient(),mars.getDatabase().getName(),"document");
+        CollTimeSeriesMetrics collTimeSeriesMetrics = new CollTimeSeriesMetrics(mars.getMongoClient(),mars.getDatabase(),"document");
         System.out.println(collTimeSeriesMetrics.getBucketCount());
         System.out.println(collTimeSeriesMetrics.getAvgBucketSize());
         System.out.println(collTimeSeriesMetrics.getBucketsName());
