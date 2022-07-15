@@ -31,7 +31,7 @@ public class ReIndexTest {
      */
     @Test
     public void testForReIndex(){
-        Document document = mars.executeCommand("{ reIndex: \"document\" }");
+        Document document = mars.executeCommand(Document.parse("{ reIndex: \"document\" }"));
         Document result = Document.parse("{\n" +
                 "\t\"nIndexesWas\" : 2,\n" +
                 "\t\"nIndexes\" : 2,\n" +

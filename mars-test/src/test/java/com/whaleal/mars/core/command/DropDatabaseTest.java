@@ -2,6 +2,8 @@ package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
+import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -19,6 +21,8 @@ public class DropDatabaseTest {
      */
     @Test
     public void testForDropDatabase(){
-        mars.executeCommand("{ dropDatabase: 1 }");
+        Document document = mars.executeCommand(Document.parse("{ dropDatabase: 1 }"));
+        Document result = Document.parse("{\"ok\":1.0}");
+        Assert.assertEquals(document,result);
     }
 }

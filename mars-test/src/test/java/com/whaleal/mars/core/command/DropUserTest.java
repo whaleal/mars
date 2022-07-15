@@ -40,10 +40,10 @@ public class DropUserTest {
      */
     @Test
     public void testForDropUser(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "   dropUser: \"testUser\",\n" +
                 "   writeConcern: { w: \"majority\", wtimeout: 5000 }\n" +
-                "} ");
+                "} "));
         Document result = Document.parse("{ \"ok\" : 1.0 }\n");
         Assert.assertEquals(result,document);
     }

@@ -3,6 +3,7 @@ package com.whaleal.mars.core.command;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -18,6 +19,10 @@ public class HostInfoTest {
     @Test
     public void testForHostInfo(){
         Document document = mars.executeCommand("{ \"hostInfo\" : 1 }");
-        System.out.println(document);
+        Document system = (Document) document.get("system");
+        String hostname = (String) system.get("hostname");
+        Document document1 = new Document().append("hostname", hostname);
+        Document result = Document.parse("{\"hostname\" : \"WhaleFalls0807:37001\"}");
+        Assert.assertEquals(document1,result);
     }
 }

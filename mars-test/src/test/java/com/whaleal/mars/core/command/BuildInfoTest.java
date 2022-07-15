@@ -17,7 +17,8 @@ public class BuildInfoTest {
 
     @Test
     public void testForBuildInfo(){
-        Document document = mars.executeCommand("{ buildInfo: 1 } ");
+        Document document = mars.executeCommand(new Document().append("buildInfo",1));
+        System.out.println(document);
         Document result = Document.parse("{\n" +
                 "\t\"version\" : \"5.0.9\",\n" +
                 "\t\"gitVersion\" : \"6f7dae919422dcd7f4892c10ff20cdc721ad00e6\",\n" +
@@ -32,11 +33,11 @@ public class BuildInfoTest {
                 "\t\t0\n" +
                 "\t],\n" +
                 "\t\"openssl\" : {\n" +
-                "\t\t\"running\" : \"OpenSSL 1.0.1e-fips 11 Feb 2013\",\n" +
-                "\t\t\"compiled\" : \"OpenSSL 1.0.1e-fips 11 Feb 2013\"\n" +
+                "\t\t\"running\" : \"OpenSSL 1.1.1 FIPS  11 Sep 2018\",\n" +
+                "\t\t\"compiled\" : \"OpenSSL 1.1.1 FIPS  11 Sep 2018\"\n" +
                 "\t},\n" +
                 "\t\"buildEnvironment\" : {\n" +
-                "\t\t\"distmod\" : \"rhel70\",\n" +
+                "\t\t\"distmod\" : \"rhel80\",\n" +
                 "\t\t\"distarch\" : \"x86_64\",\n" +
                 "\t\t\"cc\" : \"/opt/mongodbtoolchain/v3/bin/gcc: gcc (GCC) 8.5.0\",\n" +
                 "\t\t\"ccflags\" : \"-Werror -include mongo/platform/basic.h -fasynchronous-unwind-tables -ggdb -Wall -Wsign-compare -Wno-unknown-pragmas -Winvalid-pch -fno-omit-frame-pointer -fno-strict-aliasing -O2 -march=sandybridge -mtune=generic -mprefer-vector-width=128 -Wno-unused-local-typedefs -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-unused-but-set-variable -Wno-missing-braces -fstack-protector-strong -Wa,--nocompress-debug-sections -fno-builtin-memcmp\",\n" +

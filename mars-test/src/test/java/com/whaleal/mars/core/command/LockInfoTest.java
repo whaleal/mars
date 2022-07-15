@@ -15,7 +15,7 @@ import org.junit.Test;
  * Description:
  */
 public class LockInfoTest {
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     @Before
     public void lock(){
@@ -26,26 +26,9 @@ public class LockInfoTest {
      */
     @Test
     public void testForLockInfo(){
-        Document document = mars.executeCommand("{ lockInfo: 1 }");
+        Document document = mars.executeCommand(Document.parse("{ lockInfo: 1 }"));
         Document result = Document.parse("{\n" +
                 "\t\"lockInfo\" : [\n" +
-                "\t\t{\n" +
-                "\t\t\t\"resourceId\" : \"{2305843009213693953: ParallelBatchWriterMode, 1}\",\n" +
-                "\t\t\t\"granted\" : [\n" +
-                "\t\t\t\t{\n" +
-                "\t\t\t\t\t\"mode\" : \"IS\",\n" +
-                "\t\t\t\t\t\"convertMode\" : \"NONE\",\n" +
-                "\t\t\t\t\t\"enqueueAtFront\" : false,\n" +
-                "\t\t\t\t\t\"compatibleFirst\" : false,\n" +
-                "\t\t\t\t\t\"debugInfo\" : \"\",\n" +
-                "\t\t\t\t\t\"clientInfo\" : {\n" +
-                "\t\t\t\t\t\t\"desc\" : \"fsyncLockWorker\",\n" +
-                "\t\t\t\t\t\t\"opid\" : 38608\n" +
-                "\t\t\t\t\t}\n" +
-                "\t\t\t\t}\n" +
-                "\t\t\t],\n" +
-                "\t\t\t\"pending\" : [ ]\n" +
-                "\t\t},\n" +
                 "\t\t{\n" +
                 "\t\t\t\"resourceId\" : \"{6917529027641081857: Global, 1}\",\n" +
                 "\t\t\t\"granted\" : [\n" +
@@ -57,7 +40,7 @@ public class LockInfoTest {
                 "\t\t\t\t\t\"debugInfo\" : \"\",\n" +
                 "\t\t\t\t\t\"clientInfo\" : {\n" +
                 "\t\t\t\t\t\t\"desc\" : \"fsyncLockWorker\",\n" +
-                "\t\t\t\t\t\t\"opid\" : 38608\n" +
+                "\t\t\t\t\t\t\"opid\" : 3155664\n" +
                 "\t\t\t\t\t}\n" +
                 "\t\t\t\t}\n" +
                 "\t\t\t],\n" +
@@ -74,7 +57,24 @@ public class LockInfoTest {
                 "\t\t\t\t\t\"debugInfo\" : \"\",\n" +
                 "\t\t\t\t\t\"clientInfo\" : {\n" +
                 "\t\t\t\t\t\t\"desc\" : \"fsyncLockWorker\",\n" +
-                "\t\t\t\t\t\t\"opid\" : 38608\n" +
+                "\t\t\t\t\t\t\"opid\" : 3155664\n" +
+                "\t\t\t\t\t}\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"pending\" : [ ]\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"resourceId\" : \"{2305843009213693953: ParallelBatchWriterMode, 1}\",\n" +
+                "\t\t\t\"granted\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"mode\" : \"IS\",\n" +
+                "\t\t\t\t\t\"convertMode\" : \"NONE\",\n" +
+                "\t\t\t\t\t\"enqueueAtFront\" : false,\n" +
+                "\t\t\t\t\t\"compatibleFirst\" : false,\n" +
+                "\t\t\t\t\t\"debugInfo\" : \"\",\n" +
+                "\t\t\t\t\t\"clientInfo\" : {\n" +
+                "\t\t\t\t\t\t\"desc\" : \"fsyncLockWorker\",\n" +
+                "\t\t\t\t\t\t\"opid\" : 3155664\n" +
                 "\t\t\t\t\t}\n" +
                 "\t\t\t\t}\n" +
                 "\t\t\t],\n" +

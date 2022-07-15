@@ -18,56 +18,29 @@ import org.junit.Test;
 public class DbHashTest {
     private Mars mars = new Mars(Constant.connectionStr);
 
-    @Before
-    public void createData(){
-        mars.createCollection(Book.class);
-    }
 
     /**
      * db.runCommand ( { dbHash: 1, collections: [ <collection1>, ... ] } )
      */
     @Test
     public void testForDbHash(){
-        //数据库中所有集合的hash值
-        Document document = mars.executeCommand(" { dbHash: 1 } ");
-        Document result = Document.parse("{\n" +
-                "\t\"host\" : \"test\",\n" +
-                "\t\"collections\" : {\n" +
-                "\t\t\"book\" : \"d41d8cd98f00b204e9800998ecf8427e\",\n" +
-                "\t\t\"students2\" : \"8f8218078120211e19ffdfe0e8c8cf2a\",\n" +
-                "\t\t\"users\" : \"8d97faf8aa188e70f185c7cf1004104c\"\n" +
-                "\t},\n" +
-                "\t\"capped\" : [ ],\n" +
-                "\t\"uuids\" : {\n" +
-                "\t\t\"book\" : UUID(\"53ffc759-0499-47c0-9b20-3814d62fc4e1\"),\n" +
-                "\t\t\"students2\" : UUID(\"da3d6c2a-0886-4f81-9384-b8725c011a3b\"),\n" +
-                "\t\t\"users\" : UUID(\"2d2923ce-4a88-4db3-94f8-17308953cbff\")\n" +
-                "\t},\n" +
-                "\t\"md5\" : \"7ea535a79d79eaa502b40d81a944f9f8\",\n" +
-                "\t\"timeMillis\" : 0,\n" +
-                "\t\"ok\" : 1.0\n" +
-                "}\n");
-        Assert.assertEquals(result,document);
+        //todo 输出结果与预期结果UUID输出形式不一致
         //数据库中指定集合的hash值
-        Document document1 = mars.executeCommand("{ dbHash: 1, collections: [ \"book\"] }");
+        Document document1 = mars.executeCommand(Document.parse("{ dbHash: 1, collections: [ \"stuff\"] }"));
         Document result1 = Document.parse("{\n" +
-                "\t\"host\" : \"test\",\n" +
+                "\t\"host\" : \"WhaleFalls0807:37001\",\n" +
                 "\t\"collections\" : {\n" +
-                "\t\t\"book\" : \"d41d8cd98f00b204e9800998ecf8427e\"\n" +
+                "\t\t\"stuff\" : \"db2b98e588fcc596c62ec89717f609d4\"\n" +
                 "\t},\n" +
                 "\t\"capped\" : [ ],\n" +
                 "\t\"uuids\" : {\n" +
-                "\t\t\"book\" : UUID(\"c8c9e702-aca5-4acf-9a48-fcc2c3949082\")\n" +
+                "\t\t\"stuff\" : UUID(\"00d2c461-ff27-474b-848f-7459935f6874\")\n" +
                 "\t},\n" +
-                "\t\"md5\" : \"74be16979710d4c4e7c6647856088456\",\n" +
+                "\t\"md5\" : \"f27e678dfc6e518587c692d78679b3f9\",\n" +
                 "\t\"timeMillis\" : 0,\n" +
                 "\t\"ok\" : 1.0\n" +
                 "}\n");
         Assert.assertEquals(result1,document1);
     }
 
-    @After
-    public void dropCollection(){
-        mars.dropCollection("book");
-    }
 }

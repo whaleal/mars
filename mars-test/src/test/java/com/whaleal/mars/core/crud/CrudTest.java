@@ -1,7 +1,6 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.StudentGenerator;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
@@ -15,6 +14,7 @@ import com.whaleal.mars.session.option.ReplaceOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.UpdateResult;
+import com.whaleal.mars.util.StudentGenerator;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.junit.After;

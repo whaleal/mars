@@ -52,13 +52,13 @@ public class RevokeRolesFromUserTest {
      */
     @Test
     public void testForRevokeRolesFromUser(){
-        Document document = mars.executeCommand("{ revokeRolesFromUser: \"testUser\",\n" +
+        Document document = mars.executeCommand(Document.parse("{ revokeRolesFromUser: \"testUser\",\n" +
                 "                 roles: [\n" +
                 "                          { role: \"readAnyDatabase\", db: \"admin\" },\n" +
                 "                          \"readWrite\"\n" +
                 "                 ],\n" +
                 "                 writeConcern: { w: \"majority\" }\n" +
-                "             }");
+                "             }"));
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
     }

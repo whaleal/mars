@@ -1,10 +1,10 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Collation;
 import com.whaleal.mars.session.option.CollectionOptions;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.junit.Test;
 

@@ -30,18 +30,18 @@ public class PlanCacheClearTest {
     @Test
     public void testForPlanCacheClear(){
         //按query shape清除
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "      planCacheClear: \"book\",\n" +
                 "      query: { \"qty\" : { \"$gt\" : 10 } },\n" +
                 "      sort: { \"ord_date\" : 1 }\n" +
-                "   }");
+                "   }"));
 
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
         //清除所有的缓存
-        Document document1 = mars.executeCommand("{\n" +
+        Document document1 = mars.executeCommand(Document.parse("{\n" +
                 "      planCacheClear: \"book\"\n" +
-                "   }");
+                "   }"));
         Document result1 = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result1,document1);
     }

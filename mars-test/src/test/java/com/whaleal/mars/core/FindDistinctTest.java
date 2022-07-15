@@ -44,6 +44,7 @@ public class FindDistinctTest {
         while (cursor.hasNext()){
             System.out.println(cursor.next());
         }
+
     }
 
     @Test
