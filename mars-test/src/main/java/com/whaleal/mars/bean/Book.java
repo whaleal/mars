@@ -8,6 +8,7 @@ import com.whaleal.mars.core.index.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 
 
 /**
@@ -29,7 +30,7 @@ public class Book {
 
 
     @Id
-    private int id;
+    private ObjectId id;
 
     private String name;
 

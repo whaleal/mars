@@ -32,6 +32,7 @@ package com.whaleal.mars.core.query;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import org.bson.Document;
 
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class Projection {
 
     // 普通操作 用这 例如:{ item: 1, status: 1, "size.uom": 1 }
     // 这一块功能可以与 聚合框架匹配进行整合
-    private final Map<String, Integer> criteria = new HashMap<>();
+    private final Map<String, Object> criteria = new HashMap<>();
     //以下示例使用 $slice 投影运算符返回 instock 数组中的最后一个元素：
     // { item: 1, status: 1, instock: { $slice: -1 } }
     private final Map<String, Object> slices = new HashMap<>();
@@ -97,6 +98,21 @@ public class Projection {
         for (String key : fields) {
             criteria.put(key, 1);
         }
+
+        return this;
+    }
+
+    /**
+     * Include one or more {@code fields} to be returned by the query operation.
+     *
+     * @param field the document field names to be included.
+     * @return {@code this} field projection instance.
+     */
+    public Projection include(String field, Expression expression) {
+
+        Precondition.notNull(field, "Keys must not be null!");
+
+        criteria.put(field, expression);
 
         return this;
     }

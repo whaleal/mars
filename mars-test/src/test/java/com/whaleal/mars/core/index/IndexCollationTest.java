@@ -68,22 +68,22 @@ public class IndexCollationTest {
         //获取集合索引
         List<Index> bookIndex = mars.getIndexes("book");
 
-        Assert.assertEquals(bookIndex.get(1).getIndexKeys().toJson(),"{\"name\": 1}");
-        Assert.assertEquals(bookIndex.size(),2);
+        Assert.assertEquals(bookIndex.get(2).getIndexKeys().toJson(),"{\"name\": 1, \"price\": -1}");
+        Assert.assertEquals(bookIndex.size(),3);
 
-        Index index = bookIndex.get(1);
+        Index index = bookIndex.get(2);
 
         //删除索引
         mars.dropIndex(index,"book");
-        Assert.assertEquals(mars.getIndexes("book").size(),1);
+        Assert.assertEquals(mars.getIndexes("book").size(),2);
 
         //复用索引
         mars.createIndex(index,"book");
 
         List<Index> book = mars.getIndexes("book");
-        Assert.assertEquals(book.get(1).getIndexKeys().toJson(),"{\"name\": 1}");
-        Assert.assertEquals(book.size(),2);
-        Assert.assertEquals(index.toString(),book.get(1).toString());
+        Assert.assertEquals(book.get(2).getIndexKeys().toJson(),"{\"name\": 1, \"price\": -1}");
+        Assert.assertEquals(book.size(),3);
+        Assert.assertEquals(index.toString(),book.get(2).toString());
 
 
     }

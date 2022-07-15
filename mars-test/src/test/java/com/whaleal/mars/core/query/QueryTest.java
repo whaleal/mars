@@ -1,6 +1,7 @@
 package com.whaleal.mars.core.query;
 
 import com.whaleal.mars.Constant;
+import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
@@ -12,6 +13,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+
+import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 
 
 /**
@@ -237,5 +240,16 @@ public class QueryTest {
 
         Criteria item1 = new Criteria("item").exists(false);
         System.out.println(item1.getCriteriaObject());
+    }
+
+    @Test
+    public void testForProjection(){
+        Query query = new Query().withProjection(new Projection().include("test", field("item"))
+                .include("qty","size"));
+
+        QueryCursor<Document> inventory = mars.findAll(query, Document.class, "inventory");
+        while(inventory.hasNext()){
+            System.out.println(inventory.next());
+        }
     }
 }
