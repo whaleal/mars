@@ -1,10 +1,10 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
@@ -72,7 +72,7 @@ public class DeleteTest {
                 "      deletes: [ { q: { status: \"D\" }, limit: 1 } ]\n" +
                 "   }");
 
-        Document parse = Document.parse("{ \"ok\" : 1, \"n\" : 1 }");
+        Document parse = Document.parse("{  \"n\" : 0 ,\"ok\" : 1}");
         Assert.assertEquals(document,parse);
     }
 

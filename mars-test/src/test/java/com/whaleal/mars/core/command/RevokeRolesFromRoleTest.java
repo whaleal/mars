@@ -44,12 +44,12 @@ public class RevokeRolesFromRoleTest {
      */
     @Test
     public void testForRevokeRolesFromRole(){
-        Document document = mars.executeCommand(" { revokeRolesFromRole: \"book\",\n" +
+        Document document = mars.executeCommand(Document.parse(" { revokeRolesFromRole: \"book\",\n" +
                 "                 roles: [\n" +
                 "                          \"read\",\n" +
                 "                        ],\n" +
                 "                  writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "             } ");
+                "             } "));
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
 

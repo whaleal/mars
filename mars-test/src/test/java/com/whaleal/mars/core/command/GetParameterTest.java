@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public class GetParameterTest {
 
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     /**
      * {
@@ -25,26 +25,34 @@ public class GetParameterTest {
      */
     @Test
     public void testForGetSingleParameter(){
-        Document document = mars.executeCommand("{ getParameter : 1, \"saslHostName\" : 1 }");
-        Document result = Document.parse("{ \"saslHostName\" : \"test\", \"ok\" : 1.0 }");
+        Document document = mars.executeCommand(Document.parse("{ getParameter : 1, \"saslHostName\" : 1 }"));
+        Document result = Document.parse("{ \"saslHostName\" : \"WhaleFalls0807\", \"ok\" : 1.0 }");
         Assert.assertEquals(document,result);
     }
 
     @Test
     public void testForGetAllParameter(){
-        Document document = mars.executeCommand("{ getParameter : '*' }");
+        Document document = mars.executeCommand(Document.parse("{ getParameter : '*' }"));
         System.out.println(document);
     }
 
     @Test
     public void testForGetSingleParameterWithDetail(){
-        Document document = mars.executeCommand("{ getParameter : { showDetails: true }, \"saslHostName\" : 1 }");
-        System.out.println(document);
+        Document document = mars.executeCommand(Document.parse("{ getParameter : { showDetails: true }, \"saslHostName\" : 1 }"));
+        Document result = Document.parse("{\n" +
+                "\t\"saslHostName\" : {\n" +
+                "\t\t\"value\" : \"WhaleFalls0807\",\n" +
+                "\t\t\"settableAtRuntime\" : false,\n" +
+                "\t\t\"settableAtStartup\" : true\n" +
+                "\t},\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
+        Assert.assertEquals(document,result);
     }
 
     @Test
     public void testForGetAllParameterWithDetail(){
-        Document document = mars.executeCommand("{ getParameter : { showDetails: true, allParameters: true }}");
+        Document document = mars.executeCommand(Document.parse("{ getParameter : { showDetails: true, allParameters: true }}"));
         System.out.println(document);
     }
 }

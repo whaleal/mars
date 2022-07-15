@@ -3,7 +3,6 @@ package com.whaleal.mars.core.aggreation;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.GeoNear;
@@ -11,11 +10,13 @@ import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -20,7 +20,8 @@ public class ConvertToCappedTest {
     private Mars mars = new Mars(Constant.connectionStr);
 
     @Before
-    public void createData(){
+    public void createData()
+    {
         mars.createCollection(Book.class);
     }
 
@@ -34,9 +35,11 @@ public class ConvertToCappedTest {
     @Test
     public void testForConvertToCapped(){
         //转换之后不会有原先集合的索引，如果需要要手动创建
-        Document document = mars.executeCommand("{ convertToCapped: 'book', size: 8192 }");
+        Document document = new Document().append("convertToCapped", "book")
+                .append("size", 8192);
+        Document document1 = mars.executeCommand(document);
         Document result = Document.parse("{ \"ok\" : 1.0 }\n");
-        Assert.assertEquals(result,document);
+        Assert.assertEquals(result,document1);
     }
 
     @After

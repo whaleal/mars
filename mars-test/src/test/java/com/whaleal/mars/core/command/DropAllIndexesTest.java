@@ -38,7 +38,7 @@ public class DropAllIndexesTest {
     @Test
     public void testForDropIndexes(){
         //删除所有非主键索引
-        Document document = mars.executeCommand(" { dropIndexes: \"document\", index: \"*\" } ");
+        Document document = mars.executeCommand(Document.parse(" { dropIndexes: \"document\", index: \"*\" } "));
         Document result = Document.parse("{\n" +
                 "\t\"nIndexesWas\" : 4,\n" +
                 "\t\"msg\" : \"non-_id indexes dropped for collection\",\n" +

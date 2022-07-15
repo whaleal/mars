@@ -19,7 +19,7 @@ public class DropAllUsersFromDatabaseTest {
 
     @Before
     public void createData(){
-        mars.executeCommand("{\n" +
+        mars.executeCommand(Document.parse("{\n" +
                 "       createUser: \"testUser01\",\n" +
                 "       pwd: \"testPwd\",\n" +
                 "       customData: { employeeId: 12345 },\n" +
@@ -29,8 +29,8 @@ public class DropAllUsersFromDatabaseTest {
                 "                \"readWrite\"\n" +
                 "              ],\n" +
                 "       writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "}");
-        mars.executeCommand("{\n" +
+                "}"));
+        mars.executeCommand(Document.parse("{\n" +
                 "       createUser: \"testUser02\",\n" +
                 "       pwd: \"testPwd\",\n" +
                 "       customData: { employeeId: 12345 },\n" +
@@ -40,7 +40,7 @@ public class DropAllUsersFromDatabaseTest {
                 "                \"readWrite\"\n" +
                 "              ],\n" +
                 "       writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "}");
+                "}"));
     }
 
     /**

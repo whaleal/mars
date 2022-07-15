@@ -21,7 +21,7 @@ public class PingTest {
      */
     @Test
     public void testForPing(){
-        Document document = mars.executeCommand("{ ping: 'www.baidu.com' }");
+        Document document = mars.executeCommand(Document.parse("{ ping: 'www.baidu.com' }"));
         Document result = Document.parse("{ \"ok\" : 1.0 }");
         Assert.assertEquals(result,document);
     }

@@ -43,7 +43,7 @@ public class InsertCommandTest {
      */
     @Test
     public void testForBulkInsert(){
-        Document document = mars.executeCommand("   {\n" +
+        Document document = mars.executeCommand(Document.parse("   {\n" +
                 "      insert: \"users\",\n" +
                 "      documents: [\n" +
                 "         { _id: 2, user: \"ijk123\", status: \"A\" },\n" +
@@ -52,7 +52,7 @@ public class InsertCommandTest {
                 "      ],\n" +
                 "      ordered: false,\n" +
                 "      writeConcern: { w: \"majority\", wtimeout: 5000 }\n" +
-                "   }");
+                "   }"));
 
         QueryCursor<Document> users = mars.findAll(new Query(), Document.class, "users");
         while (users.hasNext()){
@@ -102,10 +102,10 @@ public class InsertCommandTest {
         Criteria in = Criteria.where("status").in("Unknown", "Incomplete");
         mars.createCollection("users", CollectionOptions.empty().validation(CollectionOptions.ValidationOptions.none().validator(Validator.criteria(in))));
 
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "      insert: \"users\",\n" +
                 "      documents: [ {user: \"123\", status: \"Active\" } ]\n" +
-                "}");
+                "}"));
 
 //        Document result = Document.parse("{\n" +
 //                "   n: 0,\n" +
