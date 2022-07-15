@@ -49,15 +49,15 @@ public class PlanCacheClearFiltersTest {
                 .on("item", IndexDirection.ASC)
                 .on("order_date",IndexDirection.ASC)
                 .on("quantity",IndexDirection.ASC),"document");
-        mars.executeCommand("{\n" +
+        mars.executeCommand(Document.parse("{\n" +
                 "      planCacheSetFilter: \"document\",\n" +
                 "      query: { status: \"A\" },\n" +
                 "      indexes: [\n" +
                 "         { cust_id: 1, status: 1 },\n" +
                 "         { status: 1, order_date: -1 }\n" +
                 "      ]\n" +
-                "   }");
-        mars.executeCommand("{\n" +
+                "   }"));
+        mars.executeCommand(Document.parse("{\n" +
                 "      planCacheSetFilter: \"document\",\n" +
                 "      query: { item: \"ABC\" },\n" +
                 "      projection: { quantity: 1, _id: 0 },\n" +
@@ -65,7 +65,7 @@ public class PlanCacheClearFiltersTest {
                 "      indexes: [\n" +
                 "         { item: 1, order_date: 1 , quantity: 1 }\n" +
                 "      ]\n" +
-                "   }");
+                "   }"));
     }
     /**
      * db.runCommand(
@@ -80,14 +80,14 @@ public class PlanCacheClearFiltersTest {
      */
     @Test
     public void testForPlanCacheClearFilters(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "      planCacheClearFilters: \"document\",\n" +
                 "      query: { \"status\" : \"A\" }\n" +
-                "   }");
-        Document document1 = mars.executeCommand("{\n" +
+                "   }"));
+        Document document1 = mars.executeCommand(Document.parse("{\n" +
                 "      planCacheClearFilters: \"document\",\n" +
                 "      query: { \"item\" : \"ABC\" }\n" +
-                "   }");
+                "   }"));
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
         Document result1 = Document.parse("{\"ok\":1.0}");
@@ -96,9 +96,9 @@ public class PlanCacheClearFiltersTest {
 
     @Test
     public void testForPlanClearAllFilters(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "      planCacheClearFilters: \"document\"\n" +
-                "   }");
+                "   }"));
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
     }

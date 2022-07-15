@@ -74,7 +74,7 @@ public class PlanCacheListFiltersTest {
      */
     @Test
     public void testForPlanCacheListFilters(){
-        Document document = mars.executeCommand("{ planCacheListFilters: \"document\" }");
+        Document document = mars.executeCommand(Document.parse("{ planCacheListFilters: \"document\" }"));
         Document result = Document.parse("{\n" +
                 "\t\"filters\" : [\n" +
                 "\t\t{\n" +
@@ -125,14 +125,14 @@ public class PlanCacheListFiltersTest {
 
     @After
     public void dropFilters(){
-        mars.executeCommand("{\n" +
+        mars.executeCommand(Document.parse("{\n" +
                 "      planCacheClearFilters: \"document\",\n" +
                 "      query: { \"item\" : \"ABC\"}\n" +
-                "   }");
-        mars.executeCommand("{\n" +
+                "   }"));
+        mars.executeCommand(Document.parse("{\n" +
                 "      planCacheClearFilters: \"document\",\n" +
                 "      query: { \"status\" : \"A\"}\n" +
-                "   }");
+                "   }"));
         mars.dropCollection("document");
     }
 }

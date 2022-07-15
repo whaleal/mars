@@ -30,14 +30,14 @@ public class HideIndexFromTheQueryPlannerTest {
 
     @Test
     public void testForHideIndexFromTheQueryPlanner(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "   collMod: \"book\",\n" +
                 "   index: {\n" +
                 "      keyPattern: { shippedDate: 1 },\n" +
                 "      hidden: true\n" +
                 "   }\n" +
-                "}");
-        Document result = Document.parse("{ \"hidden_old\" : false, \"hidden_new\" : true, \"ok\" : 1 }");
+                "}"));
+        Document result = Document.parse("{ \"hidden_old\" : false, \"hidden_new\" : true, \"ok\" : 1.0 }");
         Assert.assertEquals(document,result);
     }
 

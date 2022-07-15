@@ -1,8 +1,8 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
@@ -77,9 +77,9 @@ public class DistinctTest {
      */
     @Test
     public void testForSize(){
-        Document document = mars.executeCommand("{ distinct: \"inventory\", key: \"sizes\" } ");
+        Document document = mars.executeCommand(Document.parse("{ distinct: \"inventory\", key: \"sizes\" } "));
         Document result = Document.parse("{\n" +
-                "  \"values\" : [ \"M\", \"S\", \"L\" ],\n" +
+                "  \"values\" : [ \"L\", \"M\", \"S\" ],\n" +
                 "  \"ok\" : 1.0\n" +
                 "}");
 
@@ -91,7 +91,7 @@ public class DistinctTest {
      */
     @Test
     public void testForDistinctAndQuery(){
-        Document result = mars.executeCommand(" { distinct: \"inventory\", key: \"item.sku\", query: { dept: \"A\"} }");
+        Document result = mars.executeCommand(Document.parse(" { distinct: \"inventory\", key: \"item.sku\", query: { dept: \"A\"} }"));
 
         Document parse = Document.parse("{\n" +
                 "  \"values\" : [ \"111\", \"333\" ],\n" +
@@ -112,11 +112,11 @@ public class DistinctTest {
      */
     @Test
     public void testForCollation(){
-        Document document = mars.executeCommand("   {\n" +
+        Document document = mars.executeCommand(Document.parse("   {\n" +
                 "      distinct: \"myColl\",\n" +
                 "      key: \"category\",\n" +
                 "      collation: { locale: \"fr\", strength: 1 }\n" +
-                "   }");
+                "   }"));
 
         System.out.println(document);
 //        Document result = Document.parse("");
@@ -135,12 +135,12 @@ public class DistinctTest {
      */
     @Test
     public void testForReadConcern(){
-        Document document = mars.executeCommand("   {\n" +
+        Document document = mars.executeCommand(Document.parse("   {\n" +
                 "     distinct: \"restaurants\",\n" +
                 "     key: \"rating\",\n" +
                 "     query: { cuisine: \"italian\" },\n" +
                 "     readConcern: { level: \"majority\" }\n" +
-                "   }");
+                "   }"));
 
         System.out.println(document);
     }

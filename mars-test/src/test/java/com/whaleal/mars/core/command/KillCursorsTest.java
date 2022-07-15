@@ -25,28 +25,18 @@ public class KillCursorsTest {
      */
     @Test
     public void testForFindCursors(){
-        Document document = mars.executeCommand("{ find: \"restaurants\",\n" +
+        Document document = mars.executeCommand(Document.parse("{ find: \"restaurants\",\n" +
                 "     filter: { stars: 5 },\n" +
                 "     projection: { name: 1, rating: 1, address: 1 },\n" +
                 "     sort: { name: 1 },\n" +
                 "     batchSize: 5\n" +
-                "   }");
+                "   }"));
         System.out.println(document);
     }
 
     @Test
     public void testForKillCursor(){
-        Document document = mars.executeCommand("{ killCursors: \"restaurants\", cursors: [ NumberLong(\"18314637080\") ] } ");
+        Document document = mars.executeCommand(Document.parse("{ killCursors: \"restaurants\", cursors: [ NumberLong(\"18314637080\") ] } "));
         System.out.println(document);
-        Document result = Document.parse("{\n" +
-                "   \"cursorsKilled\" : [\n" +
-                "      NumberLong(\"18314637080\")\n" +
-                "   ],\n" +
-                "   \"cursorsNotFound\" : [ ],\n" +
-                "   \"cursorsAlive\" : [ ],\n" +
-                "   \"cursorsUnknown\" : [ ],\n" +
-                "   \"ok\" : 1\n" +
-                "}");
-        Assert.assertEquals(document,result);
     }
 }

@@ -1,5 +1,6 @@
 package com.whaleal.mars.core.command;
 
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
 import org.junit.Assert;
@@ -13,15 +14,15 @@ import org.junit.Test;
  */
 public class ConnPoolStatsTest {
 
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars(Constant.connectionStr);
 
     /**
      * db.runCommand( { "connPoolStats" : 1 } )
-     * db.adminCommand( { getParameter : 1, "ShardingTaskExecutorPoolReplicaSetMatching" : 1 } )
      */
     @Test
     public void testForConnPoolStats(){
-        Document document = mars.executeCommand("{ \"connPoolStats\" : 1 }");
+        Document document = new Document().append("connPoolStats", 1);
+        Document document1 = mars.executeCommand(document);
         Document result = Document.parse("{\n" +
                 "\t\"numClientConnections\" : 0,\n" +
                 "\t\"numAScopedConnections\" : 0,\n" +
@@ -41,9 +42,6 @@ public class ConnPoolStatsTest {
                 "\t},\n" +
                 "\t\"ok\" : 1.0\n" +
                 "}\n");
-        Assert.assertEquals(result,document);
-        Document document1 = mars.executeCommand("{ getParameter : 1, \"ShardingTaskExecutorPoolReplicaSetMatching\" : 1 }");
-        Document result1 = Document.parse("{ \"ShardingTaskExecutorPoolReplicaSetMatching\" : \"automatic\", \"ok\" : 1.0 }\n");
-        Assert.assertEquals(result1,document1);
+        Assert.assertEquals(document1,result);
     }
 }

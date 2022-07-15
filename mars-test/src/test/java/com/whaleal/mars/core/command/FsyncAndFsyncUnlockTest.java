@@ -14,14 +14,14 @@ import org.junit.Test;
  * Description:
  */
 public class FsyncAndFsyncUnlockTest {
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     /**
      * { fsync: 1, lock: <Boolean>, comment: <any> }
      */
     @Before
     public void testForFsync(){
-        Document document = mars.executeCommand("{ fsync: 1, lock: true } ");
+        Document document = mars.executeCommand(Document.parse("{ fsync: 1, lock: true } "));
         System.out.println(document);
     }
 
@@ -35,7 +35,7 @@ public class FsyncAndFsyncUnlockTest {
      */
     @After
     public void testForFsyncUnlock(){
-        Document document = mars.executeCommand("{ fsyncUnlock: 1 }");
+        Document document = mars.executeCommand(Document.parse("{ fsyncUnlock: 1 }"));
         System.out.println(document);
     }
 }

@@ -1,8 +1,8 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -49,13 +49,13 @@ public class GeoSearchTest {
     @Test
     public void testForGeoSearch(){
 
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "   geoSearch : \"places\",\n" +
                 "   near: [ -73.9667, 40.78 ],\n" +
                 "   maxDistance : 6,\n" +
                 "   search : { type : \"restaurant\" },\n" +
                 "   limit : 30\n" +
-                "}");
+                "}"));
         System.out.println(document);
     }
 

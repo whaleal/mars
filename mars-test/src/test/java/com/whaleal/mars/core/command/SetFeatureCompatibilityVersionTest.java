@@ -12,7 +12,7 @@ import org.junit.Test;
  * Description:
  */
 public class SetFeatureCompatibilityVersionTest {
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     /**
      * db.adminCommand( {
@@ -22,24 +22,24 @@ public class SetFeatureCompatibilityVersionTest {
      */
     @Test
     public void testForViewFeatureCompatibilityVersion(){
-        Document document = mars.executeCommand("{ getParameter: 1, featureCompatibilityVersion: 1 }");
+        Document document = mars.executeCommand(Document.parse("{ getParameter: 1, featureCompatibilityVersion: 1 }"));
         Document result = Document.parse("{ \"featureCompatibilityVersion\" : { \"version\" : \"5.0\" }, \"ok\" : 1.0 }\n");
         Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForSetFeatureCompatibilityVersion(){
-        Document document = mars.executeCommand("{ setFeatureCompatibilityVersion: \"5.0\" }");
+        Document document = mars.executeCommand(Document.parse("{ setFeatureCompatibilityVersion: \"5.0\" }"));
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
     }
 
     @Test
     public void testForSetWriteConcernTimeout(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "   setFeatureCompatibilityVersion: \"5.0\",\n" +
                 "   writeConcern: { wtimeout: 5000 }\n" +
-                "}");
+                "}"));
         Document result = Document.parse("{ \"ok\" : 1.0 }");
         Assert.assertEquals(result,document);
     }

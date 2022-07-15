@@ -26,7 +26,7 @@ public class ProfileTest {
      */
     @Test
     public void testForProfile(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "     profile: 1,\n" +
                 "     filter:\n" +
                 "        {\n" +
@@ -36,7 +36,7 @@ public class ProfileTest {
                 "              { user: \"root@admin\" }\n" +
                 "           ]\n" +
                 "        }\n" +
-                "   }");
+                "   }"));
         Document result = Document.parse("{\n" +
                 "\t\"was\" : 1,\n" +
                 "\t\"slowms\" : 100,\n" +

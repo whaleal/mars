@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public class GrantPrivilegesToRoleTest {
 
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     @Before
     public void createData(){
@@ -42,7 +42,7 @@ public class GrantPrivilegesToRoleTest {
     @Test
     public void testForGrantPrivilegesToRole(){
         System.out.println("====================开始授权======================");
-        mars.executeCommand(
+        mars.executeCommand(Document.parse(
                 "{\n" +
                         "     grantPrivilegesToRole: \"book\",\n" +
                         "     privileges: [\n" +
@@ -54,24 +54,24 @@ public class GrantPrivilegesToRoleTest {
                         "         }\n" +
                         "     ],\n" +
                         "     writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                        "   }"
+                        "   }")
         );
         System.out.println("====================查看角色======================");
         Document document = mars.executeCommand(
-                "{\n" +
+                Document.parse("{\n" +
                         "      rolesInfo: { role: \"book\", db: \"admin\" },\n" +
                         "      showPrivileges: true\n" +
-                        "    }"
+                        "    }")
         );
         System.out.println(document);
     }
     @After
     public void dropRole(){
         mars.executeCommand(
-                "{\n" +
+                Document.parse("{\n" +
                         "     dropRole: \"book\",\n" +
                         "     writeConcern: { w: \"majority\" }\n" +
-                        "   }"
+                        "   }")
         );
     }
 }

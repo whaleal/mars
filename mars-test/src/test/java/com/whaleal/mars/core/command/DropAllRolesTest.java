@@ -15,34 +15,24 @@ import org.junit.Test;
  */
 public class DropAllRolesTest {
 
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars(Constant.connectionStr);
 
     @Before
     public void createData(){
-        mars.executeCommand("{ createRole: \"book01\",\n" +
+        mars.executeCommand(Document.parse("{ createRole: \"book01\",\n" +
                 "                privileges: [\n" +
-                "            { resource: { cluster: true }, actions: [ \"addShard\" ] },\n" +
-                "            { resource: { db: \"config\", collection: \"\" }, actions: [ \"find\", \"update\", \"insert\", \"remove\" ] },\n" +
-                "            { resource: { db: \"users\", collection: \"usersCollection\" }, actions: [ \"update\", \"insert\", \"remove\" ] },\n" +
-                "            { resource: { db: \"\", collection: \"\" }, actions: [ \"find\" ] }\n" +
                 "  ],\n" +
                 "            roles: [\n" +
-                "            { role: \"read\", db: \"admin\" }\n" +
                 "  ],\n" +
                 "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "        }");
-        mars.executeCommand("{ createRole: \"book02\",\n" +
+                "        }"));
+        mars.executeCommand(Document.parse("{ createRole: \"book02\",\n" +
                 "                privileges: [\n" +
-                "            { resource: { cluster: true }, actions: [ \"addShard\" ] },\n" +
-                "            { resource: { db: \"config\", collection: \"\" }, actions: [ \"find\", \"update\", \"insert\", \"remove\" ] },\n" +
-                "            { resource: { db: \"users\", collection: \"usersCollection\" }, actions: [ \"update\", \"insert\", \"remove\" ] },\n" +
-                "            { resource: { db: \"\", collection: \"\" }, actions: [ \"find\" ] }\n" +
                 "  ],\n" +
                 "            roles: [\n" +
-                "            { role: \"read\", db: \"admin\" }\n" +
                 "  ],\n" +
                 "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "        }");
+                "        }"));
     }
     /**
      * {
