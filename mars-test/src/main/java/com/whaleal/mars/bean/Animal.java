@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Indexes(value = @Index(options = @IndexOptions(unique = true)))
+@Indexes(value = @Index(fields = @Field(value = "age"),options = @IndexOptions(unique = true)))
 public class Animal {
 
     private String id;

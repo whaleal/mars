@@ -1,8 +1,7 @@
 package com.whaleal.mars.core.query;
 
-import com.mongodb.client.model.CollationStrength;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
+import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
@@ -46,14 +45,14 @@ public class QueryCollationTest {
          * Document{{_id=2, x=A}}
          * Document{{_id=3, x=á}}
          */
-        query.collation(Collation.of(Locale.CHINA));
+        query.collation(Collation.of("zh"));
 
         QueryCursor<Document> foo = mars.findAll(query, Document.class, "foo");
         while (foo.hasNext()){
             System.out.println(foo.next());
         }
 
-        query.collation(Collation.of(Locale.FRENCH));
+        query.collation(Collation.of("zh"));
 
         QueryCursor<Document> foo1 = mars.findAll(query, Document.class, "foo");
         while (foo.hasNext()){

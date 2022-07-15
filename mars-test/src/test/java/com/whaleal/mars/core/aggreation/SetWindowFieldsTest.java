@@ -1,7 +1,7 @@
 package com.whaleal.mars.core.aggreation;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
+import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.SetWindowFields;
@@ -68,8 +68,6 @@ public class SetWindowFieldsTest {
     public void testForQuantityForEachState(){
 //        pipeline
         pipeline.setWindowFields(SetWindowFields.setWindowFields().partitionBy(field("state"))
-//                .sortBy(Sort.ascending("orderDate"))
-//                .sortBy(sort().descending("orderDate"))
                 .output(SetWindowFields.Output.output("cumulativeQuantityForState")
                         .operator(value(Document.parse("{$sum: \"$quantity\",window: {documents: [ \"unbounded\", \"current\" ]}}")))));
         QueryCursor cakeSales = mars.aggregate(pipeline, "cakeSales");

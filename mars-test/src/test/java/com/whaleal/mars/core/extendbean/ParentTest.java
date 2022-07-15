@@ -2,7 +2,9 @@ package com.whaleal.mars.core.extendbean;
 
 import com.mongodb.client.MongoCollection;
 import com.whaleal.icefrog.core.collection.CollUtil;
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Parent;
+import com.whaleal.mars.codecs.pojo.annotations.Concern;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
@@ -27,13 +29,13 @@ import java.util.Optional;
  * @author wh
  */
 
-@SpringBootTest
+//@SpringBootTest
 
 public class ParentTest {
 
 
-    @Autowired
-    Mars mars;
+//    @Autowired
+    Mars mars = new Mars(Constant.connectionStr);
 
     @BeforeMethod
     public void init() {

@@ -30,14 +30,14 @@ public class DateToPartsTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
-    @Test
+    @Before
     public void createData(){
         Document parse = Document.parse("{\n" +
                 "  \"_id\" : 2,\n" +
                 "  \"item\" : \"abc\",\n" +
                 "  \"price\" : 10,\n" +
                 "  \"quantity\" : 2,\n" +
-                "  \"date\" : \"2017-01-01T01:29:09.123Z\"\n" +
+//                "  \"date\" : \"ISODate(2017-01-01T01:29:09.123Z)\n"
                 "}");
         mars.insert(parse,"sales");
 
@@ -46,16 +46,16 @@ public class DateToPartsTest {
                 "   \"item\" : \"abc\",\n" +
                 "   \"price\" : 20,\n" +
                 "   \"quantity\" : 5,\n" +
-                "   \"date\" : \"2017-05-20T10:24:51.303Z\"\n" +
+//                "   \"date\" : \"ISODate(2017-05-20T10:24:51.303Z)\"\n" +
                 "}");
         mars.insert(parse1,"sales");
 
     }
 
-//    @After
-//    public void dropCollection(){
-//        mars.dropCollection("sales");
-//    }
+    @After
+    public void dropCollection(){
+        mars.dropCollection("sales");
+    }
 
     @Test
     public void testFor(){
@@ -65,49 +65,47 @@ public class DateToPartsTest {
                 .include("date", DateExpressions.dateToParts(field("date")))
                 .include("date_iso",DateExpressions.dateToParts(field("date")).iso8601(true).timezone(value("Asia/Shanghai"))));
 
-
         Document document = mars.aggregate(pipeline, "sales").tryNext();
         Assert.assertNotNull(document);
 
     }
 
-    @Test
-    public void testBy(){
-        // Replace the uri string with your MongoDB deployment's connection string
-        try (MongoClient mongoClient = MongoClients.create(Constant.connectionStr)) {
-            MongoDatabase database = mongoClient.getDatabase("mars");
-
-            MongoCollection<Document> sales = database.getCollection("sales");
-
-            List<Document> documentList = new ArrayList<>();
-            documentList.add(Document.parse(" {\n" +
-                    "    $project: {\n" +
-                    "       date: {\n" +
-                    "          $dateToParts: { date: \"$date\" }\n" +
-                    "       },\n" +
-                    "       date_iso: {\n" +
-                    "          $dateToParts: { date: \"$date\", iso8601: true }\n" +
-                    "       },\n" +
-                    "       date_timezone: {\n" +
-                    "          $dateToParts: { date: \"$date\", timezone: \"America/New_York\" }\n" +
-                    "       }\n" +
-                    "    }\n" +
-                    "}"));
-            MongoCursor<Document> iterator = sales.aggregate(documentList).iterator();
-            while (iterator.hasNext()){
-                System.out.println(iterator.next());
-            }
-
-
-        }
-    }
+//    @Test
+//    public void testBy(){
+//        try (MongoClient mongoClient = MongoClients.create(Constant.connectionStr)) {
+//            MongoDatabase database = mongoClient.getDatabase("mars");
+//
+//            MongoCollection<Document> sales = database.getCollection("sales");
+//
+//            List<Document> documentList = new ArrayList<>();
+//            documentList.add(Document.parse(" {\n" +
+//                    "    $project: {\n" +
+//                    "       date: {\n" +
+//                    "          $dateToParts: { date: \"$date\" }\n" +
+//                    "       },\n" +
+//                    "       date_iso: {\n" +
+//                    "          $dateToParts: { date: \"$date\", iso8601: true }\n" +
+//                    "       },\n" +
+//                    "       date_timezone: {\n" +
+//                    "          $dateToParts: { date: \"$date\", timezone: \"America/New_York\" }\n" +
+//                    "       }\n" +
+//                    "    }\n" +
+//                    "}"));
+//            MongoCursor<Document> iterator = sales.aggregate(documentList).iterator();
+//            while (iterator.hasNext()){
+//                System.out.println(iterator.next());
+//            }
+//
+//
+//        }
+//    }
 
     @Test
     public void testForWrite(){
-        DocumentWriter documentWriter = new DocumentWriter();
-
-        documentWriter.writeName("sales");
-        documentWriter.writeBoolean(true);
+//        DocumentWriter documentWriter = new DocumentWriter();
+//
+//        documentWriter.writeName("sales");
+//        documentWriter.writeBoolean(true);
     }
 
 

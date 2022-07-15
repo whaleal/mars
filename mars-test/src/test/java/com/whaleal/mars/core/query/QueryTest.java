@@ -1,16 +1,14 @@
 package com.whaleal.mars.core.query;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
+import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.session.QueryCursor;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -21,6 +19,7 @@ import java.util.List;
  * @description
  * @date 2022/3/9 10:00
  */
+
 public class QueryTest {
     private MongoMappingContext context  = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
 
