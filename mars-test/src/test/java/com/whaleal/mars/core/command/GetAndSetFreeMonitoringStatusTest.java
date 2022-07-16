@@ -13,7 +13,7 @@ import org.junit.Test;
  * Description:
  */
 public class GetAndSetFreeMonitoringStatusTest {
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     /**
      * db.adminCommand( { getFreeMonitoringStatus: 1 } )
@@ -22,7 +22,13 @@ public class GetAndSetFreeMonitoringStatusTest {
     public void testForGetFreeMonitoringStatus(){
         //todo 复制集环境没测
         Document document = mars.executeCommand("{ getFreeMonitoringStatus: 1 }");
-        Document result = Document.parse("{ \"state\" : \"undecided\", \"ok\" : 1.0 }\n");
+        Document result = Document.parse("{\n" +
+                "\t\"state\" : \"disabled\",\n" +
+                "\t\"message\" : \"\",\n" +
+                "\t\"url\" : \"\",\n" +
+                "\t\"userReminder\" : \"\",\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
         Assert.assertEquals(result,document);
     }
 

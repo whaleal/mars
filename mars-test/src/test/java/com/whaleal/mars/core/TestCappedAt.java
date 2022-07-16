@@ -33,21 +33,21 @@ public class TestCappedAt {
     @Test
     public void testForGetCount(){
         //查看最大文件数
-        CollStatsMetrics collStats = new CollStatsMetrics(mars.getMongoClient(), "mars", "book");
+        CollStatsMetrics collStats = new CollStatsMetrics(mars.getMongoClient(), mars.getDatabase(), "book");
         System.out.println(collStats.getMax());
     }
 
     @Test
     public void testForGetMaxSize(){
         //查看最大Size
-        CollStatsMetrics collStats = new CollStatsMetrics(mars.getMongoClient(), "mars", "book");
+        CollStatsMetrics collStats = new CollStatsMetrics(mars.getMongoClient(), mars.getDatabase(), "book");
         System.out.println(collStats.getMaxSize());
     }
 
     @Test
     public void testForIsCapped(){
         //查看是否是Capped
-        CollStatsMetrics collStats = new CollStatsMetrics(mars.getMongoClient(), "mars", "book");
+        CollStatsMetrics collStats = new CollStatsMetrics(mars.getMongoClient(), mars.getDatabase(), "book");
         System.out.println(collStats.isCapped());
     }
 }

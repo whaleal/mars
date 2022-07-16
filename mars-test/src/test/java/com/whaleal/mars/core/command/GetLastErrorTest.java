@@ -20,20 +20,12 @@ public class GetLastErrorTest {
      */
     @Test
     public void testForGetLastError(){
-        Document document = mars.executeCommand("{ getLastError: 1 }");
-        Document result = Document.parse("{\n" +
-                "\t\"connectionId\" : 212,\n" +
-                "\t\"n\" : 0,\n" +
-                "\t\"syncMillis\" : 0,\n" +
-                "\t\"writtenTo\" : null,\n" +
-                "\t\"writeConcern\" : {\n" +
-                "\t\t\"w\" : 1,\n" +
-                "\t\t\"wtimeout\" : 0\n" +
-                "\t},\n" +
-                "\t\"err\" : null,\n" +
-                "\t\"ok\" : 1.0\n" +
-                "}\n");
-        Assert.assertEquals(result,document);
+        Document document = mars.executeCommand(Document.parse("{ getLastError: 1 }"));
+        Integer n = (Integer) document.get("n");
+        String err = (String) document.get("err");
+        Document document1 = new Document().append("n", n).append("err", err);
+        Document result = Document.parse(document1.toJson());
+        Assert.assertEquals(result,document1);
     }
 
 }

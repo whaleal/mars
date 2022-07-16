@@ -4,6 +4,7 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.monitor.CollStatsMetrics;
+import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,13 +35,13 @@ public class CloneCollectionAsCappedTest {
      */
     @Test
     public void testForCloneCollectionAsCapped(){
-        mars.executeCommand("{ cloneCollectionAsCapped: \"book\",\n" +
+        mars.executeCommand(Document.parse("{ cloneCollectionAsCapped: \"book\",\n" +
                 "  toCollection: \"BookCapped\",\n" +
                 "  size: 10,\n" +
                 "  writeConcern: { w: \"majority\"}\n" +
                 "  comment: \"test\"\n" +
-                "}");
-        Boolean capped = new CollStatsMetrics(mars.getMongoClient(), "mars", "BookCapped").isCapped();
+                "}"));
+        Boolean capped = new CollStatsMetrics(mars.getMongoClient(), mars.getDatabase(), "BookCapped").isCapped();
         Assert.assertEquals(true,capped);
     }
 

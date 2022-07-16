@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public class GetLogTest {
 
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     /**
      * db.adminCommand( { getLog: <value> } )
@@ -23,7 +23,7 @@ public class GetLogTest {
     public void testForGetLog(){
         //只能在admin库上测
         //检索可用的日志
-        Document document = mars.executeCommand("{ getLog:'*'} ");
+        Document document = mars.executeCommand(Document.parse("{ getLog:'*'} "));
         System.out.println(document);
         Document result = Document.parse("{ \"names\" : [ \"global\", \"startupWarnings\" ], \"ok\" : 1.0 }");
         Assert.assertEquals(document,result);
@@ -31,7 +31,7 @@ public class GetLogTest {
     @Test
     public void testForRecentLog(){
         //从日志检索最近的日志
-        Document document1 = mars.executeCommand("{ getLog : \"global\" } ");
+        Document document1 = mars.executeCommand(Document.parse("{ getLog : \"global\" } "));
         System.out.println(document1);
     }
 }

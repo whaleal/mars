@@ -20,11 +20,11 @@ public class GrantRolesToRoleTest {
 
     @Before
     public void createData(){
-        mars.executeCommand("{ createRole: \"book\",\n" +
+        mars.executeCommand(Document.parse("{ createRole: \"book\",\n" +
                 "                privileges: [],\n" +
                 "            roles: [],\n" +
                 "            writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "        }");
+                "        }"));
     }
     /**
      * { grantRolesToRole: "<role>",
@@ -38,12 +38,12 @@ public class GrantRolesToRoleTest {
      */
     @Test
     public void testForGrantRolesToRole(){
-        Document document = mars.executeCommand("{ grantRolesToRole: \"book\",\n" +
+        Document document = mars.executeCommand(Document.parse("{ grantRolesToRole: \"book\",\n" +
                 "     roles: [\n" +
                 "              \"read\"\n" +
                 "     ],\n" +
                 "     writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "   }");
+                "   }"));
         Document result = Document.parse("{ \"ok\" : 1.0 }");
         Assert.assertEquals(result,document);
     }
@@ -51,10 +51,10 @@ public class GrantRolesToRoleTest {
     @After
     public void dropRoles(){
         mars.executeCommand(
-                "{\n" +
+                Document.parse("{\n" +
                         "     dropRole: \"book\",\n" +
                         "     writeConcern: { w: \"majority\" }\n" +
-                        "   }"
+                        "   }")
         );
     }
 }

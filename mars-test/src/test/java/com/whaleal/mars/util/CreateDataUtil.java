@@ -1,4 +1,4 @@
-package com.whaleal.mars.base;
+package com.whaleal.mars.util;
 
 import org.bson.Document;
 

@@ -1,8 +1,8 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
@@ -53,7 +53,7 @@ public class FindCommandTest {
         mars.dropCollection("cakeFlavors");
         mars.dropCollection("myColl");
         mars.dropCollection("students");
-//        mars.dropCollection("students2");
+        mars.dropCollection("students2");
     }
 
     /**
@@ -65,11 +65,11 @@ public class FindCommandTest {
      */
     @Test
     public void testForFind(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "   find: 'cakeFlavors',\n" +
                 "   filter: { $expr: { $eq: [ \"$flavor\", \"$$targetFlavor\" ] } },\n" +
                 "   let : { targetFlavor: \"chocolate\" }\n" +
-                "}");
+                "}"));
 
         System.out.println(document);
     }
@@ -87,25 +87,25 @@ public class FindCommandTest {
      */
     @Test
     public void testForFindAndModifyWithCollation(){
-        Document document = mars.executeCommand("   {\n" +
+        Document document = mars.executeCommand(Document.parse("   {\n" +
                 "     findAndModify: \"myColl\",\n" +
                 "     query: { category: \"cafe\", status: \"a\" },\n" +
                 "     sort: { category: 1 },\n" +
                 "     update: { $set: { status: \"Updated\" } },\n" +
                 "     collation: { locale: \"fr\", strength: 1 }\n" +
-                "   }");
+                "   }"));
 
         Document result = Document.parse("{\n" +
                 "   \"lastErrorObject\" : {\n" +
-                "      \"updatedExisting\" : true,\n" +
                 "      \"n\" : 1\n" +
+                "      \"updatedExisting\" : true,\n" +
                 "   },\n" +
                 "   \"value\" : {\n" +
                 "      \"_id\" : 1,\n" +
                 "      \"category\" : \"café\",\n" +
                 "      \"status\" : \"A\"\n" +
                 "   },\n" +
-                "   \"ok\" : 1\n" +
+                "   \"ok\" : 1.0\n" +
                 "}");
 
         Assert.assertEquals(document,result);
@@ -123,12 +123,12 @@ public class FindCommandTest {
      */
     @Test
     public void testForFindAndModifyWithArrayFilters(){
-        Document document = mars.executeCommand("   {\n" +
+        Document document = mars.executeCommand(Document.parse("   {\n" +
                 "     findAndModify: \"students\",\n" +
                 "     query: { grades: { $gte: 100 } },\n" +
                 "     update:  { $set: { \"grades.$[element]\" : 100 } },\n" +
                 "     arrayFilters: [ { \"element\": { $gte: 100 } } ]\n" +
-                "   }");
+                "   }"));
 
         System.out.println(document);
 //        Document.parse("");
@@ -146,12 +146,12 @@ public class FindCommandTest {
      */
     @Test
     public void testForFindAndInsert(){
-        Document document = mars.executeCommand("   {\n" +
+        Document document = mars.executeCommand(Document.parse("   {\n" +
                 "     findAndModify: \"students2\",\n" +
                 "     query: {  \"_id\" : 1 },\n" +
                 "     update: [ { $set: { \"total\" : { $sum: \"$grades.grade\" } } } ],\n" +
                 "     new: true\n" +
-                "   }");
+                "   }"));
         System.out.println(document);
     }
 }

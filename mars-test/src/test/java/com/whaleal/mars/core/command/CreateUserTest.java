@@ -37,9 +37,12 @@ public class CreateUserTest {
      */
     @Test
     public void testForCreateUser(){
-        Document document = mars.executeCommand("{\n" +
+
+        //passwordPrompt()只能在mongodb4.2 mongo shell使用，这里使用爆出异常
+        //JSON reader was expecting a value but found 'passwordPrompt'.
+        Document document = Document.parse(" {\n" +
                 "       createUser: \"testUser\",\n" +
-                "       pwd: \"testPwd\",\n" +
+                "       pwd: \"123456\",\n" +
                 "       customData: { employeeId: 12345 },\n" +
                 "       roles: [\n" +
                 "                { role: \"clusterAdmin\", db: \"admin\" },\n" +
@@ -47,14 +50,50 @@ public class CreateUserTest {
                 "                \"readWrite\"\n" +
                 "              ],\n" +
                 "       writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "}");
+                "} ");
+        Document document1 = mars.executeCommand(document);
         Document result = Document.parse("{ \"ok\" : 1.0 }\n");
-        Assert.assertEquals(result,document);
+        Assert.assertEquals(document1,result);
+        Document document2 = mars.executeCommand(new Document().append("usersInfo", "testUser"));
+        Document result1 = Document.parse("{\n" +
+                "\t\"users\" : [\n" +
+                "\t\t{\n" +
+                "\t\t\t\"_id\" : \"mars.testUser\",\n" +
+                "\t\t\t\"userId\" : UUID(\"ad7febea-6bca-447d-ad4a-54dda9148dab\"),\n" +
+                "\t\t\t\"user\" : \"testUser\",\n" +
+                "\t\t\t\"db\" : \"mars\",\n" +
+                "\t\t\t\"customData\" : {\n" +
+                "\t\t\t\t\"employeeId\" : 12345\n" +
+                "\t\t\t},\n" +
+                "\t\t\t\"roles\" : [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"role\" : \"clusterAdmin\",\n" +
+                "\t\t\t\t\t\"db\" : \"admin\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"role\" : \"readAnyDatabase\",\n" +
+                "\t\t\t\t\t\"db\" : \"admin\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"role\" : \"readWrite\",\n" +
+                "\t\t\t\t\t\"db\" : \"mars\"\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t],\n" +
+                "\t\t\t\"mechanisms\" : [\n" +
+                "\t\t\t\t\"SCRAM-SHA-1\",\n" +
+                "\t\t\t\t\"SCRAM-SHA-256\"\n" +
+                "\t\t\t]\n" +
+                "\t\t}\n" +
+                "\t],\n" +
+                "\t\"ok\" : 1.0\n" +
+                "}\n");
+        //对比十UUID输出形式不一致
+        Assert.assertEquals(document2,result1);
     }
 
     @After
     public void dropUser(){
-        Document document = mars.executeCommand("{\n" +
+        mars.executeCommand("{\n" +
                 "   dropUser: \"testUser\",\n" +
                 "   writeConcern: { w: \"majority\", wtimeout: 5000 }\n" +
                 "} ");

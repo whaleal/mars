@@ -21,7 +21,7 @@ public class LogoutTest {
      */
     @Test
     public void testForLogout(){
-        Document document = mars.executeCommand(" { logout: 1 }");
+        Document document = mars.executeCommand(Document.parse(" { logout: 1 }"));
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
     }

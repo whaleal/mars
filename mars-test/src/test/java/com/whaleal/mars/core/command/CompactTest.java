@@ -25,7 +25,10 @@ public class CompactTest {
 
     @Test
     public void testForCompact(){
-        Document document = mars.executeCommand("{compact:\"book\"}");
+        Document document1 = new Document();
+        document1.append("compact","book");
+        Document document = mars.executeCommand(document1);
+        System.out.println(document);
         Document result = Document.parse("{\"bytesFreed\":0, \"ok\":1.0}");
         Assert.assertEquals(result,document);
     }

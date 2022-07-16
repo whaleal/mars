@@ -42,6 +42,7 @@ import com.whaleal.mars.session.result.InsertOneResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.session.transactions.MarsTransaction;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -126,7 +127,42 @@ interface Datastore extends IndexOperations, MongoOperations {
         return findOne(query, entityClass, null);
     }
 
+    /**
+     * 根据id查询记录
+     * @param id
+     * @param entityClass
+     * @param <T>
+     * @return
+     */
+    default <T> Optional< T > findById(Object id, Class< T > entityClass){
+        return this.findById(id,entityClass,null);
+    }
+
+    <T> Optional< T > findById(Object id,Class< T > entityClass,String collectionName);
+
+
     < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName );
+
+    /**
+     * 查询去重
+     * @param field
+     * @param entityClass
+     * @param resultClass
+     * @param <T>
+     * @return
+     */
+    default <T> QueryCursor<T> findDistinct(String field, Class<?> entityClass, Class<T> resultClass) {
+        return this.findDistinct(new Query(), field, entityClass, resultClass);
+    }
+
+
+    <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass);
+
+    <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass);
+
+    default <T> QueryCursor<T> findDistinct(Query query, String field, String collection, Class<T> resultClass) {
+        return this.findDistinct(query, field, collection, Object.class, resultClass);
+    }
 
     /**
      * Inserts an entity in to the mapped collection.

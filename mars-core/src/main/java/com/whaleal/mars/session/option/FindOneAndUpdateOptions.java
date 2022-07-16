@@ -35,6 +35,7 @@ import com.mongodb.client.model.ReturnDocument;
 import org.bson.conversions.Bson;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -66,8 +67,8 @@ public class FindOneAndUpdateOptions implements WriteConfigurable<FindOneAndUpda
     }
 
 
-    public Collation getCollation() {
-        return originFindOneAndUpdateOptions.getCollation();
+    public Optional<Collation> getCollation() {
+        return Optional.ofNullable(originFindOneAndUpdateOptions.getCollation());
     }
 
 

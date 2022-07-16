@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
  * @description
  * @date 2022/3/9 15:06
  */
+
 public class TestProjection {
 
     private Query query;

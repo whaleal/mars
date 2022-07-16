@@ -20,7 +20,7 @@ public class GrantRolesToUserTest {
 
     @Before
     public void createData(){
-        mars.executeCommand("{\n" +
+        mars.executeCommand(Document.parse("{\n" +
                 "       createUser: \"testUser\",\n" +
                 "       pwd: \"testPwd\",\n" +
                 "       customData: { employeeId: 12345 },\n" +
@@ -30,7 +30,7 @@ public class GrantRolesToUserTest {
                 "                \"readWrite\"\n" +
                 "              ],\n" +
                 "       writeConcern: { w: \"majority\" , wtimeout: 5000 }\n" +
-                "}");
+                "}"));
     }
     /**
      * { grantRolesToUser: "<user>",
@@ -41,22 +41,22 @@ public class GrantRolesToUserTest {
      */
     @Test
     public void testForGrantRolesToUser(){
-        Document document = mars.executeCommand("{ grantRolesToUser: \"testUser\",\n" +
+        Document document = mars.executeCommand(Document.parse("{ grantRolesToUser: \"testUser\",\n" +
                 "                 roles: [\n" +
                 "                    { role: \"readWriteAnyDatabase\", db: \"admin\"},\n" +
                 "                    \"readWrite\"\n" +
                 "                 ],\n" +
                 "                 writeConcern: { w: \"majority\" , wtimeout: 2000 }\n" +
-                "             }");
+                "             }"));
         Document result = Document.parse("{ \"ok\" : 1.0 }");
         Assert.assertEquals(result,document);
     }
 
     @After
     public void dropUser(){
-        mars.executeCommand("{\n" +
+        mars.executeCommand(Document.parse("{\n" +
                 "   dropUser: \"testUser\",\n" +
                 "   writeConcern: { w: \"majority\", wtimeout: 5000 }\n" +
-                "} ");
+                "} "));
     }
 }

@@ -1,23 +1,17 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.base.CreateDataUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
-import com.whaleal.mars.session.option.PushOptions;
 import com.whaleal.mars.session.result.UpdateResult;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.testng.annotations.AfterTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lyz
@@ -68,12 +62,5 @@ public class PushTest {
         }
 
 
-    }
-
-    @Test
-    public void testForParse(){
-        String s = "Document{{$push=Document{{quizzes=Document{{$each=[Ljava.lang.Object;@62010f5c, $sort=Document{{score=1}}, $slice=3}}}}}}";
-
-        System.out.println(Document.parse(s).toJson());
     }
 }

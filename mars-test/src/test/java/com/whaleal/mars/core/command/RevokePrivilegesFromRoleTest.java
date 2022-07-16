@@ -1,5 +1,6 @@
 package com.whaleal.mars.core.command;
 
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
 import org.junit.After;
@@ -15,21 +16,13 @@ import org.junit.Test;
  */
 public class RevokePrivilegesFromRoleTest {
 
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars(Constant.connectionStr);
 
     @Before
     public void createData(){
         mars.executeCommand("{ createRole: \"book\",\n" +
                 "     privileges:\n" +
                 "      [\n" +
-                "        {\n" +
-                "          resource: { db: \"admin\", collection: \"\" },\n" +
-                "          actions: [ \"createCollection\", \"createIndex\", \"find\" ]\n" +
-                "        },\n" +
-                "        {\n" +
-                "          resource: { db: \"admin\", collection: \"orders\" },\n" +
-                "          actions: [ \"insert\" ]\n" +
-                "        }\n" +
                 "      ],\n" +
                 "       roles:[]\n" +
                 "     writeConcern: { w: \"majority\" }\n" +
@@ -50,7 +43,7 @@ public class RevokePrivilegesFromRoleTest {
 
     @Test
     public void testForRevokePrivilegesFromRole(){
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "     revokePrivilegesFromRole: \"book\",\n" +
                 "     privileges:\n" +
                 "      [\n" +
@@ -64,7 +57,7 @@ public class RevokePrivilegesFromRoleTest {
                 "        }\n" +
                 "      ],\n" +
                 "     writeConcern: { w: \"majority\" }\n" +
-                "   }");
+                "   }"));
         Document result = Document.parse("{\"ok\":1.0}");
         Assert.assertEquals(result,document);
     }

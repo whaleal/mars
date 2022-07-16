@@ -28,21 +28,21 @@ public class ExplainTest {
     public void testForExplain(){
         //queryPlanner Mode
         System.out.println("queryPlanner Mode");
-        Document document = mars.executeCommand("{\n" +
+        Document document = mars.executeCommand(Document.parse("{\n" +
                 "     explain: { count: \"products\", query: { quantity: { $gt: 50 } } },\n" +
                 "     verbosity: \"queryPlanner\"\n" +
-                "   }");
+                "   }"));
         System.out.println(document);
         //executionStats Mode
         System.out.println("executionStats Mode");
-        Document document1 = mars.executeCommand("{\n" +
+        Document document1 = mars.executeCommand(Document.parse("{\n" +
                 "      explain: { count: \"products\", query: { quantity: { $gt: 50 } } },\n" +
                 "      verbosity: \"executionStats\"\n" +
-                "   }");
+                "   }"));
         System.out.println(document1);
         //allPlansExecution Mode
         System.out.println("allPlansExecution Mode");
-        Document document2 = mars.executeCommand("{\n" +
+        Document document2 = mars.executeCommand(Document.parse("{\n" +
                 "     explain: {\n" +
                 "        update: \"products\",\n" +
                 "        updates: [\n" +
@@ -52,7 +52,7 @@ public class ExplainTest {
                 "           }\n" +
                 "        ]\n" +
                 "     }\n" +
-                "   }");
+                "   }"));
         System.out.println(document2);
 
     }

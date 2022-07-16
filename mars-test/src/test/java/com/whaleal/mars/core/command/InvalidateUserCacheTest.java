@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public class InvalidateUserCacheTest {
 
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
 
     /**

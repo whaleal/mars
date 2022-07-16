@@ -11,7 +11,7 @@ import org.junit.Test;
  * Description:
  */
 public class ShutdownTest {
-    private Mars mars = new Mars("mongodb://admin:123456@192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     /**
      * db.adminCommand({
@@ -23,19 +23,19 @@ public class ShutdownTest {
      */
     @Test
     public void testForShutdown(){
-        Document document = mars.executeCommand("{ \"shutdown\" : 1 }");
+        Document document = mars.executeCommand(Document.parse("{ \"shutdown\" : 1 }"));
         System.out.println(document);
     }
 
     @Test
     public void testForShutdownMongod(){
-        Document document = mars.executeCommand("{ \"shutdown\" : 1, \"force\" : true }");
+        Document document = mars.executeCommand(Document.parse("{ \"shutdown\" : 1, \"force\" : true }"));
         System.out.println(document);
     }
 
     @Test
     public void testForShutdownMongodWithLongerTimeout(){
-        Document document = mars.executeCommand("{ \"shutdown\" : 1, timeoutSecs: 60 }");
+        Document document = mars.executeCommand(Document.parse("{ \"shutdown\" : 1, timeoutSecs: 60 }"));
         System.out.println(document);
     }
 }

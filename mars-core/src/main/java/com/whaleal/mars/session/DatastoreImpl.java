@@ -213,7 +213,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
 
         T result = findOneExecute(session, collection, query, null, null);
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled() ) {
             log.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
         }
@@ -224,6 +224,13 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         return Optional.ofNullable(result);
 
+    }
+
+    public <T> Optional<T> findById(Object id,Class<T> entityClass,String collectionName){
+        ClientSession session = this.startSession();
+        MongoCollection collection = this.getCollection(entityClass,collectionName);
+        Optional<T> result = findByIdExecute(session, collection,id);
+       return result;
     }
 
     @Override
@@ -398,8 +405,9 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         notNull(entityClass, "EntityClass must not be null!");
         notNull(collectionName, "CollectionName must not be null!");
 
+
         //  do with collation
-        OptionalUtil.ifAllPresent(query.getCollation(), Optional.of(options.getCollation()), (l, r) -> {
+        OptionalUtil.ifAllPresent(query.getCollation(), options.getCollation(), (l, r) -> {
             throw new IllegalArgumentException(
                     "Both Query and FindOneAndModifyOptions define a collation. Please provide the collation only via one of the two.");
         });
@@ -463,9 +471,9 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
     @Override
     public String getCollectionName( Class< ? > entityClass ) {
-        
+
       return this.mapper.getEntityModel(entityClass).getCollectionName();
-        
+
     }
 
     private < T > T doFindAndModify( String collectionName, Query query, Class<T> entityClass, UpdateDefinition update, FindOneAndUpdateOptions optionsToUse ) {
@@ -664,7 +672,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         if (upload.getFileId() == null) {
             return (T) getGridFsBucket(bucketName).uploadFromStream(upload.getFilename(), upload.getContent(), uploadOptions);
         }
-        
+
         getGridFsBucket(bucketName).uploadFromStream(BsonUtil.simpleToBsonValue(upload.getFileId()), upload.getFilename(),
                 upload.getContent(), uploadOptions);
 
@@ -984,7 +992,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     protected MongoCollection< Document > doCreateCollection( String collectionName, Document collectionOptions ) {
-        Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
         lock.lock();
         try {
             com.mongodb.client.model.CreateCollectionOptions co = new com.mongodb.client.model.CreateCollectionOptions();
@@ -1050,6 +1057,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             MongoCollection< Document > coll = database.getCollection(collectionName, Document.class);
             //如果配置文件中开启了自动创建索引，则在表创建成功后创建索引
             if(this.mapper.isAutoIndexCreation()){
+                Class<Object> entity = this.mapper.getClassFromCollection(collectionName);
                 ensureIndexes(entity,coll.getNamespace().getCollectionName());
             }
             return coll;
@@ -1103,6 +1111,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             options = options.size(capped.value());
             options = options.maxDocuments(capped.count());
         }
+
 
         Collation collation = (Collation) entityModel.getAnnotation(Collation.class);
 
@@ -1248,8 +1257,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         if (session == null) {
 
-
-
             findIterable = collection.find(query.getQueryObject());
 
         } else {
@@ -1272,6 +1279,65 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         return (T) findIterable.first();
 
 
+    }
+
+
+
+    /**
+     * 根据id查询记录
+     * @param session
+     * @param collection
+     * @param <T>
+     * @return
+     */
+    private <T>Optional<T> findByIdExecute(ClientSession session,MongoCollection collection,Object id){
+
+        FindIterable<T> findIterable;
+        Document document = new Document().append("_id", id);
+        if(session==null){
+            findIterable = collection.find(document);
+        }else {
+            findIterable = collection.find(session,document);
+        }
+
+        if((T)findIterable.first()!=null){
+            return (Optional<T>) findIterable.first();
+        }else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * 查询去重
+     * @param query
+     * @param field
+     * @param entityClass
+     * @param resultClass
+     * @param <T>
+     * @return
+     */
+    public <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass) {
+        return this.findDistinct(query, field, this.getCollectionName(entityClass), entityClass, resultClass);
+    }
+
+    public <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass) {
+        ClientSession session = this.startSession();
+        MongoCollection collection = this.getCollection(entityClass,collectionName);
+        QueryCursor<T> result = this.findDistinctExecute(session, collection, query, field, resultClass);
+        return result;
+    }
+    private <T> QueryCursor<T> findDistinctExecute(ClientSession session,MongoCollection collection,Query query,String field,Class<T> resultClass){
+
+        DistinctIterable<T> distinctIterable;
+        if(query!=null){
+            distinctIterable = collection.distinct(session,field,query.getQueryObject(),resultClass);
+            if (query.getCollation().orElse(null) != null){
+                distinctIterable = distinctIterable.collation(query.getCollation().get().toMongoCollation());
+            }
+        }else {
+            distinctIterable = collection.distinct(session,field,null,resultClass);
+        }
+        return new QueryCursor<T>(distinctIterable.iterator(),resultClass);
     }
 
     private <T> T insertOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
@@ -1364,7 +1430,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             throw new ClassCastException();
         }
 
-        
+
 
         UpdateOptions option = (UpdateOptions) options;
 

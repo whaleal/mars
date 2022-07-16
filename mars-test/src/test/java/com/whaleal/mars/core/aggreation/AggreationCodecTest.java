@@ -10,6 +10,7 @@ import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.MarsCursor;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.session.option.AggregationOptions;
 import org.bson.Document;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -55,6 +56,8 @@ public class AggreationCodecTest {
 
 
         pipeline.project(Projection.of().exclude("age"));
+        AggregationOptions aggregationOptions = new AggregationOptions();
+//        aggregationOptions.collation()
 
         QueryCursor< Person > aggregate = mars.aggregate(pipeline);
 

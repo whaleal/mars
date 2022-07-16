@@ -1,4 +1,4 @@
-package com.whaleal.mars.base;
+package com.whaleal.mars.util;
 
 import com.mongodb.client.MongoCursor;
 import com.whaleal.mars.Constant;

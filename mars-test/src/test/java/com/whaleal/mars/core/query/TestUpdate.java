@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
  * @description
  * @date 2022/3/8 10:50
  */
+
 public class TestUpdate {
 
     private final Update update = new Update();

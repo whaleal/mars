@@ -13,38 +13,38 @@ import org.junit.Test;
  * Description:
  */
 public class ListDatabasesTest {
-    private Mars mars = new Mars("mongodb://192.168.200.139:27017/admin");
+    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
 
     /**
      * db.adminCommand( { listDatabases: 1 } )
      */
     @Test
     public void testForListDatabases(){
-        Document document = mars.executeCommand("{ listDatabases: 1 }");
+        Document document = mars.executeCommand(Document.parse("{ listDatabases: 1 }"));
         Document result = Document.parse("{\n" +
                 "\t\"databases\" : [\n" +
                 "\t\t{\n" +
                 "\t\t\t\"name\" : \"admin\",\n" +
-                "\t\t\t\"sizeOnDisk\" : NumberLong(385024),\n" +
+                "\t\t\t\"sizeOnDisk\" : NumberLong(258048),\n" +
                 "\t\t\t\"empty\" : false\n" +
                 "\t\t},\n" +
                 "\t\t{\n" +
                 "\t\t\t\"name\" : \"config\",\n" +
-                "\t\t\t\"sizeOnDisk\" : NumberLong(110592),\n" +
+                "\t\t\t\"sizeOnDisk\" : NumberLong(118784),\n" +
                 "\t\t\t\"empty\" : false\n" +
                 "\t\t},\n" +
                 "\t\t{\n" +
                 "\t\t\t\"name\" : \"local\",\n" +
-                "\t\t\t\"sizeOnDisk\" : NumberLong(73728),\n" +
+                "\t\t\t\"sizeOnDisk\" : NumberLong(65536),\n" +
                 "\t\t\t\"empty\" : false\n" +
                 "\t\t},\n" +
                 "\t\t{\n" +
                 "\t\t\t\"name\" : \"mars\",\n" +
-                "\t\t\t\"sizeOnDisk\" : NumberLong(8192),\n" +
+                "\t\t\t\"sizeOnDisk\" : NumberLong(77824),\n" +
                 "\t\t\t\"empty\" : false\n" +
                 "\t\t}\n" +
                 "\t],\n" +
-                "\t\"totalSize\" : NumberLong(577536),\n" +
+                "\t\"totalSize\" : NumberLong(520192),\n" +
                 "\t\"totalSizeMb\" : NumberLong(0),\n" +
                 "\t\"ok\" : 1.0\n" +
                 "}\n");
@@ -53,7 +53,7 @@ public class ListDatabasesTest {
 
     @Test
     public void testForListDatabasesNameOnly(){
-        Document document = mars.executeCommand("{ listDatabases: 1, nameOnly: true}");
+        Document document = mars.executeCommand(Document.parse("{ listDatabases: 1, nameOnly: true}"));
         Document result = Document.parse("{\n" +
                 "\t\"databases\" : [\n" +
                 "\t\t{\n" +

@@ -1,5 +1,6 @@
 package com.whaleal.mars.bean;
 
+import com.mongodb.client.model.TimeSeriesGranularity;
 import com.whaleal.mars.codecs.pojo.annotations.*;
 import java.util.Date;
 
@@ -10,7 +11,7 @@ import java.util.Date;
  **/
 
 @Entity
-//@Indexes(@Index(fields = @Field(value = "sensorId",type = IndexDirection.ASC),options = @IndexOptions(collation = @Collation(locale = "zh"))))
+@TimeSeries(timeField = "timestamp",granularity = TimeSeriesGranularity.HOURS,enableExpire = true,expireAfterSeconds = 60 * 60)
 public class Weather {
 
     @Id

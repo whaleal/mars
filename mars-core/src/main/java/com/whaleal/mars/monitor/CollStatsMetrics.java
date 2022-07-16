@@ -1,6 +1,7 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import org.bson.Document;
 
@@ -13,7 +14,7 @@ import java.util.List;
  **/
 public class CollStatsMetrics extends AbstractMonitor{
 
-    private final String dbName;
+    private final MongoDatabase db;
 
     private final String collectionName;
 
@@ -21,9 +22,9 @@ public class CollStatsMetrics extends AbstractMonitor{
      * @param
      */
 
-    public CollStatsMetrics(MongoClient mongoClient,String dbName,String collectionName) {
+    public CollStatsMetrics(MongoClient mongoClient,MongoDatabase db,String collectionName) {
         super(mongoClient);
-        this.dbName = dbName;
+        this.db = db;
         this.collectionName = collectionName;
     }
 
@@ -89,7 +90,7 @@ public class CollStatsMetrics extends AbstractMonitor{
     }
 
     protected <T> T getCollStats(String key,Class<T> targetClass){
-        Document document = getDb(dbName).runCommand(new Document("collStats",collectionName));
+        Document document = db.runCommand(new Document("collStats",collectionName));
         if(ObjectUtil.isEmpty(document)){
             return null;
         }
