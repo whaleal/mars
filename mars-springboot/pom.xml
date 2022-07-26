@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.whaleal.mars</groupId>
         <artifactId>mars</artifactId>
-        <version>0.8.49</version>
+        <version>0.8.50</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
