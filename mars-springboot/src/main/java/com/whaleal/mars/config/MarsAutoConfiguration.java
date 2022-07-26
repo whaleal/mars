@@ -97,28 +97,12 @@ public class MarsAutoConfiguration {
 
 
     @Bean
-    @ConditionalOnMissingBean({MongoClient.class})
-    public MongoClient mongo( ObjectProvider< MongoClientSettingsBuilderCustomizer > builderCustomizers, MongoClientSettings settings ) {
-        return (MongoClient) (new MongoClientFactory(builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
+    @ConditionalOnMissingBean(MongoClient.class)
+    public MongoClient mongo(MongoProperties properties, Environment environment,
+                             ObjectProvider<MongoClientSettingsBuilderCustomizer> builderCustomizers,
+                             ObjectProvider<MongoClientSettings> settings) {
+        return new MongoClientFactory(properties, environment,
+                builderCustomizers.orderedStream().collect(Collectors.toList()))
+                .createMongoClient(settings.getIfAvailable());
     }
-
-    @Configuration(
-            proxyBeanMethods = false
-    )
-    @ConditionalOnMissingBean({MongoClientSettings.class})
-    static class MongoClientSettingsConfiguration {
-        MongoClientSettingsConfiguration() {
-        }
-
-        @Bean
-        MongoClientSettings mongoClientSettings() {
-            return MongoClientSettings.builder().build();
-        }
-
-        @Bean
-        MongoPropertiesClientSettingsBuilderCustomizer mongoPropertiesCustomizer( org.springframework.boot.autoconfigure.mongo.MongoProperties properties, Environment environment ) {
-            return new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
-        }
-    }
-
 }
