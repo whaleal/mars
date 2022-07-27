@@ -23,7 +23,6 @@ public class ContextTest {
 
 
 
-
     @Test
     public void test() {
         Assert.assertNotNull(mars);

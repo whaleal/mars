@@ -596,15 +596,21 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
     }
 
+    @Override
     public void setWriteConcern( WriteConcern writeConcern ) {
+        super.setWriteConcern(writeConcern);
         this.database = database.withWriteConcern(writeConcern);
     }
 
+    @Override
     public void setReadConcern( ReadConcern readConcern ) {
+        super.setReadConcern(readConcern);
         this.database = database.withReadConcern(readConcern);
     }
 
+    @Override
     public void setReadPreference( ReadPreference readPerference ) {
+        super.setReadPreference(readPerference);
         this.database = database.withReadPreference(readPerference);
     }
 
