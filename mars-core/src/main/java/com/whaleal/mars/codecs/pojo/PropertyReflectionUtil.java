@@ -58,6 +58,8 @@ final class PropertyReflectionUtil {
      */
     static boolean isGetter(final Method method) {
 
+
+
         if (method.getParameterTypes().length > 0) {
             return false;
         }else if (method.getName().startsWith(GET_PREFIX) && method.getName().length() > GET_PREFIX.length()) {
@@ -143,6 +145,7 @@ final class PropertyReflectionUtil {
         // on the subclass will return the overridden method as well as the method that was overridden from
         // the super class. This original method is copied over into the subclass as a bridge method, so we're
         // excluding them here to avoid multiple getters of the same property with different return types
+        // 开放的方法 并且不是 jvm 生成的桥接方法
         if (isPublic(method.getModifiers()) && !method.isBridge()) {
             if (isGetter(method)) {
                 getters.add(method);

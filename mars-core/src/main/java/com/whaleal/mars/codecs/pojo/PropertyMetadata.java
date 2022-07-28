@@ -43,7 +43,7 @@ import static java.lang.String.format;
 import static java.lang.reflect.Modifier.*;
 
 final class PropertyMetadata<T> {
-    // 属性 名称  一般通过 field #getName()  获取
+    // 属性 名称  一般通过 field #getName() 获取
     private final String name;
     // 字段所在的声明类
     private final String declaringClassName;
