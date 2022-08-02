@@ -32,6 +32,7 @@ package com.whaleal.mars.codecs.pojo;
 
 
 import com.whaleal.icefrog.core.util.ClassUtil;
+import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -163,7 +164,16 @@ final class MarsBuilderHelper {
 
             //  处理相关 field
             for (Field field : currentClass.getDeclaredFields()) {
-
+//                boolean flag = false;
+//                for (Annotation annotation : field.getDeclaredAnnotations()){
+//                    if(PropIgnore.class.equals(annotation.annotationType())){
+//                        flag = true;
+//                    }
+//                }
+//                if(flag){
+//                    propertyNames.remove(field.getName());
+//                    continue;
+//                }
                 propertyNames.add(field.getName());
                 // Note if properties are present and types don't match, the underlying field is treated as an implementation detail.
                 PropertyMetadata<?> propertyMetadata = getOrCreateFieldPropertyMetadata(field.getName(), declaringClassName,

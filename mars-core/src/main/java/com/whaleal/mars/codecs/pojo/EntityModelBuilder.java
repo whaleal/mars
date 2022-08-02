@@ -49,6 +49,7 @@ public class EntityModelBuilder<T> {
     //  实体属性
     private final List<PropertyModelBuilder<?>> propertyModelBuilders = new ArrayList<PropertyModelBuilder<?>>();
     //  id 生成器 如自定义的规则等
+    // 可以自定义
     private IdGenerator<?> idGenerator;
     private InstanceCreatorFactory<T> instanceCreatorFactory;
     //  type
@@ -226,6 +227,7 @@ public class EntityModelBuilder<T> {
     }
 
     EntityModelBuilder<T> addProperty(final PropertyModelBuilder<?> propertyModelBuilder) {
+        List<Annotation> readAnnotations = propertyModelBuilder.getReadAnnotations();
         propertyModelBuilders.add(notNull("propertyModelBuilder", propertyModelBuilder));
         return this;
     }
