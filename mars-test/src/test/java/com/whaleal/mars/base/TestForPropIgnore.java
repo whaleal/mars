@@ -55,7 +55,9 @@ public class TestForPropIgnore {
     public void testForQuery(){
         Query query = new Query(new Criteria());
 
-        Animal animal = mars.findAll(query, Animal.class).tryNext();
-        System.out.println(animal);
+        QueryCursor<Animal> all = mars.findAll(query, Animal.class);
+        while (all.hasNext()){
+            System.out.println(all.next());
+        }
     }
 }
