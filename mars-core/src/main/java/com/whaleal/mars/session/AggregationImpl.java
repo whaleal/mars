@@ -29,6 +29,9 @@
  */
 package com.whaleal.mars.session;
 
+import com.mongodb.ReadConcern;
+import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -64,6 +67,18 @@ public abstract class AggregationImpl {
     protected AggregationImpl(MongoDatabase database ,MongoMappingContext mapper){
         this.database = database.withCodecRegistry(mapper.getCodecRegistry());
         this.mapper = mapper ;
+    }
+
+    public void setWriteConcern( WriteConcern writeConcern ) {
+        this.database = database.withWriteConcern(writeConcern);
+    }
+
+    public void setReadConcern( ReadConcern readConcern ) {
+        this.database = database.withReadConcern(readConcern);
+    }
+
+    public void setReadPreference( ReadPreference readPerference ) {
+        this.database = database.withReadPreference(readPerference);
     }
 
 
