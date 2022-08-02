@@ -12,6 +12,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author lyz
  * @description
@@ -33,5 +36,14 @@ public class Animal {
     private Boolean isAlive;
 
     @PropIgnore
-    private String hello;
+    private Book book;
+
+    @PropIgnore
+    private List<Num> num;
+
+    @PropIgnore
+    private Map<String,Person> art;
+
+    @PropIgnore
+    private Status status;
 }
