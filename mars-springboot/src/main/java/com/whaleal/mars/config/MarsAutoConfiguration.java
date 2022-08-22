@@ -47,6 +47,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -98,8 +99,8 @@ public class MarsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean({MongoClient.class})
-    public MongoClient mongo( ObjectProvider< MongoClientSettingsBuilderCustomizer > builderCustomizers, MongoClientSettings settings ) {
-        return (MongoClient) (new MongoClientFactory(builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
+    public MongoClient mongo(ObjectProvider<MongoClientSettingsBuilderCustomizer> builderCustomizers, MongoClientSettings settings) {
+        return (MongoClient)(new MongoClientFactory((List)builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
     }
 
     @Configuration(
@@ -116,9 +117,8 @@ public class MarsAutoConfiguration {
         }
 
         @Bean
-        MongoPropertiesClientSettingsBuilderCustomizer mongoPropertiesCustomizer( org.springframework.boot.autoconfigure.mongo.MongoProperties properties, Environment environment ) {
+        MongoPropertiesClientSettingsBuilderCustomizer mongoPropertiesCustomizer(MongoProperties properties, Environment environment) {
             return new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
         }
     }
-
 }

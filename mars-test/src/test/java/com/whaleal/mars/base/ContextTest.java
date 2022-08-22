@@ -21,6 +21,8 @@ public class ContextTest {
     @Resource
     Mars marsResouce;
 
+
+
     @Test
     public void test() {
         Assert.assertNotNull(mars);
@@ -30,6 +32,5 @@ public class ContextTest {
         Assert.assertNotNull(marsResouce.getDatabase());
 
     }
-
 
 }

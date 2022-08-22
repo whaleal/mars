@@ -71,6 +71,20 @@ public class Mars extends DatastoreImpl {
         super(mongoClient, databaseName == null ? "test" : databaseName);
     }
 
+    public Mars(Mars that ,String databaseName){
+        this(that.getMongoClient(),databaseName);
+        if(that.getReadConcern()!=null){
+            this.setReadConcern(that.getReadConcern());
+        }
+       if(that.getReadPreference()!=null){
+           this.setReadPreference(that.getReadPreference());
+       }
+        if(that.getWriteConcern()!=null){
+            this.setWriteConcern(that.getWriteConcern());
+        }
+
+    }
+
     public Mars( ConnectionString connectionString ) {
         this(MongoClients.create(connectionString), connectionString.getDatabase());
     }

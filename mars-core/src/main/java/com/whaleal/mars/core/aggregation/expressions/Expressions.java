@@ -28,7 +28,7 @@ public final class Expressions {
      * @param name the field name
      * @return the new expression
      */
-    public static Expression field(String name) {
+    public static Expression  field(String name) {
         return new ValueExpression(name.startsWith("$") ? name : "$" + name);
     }
 

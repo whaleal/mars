@@ -41,17 +41,31 @@ import java.util.*;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
-
+/**
+ * 实体关系模型
+ * 1。有属性
+ * 2。属性：private 必须提供getter setter；
+ *          public 可以不提供
+ * 3。没有属性 以getter setter为准
+ *
+ *
+ * @param <T>
+ */
 public final class EntityModel<T> {
     private final String name;
     private final Class<T> type;
     private final boolean hasTypeParameters;
     private final InstanceCreatorFactory<T> instanceCreatorFactory;
+    //document与实体类的映射关系，主要用于补充说明
     private final boolean discriminatorEnabled;
     private final String discriminatorKey;
+    //package+className
     private final String discriminator;
+
+    //id holder
     private final IdPropertyModelHolder<?> idPropertyModelHolder;
     //  todo 后期是否修改为 LinkMap
+    //无论属性有没有值 都会遍历一遍
     private final List<PropertyModel<?>> propertyModels;
     private final Map<String, TypeParameterMap> propertyNameToTypeParameterMap;
 
@@ -70,6 +84,7 @@ public final class EntityModel<T> {
 
     private List<Annotation> annotations;
 
+    //子类的保存
     private final List<EntityModel> subtypes = new ArrayList<>();
 
 

@@ -33,6 +33,7 @@ package com.whaleal.mars.codecs.pojo;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.codecs.Convention;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
 import org.bson.codecs.pojo.IdGenerator;
 
 import java.lang.annotation.Annotation;
@@ -49,6 +50,7 @@ public class EntityModelBuilder<T> {
     //  实体属性
     private final List<PropertyModelBuilder<?>> propertyModelBuilders = new ArrayList<PropertyModelBuilder<?>>();
     //  id 生成器 如自定义的规则等
+    // 可以自定义
     private IdGenerator<?> idGenerator;
     private InstanceCreatorFactory<T> instanceCreatorFactory;
     //  type
@@ -226,7 +228,15 @@ public class EntityModelBuilder<T> {
     }
 
     EntityModelBuilder<T> addProperty(final PropertyModelBuilder<?> propertyModelBuilder) {
-        propertyModelBuilders.add(notNull("propertyModelBuilder", propertyModelBuilder));
+        boolean flag = false;
+        for (Annotation annotation : propertyModelBuilder.getWriteAnnotations()){
+            if(PropIgnore.class.equals(annotation.annotationType())){
+                flag = true;
+            }
+        }
+        if(!flag){
+            propertyModelBuilders.add(notNull("propertyModelBuilder", propertyModelBuilder));
+        }
         return this;
     }
 
