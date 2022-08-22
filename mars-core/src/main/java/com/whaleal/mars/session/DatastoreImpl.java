@@ -769,7 +769,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     public Document toDocument( Object entity ) {
         final EntityModel entityModel = this.mapper.getEntityModel(entity.getClass());
 
-        DocumentWriter writer = new DocumentWriter();
+        DocumentWriter writer = new DocumentWriter(mapper);
         this.mapper.getCodecRegistry().get(entityModel.getType())
                 .encode(writer, entity, EncoderContext.builder().build());
 
