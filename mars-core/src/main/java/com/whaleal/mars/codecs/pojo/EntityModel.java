@@ -67,6 +67,7 @@ public final class EntityModel<T> {
     //  todo 后期是否修改为 LinkMap
     //无论属性有没有值 都会遍历一遍
     private final List<PropertyModel<?>> propertyModels;
+
     private final Map<String, TypeParameterMap> propertyNameToTypeParameterMap;
 
     private PropertyModel<?> IdProperty;

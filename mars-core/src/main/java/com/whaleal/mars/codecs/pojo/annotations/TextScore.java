@@ -33,6 +33,15 @@ package com.whaleal.mars.codecs.pojo.annotations;
 import java.lang.annotation.*;
 
 
+/**
+ * 目前该功能暂不支持
+ *
+ *
+ * 主要用于标记 score  字段
+ * 查询时映射
+ * @author wh
+ *
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
