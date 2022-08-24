@@ -32,7 +32,7 @@ package com.whaleal.mars.codecs.pojo.annotations;
 import java.lang.annotation.*;
 
 /**
- * 用于标记一个中的构造方法
+ * 用于标记一个实体类中的构造方法
  * 只能作用于方法 或构造方法
  *
  *

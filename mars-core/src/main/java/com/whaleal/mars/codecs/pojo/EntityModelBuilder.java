@@ -229,6 +229,7 @@ public class EntityModelBuilder<T> {
 
     EntityModelBuilder<T> addProperty(final PropertyModelBuilder<?> propertyModelBuilder) {
         boolean flag = false;
+        // 过滤包含了 PropIgnore 的字段
         for (Annotation annotation : propertyModelBuilder.getWriteAnnotations()){
             if(PropIgnore.class.equals(annotation.annotationType())){
                 flag = true;

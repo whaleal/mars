@@ -32,7 +32,7 @@ package com.whaleal.mars.codecs.pojo;
 
 
 import com.whaleal.icefrog.core.util.ClassUtil;
-import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -43,7 +43,7 @@ import static java.lang.reflect.Modifier.isProtected;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+
 
 /**
  * 通过 classModelBuilder   及 clazz
@@ -67,7 +67,7 @@ final class MarsBuilderHelper {
 
     @SuppressWarnings("unchecked")
     static <T> void configureClassModelBuilder(final EntityModelBuilder<T> entityModelBuilder, final Class<T> clazz) {
-        // 断言 非空并封装 type
+        // 断言 非空 并封装 type
         entityModelBuilder.type(notNull("clazz", clazz));
 
         //  类对象上的 注解保存

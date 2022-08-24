@@ -76,14 +76,22 @@ final class ConventionDefaultsImpl implements Convention {
 
     @SuppressWarnings("unchecked")
     private <T> void processCreatorAnnotation(final EntityModelBuilder<T> entityModelBuilder) {
+        /**
+         * Step 1
+         * 解析该类上的构造方法 并解析 注解
+         * 识别构造方法
+         *
+         */
         Class<T> clazz = entityModelBuilder.getType();
         CreatorExecutable<T> creatorExecutable = null;
         for (java.lang.reflect.Constructor constructor : clazz.getDeclaredConstructors()) {
             if (isPublic(constructor.getModifiers()) && !constructor.isSynthetic()) {
                 for (Annotation annotation : constructor.getDeclaredAnnotations()) {
+                    //  判断该构造上是否有 @Constructor注解
+                    //  如果有注解 则认为是构造的 方法 ，并写入 creatorExecutable
                     if (annotation.annotationType().equals(Constructor.class)) {
                         if (creatorExecutable != null) {
-                            throw new CodecConfigurationException("Found multiple constructors annotated with @MongoCreator");
+                            throw new CodecConfigurationException("Found multiple constructors annotated with @Constructor");
                         }
                         creatorExecutable = new CreatorExecutable<T>(clazz, (java.lang.reflect.Constructor) constructor);
                     }
@@ -91,6 +99,18 @@ final class ConventionDefaultsImpl implements Convention {
             }
         }
 
+        /**
+         * step 2
+         *
+         * 解析该类上的所有方法
+         * 主要为静态工具方法 且返回类型为本类对象
+         * 查看其注解情况进行相关 处理
+         *
+         *
+         *
+         *
+         *
+         */
         Class<?> bsonCreatorClass = clazz;
         boolean foundStaticBsonCreatorMethod = false;
         while (bsonCreatorClass != null && !foundStaticBsonCreatorMethod) {
@@ -99,10 +119,10 @@ final class ConventionDefaultsImpl implements Convention {
                     for (Annotation annotation : method.getDeclaredAnnotations()) {
                         if (annotation.annotationType().equals(Constructor.class)) {
                             if (creatorExecutable != null) {
-                                throw new CodecConfigurationException("Found multiple constructors / methods annotated with @MongoCreator");
+                                throw new CodecConfigurationException("Found multiple constructors / methods annotated with @Constructor ");
                             } else if (!bsonCreatorClass.isAssignableFrom(method.getReturnType())) {
                                 throw new CodecConfigurationException(
-                                        format("Invalid method annotated with @MongoCreator. Returns '%s', expected %s",
+                                        format("Invalid method annotated with @Constructor . Returns '%s', expected %s",
                                                 method.getReturnType(), bsonCreatorClass));
                             }
                             creatorExecutable = new CreatorExecutable<T>(clazz, method);
@@ -121,8 +141,8 @@ final class ConventionDefaultsImpl implements Convention {
             List<Type> parameterGenericTypes = creatorExecutable.getParameterGenericTypes();
 
             if (properties.size() != parameterTypes.size()) {
-                throw creatorExecutable.getError(clazz, "All parameters in the @MongoCreator method / constructor must be annotated "
-                        + "with a @MongoProperty.");
+                throw creatorExecutable.getError(clazz, "All parameters in the @Constructor method / constructor must be annotated "
+                        + "with a @Property.");
             }
             for (int i = 0; i < properties.size(); i++) {
                 boolean isIdProperty = creatorExecutable.getIdPropertyIndex() != null && creatorExecutable.getIdPropertyIndex().equals(i);

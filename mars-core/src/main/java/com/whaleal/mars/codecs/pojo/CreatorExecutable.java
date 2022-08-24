@@ -155,7 +155,7 @@ final class CreatorExecutable<T> {
     }
 
     private static CodecConfigurationException getError(final Class<?> clazz, final boolean isConstructor, final String msg) {
-        return new CodecConfigurationException(format("Invalid @MongoCreator %s in %s. %s", isConstructor ? "constructor" : "method",
+        return new CodecConfigurationException(format("Invalid @Constructor %s in %s. %s", isConstructor ? "constructor" : "method",
                 clazz.getSimpleName(), msg));
     }
 

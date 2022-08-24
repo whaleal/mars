@@ -89,6 +89,12 @@ public class Mars extends DatastoreImpl {
         this(MongoClients.create(connectionString), connectionString.getDatabase());
     }
 
+    /**
+     * 如果有加密需求 如 字段加密
+     * 可以通过  MongoClientSettings  的修改来实现
+     * @param clientSettings
+     * @param databaseName
+     */
     public Mars( MongoClientSettings clientSettings, String databaseName ) {
         this(MongoClients.create(clientSettings), databaseName);
     }
