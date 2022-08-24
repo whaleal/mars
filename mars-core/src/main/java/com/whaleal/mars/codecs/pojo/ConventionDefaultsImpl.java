@@ -298,7 +298,11 @@ final class ConventionDefaultsImpl implements Convention {
             } else if(annotation instanceof Representation){
                 BsonType bsonRep = ((Representation) annotation).value();
                 propertyModelBuilder.bsonRepresentation(bsonRep);
-            } else {
+            } else if(annotation instanceof PropIgnore || annotation instanceof Transient || annotation instanceof java.beans.Transient){
+
+                propertyModelBuilder.readName(null);
+
+            }else {
                 //todo
             }
         }
@@ -314,7 +318,7 @@ final class ConventionDefaultsImpl implements Convention {
 
                 propertyModelBuilder.writeName("_id");
 
-            } else if (annotation instanceof PropIgnore) {
+            } else if (annotation instanceof PropIgnore || annotation instanceof Transient || annotation instanceof java.beans.Transient) {
                 propertyModelBuilder.writeName(null);
             }
         }

@@ -33,7 +33,6 @@ package com.whaleal.mars.codecs.pojo;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.codecs.Convention;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
 import org.bson.codecs.pojo.IdGenerator;
 
 import java.lang.annotation.Annotation;
@@ -228,16 +227,11 @@ public class EntityModelBuilder<T> {
     }
 
     EntityModelBuilder<T> addProperty(final PropertyModelBuilder<?> propertyModelBuilder) {
-        boolean flag = false;
-        // 过滤包含了 PropIgnore 的字段
-        for (Annotation annotation : propertyModelBuilder.getWriteAnnotations()){
-            if(PropIgnore.class.equals(annotation.annotationType())){
-                flag = true;
-            }
-        }
-        if(!flag){
+
+        if(propertyModelBuilder.isReadable() || propertyModelBuilder.isWritable()){
             propertyModelBuilders.add(notNull("propertyModelBuilder", propertyModelBuilder));
         }
+
         return this;
     }
 

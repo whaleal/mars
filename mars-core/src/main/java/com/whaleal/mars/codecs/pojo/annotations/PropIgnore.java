@@ -40,8 +40,8 @@ import java.lang.annotation.*;
  * <p>
  * 如果被此修饰
  * <p>
- * 那么writeName  为空
- * 直接序列化传值
+ * 那么writeName  为空  且 readName 为空
+ * 不支持传值
  *
  * <p>Note: A null means this property will not be serialized.</p>
  */

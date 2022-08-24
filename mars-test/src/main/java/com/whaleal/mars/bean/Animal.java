@@ -3,6 +3,7 @@ package com.whaleal.mars.bean;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.pojo.annotations.Id;
 import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
+import com.whaleal.mars.codecs.pojo.annotations.Transient;
 import com.whaleal.mars.core.index.annotation.Field;
 import com.whaleal.mars.core.index.annotation.Index;
 import com.whaleal.mars.core.index.annotation.IndexOptions;
@@ -36,17 +37,22 @@ public class Animal {
 
     private Boolean isAlive;
 
-    @PropIgnore
+
+    @Transient
     private Book book;
 
-    @PropIgnore
+
+    @Transient
     private List<Num> num;
+
 
     @PropIgnore
     private Map<String,Person> art;
 
+
+
     @PropIgnore
-    private Status status;
+    private  Status status;
 
     private Date birthday;
 }
