@@ -36,10 +36,7 @@ import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
-import com.mongodb.client.model.TimeSeriesGranularity;
-import com.mongodb.client.model.ValidationAction;
-import com.mongodb.client.model.ValidationLevel;
-
+import com.mongodb.client.model.*;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
@@ -61,7 +58,19 @@ import com.whaleal.mars.core.index.IndexHelper;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.core.gridfs.GridFsObject;
 import com.whaleal.mars.core.gridfs.GridFsResource;
+
 import com.whaleal.mars.session.option.*;
+import com.whaleal.mars.session.option.CountOptions;
+import com.whaleal.mars.session.option.DeleteOptions;
+import com.whaleal.mars.session.option.FindOneAndDeleteOptions;
+import com.whaleal.mars.session.option.FindOneAndReplaceOptions;
+import com.whaleal.mars.session.option.FindOneAndUpdateOptions;
+import com.whaleal.mars.session.option.IndexOptions;
+import com.whaleal.mars.session.option.InsertManyOptions;
+import com.whaleal.mars.session.option.InsertOneOptions;
+import com.whaleal.mars.session.option.ReplaceOptions;
+import com.whaleal.mars.session.option.TimeSeriesOptions;
+import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
@@ -1230,7 +1239,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         }
 
         if (query.getCollation().orElse(null) != null){
-            findIterable = findIterable.collation(query.getCollation().get().toMongoCollation());
+            findIterable = findIterable.collation(query.getCollation().get());
         }
 
         if (query.getSkip() > 0) {
@@ -1338,7 +1347,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         if(query!=null){
             distinctIterable = collection.distinct(session,field,query.getQueryObject(),resultClass);
             if (query.getCollation().orElse(null) != null){
-                distinctIterable = distinctIterable.collation(query.getCollation().get().toMongoCollation());
+                distinctIterable = distinctIterable.collation(query.getCollation().get());
             }
         }else {
             distinctIterable = collection.distinct(session,field,null,resultClass);
@@ -1641,84 +1650,135 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         MongoCursor iterator = indexIterable.iterator();
 
-        Index index = null;
+
 
         List indexes = new ArrayList();
 
 
         while (iterator.hasNext()) {
 
-            Document indexDocument = (Document) iterator.next();
+            Document  o= (Document) iterator.next();
 
             IndexOptions indexOptions = new IndexOptions();
+            if (o.get("background") != null) {
+                indexOptions.background((Boolean) o.get("background"));
+            }
 
-            if (indexDocument.get("name") != null) {
-                indexOptions.name((String) indexDocument.get("name"));
+            if (o.get("unique") != null) {
+                indexOptions.unique((Boolean) o.get("unique"));
             }
-            if (indexDocument.get("partialFilterExpression") != null) {
-                indexOptions.partialFilterExpression((Bson) indexDocument.get("partialFilterExpression"));
+            if (o.get("name") != null) {
+                indexOptions.name((String) o.get("name"));
             }
-            if (indexDocument.get("weights") != null) {
-                indexOptions.weights((Bson) indexDocument.get("weights"));
+
+            if (o.get("partialFilterExpression") != null) {
+                indexOptions.partialFilterExpression((Bson) o.get("partialFilterExpression"));
             }
-            if (indexDocument.get("storageEngine") != null) {//不常用到
-                indexOptions.storageEngine((Bson) indexDocument.get("storageEngine"));
+            if (o.get("sparse") != null) {
+                indexOptions.sparse((Boolean) o.get("sparse"));
             }
-            if (indexDocument.get("wildcardProjection") != null) {
-                indexOptions.wildcardProjection((Bson) indexDocument.get("wildcardProjection"));
-            }
-            if (indexDocument.get("collation") != null) {
-                Document document = (Document) indexDocument.get("collation");
-                com.whaleal.mars.core.query.Collation collation = com.whaleal.mars.core.query.Collation.from(document);
-                indexOptions.collation(collation.toMongoCollation());
-            }
-            /*if (indexDocument.get("version") != null) {         官方文档也没有这个Index偏好设置，只在IndexOptions类里面有
-                indexOptions.version((Integer) indexDocument.get("version"));
-            }*/
-            if (indexDocument.get("unique") != null) {
-                indexOptions.unique((Boolean) indexDocument.get("unique"));
-            }
-            if (indexDocument.get("bits") != null) {
-                indexOptions.bits((Integer) indexDocument.get("bits"));
-            }
-            if (indexDocument.get("bucketSize") != null) {
-                indexOptions.bucketSize((Double) indexDocument.get("bucketSize"));
-            }
-            if (indexDocument.get("default_language") != null) {
-                indexOptions.defaultLanguage((String) indexDocument.get("default_language"));
-            }
-            if (indexDocument.get("expireAfterSeconds") != null) {
-                Long expireAfter = ((Integer) indexDocument.get("expireAfterSeconds")).longValue();//秒以下会丢失
+            if (o.get("expireAfterSeconds") != null) {
+                Long expireAfter = ((Double) Double.parseDouble(o.get("expireAfterSeconds").toString())).longValue();
+                //秒以下会丢失
                 indexOptions.expireAfter(expireAfter, TimeUnit.SECONDS);
             }
-            if (indexDocument.get("hidden") != null) {
-                indexOptions.hidden((Boolean) indexDocument.get("hidden"));
-            }
-            if (indexDocument.get("language_override") != null) {
-                indexOptions.languageOverride((String) indexDocument.get("language_override"));
-            }
-            if (indexDocument.get("max") != null) {
-                indexOptions.max((Double) indexDocument.get("max"));
-            }
-            if (indexDocument.get("min") != null) {
-                indexOptions.min((Double) indexDocument.get("min"));
-            }
-            if (indexDocument.get("sparse") != null) {
-                indexOptions.sparse((Boolean) indexDocument.get("sparse"));
-            }
-            if (indexDocument.get("2dsphereIndexVersion") != null) {
-                indexOptions.sphereVersion((Integer) indexDocument.get("2dsphereIndexVersion"));
-            }
-            if (indexDocument.get("background") != null) {
-                indexOptions.background((Boolean) indexDocument.get("background"));
-            }
-            if (indexDocument.get("textIndexVersion") != null) {
-                indexOptions.textVersion((Integer) indexDocument.get("textIndexVersion"));
+
+            if (o.get("hidden") != null) {
+                indexOptions.hidden((Boolean) o.get("hidden"));
             }
 
-            Document key = (Document) indexDocument.get("key");
+            if (o.get("storageEngine") != null) {
+                //不常用到
+                indexOptions.storageEngine((Bson) o.get("storageEngine"));
+            }
 
-            index = new Index();
+            //---------deal with Collation
+
+            if (o.get("collation") != null) {
+                com.mongodb.client.model.Collation.Builder collationBuilder = com.mongodb.client.model.Collation.builder();
+                Document collation = (Document) o.get("collation");
+                if (collation.get("locale") != null) {
+                    collationBuilder.locale(collation.getString("locale"));
+                }
+                if (collation.get("caseLevel") != null) {
+                    collationBuilder.caseLevel(collation.getBoolean("caseLevel"));
+                }
+                if (collation.get("caseFirst") != null) {
+                    collationBuilder.collationCaseFirst(CollationCaseFirst.fromString(collation.getString("caseFirst")));
+                }
+                if (collation.get("strength") != null) {
+                    collationBuilder.collationStrength(CollationStrength.fromInt(
+                            ((Double) Double.parseDouble(collation.get("strength").toString())).intValue()
+                    ));
+                }
+                if (collation.get("numericOrdering") != null) {
+                    collationBuilder.numericOrdering(collation.getBoolean("numericOrdering"));
+                }
+                if (collation.get("alternate") != null) {
+                    collationBuilder.collationAlternate(CollationAlternate.fromString(collation.getString("alternate")));
+                }
+                if (collation.get("maxVariable") != null) {
+                    collationBuilder.collationMaxVariable(CollationMaxVariable.fromString(collation.getString("maxVariable")));
+                }
+                if (collation.get("normalization") != null) {
+                    collationBuilder.normalization(collation.getBoolean("normalization"));
+                }
+                if (collation.get("backwards") != null) {
+                    collationBuilder.backwards(collation.getBoolean("backwards"));
+                }
+                indexOptions.collation(collationBuilder.build());
+            }
+
+            //---------deal with Text
+
+
+            if (o.get("weights") != null) {
+                indexOptions.weights((Bson) o.get("weights"));
+            }
+            if (o.get("textIndexVersion") != null) {
+                indexOptions.textVersion(((Double) Double.parseDouble(o.get("textIndexVersion").toString())).intValue());
+            }
+            if (o.get("default_language") != null) {
+                indexOptions.defaultLanguage((String) o.get("default_language"));
+            }
+            if (o.get("language_override") != null) {
+                indexOptions.languageOverride(o.get("language_override").toString());
+            }
+
+            //--------deal with wildcard
+
+            if (o.get("wildcardProjection") != null) {
+                indexOptions.wildcardProjection((Bson) o.get("wildcardProjection"));
+            }
+
+            //---------deal with geoHaystack
+            if (o.get("bucketSize") != null) {
+                indexOptions.bucketSize(Double.parseDouble(o.get("bucketSize").toString()));
+            }
+            //---------deal with  2d
+
+            if (o.get("bits") != null) {
+                indexOptions.bits(((Double) Double.parseDouble(o.get("bits").toString())).intValue());
+            }
+            if (o.get("max") != null) {
+                indexOptions.max((Double.parseDouble(o.get("max").toString())));
+            }
+            if (o.get("min") != null) {
+                indexOptions.min((Double.parseDouble(o.get("min").toString())));
+            }
+
+            //---------------deal with 2dsphere
+
+            if (o.get("2dsphereIndexVersion") != null) {
+                indexOptions.sphereVersion(((Double) Double.parseDouble((o.get("2dsphereIndexVersion").toString()))).intValue());
+            }
+
+            //------ let it be backgroud
+            indexOptions.background(true);
+
+            Document key = (Document) o.get("key");
+
+            Index index = new Index();
 
             Set<String> strings = key.keySet();
 

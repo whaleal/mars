@@ -41,7 +41,7 @@ import com.whaleal.mars.session.DatastoreImpl;
  * <p>
  * 对外开放的 操作 类
  * 可以自动在 容器中获取
- * 或者通过 uri  参数 来创建该对象
+ * 或者通过 uri  参数来创建该对象
  *
  * 操作相关实现全部详见  DataStoreImpl
  * @see DatastoreImpl

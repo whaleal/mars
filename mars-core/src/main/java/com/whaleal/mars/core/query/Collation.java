@@ -43,6 +43,11 @@ import java.util.Locale;
 import java.util.Optional;
 
 /**
+ * @see com.mongodb.client.model.Collation
+ *
+ *
+ * please use com.mongodb.client.model.Collation at first
+ *
  * Central abstraction for MongoDB collation support. <br />
  * Allows fluent creation of a collation {@link Document} that can be used for creating collections & indexes as well as
  * querying data.
@@ -50,15 +55,21 @@ import java.util.Optional;
  * <strong>NOTE:</strong> Please keep in mind that queries will only make use of an index with collation settings if the
  * query itself specifies the same collation.
  */
-//@Deprecated
+
 public class Collation {
 
     private static final Collation SIMPLE = of("simple");
 
     private final CollationLocale locale;
 
+
+    /**
+     * contains  caseLevel  caseFirst  strength
+     *
+     */
     private Optional<ComparisonLevel> strength = Optional.empty();
     private Optional<Boolean> numericOrdering = Optional.empty();
+    /**  contains alternate  maxVariable */
     private Optional<Alternate> alternate = Optional.empty();
     private Optional<Boolean> backwards = Optional.empty();
     private Optional<Boolean> normalization = Optional.empty();
@@ -209,6 +220,7 @@ public class Collation {
             return document;
         };
     }
+
 
     private static Converter2<Collation, com.mongodb.client.model.Collation> toMongoCollationConverter() {
 

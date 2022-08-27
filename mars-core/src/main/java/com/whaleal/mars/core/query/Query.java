@@ -64,7 +64,9 @@ public class Query {
 
     private Meta meta = new Meta();
     // collation
-    private Optional<Collation> collation = Optional.empty();
+    private Optional<com.mongodb.client.model.Collation> collation = Optional.empty();
+
+
 
     public Query() {
     }
@@ -437,6 +439,7 @@ public class Query {
         this.meta = meta;
     }
 
+
     /**
      * Set the {@link Collation} applying language-specific rules for string comparison.
      *
@@ -444,6 +447,19 @@ public class Query {
      * @return this.
      */
     public Query collation(Collation collation ) {
+
+        this.collation = Optional.ofNullable(collation.toMongoCollation());
+        return this;
+    }
+
+
+    /**
+     * Set the {@link Collation} applying language-specific rules for string comparison.
+     *
+     * @param collation can be {@literal null}.
+     * @return this.
+     */
+    public Query collation(com.mongodb.client.model.Collation collation ) {
 
         this.collation = Optional.ofNullable(collation);
         return this;
@@ -454,7 +470,7 @@ public class Query {
      *
      * @return never {@literal null}.
      */
-    public Optional<Collation> getCollation() {
+    public Optional<com.mongodb.client.model.Collation> getCollation() {
         return collation;
     }
 

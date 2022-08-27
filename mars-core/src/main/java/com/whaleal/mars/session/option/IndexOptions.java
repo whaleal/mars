@@ -41,199 +41,156 @@ import java.util.concurrent.TimeUnit;
  *
  * @see com.whaleal.mars.core.index.annotation.IndexOptions
  *
+ * only overwrite the  set  Method
+ * the get fuction  always  use it's parent fuction
+ * @mongodb.driver.manual reference/command/createIndexes Index options
+ * see  https://www.mongodb.com/docs/v6.0/reference/method/db.collection.createIndex/#std-label-ensureIndex-options
+ * 索引明细  主要分为以下几类
+ * 通用类型
+ *
+ *    storageEngine
+ *    background
+ *    unique
+ *    name
+ *    partialFilterExpression
+ *    sparse
+ *    expireAfterSeconds
+ *    hidden
+ *
+ *
+ * Collation
+ *    locale: <string>,
+ *    caseLevel: <boolean>,
+ *    caseFirst: <string>,
+ *    strength: <int>,
+ *    numericOrdering: <boolean>,
+ *    alternate: <string>,
+ *    maxVariable: <string>,
+ *    backwards: <boolean>
+ *    normalization: <boolean>
+ * Text
+ *  weights
+ *  default_language
+ *  language_override
+ *  textIndexVersion
+ * 2dsphere
+ *  2dsphereIndexVersion
+ * 2d
+ *  bit
+ *  min
+ *  max
+ * geoHaystack
+ *  bucketSize
+ * wildcard
+ *  wildcardProjection
+ *
  */
 public class IndexOptions extends com.mongodb.client.model.IndexOptions implements WriteConfigurable<IndexOptions> {
 
     private WriteConcern writeConcern;
 
-    private com.mongodb.client.model.IndexOptions originIndexOptions;
-
     public IndexOptions() {
-        this.originIndexOptions = new com.mongodb.client.model.IndexOptions();
+        super();
 
-    }
-
-    public IndexOptions(com.mongodb.client.model.IndexOptions originIndexOptions) {
-        this.originIndexOptions = originIndexOptions;
-    }
-
-
-    public Integer getBits() {
-        return originIndexOptions.getBits();
-    }
-
-
-    public Collation getCollation() {
-        return originIndexOptions.getCollation();
-    }
-
-
-    public String getName() {
-        return originIndexOptions.getName();
-    }
-
-
-    public Integer getVersion() {
-        return originIndexOptions.getVersion();
-    }
-
-
-    public Double getBucketSize() {
-        return originIndexOptions.getBucketSize();
-    }
-
-
-    public String getDefaultLanguage() {
-        return originIndexOptions.getDefaultLanguage();
-    }
-
-
-    public Long getExpireAfter(TimeUnit timeUnit) {
-        return originIndexOptions.getExpireAfter(timeUnit);
-    }
-
-
-    public String getLanguageOverride() {
-        return originIndexOptions.getLanguageOverride();
-    }
-
-
-    public Double getMax() {
-        return originIndexOptions.getMax();
-    }
-
-
-    public Double getMin() {
-        return originIndexOptions.getMin();
-    }
-
-
-    public Bson getPartialFilterExpression() {
-        return originIndexOptions.getPartialFilterExpression();
-    }
-
-
-    public Integer getSphereVersion() {
-        return originIndexOptions.getSphereVersion();
-    }
-
-
-    public Bson getStorageEngine() {
-        return originIndexOptions.getStorageEngine();
-    }
-
-
-    public Integer getTextVersion() {
-        return originIndexOptions.getTextVersion();
-    }
-
-
-    public Bson getWeights() {
-        return originIndexOptions.getWeights();
-    }
-
-
-    public Bson getWildcardProjection() {
-        return originIndexOptions.getWildcardProjection();
     }
 
     public IndexOptions background(boolean background) {
-        originIndexOptions.background(background);
+        super.background(background);
         return this;
     }
 
     public IndexOptions unique(boolean unique) {
-        originIndexOptions.unique(unique);
+        super.unique(unique);
         return this;
     }
 
     public IndexOptions name(String name) {
-        originIndexOptions.name(name);
+        super.name(name);
         return this;
     }
 
     public IndexOptions sparse(boolean sparse) {
-        originIndexOptions.sparse(sparse);
+        super.sparse(sparse);
         return this;
     }
 
     public IndexOptions expireAfter(Long expireAfter, TimeUnit timeUnit) {
-        originIndexOptions.expireAfter(expireAfter, timeUnit);
+        super.expireAfter(expireAfter, timeUnit);
         return this;
     }
 
     public IndexOptions version(Integer version) {
-        originIndexOptions.version(version);
+        super.version(version);
         return this;
     }
 
     public IndexOptions weights(Bson weights) {
-        originIndexOptions.weights(weights);
+        super.weights(weights);
         return this;
     }
 
     public IndexOptions defaultLanguage(String defaultLanguage) {
-        originIndexOptions.defaultLanguage(defaultLanguage);
+        super.defaultLanguage(defaultLanguage);
         return this;
     }
 
     public IndexOptions languageOverride(String languageOverride) {
-        originIndexOptions.languageOverride(languageOverride);
+        super.languageOverride(languageOverride);
         return this;
     }
 
     public IndexOptions textVersion(Integer textVersion) {
-        originIndexOptions.textVersion(textVersion);
+        super.textVersion(textVersion);
         return this;
     }
 
     public IndexOptions sphereVersion(Integer sphereVersion) {
-        originIndexOptions.sphereVersion(sphereVersion);
+        super.sphereVersion(sphereVersion);
         return this;
     }
 
     public IndexOptions bits(Integer bits) {
-        originIndexOptions.bits(bits);
+        super.bits(bits);
         return this;
     }
 
     public IndexOptions min(Double min) {
-        originIndexOptions.min(min);
+        super.min(min);
         return this;
     }
 
     public IndexOptions max(Double max) {
-        originIndexOptions.max(max);
+        super.max(max);
         return this;
     }
 
     public IndexOptions bucketSize(Double bucketSize) {
-        originIndexOptions.bucketSize(bucketSize);
+        super.bucketSize(bucketSize);
         return this;
     }
 
     public IndexOptions storageEngine(Bson storageEngine) {
-        originIndexOptions.storageEngine(storageEngine);
+        super.storageEngine(storageEngine);
         return this;
     }
 
     public IndexOptions partialFilterExpression(Bson partialFilterExpression) {
-        originIndexOptions.partialFilterExpression(partialFilterExpression);
+        super.partialFilterExpression(partialFilterExpression);
         return this;
     }
 
     public IndexOptions collation(Collation collation) {
-        originIndexOptions.collation(collation);
+        super.collation(collation);
         return this;
     }
 
     public IndexOptions wildcardProjection(Bson wildcardProjection) {
-        originIndexOptions.wildcardProjection(wildcardProjection);
+        super.wildcardProjection(wildcardProjection);
         return this;
     }
 
     public IndexOptions hidden(boolean hidden) {
-        originIndexOptions.hidden(hidden);
+        super.hidden(hidden);
         return this;
     }
 
@@ -250,17 +207,11 @@ public class IndexOptions extends com.mongodb.client.model.IndexOptions implemen
 
     @Override
     public com.mongodb.client.model.IndexOptions getOriginOptions() {
-        if (originIndexOptions == null) {
-            originIndexOptions = new com.mongodb.client.model.IndexOptions();
-        }
-        return originIndexOptions;
+       return this;
     }
 
     @Override
     public String toString() {
-        return "IndexOptions{" +
-                "writeConcern=" + writeConcern +
-                ", originIndexOptions=" + originIndexOptions +
-                '}';
+        return super.toString();
     }
 }
