@@ -39,6 +39,9 @@ import java.lang.annotation.*;
 /**
  * Defines the collation options for an index
  * @see IndexOptions
+ * @see com.whaleal.mars.codecs.pojo.annotations.Collation
+ * @see com.mongodb.client.model.Collation
+ * @see com.whaleal.mars.core.query.Collation
  */
 @Documented
 @Inherited

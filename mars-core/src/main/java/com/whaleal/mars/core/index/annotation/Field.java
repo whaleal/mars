@@ -38,6 +38,23 @@ import java.lang.annotation.*;
  * Define a field to be used in an index;
  *
  * @see IndexDirection
+ * @mongodb.manual  https://www.mongodb.com/docs/v6.0/tutorial/control-results-of-text-search/
+ * @code
+ * db.blog.createIndex(
+ *    {
+ *      content: "text",
+ *      keywords: "text",
+ *      about: "text"
+ *    },
+ *    {
+ *      weights: {
+ *        content: 10,
+ *        keywords: 5
+ *      },
+ *      name: "TextIndex"
+ *    }
+ *  )
+ *
  *
  */
 @Documented

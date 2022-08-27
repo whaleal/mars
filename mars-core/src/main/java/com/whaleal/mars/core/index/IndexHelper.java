@@ -161,7 +161,8 @@ public final class IndexHelper {
         com.whaleal.mars.session.option.IndexOptions indexOptions = new com.whaleal.mars.session.option.IndexOptions()
                 .background(options.background())
                 .sparse(options.sparse())
-                .unique(options.unique());
+                .unique(options.unique())
+                .hidden(options.hidden());
 
         if (!options.language().equals("")) {
             indexOptions.defaultLanguage(options.language());

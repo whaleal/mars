@@ -37,37 +37,57 @@ import java.lang.annotation.*;
  * <p>
  *
  * @see com.whaleal.mars.session.option.IndexOptions  两者统一
+ * 索引明细  主要分为以下几类
+ * 通用类型
  *
+ *
+ *    background
+ *    unique
+ *    name
+ *    partialFilterExpression
+ *    sparse
+ *    expireAfterSeconds
+ *    hidden
+ *
+ *
+ * Collation
+ *    locale: <string>,
+ *    caseLevel: <boolean>,
+ *    caseFirst: <string>,
+ *    strength: <int>,
+ *    numericOrdering: <boolean>,
+ *    alternate: <string>,
+ *    maxVariable: <string>,
+ *    backwards: <boolean>
+ *    normalization: <boolean>
+ *
+ * Text
+ *  weights
+ *  default_language
+ *  language_override
+ *  textIndexVersion
+ * -----以下暂不考虑支持-------
+ * 2dsphere
+ *  2dsphereIndexVersion
+ * 2d
+ *  bit
+ *  min
+ *  max
+ * geoHaystack
+ *  bucketSize
+ * wildcard
+ *  wildcardProjection
  */
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})
 public @interface IndexOptions {
+
     /**
      * @return if true, create the index in the background
      */
     boolean background() default true;
-
-    /**
-     * @return if true, disables validation for the field name
-     */
-    boolean disableValidation() default false;
-
-    /**
-     * @return defines the time to live for documents in the collection
-     */
-    int expireAfterSeconds() default -1;
-
-    /**
-     * @return The default language for the index.
-     */
-    String language() default "";
-
-    /**
-     * @return The field to use to override the default language.
-     */
-    String languageOverride() default "";
 
     /**
      * @return The name of the index to create; default is to let the mongodb create a name (in the form of key1_1/-1_key2_1/-1...)
@@ -85,6 +105,27 @@ public @interface IndexOptions {
     boolean unique() default false;
 
     /**
+     * @return defines the time to live for documents in the collection
+     */
+    int expireAfterSeconds() default -1;
+
+    /**
+     *
+     * @return  A flag that determines whether the index is hidden from the query planner. A hidden index is not evaluated as part of the query plan selection.
+     */
+    boolean hidden() default false ;
+
+    /**
+     * @return The default language for the index.
+     */
+    String language() default "";
+
+    /**
+     * @return The field to use to override the default language.
+     */
+    String languageOverride() default "";
+
+    /**
      * @return the filter to be used for this index
      */
     String partialFilter() default "";
@@ -93,4 +134,10 @@ public @interface IndexOptions {
      * @return the collation to be used for this index
      */
     Collation collation() default @Collation(locale = "");
+
+
+    /**
+     * @return if true, disables validation for the field name
+     */
+    boolean disableValidation() default false;
 }
