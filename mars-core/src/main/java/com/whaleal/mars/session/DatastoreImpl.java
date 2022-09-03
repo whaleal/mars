@@ -38,6 +38,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
 import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.icefrog.core.util.NumberUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -1661,7 +1662,34 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
             IndexOptions indexOptions = new IndexOptions();
             if (o.get("background") != null) {
-                indexOptions.background((Boolean) o.get("background"));
+
+                //todo  具体值可能为多种类型  如 "true"  true  1 1.0  "1.0"  "5.0"  甚至为 任意字符"xxx"尤其是老版本 情况很多 这里并不能全部列举
+                //主要为 boolean  类型 String  类型  数值类型
+                if(o.get("background") instanceof Boolean){
+                    indexOptions.background((Boolean) o.get("background"));
+                }
+                if(o.get("background") instanceof String || o.get("background") instanceof Number){
+                    String background = o.get("background").toString().toLowerCase().trim();
+                    if("false".equals(background)){
+                        indexOptions.background(false);
+                    } else if("true".equals(background)){
+                        indexOptions.background(true);
+                    }else if("".equals(background)){
+                        //maybe nothing to do
+                    }
+                    else {
+                        boolean  back = false ;
+                        try{
+                            back = Double.valueOf(background)> 0 ? true :false;
+                        }catch (Exception e){
+                            log.error("Index background Option parse error from  index name %s  with background value %s , message is s% ", o.get("name") ,background ,e.getMessage());
+
+                        }
+                        indexOptions.background(back);
+                    }
+
+                }
+
             }
 
             if (o.get("unique") != null) {
