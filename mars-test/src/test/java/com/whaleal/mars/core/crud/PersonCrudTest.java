@@ -106,58 +106,58 @@ public class PersonCrudTest {
     }
 
 
-    //InsertMany
-    @Test
-    public void test02() {
-
-        int number = 999999;
-        List< Person > personList = new ArrayList<>();
-        for (int i = 1; i <= number; i++) {
-            personList.add(EntityGenerater.getPerson());
-        }
-
-        Assert.assertEquals(personList.size(), number);
-
-        InsertManyResult insertManyResult = mars.insert(personList, Person.class);
-
-        Assert.assertTrue(insertManyResult.wasAcknowledged());
-
-        long count = mars.estimatedCount(Person.class);
-
-        Assert.assertEquals(number, count);
-
-        QueryCursor< Person > all = mars.findAll(new Query(), Person.class);
-
-        while (all.hasNext()) {
-            Person next = all.next();
-
-            Assert.assertNotNull(next);
-            Assert.assertNotNull(next.getId());
-            Assert.assertNotNull(next.getAge());
-            Assert.assertNotNull(next.getAddress());
-            Assert.assertNotNull(next.getBirthDate());
-            Assert.assertNotNull(next.getFirstName());
-            Assert.assertNotNull(next.getLastName());
-            Assert.assertNotNull(next.getHeight());
-
-            Address address = next.getAddress();
-
-            Assert.assertNotNull(address.getCity());
-            Assert.assertNotNull(address.getStreetName());
-            Assert.assertNotNull(address.getStreetNumber());
-
-            City city = address.getCity();
-
-            Assert.assertNotNull(city.getId());
-            Assert.assertNotNull(city.getLat());
-            Assert.assertNotNull(city.getLon());
-            Assert.assertNotNull(city.getName());
-
-            Assert.assertNotNull(city.getZipCodes());
-        }
-
-
-    }
+//    //InsertMany
+//    @Test
+//    public void test02() {
+//
+//        int number = 999999;
+//        List< Person > personList = new ArrayList<>();
+//        for (int i = 1; i <= number; i++) {
+//            personList.add(EntityGenerater.getPerson());
+//        }
+//
+//        Assert.assertEquals(personList.size(), number);
+//
+//        InsertManyResult insertManyResult = mars.insert(personList, Person.class);
+//
+//        Assert.assertTrue(insertManyResult.wasAcknowledged());
+//
+//        long count = mars.estimatedCount(Person.class);
+//
+//        Assert.assertEquals(number, count);
+//
+//        QueryCursor< Person > all = mars.findAll(new Query(), Person.class);
+//
+//        while (all.hasNext()) {
+//            Person next = all.next();
+//
+//            Assert.assertNotNull(next);
+//            Assert.assertNotNull(next.getId());
+//            Assert.assertNotNull(next.getAge());
+//            Assert.assertNotNull(next.getAddress());
+//            Assert.assertNotNull(next.getBirthDate());
+//            Assert.assertNotNull(next.getFirstName());
+//            Assert.assertNotNull(next.getLastName());
+//            Assert.assertNotNull(next.getHeight());
+//
+//            Address address = next.getAddress();
+//
+//            Assert.assertNotNull(address.getCity());
+//            Assert.assertNotNull(address.getStreetName());
+//            Assert.assertNotNull(address.getStreetNumber());
+//
+//            City city = address.getCity();
+//
+//            Assert.assertNotNull(city.getId());
+//            Assert.assertNotNull(city.getLat());
+//            Assert.assertNotNull(city.getLon());
+//            Assert.assertNotNull(city.getName());
+//
+//            Assert.assertNotNull(city.getZipCodes());
+//        }
+//
+//
+//    }
 
 
     //CountEntity
