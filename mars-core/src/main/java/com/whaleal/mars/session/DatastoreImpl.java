@@ -1664,30 +1664,28 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             if (o.get("background") != null) {
 
                 //todo  具体值可能为多种类型  如 "true"  true  1 1.0  "1.0"  "5.0"  甚至为 任意字符"xxx"尤其是老版本 情况很多 这里并不能全部列举
-                //主要为 boolean  类型 String  类型  数值类型
+                // C语言决策. C语言编程假定任何非零和非空值为真，并且如果它是零或null，那么它被假定为假值
+                //  主要为 boolean  类型 String  类型  数值类型
                 if(o.get("background") instanceof Boolean){
                     indexOptions.background((Boolean) o.get("background"));
-                }
-                if(o.get("background") instanceof String || o.get("background") instanceof Number){
-                    String background = o.get("background").toString().toLowerCase().trim();
-                    if("false".equals(background)){
-                        indexOptions.background(false);
-                    } else if("true".equals(background)){
+                }else if(o.get("background") instanceof String){
+                    indexOptions.background(true);
+                }else if(o.get("background") instanceof Number){
+                    // 非 0 为真
+                    double v ;
+                    try{
+                       v = Double.valueOf(o.get("background").toString());
+                       if(v>0){
+                           indexOptions.background(true);
+                       }else if(v <0){
+                           indexOptions.background(true);
+                       }else {
+                           indexOptions.background(false);
+                       }
+                    }catch (Exception e){
+                        log.warn("Index background Option parse error from  index name %s  with background value %s ", o.get("name") ,o.get("background") );
                         indexOptions.background(true);
-                    }else if("".equals(background)){
-                        //maybe nothing to do
                     }
-                    else {
-                        boolean  back = false ;
-                        try{
-                            back = Double.valueOf(background)> 0 ? true :false;
-                        }catch (Exception e){
-                            log.error("Index background Option parse error from  index name %s  with background value %s , message is s% ", o.get("name") ,background ,e.getMessage());
-
-                        }
-                        indexOptions.background(back);
-                    }
-
                 }
 
             }
