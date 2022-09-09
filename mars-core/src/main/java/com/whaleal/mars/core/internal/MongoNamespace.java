@@ -8,6 +8,7 @@ import com.whaleal.mars.codecs.pojo.annotations.Property;
 
 
 import java.io.Serializable;
+import java.io.SyncFailedException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +34,25 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
      * The collection name in which to execute a command.
      */
     public static final String COMMAND_COLLECTION_NAME = "$cmd";
+    /**
+     * The database name config .
+     */
+    public static final String  CONFIG_DATABASE_NAME = "config";
+    /**
+     * The database name local .
+     */
+    public static final String  LOCAL_DATABASE_NAME = "local";
+    /**
+     * The database name admin .
+     */
+    public static final String  ADMIN_DATABASE_NAME = "admin";
+    /**
+     * The collecion name in local database  oplog.rs  .
+     */
+    public static final String  OPLOG_COLLECTION_NAME= "oplog.rs";
+
+    public static final String SYSTEM_COLLECTION_SYMBOL = "system" ;
+
 
     private static final Set<Character> PROHIBITED_CHARACTERS_IN_DATABASE_NAME =
             new HashSet<Character>(asList('\0', '/', '\\', ' ', '"', '.'));
@@ -50,7 +70,7 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
      *
      * @param databaseName the database name
      * @throws IllegalArgumentException if the database name is invalid
-     * @since 3.4
+     *
      * @mongodb.driver.manual reference/limits/#naming-restrictions Naming Restrictions
      */
     public static void checkDatabaseNameValidity(final String databaseName) {
@@ -70,12 +90,50 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
      * @param collectionName the collection name
      * @throws IllegalArgumentException if the collection name is invalid
      *
+     *
+     *
      * @mongodb.driver.manual reference/limits/#naming-restrictions Naming Restrictions
      */
     public static void checkCollectionNameValidity(final String collectionName) {
         notNull("collectionName", collectionName);
         isTrueArgument("collectionName is not empty", !collectionName.isEmpty());
     }
+
+
+
+    /**
+     * Check  the given database name. A system database name is like  admin local config
+     * @param databaseName the database name
+     * @throws IllegalArgumentException if the database name is null
+     * @return return true  is the databaseName is system database
+     * @mongodb.driver.manual reference/limits/#naming-restrictions Naming Restrictions
+     */
+    public static boolean checkDatabaseNameSystem(final String databaseName){
+        notNull("databaseName", databaseName);
+        if(ADMIN_DATABASE_NAME.equals(databaseName) || CONFIG_DATABASE_NAME.equals(databaseName) || LOCAL_DATABASE_NAME.equals(databaseName)){
+            return true ;
+        }
+        return false ;
+    }
+
+
+    /**
+     * Check  the given database name. A system database name is like  admin local config
+     * @param collectionName the database name
+     * @throws IllegalArgumentException if the database name is null
+     * @return return true  is the collectionName is system collection  else return false
+     * @mongodb.driver.manual reference/limits/#naming-restrictions Naming Restrictions
+     */
+    public static boolean checkCollectioneNameSystem(final String collectionName){
+        notNull("collectionName", collectionName);
+        if(collectionName.startsWith(SYSTEM_COLLECTION_SYMBOL)){
+            return true ;
+        }
+        return false ;
+    }
+
+
+
 
     /**
      * Construct an instance for the given full name.  The database name is the string preceding the first {@code "."} character.
