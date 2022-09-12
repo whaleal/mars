@@ -32,6 +32,7 @@ package com.whaleal.mars.core.messaging;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.core.internal.MongoNamespace;
 
 class SimpleMessage<S, T> implements Message<S, T> {
 
@@ -39,20 +40,20 @@ class SimpleMessage<S, T> implements Message<S, T> {
     final S raw;
     private
     final T body;
-    private final MessageProperties properties;
+    private final MongoNamespace namespace;
 
     /**
      * @param raw
      * @param body
-     * @param properties must not be {@literal null}. Use {@link MessageProperties#empty()} instead.
+     * @param namespace must not be {@literal null}.  instead.
      */
-    SimpleMessage( S raw,  T body, MessageProperties properties) {
+    SimpleMessage( S raw,  T body, MongoNamespace namespace) {
 
-        Precondition.notNull(properties, "Properties must not be null! Use MessageProperties.empty() instead.");
+        Precondition.notNull(namespace, "Properties must not be null! Use MessageProperties.empty() instead.");
 
         this.raw = raw;
         this.body = body;
-        this.properties = properties;
+        this.namespace = namespace;
     }
 
 
@@ -69,8 +70,8 @@ class SimpleMessage<S, T> implements Message<S, T> {
 
 
     @Override
-    public MessageProperties getProperties() {
-        return properties;
+    public MongoNamespace getMongoNamespace() {
+        return namespace;
     }
 
     @Override
@@ -88,20 +89,20 @@ class SimpleMessage<S, T> implements Message<S, T> {
         if (!ObjectUtil.nullSafeEquals(this.body, that.body)) {
             return false;
         }
-        return ObjectUtil.nullSafeEquals(this.properties, that.properties);
+        return ObjectUtil.nullSafeEquals(this.namespace, that.namespace);
     }
 
     @Override
     public int hashCode() {
         int result = ObjectUtil.nullSafeHashCode(raw);
         result = 31 * result + ObjectUtil.nullSafeHashCode(body);
-        result = 31 * result + ObjectUtil.nullSafeHashCode(properties);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(namespace);
         return result;
     }
 
     @Override
     public String toString() {
-        return "SimpleMessage(raw=" + this.getRaw() + ", body=" + this.getBody() + ", properties=" + this.getProperties()
+        return "SimpleMessage(raw=" + this.getRaw() + ", body=" + this.getBody() + ", properties=" + this.getMongoNamespace()
                 + ")";
     }
 }

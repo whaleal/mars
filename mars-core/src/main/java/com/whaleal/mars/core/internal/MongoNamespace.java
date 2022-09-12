@@ -2,13 +2,13 @@ package com.whaleal.mars.core.internal;
 
 
 
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.codecs.pojo.annotations.Constructor;
 import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
 import com.whaleal.mars.codecs.pojo.annotations.Property;
 
 
 import java.io.Serializable;
-import java.io.SyncFailedException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -132,7 +132,27 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
         return false ;
     }
 
+    /**
+     * create a new MongoNamespace from the given com.mongodb.MongoNamespace
+     * @param mongoNamespace the com.mongodb.MongoNamespace
+     * @throws IllegalArgumentException if the database name is null
+     * @return a new MongoNamespace
+     * @mongodb.driver.manual reference/limits/#naming-restrictions Naming Restrictions
+     */
+    public static MongoNamespace convertFrom(com.mongodb.MongoNamespace mongoNamespace){
+        notNull("com.mongodb.MongoNamespace" ,mongoNamespace);
+        return new MongoNamespace(mongoNamespace.getDatabaseName(), mongoNamespace.getCollectionName());
+    }
 
+    /**
+     * create a new MongoNamespace from the itself MongoNamespace
+     * @throws IllegalArgumentException if the database name is null
+     * @return a new MongoNamespace
+     * @mongodb.driver.manual reference/limits/#naming-restrictions Naming Restrictions
+     */
+    public com.mongodb.MongoNamespace convertTo(){
+        return new com.mongodb.MongoNamespace(this.databaseName, this.collectionName);
+    }
 
 
     /**
@@ -270,7 +290,49 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
             return this.databaseName.compareTo(o.databaseName);
         }
 
+    }
 
 
+    /**
+     * Builder for {@link MongoNamespace}.
+     */
+    public static class MongoNamespaceBuilder {
+
+        private String databaseName;
+        private String collectionName;
+
+        /**
+         * @param databaseName must not be {@literal null}.
+         * @return this.
+         */
+        public MongoNamespace.MongoNamespaceBuilder databaseName( String databaseName) {
+
+            Precondition.notNull(databaseName, "Database name must not be null!");
+
+            this.databaseName = databaseName;
+            return this;
+        }
+
+        /**
+         * @param collectionName must not be {@literal null}.
+         * @return this
+         */
+        public MongoNamespace.MongoNamespaceBuilder collectionName( String collectionName) {
+
+            Precondition.notNull(collectionName, "Collection name must not be null!");
+
+            this.collectionName = collectionName;
+            return this;
+        }
+
+        /**
+         * @return the built {@link MongoNamespace}.
+         */
+        public MongoNamespace build() {
+
+            MongoNamespace mns = new MongoNamespace(databaseName,collectionName);
+
+            return mns;
+        }
     }
 }

@@ -34,6 +34,7 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.mars.core.internal.ErrorHandler;
+import com.whaleal.mars.core.internal.MongoNamespace;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
@@ -214,8 +215,7 @@ abstract class CursorReadingTask<T, R> implements Task {
 
     protected Message<T, R> createMessage(T source, Class<R> targetType, SubscriptionRequest.RequestOptions options) {
 
-        SimpleMessage<T, T> message = new SimpleMessage<>(source, source, Message.MessageProperties.builder()
-                .databaseName(mars.getDatabase().getName()).collectionName(options.getCollectionName()).build());
+        SimpleMessage<T, T> message = new SimpleMessage<>(source, source, new MongoNamespace(options.getDatabaseName(),options.getCollectionName()));
 
         return new LazyMappingDelegatingMessage<>(message, targetType);
     }

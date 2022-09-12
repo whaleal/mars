@@ -40,6 +40,6 @@ public class DocumnetMessageListener implements MessageListener< ChangeStreamDoc
     @Override
     public void onMessage( Message< ChangeStreamDocument< Document >, Document > message ) {
       log.info("Received Message in collection: {},message raw: {}, message body:{}",
-             message.getProperties().getCollectionName(), message.getRaw(), message.getBody());
+             message.getMongoNamespace().getCollectionName(), message.getRaw(), message.getBody());
     }
 }

@@ -31,6 +31,7 @@ package com.whaleal.mars.core.messaging;
 
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.codecs.Conversions;
+import com.whaleal.mars.core.internal.MongoNamespace;
 import org.bson.Document;
 
 class LazyMappingDelegatingMessage<S, T> implements Message<S, T> {
@@ -69,8 +70,8 @@ class LazyMappingDelegatingMessage<S, T> implements Message<S, T> {
 
 
     @Override
-    public MessageProperties getProperties() {
-        return delegate.getProperties();
+    public MongoNamespace getMongoNamespace() {
+        return delegate.getMongoNamespace();
     }
 
     @Override
