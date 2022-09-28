@@ -37,8 +37,9 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
+import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.NumberUtil;
+import com.whaleal.icefrog.core.map.MapUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -59,6 +60,7 @@ import com.whaleal.mars.core.index.IndexHelper;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.core.gridfs.GridFsObject;
 import com.whaleal.mars.core.gridfs.GridFsResource;
+import com.whaleal.mars.core.internal.MongoNamespace;
 
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.option.CountOptions;
@@ -79,6 +81,7 @@ import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.core.query.BsonUtil;
 
 import com.whaleal.mars.session.transactions.MarsTransaction;
+import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
@@ -102,7 +105,20 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
  * @Date 2020-12-03
  *
  */
-public abstract class DatastoreImpl extends AggregationImpl implements Datastore{
+public class DatastoreImpl extends AggregationImpl implements Datastore{
+
+
+    private static final Log log = LogFactory.get(DatastoreImpl.class);
+
+    private final Lock lock = new ReentrantLock();
+    private final MongoClient mongoClient;
+
+    private final GridFSBucket defaultGridFSBucket;
+    //缓存 collectionName
+    private final Map< Class<?> , String > collectionNameCache = new HashMap< Class<?>, String >();
+
+
+
     @Override
     public Document executeCommand( String jsonCommand ) {
         Precondition.notNull(jsonCommand);
@@ -118,15 +134,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     public Document executeCommand( Document command, ReadPreference readPreference ) {
         return this.database.runCommand(command,readPreference);
     }
-
-    private static final Log log = LogFactory.get(DatastoreImpl.class);
-
-    private final Lock lock = new ReentrantLock();
-    private final MongoClient mongoClient;
-
-    private final GridFSBucket defaultGridFSBucket;
-    //缓存 collectionName
-    private final Map< Class<?> , String > collectionNameCache = new HashMap< Class<?>, String >();
 
 
     protected DatastoreImpl( MongoClient mongoClient, String databaseName ) {
@@ -157,15 +164,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
 
 
-    protected static com.mongodb.client.model.Collation fromDocument( Document source ) {
-
-        if (source == null) {
-            return null;
-        }
-
-        return com.whaleal.mars.core.query.Collation.from(source).toMongoCollation();
-    }
-
     public MongoClient getMongoClient() {
         return this.mongoClient;
     }
@@ -175,9 +173,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
     public MongoDatabase getDatabase(String databaseName){
-        if (StrUtil.isBlank(databaseName)) {
-            throw new IllegalArgumentException("databaseName in getDatabase can't be null or empty ");
-        }
+        MongoNamespace.checkDatabaseNameValidity(databaseName);
         return this.mongoClient.getDatabase(databaseName).withCodecRegistry(super.mapper.getCodecRegistry());
     }
 
@@ -209,7 +205,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
         MongoCursor< T > iterator = findAllExecute(session, collection, query, null, null);
 
-        return new QueryCursor< T >(iterator, entityClass);
+        return new QueryCursor< T >(iterator);
 
     }
 
@@ -374,6 +370,114 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         }
 
     }
+
+
+    @Override
+    public UpdateResult upsert(Query query, UpdateDefinition update, Class<?> entityClass) {
+        return doUpdate(getCollectionName(entityClass), query, update, entityClass, true, false);
+    }
+
+    @Override
+    public UpdateResult upsert(Query query, UpdateDefinition update, String collectionName) {
+        return doUpdate(collectionName, query, update, null, true, false);
+    }
+
+    @Override
+    public UpdateResult upsert(Query query, UpdateDefinition update, Class<?> entityClass, String collectionName) {
+
+        Precondition.notNull(entityClass, "EntityClass must not be null");
+
+        return doUpdate(collectionName, query, update, entityClass, true, false);
+    }
+
+    @Override
+    public UpdateResult updateFirst(Query query, UpdateDefinition update, Class<?> entityClass) {
+        return doUpdate(getCollectionName(entityClass), query, update, entityClass, false, false);
+    }
+
+    @Override
+    public UpdateResult updateFirst(Query query, UpdateDefinition update, String collectionName) {
+        return doUpdate(collectionName, query, update, null, false, false);
+    }
+
+    @Override
+    public UpdateResult updateFirst(Query query, UpdateDefinition update, Class<?> entityClass, String collectionName) {
+
+        Precondition.notNull(entityClass, "EntityClass must not be null");
+
+        return doUpdate(collectionName, query, update, entityClass, false, false);
+    }
+
+    @Override
+    public UpdateResult updateMulti(Query query, UpdateDefinition update, Class<?> entityClass) {
+        return doUpdate(getCollectionName(entityClass), query, update, entityClass, false, true);
+    }
+
+    @Override
+    public UpdateResult updateMulti(Query query, UpdateDefinition update, String collectionName) {
+        return doUpdate(collectionName, query, update, null, false, true);
+    }
+
+    @Override
+    public UpdateResult updateMulti(Query query, UpdateDefinition update, Class<?> entityClass, String collectionName) {
+
+        Precondition.notNull(entityClass, "EntityClass must not be null");
+
+        return doUpdate(collectionName, query, update, entityClass, false, true);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    protected <T> UpdateResult doUpdate( String collectionName, Query query, UpdateDefinition update,
+                                     @Nullable Class<?> entityClass, boolean upsert, boolean multi) {
+
+        Precondition.notNull(collectionName, "CollectionName must not be null");
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.notNull(update, "Update must not be null");
+
+        if (query.isSorted() && log.isWarnEnabled()) {
+
+            log.warn(String.format("%s does not support sort ('%s'); Please use findAndModify() instead",
+                    upsert ? "Upsert" : "UpdateFirst", MapUtil.toString(query.getSortObject())));
+        }
+
+        com.mongodb.client.model.UpdateOptions  opts = new com.mongodb.client.model.UpdateOptions();
+
+        opts.upsert(upsert);
+        if(query.getCollation().isPresent()){
+
+            opts.collation(query.getCollation().get());
+
+        }
+
+        if(query.getHint() !=null){
+            String hint = query.getHint() ;
+
+            try {
+                Document parse = Document.parse(hint);
+                opts.hint(parse);
+            }catch (Exception e){
+                opts.hintString(hint);
+            }
+        }
+
+
+        if(query.getMeta().getComment()!=null){
+           opts.comment( query.getMeta().getComment());
+        }
+
+        if(update.hasArrayFilters()){
+            opts.arrayFilters(update.getArrayFilters().stream().map(x ->x.toData()).collect(Collectors.toList()));
+        }
+
+        MongoCollection< ? > collection = entityClass == null ? getDatabase().getCollection(collectionName, Document.class) : withConcern(getDatabase().getCollection(collectionName, entityClass), entityClass);
+
+
+        com.mongodb.client.result.UpdateResult result =  multi ?  collection.updateMany(query.getQueryObject(),update.getUpdateObject(),opts) : collection.updateOne(query.getQueryObject(),update.getUpdateObject(),opts);
+
+        return new UpdateResult(result);
+
+    }
+
 
 
     @Override
@@ -1024,7 +1128,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
             //如果选项里面有关于collation方面的操作，
             if (collectionOptions.containsKey("collation")) {
-                co.collation(fromDocument(Document.parse(collectionOptions.get("collation").toString())));
+                co.collation( com.whaleal.mars.core.query.Collation.from((Document.parse(collectionOptions.get("collation").toString()))).toMongoCollation());
             }
 
             if (collectionOptions.containsKey("validator")) {
@@ -1083,7 +1187,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     }
 
 
-    public < T > MongoCollection< T > withConcern( MongoCollection< T > collection, Class< T > clazz ) {
+    public  <T> MongoCollection<T> withConcern( MongoCollection<T> collection, Class<?> clazz ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(clazz);
 
@@ -1353,7 +1457,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         }else {
             distinctIterable = collection.distinct(session,field,null,resultClass);
         }
-        return new QueryCursor<T>(distinctIterable.iterator(),resultClass);
+        return new QueryCursor<T>(distinctIterable.iterator());
     }
 
     private <T> T insertOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
@@ -1588,7 +1692,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
             }
 
-
         } else {
 
             if (session == null) {
@@ -1596,7 +1699,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             } else {
                 collection.createIndex(session, index.getIndexKeys(), indexOptions.getOriginOptions());
             }
-
         }
 
         return null;
@@ -1622,14 +1724,10 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     private <T> T dropManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         if (session == null) {
-
             collection.dropIndexes();
 
-
         } else {
-
             collection.dropIndexes(session);
-
 
         }
 
@@ -1665,7 +1763,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
                 //todo  具体值可能为多种类型  如 "true"  true  1 1.0  "1.0"  "5.0"  甚至为 任意字符"xxx"尤其是老版本 情况很多 这里并不能全部列举
                 // C语言决策. C语言编程假定任何非零和非空值为真，并且如果它是零或null，那么它被假定为假值
-                //  主要为 boolean  类型 String  类型  数值类型
+                // 主要为 boolean  类型 String  类型  数值类型
                 if(o.get("background") instanceof Boolean){
                     indexOptions.background((Boolean) o.get("background"));
                 }else if(o.get("background") instanceof String){
@@ -1825,7 +1923,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
     private <T> T createManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         List<Index> indexes = (List) data;
-
         if (session == null) {
 
             for (Index index : indexes) {
@@ -1835,21 +1932,17 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
                 } else {
                     collection.createIndex(index.getIndexKeys(), index.getIndexOptions().getOriginOptions());
                 }
-
             }
 
         } else {
 
             for (Index index : indexes) {
-
                 if (index.getIndexOptions() == null) {
                     collection.createIndex(session, index.getIndexKeys());
                 } else {
                     collection.createIndex(session, index.getIndexKeys(), index.getIndexOptions().getOriginOptions());
                 }
-
             }
-
         }
 
         return null;
@@ -1883,7 +1976,6 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 private com.mongodb.client.model.CountOptions  decorateCountOption(Query query ){
         com.mongodb.client.model.CountOptions options = new com.mongodb.client.model.CountOptions();
 
-
         if (query.getLimit() > 0) {
             options.limit(query.getLimit());
         }
@@ -1891,9 +1983,7 @@ private com.mongodb.client.model.CountOptions  decorateCountOption(Query query )
             options.skip((int) query.getSkip());
         }
         if (StrUtil.hasText(query.getHint())) {
-
             String hint = query.getHint();
-
             try {
                 Document parse = Document.parse(hint);
                 options.hint(parse);

@@ -63,7 +63,6 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
     ChangeStreamTask(Mars mars, ChangeStreamRequest<?> request, Class<?> targetType,
                      ErrorHandler errorHandler) {
         super(mars, (ChangeStreamRequest) request, (Class) targetType, errorHandler);
-
         this.converter = mars.getMapper().getCodecRegistry();
     }
 

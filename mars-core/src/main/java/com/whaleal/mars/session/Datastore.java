@@ -181,6 +181,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Inserts an entity in to the mapped collection.
      */
+
     default < T > InsertOneResult insert( T entity, InsertOneOptions insertOneOptions ) {
         return insert(entity, insertOneOptions, null);
     }
@@ -210,11 +211,13 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Inserts entities in to the mapped collection.
      */
+    @Deprecated
     < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options );
 
     /**
      * Inserts entities in to the mapped collection.
      */
+    @Deprecated
     < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
 
 
@@ -241,22 +244,26 @@ interface Datastore extends IndexOperations, MongoOperations {
      * 修改更新的定义
      */
 
+    @Deprecated
     default < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass ) {
         return update(query, update, entityClass, new UpdateOptions());
     }
 
 
+    @Deprecated
     default < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options ) {
         return update(query, update, entityClass, options, null);
     }
 
     // 2021-05-18 新增更新方法
 
+    @Deprecated
     default < T > UpdateResult update( Query query, UpdateDefinition update, String collectionName ) {
         return update(query, update, org.bson.Document.class, new UpdateOptions(), collectionName);
     }
 
 
+    @Deprecated
     default < T > UpdateResult update( Query query, UpdateDefinition update, String collectionName, UpdateOptions options ) {
         return update(query, update, org.bson.Document.class, options, collectionName);
     }
@@ -266,8 +273,148 @@ interface Datastore extends IndexOperations, MongoOperations {
      * 修改更新的定义
      */
 
+    @Deprecated
     < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass, UpdateOptions options, String collectionName );
 
+
+
+    /**
+     * Performs an upsert. If no document is found that matches the query, a new document is created and inserted by
+     * combining the query document and the update document. <br />
+     * <strong>NOTE:</strong> {@link Query#getSortObject() sorting} is not supported by {@code db.collection.updateOne}.
+     * Use {@link #findAndModify(Query, UpdateDefinition, Class, String)} instead.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be upserted. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing object. Must not be {@literal null}.
+     * @param entityClass class that determines the collection to use. Must not be {@literal null}.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     */
+    UpdateResult upsert(Query query, UpdateDefinition update, Class<?> entityClass);
+
+    /**
+     * Performs an upsert. If no document is found that matches the query, a new document is created and inserted by
+     * combining the query document and the update document. <br />
+     * <strong>NOTE:</strong> Any additional support for field mapping, versions, etc. is not available due to the lack of
+     * domain type information. Use {@link #upsert(Query, UpdateDefinition, Class, String)} to get full type specific
+     * support. <br />
+     * <strong>NOTE:</strong> {@link Query#getSortObject() sorting} is not supported by {@code db.collection.updateOne}.
+     * Use {@link #findAndModify(Query, UpdateDefinition, Class, String)} instead.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be upserted. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing object. Must not be {@literal null}.
+     * @param collectionName name of the collection to update the object in.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     * @see Update
+     */
+    UpdateResult upsert(Query query, UpdateDefinition update, String collectionName);
+
+    /**
+     * Performs an upsert. If no document is found that matches the query, a new document is created and inserted by
+     * combining the query document and the update document.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be upserted. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing object. Must not be {@literal null}.
+     * @param entityClass class of the pojo to be operated on. Must not be {@literal null}.
+     * @param collectionName name of the collection to update the object in. Must not be {@literal null}.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     * @see Update
+     */
+    UpdateResult upsert(Query query, UpdateDefinition update, Class<?> entityClass, String collectionName);
+
+    /**
+     * Updates the first object that is found in the collection of the entity class that matches the query document with
+     * the provided update document.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be updated. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing. Must not be {@literal null}.
+     * @param entityClass class that determines the collection to use.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     * @see Update
+     */
+    UpdateResult updateFirst(Query query, UpdateDefinition update, Class<?> entityClass);
+
+    /**
+     * Updates the first object that is found in the specified collection that matches the query document criteria with
+     * the provided updated document. <br />
+     * <strong>NOTE:</strong> Any additional support for field mapping, versions, etc. is not available due to the lack of
+     * domain type information. Use {@link #updateFirst(Query, UpdateDefinition, Class, String)} to get full type specific
+     * support. <br />
+     * <strong>NOTE:</strong> {@link Query#getSortObject() sorting} is not supported by {@code db.collection.updateOne}.
+     * Use {@link #findAndModify(Query, UpdateDefinition, Class, String)} instead.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be updated. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing. Must not be {@literal null}.
+     * @param collectionName name of the collection to update the object in. Must not be {@literal null}.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     */
+    UpdateResult updateFirst(Query query, UpdateDefinition update, String collectionName);
+
+    /**
+     * Updates the first object that is found in the specified collection that matches the query document criteria with
+     * the provided updated document. <br />
+     *
+     * @param query the query document that specifies the criteria used to select a record to be updated. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing. Must not be {@literal null}.
+     * @param entityClass class of the pojo to be operated on. Must not be {@literal null}.
+     * @param collectionName name of the collection to update the object in. Must not be {@literal null}.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     */
+    UpdateResult updateFirst(Query query, UpdateDefinition update, Class<?> entityClass, String collectionName);
+
+    /**
+     * Updates all objects that are found in the collection for the entity class that matches the query document criteria
+     * with the provided updated document.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be updated. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing. Must not be {@literal null}.
+     * @param entityClass class of the pojo to be operated on. Must not be {@literal null}.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     */
+    UpdateResult updateMulti(Query query, UpdateDefinition update, Class<?> entityClass);
+
+    /**
+     * Updates all objects that are found in the specified collection that matches the query document criteria with the
+     * provided updated document. <br />
+     * <strong>NOTE:</strong> Any additional support for field mapping, versions, etc. is not available due to the lack of
+     * domain type information. Use {@link #updateMulti(Query, UpdateDefinition, Class, String)} to get full type specific
+     * support.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be updated. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing. Must not be {@literal null}.
+     * @param collectionName name of the collection to update the object in. Must not be {@literal null}.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     */
+    UpdateResult updateMulti(Query query, UpdateDefinition update, String collectionName);
+
+    /**
+     * Updates all objects that are found in the collection for the entity class that matches the query document criteria
+     * with the provided updated document.
+     *
+     * @param query the query document that specifies the criteria used to select a record to be updated. Must not be
+     *          {@literal null}.
+     * @param update the {@link UpdateDefinition} that contains the updated object or {@code $} operators to manipulate
+     *          the existing. Must not be {@literal null}.
+     * @param entityClass class of the pojo to be operated on. Must not be {@literal null}.
+     * @param collectionName name of the collection to update the object in. Must not be {@literal null}.
+     * @return the {@link UpdateResult} which lets you access the results of the previous write.
+     */
+    UpdateResult updateMulti(Query query, UpdateDefinition update, Class<?> entityClass, String collectionName);
 
     /**
      * Saves the entities (Objects) and updates the @Id field
@@ -286,6 +433,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
+    @Deprecated
     default < T > List< T > save( Collection< ? extends T > entities, InsertManyOptions insertManyOptions ) {
         return save(entities, insertManyOptions, null);
     }
@@ -293,6 +441,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
+    @Deprecated
     default < T > List< T > save( Collection< ? extends T > entities, InsertManyOptions options, String collectionName ) {
         if (entities.isEmpty()) {
             return new ArrayList< T >();
@@ -322,6 +471,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Saves an entity (Object) and updates the @Id field
      */
+    @Deprecated
     default < T > T save( T entity, InsertOneOptions options ) {
         return save(entity, options, null);
     }
@@ -329,6 +479,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Saves an entity (Object) and updates the @Id field
      */
+    @Deprecated
     < T > T save( T entity, InsertOneOptions options, String collectionName );
 
 

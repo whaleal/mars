@@ -1,22 +1,19 @@
 package com.whaleal.mars.core.query;
 
-import com.whaleal.icefrog.core.util.ObjectUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Used for sorting query results or defining a sort stage in an aggregation pipeline
  *
  * @aggregation.expression $sort
+ *
  */
-public class Sort {
+@Deprecated
+public class Sort  {
     private static final String NATURAL = "$natural";
 
     private final String field;
     private final int order;
-
-//    private final List<Sort> sorts = new ArrayList<>();
 
     /**
      * Creates a sort on a field with a direction.
@@ -32,19 +29,7 @@ public class Sort {
         this.field = field;
         this.order = order;
     }
-//
-//    /**
-//     * 拼接多个sort
-//     * @param sort
-//     * @return
-//     */
-//    public List<Sort> and(Sort sort){
-//        if(ObjectUtil.isNotEmpty(sort)){
-//            sorts.add(this);
-//            sorts.add(sort);
-//        }
-//        return sorts;
-//    }
+
 
     /**
      * Creates an ascending sort on a field

@@ -30,13 +30,18 @@
 package com.whaleal.mars.core.query;
 
 
+import com.mongodb.ReadConcern;
+import com.mongodb.ReadPreference;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.domain.Pageable;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
+import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.time.Duration;
 import java.util.*;
@@ -60,11 +65,32 @@ public class Query {
     private long skip;
     private int limit;
 
+    //  hint 的 保存   主要有两种形式 ①indexName  ②索引结构的 document  形式
     private String hint;
 
     private Meta meta = new Meta();
     // collation
     private Optional<com.mongodb.client.model.Collation> collation = Optional.empty();
+
+    public ReadConcern getReadConcern() {
+        return readConcern;
+    }
+
+    public void setReadConcern( ReadConcern readConcern ) {
+        this.readConcern = readConcern;
+    }
+
+    public ReadPreference getReadPreference() {
+        return readPreference;
+    }
+
+    public void setReadPreference( ReadPreference readPreference ) {
+        this.readPreference = readPreference;
+    }
+
+    private ReadConcern readConcern = null ;
+
+    private ReadPreference readPreference = null ;
 
 
 
@@ -203,6 +229,55 @@ public class Query {
         this.limit = limit;
         return this;
     }
+
+
+    /**
+     * Sets the given pagination information on the {@link Query} instance. Will transparently set {@code skip} and
+     * {@code limit} as well as applying the {@link Sort} instance defined with the {@link Pageable}.
+     *
+     * @param pageable must not be {@literal null}.
+     * @return this.
+     */
+    public Query with( Pageable pageable) {
+
+        if (pageable.isUnpaged()) {
+            return this;
+        }
+
+        this.limit = pageable.getPageSize();
+        this.skip = pageable.getOffset();
+
+        //todo  合并Sort  逻辑
+        //return with(pageable.getSort());
+
+        return  this ;
+    }
+
+
+    /**
+     * Adds a {@link Sort} to the {@link Query} instance.
+     *
+     * @param sort must not be {@literal null}.
+     * @return this.
+     */
+    /*public Query with(Sort sort) {
+
+        Assert.notNull(sort, "Sort must not be null!");
+
+        if (sort.isUnsorted()) {
+            return this;
+        }
+
+        sort.stream().filter(Order::isIgnoreCase).findFirst().ifPresent(it -> {
+
+            throw new IllegalArgumentException(String.format("Given sort contained an Order for %s with ignore case! "
+                    + "MongoDB does not support sorting ignoring case currently!", it.getProperty()));
+        });
+
+        this.sort = this.sort.and(sort);
+
+        return this;
+    }*/
 
     /**
      * Configures the query to use the given hint when being executed. The {@code hint} can either be an index name or a

@@ -30,6 +30,7 @@
 package com.whaleal.mars.core.query;
 
 
+import com.mongodb.WriteConcern;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.map.MapUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -54,6 +55,7 @@ public class Update implements UpdateDefinition {
     private Map<String, Object> modifierOps = new LinkedHashMap<>();
     private Map<String, PushOperatorBuilder> pushCommandBuilders = new LinkedHashMap<>(1);
     private List<ArrayFilter> arrayFilters = new ArrayList<>();
+    private WriteConcern writeConcern ;
 
     /**
      * 创建更新语句实体类
@@ -394,8 +396,21 @@ public class Update implements UpdateDefinition {
         return new Document(modifierOps);
     }
 
-    public List<ArrayFilter> getArrayFilters() {
+    public List<ArrayFilter>
+    getArrayFilters() {
         return Collections.unmodifiableList(this.arrayFilters);
+    }
+
+    @Override
+    public void setWriteConcern( WriteConcern writeConcern ) {
+
+        this.writeConcern = writeConcern ;
+    }
+
+    @Override
+    public WriteConcern getWriteConcern() {
+
+        return this.writeConcern ;
     }
 
     /**

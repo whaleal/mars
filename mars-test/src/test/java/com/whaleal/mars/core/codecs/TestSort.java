@@ -1,8 +1,8 @@
 package com.whaleal.mars.core.codecs;
 
 import com.whaleal.mars.codecs.writer.DocumentWriter;
-import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.stages.Sort;
+import com.whaleal.mars.core.domain.SortType;
 import org.bson.Document;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class TestSort {
         DocumentWriter writer = new DocumentWriter();
 
         document(writer, ()->{
-            for (Sort.SortType sortSort : sort.getSorts()) {
+            for (SortType sortSort : sort.getSorts()) {
                 writer.writeName(sortSort.getField());
                 sortSort.getDirection().encode(writer);
             }

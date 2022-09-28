@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.core.query;
 
+import com.mongodb.WriteConcern;
 import org.bson.Document;
 
 import java.util.List;
@@ -81,6 +82,19 @@ public interface UpdateDefinition {
     }
 
     /**
+     * 设置写关注
+     */
+    void setWriteConcern( WriteConcern writeConcern) ;
+
+    /**
+     * 获取写关注
+     */
+    WriteConcern getWriteConcern() ;
+
+
+
+
+    /**
      * 用于指定修改数组字段中哪些元素的过滤器
      *
      */
@@ -94,4 +108,6 @@ public interface UpdateDefinition {
          */
         Document toData();
     }
+
+
 }
