@@ -36,7 +36,9 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.domain.ISort;
 import com.whaleal.mars.core.domain.Pageable;
+import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
 import org.bson.BsonValue;
@@ -61,7 +63,8 @@ public class Query {
     // projection
     private Projection projectionSpec = null;
     // sorting
-    private List<Sort> sorts = new ArrayList<>();
+    //private List<Sort> sorts = new ArrayList<>();
+    private ISort sorts = Sort.unsorted();
     private long skip;
     private int limit;
 
@@ -76,16 +79,18 @@ public class Query {
         return readConcern;
     }
 
-    public void setReadConcern( ReadConcern readConcern ) {
+    public Query setReadConcern( ReadConcern readConcern ) {
         this.readConcern = readConcern;
+        return this ;
     }
 
     public ReadPreference getReadPreference() {
         return readPreference;
     }
 
-    public void setReadPreference( ReadPreference readPreference ) {
+    public Query setReadPreference( ReadPreference readPreference ) {
         this.readPreference = readPreference;
+        return this ;
     }
 
     private ReadConcern readConcern = null ;
@@ -247,10 +252,9 @@ public class Query {
         this.limit = pageable.getPageSize();
         this.skip = pageable.getOffset();
 
-        //todo  合并Sort  逻辑
-        //return with(pageable.getSort());
 
-        return  this ;
+        return with(pageable.getSort());
+
     }
 
 
@@ -260,24 +264,18 @@ public class Query {
      * @param sort must not be {@literal null}.
      * @return this.
      */
-    /*public Query with(Sort sort) {
+    public Query with(ISort sort) {
 
-        Assert.notNull(sort, "Sort must not be null!");
+        Precondition.notNull(sort, "Sort must not be null!");
 
         if (sort.isUnsorted()) {
             return this;
         }
 
-        sort.stream().filter(Order::isIgnoreCase).findFirst().ifPresent(it -> {
-
-            throw new IllegalArgumentException(String.format("Given sort contained an Order for %s with ignore case! "
-                    + "MongoDB does not support sorting ignoring case currently!", it.getProperty()));
-        });
-
-        this.sort = this.sort.and(sort);
+        this.sorts = this.sorts.and(sort);
 
         return this;
-    }*/
+    }
 
     /**
      * Configures the query to use the given hint when being executed. The {@code hint} can either be an index name or a
@@ -313,7 +311,7 @@ public class Query {
      * @param sort must not be {@literal null}.
      * @return this.
      */
-    public Query with(Sort... sort) {
+    public Query with(ISort... sort) {
 
         Precondition.notNull(sort, "Sort must not be null!");
 
@@ -321,8 +319,12 @@ public class Query {
             return this;
         }
 
-        sorts.addAll(Arrays.asList(sort));
-
+        for(ISort isort :sort) {
+            if (isort.isUnsorted()) {
+               continue;
+            }
+            sorts.and(isort);
+        }
         return this;
     }
 
@@ -355,9 +357,9 @@ public class Query {
         DocumentWriter writer = new DocumentWriter() ;
         if(isSorted()){
             ExpressionHelper.document(writer, () -> {
-                for (Sort sort : sorts) {
-                    writer.writeName(sort.getField());
-                    writer.writeInt32(sort.getOrder());
+                for (SortType sortType : sorts.getSorts()) {
+                    writer.writeName(sortType.getField());
+                    sortType.getDirection().encode(writer);
                 }
             });
             return writer.getDocument();
