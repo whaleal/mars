@@ -30,13 +30,21 @@
 package com.whaleal.mars.core.query;
 
 
+import com.mongodb.ReadConcern;
+import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.domain.ISort;
+import com.whaleal.mars.core.domain.Pageable;
+import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
+import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.time.Duration;
 import java.util.*;
@@ -56,17 +64,53 @@ public class Query {
     // projection
     private Projection projectionSpec = null;
     // sorting
-    private List<Sort> sorts = new ArrayList<>();
+    //private List<Sort> sorts = new ArrayList<>();
+    private ISort sorts = Sort.unsorted();
     private long skip;
     private int limit;
 
+    //  hint 的 保存   主要有两种形式 ①indexName  ②索引结构的 document  形式
     private String hint;
+
+    private WriteConcern writeConcern ;
+    private ReadConcern readConcern ;
+
+    private ReadPreference readPreference  ;
 
     private Meta meta = new Meta();
     // collation
     private Optional<com.mongodb.client.model.Collation> collation = Optional.empty();
 
+    public ReadConcern getReadConcern() {
+        return readConcern;
+    }
 
+    public Query setReadConcern( ReadConcern readConcern ) {
+        this.readConcern = readConcern;
+        return this ;
+    }
+
+    public ReadPreference getReadPreference() {
+        return readPreference;
+    }
+
+    public Query setReadPreference( ReadPreference readPreference ) {
+        this.readPreference = readPreference;
+        return this ;
+    }
+
+
+    public Query setWriteConcern( WriteConcern writeConcern ) {
+
+        this.writeConcern = writeConcern ;
+        return this ;
+
+    }
+
+    public WriteConcern getWriteConcern() {
+
+        return this.writeConcern ;
+    }
 
     public Query() {
     }
@@ -204,6 +248,48 @@ public class Query {
         return this;
     }
 
+
+    /**
+     * Sets the given pagination information on the {@link Query} instance. Will transparently set {@code skip} and
+     * {@code limit} as well as applying the {@link Sort} instance defined with the {@link Pageable}.
+     *
+     * @param pageable must not be {@literal null}.
+     * @return this.
+     */
+    public Query with( Pageable pageable) {
+
+        if (pageable.isUnpaged()) {
+            return this;
+        }
+
+        this.limit = pageable.getPageSize();
+        this.skip = pageable.getOffset();
+
+
+        return with(pageable.getSort());
+
+    }
+
+
+    /**
+     * Adds a {@link Sort} to the {@link Query} instance.
+     *
+     * @param sort must not be {@literal null}.
+     * @return this.
+     */
+    public Query with(ISort sort) {
+
+        Precondition.notNull(sort, "Sort must not be null!");
+
+        if (sort.isUnsorted()) {
+            return this;
+        }
+
+        this.sorts = this.sorts.and(sort);
+
+        return this;
+    }
+
     /**
      * Configures the query to use the given hint when being executed. The {@code hint} can either be an index name or a
      * json {@link Document} representation.
@@ -238,7 +324,7 @@ public class Query {
      * @param sort must not be {@literal null}.
      * @return this.
      */
-    public Query with(Sort... sort) {
+    public Query with(ISort... sort) {
 
         Precondition.notNull(sort, "Sort must not be null!");
 
@@ -246,8 +332,12 @@ public class Query {
             return this;
         }
 
-        sorts.addAll(Arrays.asList(sort));
-
+        for(ISort isort :sort) {
+            if (isort.isUnsorted()) {
+               continue;
+            }
+            sorts.and(isort);
+        }
         return this;
     }
 
@@ -280,9 +370,9 @@ public class Query {
         DocumentWriter writer = new DocumentWriter() ;
         if(isSorted()){
             ExpressionHelper.document(writer, () -> {
-                for (Sort sort : sorts) {
-                    writer.writeName(sort.getField());
-                    writer.writeInt32(sort.getOrder());
+                for (SortType sortType : sorts.getSorts()) {
+                    writer.writeName(sortType.getField());
+                    sortType.getDirection().encode(writer);
                 }
             });
             return writer.getDocument();

@@ -38,38 +38,25 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * 该 方法 需要重新设计
+ *
  *
  * @param <T>
  *
- *            基于Document 的 进行转换
+ * 基于 的 进行转换
+ *
  */
 
-public class QueryCursor< T > implements MarsCursor< T > {
+public class QueryCursor< T > implements MongoCursor< T > , MarsCursor< T > {
     private final MongoCursor< T > wrapped;
-
-    private final Class< ? super T > rawType;
-
 
     /**
      * @param cursor the Iterator to use
      */
-    public QueryCursor( MongoCursor< T > cursor, Class< ? super T > entityClass ) {
-        this.wrapped = cursor;
-        this.rawType = entityClass;
-        if (this.wrapped == null) {
-            throw new IllegalArgumentException("The wrapped cursor can not be null");
-        }
-    }
-
-
     public QueryCursor( MongoCursor< T > cursor ) {
         this.wrapped = cursor;
-        this.rawType = null;
         if (wrapped == null) {
             throw new IllegalArgumentException("The wrapped cursor can not be null");
         }
-
     }
 
     /**
@@ -117,7 +104,13 @@ public class QueryCursor< T > implements MarsCursor< T > {
 
     }
 
+    @Override
+    public int available() {
+       return this.wrapped.available();
+    }
 
+
+    @Override
     public T tryNext() {
         if (hasNext()) {
             return next();
@@ -127,11 +120,13 @@ public class QueryCursor< T > implements MarsCursor< T > {
     }
 
 
+    @Override
     public ServerCursor getServerCursor() {
         return this.wrapped.getServerCursor();
     }
 
 
+    @Override
     public ServerAddress getServerAddress() {
         return this.wrapped.getServerAddress();
     }

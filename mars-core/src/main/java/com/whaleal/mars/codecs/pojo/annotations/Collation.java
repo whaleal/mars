@@ -39,6 +39,7 @@ import java.lang.annotation.*;
 
 /**
  * 只针对表相关
+ *
  * @see com.whaleal.mars.core.index.annotation.Collation
  */
 @Documented

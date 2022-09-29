@@ -31,10 +31,14 @@ package com.whaleal.mars.core.messaging;
 
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.OperationType;
+import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.codecs.reader.DocumentReader;
 import org.bson.BsonTimestamp;
 import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.codecs.DecoderContext;
+import org.bson.codecs.configuration.CodecRegistry;
 
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
@@ -51,11 +55,16 @@ public class ChangeStreamEvent<T> {
     private static final AtomicReferenceFieldUpdater<ChangeStreamEvent, Object> CONVERTED_UPDATER = AtomicReferenceFieldUpdater
             .newUpdater(ChangeStreamEvent.class, Object.class, "converted");
 
-    private final
-    ChangeStreamDocument<Document> raw;
+    // 接收到的 changeStream 文档本身
+    private final ChangeStreamDocument<Document> raw;
 
+    //  需要将changeStream 转换到的目标对象类
     private final Class<T> targetType;
 
+    //
+    private final CodecRegistry converter ;
+
+    // 被转换的字段 注意 这个是通过 CONVERTED_UPDATER 来实现的
     // accessed through CONVERTED_UPDATER.
     private volatile T converted;
 
@@ -66,10 +75,12 @@ public class ChangeStreamEvent<T> {
      * @param raw        行内容
      * @param targetType 目标类型
      */
-    public ChangeStreamEvent( ChangeStreamDocument<Document> raw, Class<T> targetType ) {
+    public ChangeStreamEvent( ChangeStreamDocument<Document> raw, Class<T> targetType,CodecRegistry converter ) {
 
         this.raw = raw;
         this.targetType = targetType;
+        this.converter = converter ;
+
     }
 
 
@@ -91,7 +102,7 @@ public class ChangeStreamEvent<T> {
      */
 
     public Instant getTimestamp() {
-        return getBsonTimestamp() != null ? Instant.ofEpochSecond(Long.valueOf(getBsonTimestamp().toString()))
+        return getBsonTimestamp() != null ? Instant.ofEpochSecond(raw.getClusterTime().getTime(),0)
                 : null;
     }
 
@@ -178,10 +189,37 @@ public class ChangeStreamEvent<T> {
      * @param fullDocument 完整的文档
      * @return {@link T}
      */
-    @SuppressWarnings("unchecked")
-    //TODO
+
     private T getConverted(Document fullDocument) {
-        return (T) fullDocument;
+        return (T) doGetConverted(fullDocument);
+    }
+
+    private Object doGetConverted(Document fullDocument) {
+
+        Object result = CONVERTED_UPDATER.get(this);
+
+
+        if (result != null) {
+            return result;
+        }
+
+
+        try {
+
+            if (ClassUtil.isAssignable(Document.class, fullDocument.getClass())) {
+
+                return CONVERTED_UPDATER.compareAndSet(this, null, result) ? result : CONVERTED_UPDATER.get(this);
+            }
+
+            result = converter.get(targetType).decode(new DocumentReader(fullDocument), DecoderContext.builder().build());
+            return CONVERTED_UPDATER.compareAndSet(this, null, result) ? result : CONVERTED_UPDATER.get(this);
+
+        }catch (Exception e){
+            e.getMessage();
+        }
+
+        throw new IllegalArgumentException(
+                String.format("No converter found capable of converting %s to %s", fullDocument.getClass(), targetType));
     }
 
 
