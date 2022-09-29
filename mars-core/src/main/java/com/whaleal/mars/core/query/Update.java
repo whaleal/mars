@@ -37,7 +37,7 @@ import com.whaleal.icefrog.core.util.StrUtil;
 
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
-//import com.whaleal.mars.core.aggregation.stages.Sort;
+import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
 import org.bson.Document;
@@ -55,7 +55,7 @@ public class Update implements UpdateDefinition {
     private Map<String, Object> modifierOps = new LinkedHashMap<>();
     private Map<String, PushOperatorBuilder> pushCommandBuilders = new LinkedHashMap<>(1);
     private List<ArrayFilter> arrayFilters = new ArrayList<>();
-    private WriteConcern writeConcern ;
+
 
     /**
      * 创建更新语句实体类
@@ -401,17 +401,7 @@ public class Update implements UpdateDefinition {
         return Collections.unmodifiableList(this.arrayFilters);
     }
 
-    @Override
-    public void setWriteConcern( WriteConcern writeConcern ) {
 
-        this.writeConcern = writeConcern ;
-    }
-
-    @Override
-    public WriteConcern getWriteConcern() {
-
-        return this.writeConcern ;
-    }
 
     /**
      * This method is not called anymore rather override {@link #addMultiFieldOperation(String, String, Object)}.
@@ -657,15 +647,15 @@ public class Update implements UpdateDefinition {
          * @param sort must not be {@literal null}.
          * @return never {@literal null}.
          */
-        public PushOperatorBuilder sort(Sort... sort) {
+        public PushOperatorBuilder sort(Sort sort) {
 
             Precondition.notNull(sort, "Sort must not be null.");
 
             DocumentWriter writer = new DocumentWriter() ;
             ExpressionHelper.document(writer, () -> {
-                for (Sort sort1 : sort) {
-                    writer.writeName(sort1.getField());
-                    writer.writeInt32(sort1.getOrder());
+                for (SortType sorttype : sort.getSorts()) {
+                    writer.writeName(sorttype.getField());
+                    sorttype.getDirection().encode(writer);
                 }
             });
 

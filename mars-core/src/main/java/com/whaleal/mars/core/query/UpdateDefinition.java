@@ -81,15 +81,6 @@ public interface UpdateDefinition {
         return !getArrayFilters().isEmpty();
     }
 
-    /**
-     * 设置写关注
-     */
-    void setWriteConcern( WriteConcern writeConcern) ;
-
-    /**
-     * 获取写关注
-     */
-    WriteConcern getWriteConcern() ;
 
 
 

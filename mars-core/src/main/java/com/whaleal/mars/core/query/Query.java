@@ -32,6 +32,7 @@ package com.whaleal.mars.core.query;
 
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
@@ -71,6 +72,11 @@ public class Query {
     //  hint 的 保存   主要有两种形式 ①indexName  ②索引结构的 document  形式
     private String hint;
 
+    private WriteConcern writeConcern ;
+    private ReadConcern readConcern ;
+
+    private ReadPreference readPreference  ;
+
     private Meta meta = new Meta();
     // collation
     private Optional<com.mongodb.client.model.Collation> collation = Optional.empty();
@@ -93,11 +99,18 @@ public class Query {
         return this ;
     }
 
-    private ReadConcern readConcern = null ;
 
-    private ReadPreference readPreference = null ;
+    public Query setWriteConcern( WriteConcern writeConcern ) {
 
+        this.writeConcern = writeConcern ;
+        return this ;
 
+    }
+
+    public WriteConcern getWriteConcern() {
+
+        return this.writeConcern ;
+    }
 
     public Query() {
     }

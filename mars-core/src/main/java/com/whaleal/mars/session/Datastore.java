@@ -83,16 +83,28 @@ interface Datastore extends IndexOperations, MongoOperations {
         return replace(query, entity, new ReplaceOptions());
     }
 
+    @Deprecated
     default < T > UpdateResult replace( Query query, T entity, ReplaceOptions options ) {
         return replace(query, entity, options, null);
     }
 
+    @Deprecated
     < T > UpdateResult replace( Query query, T entity, ReplaceOptions options, String collectionName );
+
+    default < T > UpdateResult replacert( Query query, T entity ){
+        return replace(query ,entity ,new ReplaceOptions().upsert(true));
+    }
+
+    default < T > UpdateResult replacert( Query query, T entity, String collectionName ){
+        return replace(query ,entity ,new ReplaceOptions().upsert(true),collectionName);
+    }
+
 
     default < T > DeleteResult delete( Query query, Class< T > entityClass ) {
         return delete(query, entityClass, new DeleteOptions());
     }
 
+    @Deprecated
     default < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions deleteOptions ) {
         return delete(query, entityClass, deleteOptions, null);
     }
@@ -103,6 +115,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     }
 
 
+    @Deprecated
     default DeleteResult delete( Query query, String collectionName, DeleteOptions options ) {
         return delete(query, org.bson.Document.class, options, collectionName);
     }
@@ -115,6 +128,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     }
 
 
+    @Deprecated
     < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions options, String collectionName );
 
     default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass ) {
@@ -182,6 +196,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * Inserts an entity in to the mapped collection.
      */
 
+    @Deprecated
     default < T > InsertOneResult insert( T entity, InsertOneOptions insertOneOptions ) {
         return insert(entity, insertOneOptions, null);
     }
@@ -211,13 +226,12 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Inserts entities in to the mapped collection.
      */
-    @Deprecated
     < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options );
 
     /**
      * Inserts entities in to the mapped collection.
      */
-    @Deprecated
+
     < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
 
 
@@ -226,6 +240,7 @@ interface Datastore extends IndexOperations, MongoOperations {
         return updateEntity(query, entity, new UpdateOptions(), null);
     }
 
+    @Deprecated
     default < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options ) {
         return updateEntity(query, entity, options, null);
     }
@@ -235,7 +250,17 @@ interface Datastore extends IndexOperations, MongoOperations {
     }
 
 
+    @Deprecated
     < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options, String collectionName );
+
+    default < T > UpdateResult upertEntity( Query query, T entity){
+
+        return  updateEntity(query, entity, new UpdateOptions().upsert(true), null);
+    }
+
+    default < T > UpdateResult upertEntity( Query query, T entity , String collectionName){
+        return  updateEntity(query, entity, new UpdateOptions().upsert(true), collectionName);
+    }
 
 
 

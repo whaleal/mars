@@ -5,6 +5,7 @@ import com.whaleal.mars.core.domain.Direction;
 import com.whaleal.mars.core.domain.ISort;
 
 import com.whaleal.mars.core.domain.SortType;
+import org.bson.BsonWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,8 +153,6 @@ public class Sort extends Stage implements ISort {
     }
 
 
-
-
     public boolean isSorted() {
         return !isEmpty();
     }
@@ -234,6 +233,19 @@ public class Sort extends Stage implements ISort {
 
         sorts.add(new SortType(NATURAL,direction));
         return this ;
+    }
+
+    @Override
+    public void encode( BsonWriter writer ) {
+
+        writer.writeStartDocument();
+        if(this.isSorted()){
+            for (SortType sort : this.getSorts()) {
+                writer.writeName(sort.getField());
+                sort.getDirection().encode(writer);
+            }
+        }
+        writer.writeEndDocument();
     }
 
 }

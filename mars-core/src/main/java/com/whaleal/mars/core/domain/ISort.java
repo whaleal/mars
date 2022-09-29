@@ -1,6 +1,8 @@
 package com.whaleal.mars.core.domain;
 
 
+import org.bson.BsonWriter;
+
 import java.util.List;
 
 /**
@@ -30,5 +32,8 @@ public interface ISort {
 
 
     public List< SortType > getSorts();
+
+    public void encode( BsonWriter writer );
+
 
 }

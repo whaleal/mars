@@ -81,7 +81,6 @@ import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.core.query.BsonUtil;
 
 import com.whaleal.mars.session.transactions.MarsTransaction;
-import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;

@@ -3,6 +3,7 @@ package com.whaleal.mars.core.domain;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.StrUtil;
+import org.bson.BsonWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,6 +190,19 @@ public class Sort implements ISort{
 
     public List< SortType > getSorts() {
         return sorts;
+    }
+
+    @Override
+    public void encode( BsonWriter writer ) {
+
+        writer.writeStartDocument();
+        if(this.isSorted()){
+            for (SortType sort : this.getSorts()) {
+                writer.writeName(sort.getField());
+                sort.getDirection().encode(writer);
+            }
+        }
+        writer.writeEndDocument();
     }
 
 
