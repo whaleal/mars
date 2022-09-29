@@ -4,7 +4,8 @@ import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.collection.ListUtil;
 import com.whaleal.mars.core.aggregation.expressions.TimeUnit;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-import  com.whaleal.mars.core.query.Sort;
+import com.whaleal.mars.core.domain.ISort;
+
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class SetWindowFields extends Stage {
     private Expression partition;
-    private Sort[] sorts;
+    private ISort sorts;
     private Output[] outputs;
 
     protected SetWindowFields() {
@@ -49,7 +50,7 @@ public class SetWindowFields extends Stage {
         return this;
     }
 
-    public SetWindowFields sortBy(Sort... sorts) {
+    public SetWindowFields sortBy(ISort sorts) {
         this.sorts = sorts;
         return this;
     }
@@ -58,7 +59,7 @@ public class SetWindowFields extends Stage {
      * @return the sort values
      */
     @Nullable
-    public Sort[] sorts() {
+    public ISort sorts() {
         return sorts;
     }
 

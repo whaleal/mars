@@ -8,6 +8,8 @@ import com.whaleal.mars.core.aggregation.expressions.TimeUnit;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.SetWindowFields;
 
+import com.whaleal.mars.core.domain.ISort;
+import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.query.Sort;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
@@ -41,11 +43,12 @@ public class SetWindowFieldsCodec extends StageCodec< SetWindowFields > {
                 writer.writeName("partitionBy");
                 expression(getMapper(), writer, value.partition(), encoderContext);
             }
-            Sort[] sorts = value.sorts();
+            ISort sorts = value.sorts();
             if (sorts != null) {
                 document(writer, "sortBy", () -> {
-                    for (Sort sort : sorts) {
-                        writer.writeInt64(sort.getField(), sort.getOrder());
+                    for (SortType sorttype : sorts.getSorts()) {
+                        writer.writeName(sorttype.getField());
+                        sorttype.getDirection().encode(writer);
                     }
                 });
             }

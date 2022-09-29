@@ -1,5 +1,3 @@
-
-
 package com.whaleal.mars.codecs.pojo.annotations;
 
 
@@ -7,9 +5,7 @@ import java.lang.annotation.*;
 
 
 /**
- *
  * @author wh
- *
  */
 @Documented
 @Inherited

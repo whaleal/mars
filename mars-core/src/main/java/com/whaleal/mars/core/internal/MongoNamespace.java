@@ -51,7 +51,7 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
      */
     public static final String  OPLOG_COLLECTION_NAME= "oplog.rs";
 
-    public static final String SYSTEM_COLLECTION_SYMBOL = "system" ;
+    public static final String SYSTEM_COLLECTION_SYMBOL = "system." ;
 
 
     private static final Set<Character> PROHIBITED_CHARACTERS_IN_DATABASE_NAME =

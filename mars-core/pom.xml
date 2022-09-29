@@ -5,7 +5,11 @@
     <parent>
         <artifactId>mars</artifactId>
         <groupId>com.whaleal.mars</groupId>
+<<<<<<< HEAD
         <version>0.8.72</version>
+=======
+        <version>0.8.84</version>
+>>>>>>> b6a402ffba543f92805bbbc9124ce839c7cad06c
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

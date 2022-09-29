@@ -5,6 +5,7 @@ package com.whaleal.mars.core.aggregation.codecs.stages;
 
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.stages.Sort;
+import com.whaleal.mars.core.domain.SortType;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
@@ -24,7 +25,7 @@ public class SortCodec extends StageCodec< Sort > {
     @Override
     protected void encodeStage(BsonWriter writer, Sort value, EncoderContext encoderContext) {
         document(writer, () -> {
-            for (Sort.SortType sort : value.getSorts()) {
+            for (SortType sort : value.getSorts()) {
                 writer.writeName(sort.getField());
                 sort.getDirection().encode(writer);
             }

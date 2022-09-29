@@ -47,6 +47,7 @@ import org.bson.BsonDocument;
 import org.bson.BsonTimestamp;
 import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
 
 import java.time.Instant;
 import java.util.*;
@@ -57,10 +58,12 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
     private final Set<String> denylist = new HashSet<>(
             Arrays.asList("operationType", "fullDocument", "documentKey", "updateDescription", "ns"));
 
+    private final CodecRegistry converter ;
     @SuppressWarnings({"unchecked", "rawtypes"})
     ChangeStreamTask(Mars mars, ChangeStreamRequest<?> request, Class<?> targetType,
                      ErrorHandler errorHandler) {
         super(mars, (ChangeStreamRequest) request, (Class) targetType, errorHandler);
+        this.converter = mars.getMapper().getCodecRegistry();
     }
 
 
@@ -178,7 +181,7 @@ class ChangeStreamTask extends CursorReadingTask<ChangeStreamDocument<Document>,
         MongoNamespace namespace = source.getNamespace() != null ? MongoNamespace.convertFrom(source.getNamespace())
                 : createNamespaceFromOptions(options);
 
-        return new ChangeStreamEventMessage<>(new ChangeStreamEvent<>(source, targetType), namespace);
+        return new ChangeStreamEventMessage<>(new ChangeStreamEvent<>(source, targetType,converter), namespace);
     }
 
     MongoNamespace createNamespaceFromOptions(SubscriptionRequest.RequestOptions options) {

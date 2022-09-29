@@ -32,6 +32,9 @@ package com.whaleal.mars.core.query.updates;
 
 
 
+import com.whaleal.mars.codecs.writer.DocumentWriter;
+import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.query.Sort;
 import org.bson.Document;
 
@@ -104,29 +107,22 @@ public class PushOperator extends UpdateOperator {
      * @return this
      */
     public PushOperator sort( Sort value) {
+
         if (sort != null) {
             throw new IllegalStateException("updateSortOptions Sort document "+sort);
         }
         if (sortDocument == null) {
             sortDocument = new Document();
         }
-        sortDocument.put(value.getField(), value.getOrder());
+        DocumentWriter writer = new DocumentWriter() ;
+        ExpressionHelper.document(writer, () -> {
+            for (SortType sorttype : value.getSorts()) {
+                writer.writeName(sorttype.getField());
+                sorttype.getDirection().encode(writer);
+            }
+        });
+        sortDocument.put("$sort", writer.getDocument());
         return this;
-//        if (sort != null) {
-//            throw new IllegalStateException("updateSortOptions Sort document "+sort);
-//        }
-//        if (sortDocument == null) {
-//            sortDocument = new Document();
-//        }
-//        DocumentWriter writer = new DocumentWriter() ;
-//        ExpressionHelper.document(writer, () -> {
-//            for (Sort.SortType sorttype : value.getSorts()) {
-//                writer.writeName(sorttype.getField());
-//                sorttype.getDirection().encode(writer);
-//            }
-//        });
-//        sortDocument.put("$sort", writer.getDocument());
-//        return this;
     }
 
     @Override
