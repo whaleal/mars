@@ -37,6 +37,7 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
+import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
@@ -107,7 +108,7 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 
-    private static final Log log = LogFactory.get(DatastoreImpl.class);
+    private static final Log LOGGER = LogFactory.get(DatastoreImpl.class);
 
     private final Lock lock = new ReentrantLock();
     private final MongoClient mongoClient;
@@ -157,6 +158,48 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         MongoNamespace.checkDatabaseNameValidity(databaseName);
         return this.mongoClient.getDatabase(databaseName).withCodecRegistry(super.mapper.getCodecRegistry());
     }
+
+    @Override
+    public MongoCollection< Document > getCollection( String collectionName ) {
+
+        return this.database.getCollection(collectionName);
+    }
+
+    public < T > MongoCollection< T > getCollection( Class< T > type ) {
+        String nameCache =null ;
+        if( (nameCache = collectionNameCache.get(type) ) !=null){
+            MongoCollection< T > collection = this.database.getCollection(nameCache, type);
+            this.withConcern(collection,type);
+            return collection ;
+        }
+
+        EntityModel entityModel = mapper.getEntityModel(type);
+
+        String collectionName = entityModel.getCollectionName();
+
+        collectionNameCache.put(type,collectionName);
+
+        MongoCollection< T > collection = this.database.getCollection(collectionName, type);
+
+        this.withConcern(collection,type);
+        return collection;
+    }
+
+
+
+    public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
+
+        //集合名不为空，则有优先使用集合名
+        if (collectionName != null) {
+            MongoCollection< T > collection = this.database.getCollection(collectionName, type);
+
+            return this.withConcern(collection, type);
+        } else {
+            return getCollection(type);
+        }
+
+    }
+
 
 
     @Override
@@ -234,7 +277,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 
-        collection = prepareConcern(collection, options);
+
         //根据query  去 删除相关数据
         ClientSession session = this.startSession();
 //        CrudExecutor executor = CrudExecutorFactory.create(CrudEnum.DELETE);
@@ -270,8 +313,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
             Document removeQuery = queryObject;
 
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Remove using query: %s in collection: %s.", serializeToJsonSafely(removeQuery),
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Remove using query: %s in collection: %s.", serializeToJsonSafely(removeQuery),
                         collectionName));
             }
 
@@ -327,8 +370,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
 
         T result = findOneExecute(session, collection, query, null, null);
-        if (log.isDebugEnabled() ) {
-            log.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
+        if (LOGGER.isDebugEnabled() ) {
+            LOGGER.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
         }
 
@@ -542,9 +585,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Precondition.notNull(query, "Query must not be null");
         Precondition.notNull(update, "Update must not be null");
 
-        if (query.isSorted() && log.isWarnEnabled()) {
+        if (query.isSorted() && LOGGER.isWarnEnabled()) {
 
-            log.warn(String.format("%s does not support sort ('%s'); Please use findAndModify() instead",
+            LOGGER.warn(String.format("%s does not support sort ('%s'); Please use findAndModify() instead",
                     upsert ? "Upsert" : "UpdateFirst", MapUtil.toString(query.getSortObject())));
         }
 
@@ -697,6 +740,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
       return this.mapper.getEntityModel(entityClass).getCollectionName();
 
     }
+
+
 
     private < T > T doFindAndModify( String collectionName, Query query, Class<T> entityClass, UpdateDefinition update, FindOneAndUpdateOptions optionsToUse ) {
         MongoCollection< T > collection = getCollection(entityClass, collectionName);
@@ -985,43 +1030,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
 
-    public < T > MongoCollection< T > getCollection( Class< T > type ) {
-
-        String nameCache =null ;
-        if( (nameCache = collectionNameCache.get(type) ) !=null){
-
-            MongoCollection< T > collection = this.database.getCollection(nameCache, type);
-            this.withConcern(collection,type);
-            return collection ;
-        }
-
-
-        EntityModel entityModel = mapper.getEntityModel(type);
-        String collectionName = entityModel.getCollectionName();
-
-        collectionNameCache.put(type,collectionName);
-
-        MongoCollection< T > collection = this.database.getCollection(collectionName, type);
-
-        this.withConcern(collection,type);
-        return collection;
-    }
-
-
-
-    public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
-
-        //集合名不为空，则有优先使用集合名
-        if (collectionName != null) {
-            MongoCollection< T > collection = this.database.getCollection(collectionName, type);
-            return this.withConcern(collection, type);
-        } else {
-
-            return getCollection(type);
-        }
-
-    }
-
 
     @Override
     public < T > long estimatedCount( Class< T > clazz) {
@@ -1030,8 +1038,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
-        if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", "{}", collectionName);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Executing count: {} in collection: {}", "{}", collectionName);
         }
         return this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
 
@@ -1057,8 +1065,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         com.mongodb.client.model.CountOptions countOptions = decorateCountOption(query);
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
-        if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions);
     }
@@ -1067,8 +1075,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public < T > long estimatedCount( String collectionName) {
 
 
-        if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", "{}", collectionName);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Executing count: {} in collection: {}", "{}", collectionName);
         }
 
         return this.database.getCollection(collectionName).estimatedDocumentCount( new com.mongodb.client.model.EstimatedDocumentCountOptions());
@@ -1077,8 +1085,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > long count( Query query, String collectionName) {
         com.mongodb.client.model.CountOptions countOptions = decorateCountOption(query);
-        if (log.isDebugEnabled()) {
-            log.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions);
     }
@@ -1119,11 +1127,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
      */
     @Override
     public < T > MongoCollection< Document > createCollection( Class< T > entityClass,
-                                                               CollectionOptions collectionOptions ) {
+                                                               CreateCollectionOptions collectionOptions ) {
 
         notNull(entityClass, "EntityClass must not be null!");
 
-        CollectionOptions options = collectionOptions != null ? collectionOptions : CollectionOptions.empty();
+        CreateCollectionOptions options = collectionOptions != null ? collectionOptions : new CreateCollectionOptions();
 
         Document document = convertToDocument(options);
 
@@ -1156,8 +1164,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         try {
             MongoCollection< Document > collection = this.database.getCollection(collectionName);
             collection.drop();
-            if (log.isDebugEnabled()) {
-                log.debug("Dropped collection [{}]",
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Dropped collection [{}]",
                         collection.getNamespace() != null ? collection.getNamespace().getCollectionName() : collectionName);
             }
         } finally {
@@ -1835,7 +1843,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                            indexOptions.background(false);
                        }
                     }catch (Exception e){
-                        log.warn("Index background Option parse error from  index name %s  with background value %s ", o.get("name") ,o.get("background") );
+                        LOGGER.warn("Index background Option parse error from  index name %s  with background value %s ", o.get("name") ,o.get("background") );
                         indexOptions.background(true);
                     }
                 }
@@ -2021,7 +2029,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
             }
             return session.withTransaction(() -> body.execute(marssession));
         } catch (Exception e) {
-            log.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             return null ;
         }
     }
