@@ -33,8 +33,6 @@ import com.mongodb.ClientSessionOptions;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.InsertManyResult;
-import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
@@ -174,7 +172,7 @@ interface Datastore extends IndexOperations, MongoOperations {
 
 
     /**
-     * Remove all documents that match the provided query document criteria from the collection used to store the
+     * Remove one documents that match the provided query document criteria from the collection used to store the
      * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
      *
      * @param query the query document that specifies the criteria used to remove a record.
@@ -188,14 +186,25 @@ interface Datastore extends IndexOperations, MongoOperations {
         return delete(query, entityClass,getCollectionName(entityClass));
     }
 
-    @Deprecated
+
+    /**
+     * Remove one or multi documents that match the provided query document criteria from the collection used to store the
+     * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param entityClass class that determines the collection to use.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query} or {@literal entityClass} is {@literal null}.
+     * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
+     *           {@link #getCollectionName(Class) derived} from the given type.
+     */
     default < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions deleteOptions ) {
         return delete(query, entityClass, deleteOptions, null);
     }
 
 
     /**
-     * Remove all documents from the specified collection that match the provided query document criteria. There is no
+     * Remove one documents from the specified collection that match the provided query document criteria. There is no
      * conversion/mapping done for any criteria using the id field. <br />
      * <strong>NOTE:</strong> Any additional support for field mapping is not available due to the lack of domain type
      * information. Use {@link #delete(Query, Class, String)} to get full type specific support.
@@ -210,14 +219,24 @@ interface Datastore extends IndexOperations, MongoOperations {
     }
 
 
-    @Deprecated
+    /**
+     * Remove one or Multi documents from the specified collection that match the provided query document criteria. There is no
+     * conversion/mapping done for any criteria using the id field. <br />
+     * <strong>NOTE:</strong> Any additional support for field mapping is not available due to the lack of domain type
+     * information. Use {@link #delete(Query, Class, String)} to get full type specific support.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param collectionName name of the collection where the objects will removed, must not be {@literal null} or empty.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
+     */
     default DeleteResult delete( Query query, String collectionName, DeleteOptions options ) {
         return delete(query, null, options, collectionName);
     }
 
 
     /**
-     * Remove all documents that match the provided query document criteria from the collection used to store the
+     * Remove one documents that match the provided query document criteria from the collection used to store the
      * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
      *
      * @param query the query document that specifies the criteria used to remove a record.
@@ -232,10 +251,11 @@ interface Datastore extends IndexOperations, MongoOperations {
 
 
 
-    @Deprecated
+
     < T > DeleteResult delete( Query query, @Nullable Class< T > entityClass, DeleteOptions options, String collectionName );
 
-    // todo  delete multi
+
+
 
     /**
      * Query for a list of objects of type T from the collection used by the entity class. <br />
@@ -469,7 +489,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      */
 
     @Deprecated
-    default < T > InsertOneResult insert( T entity, InsertOneOptions insertOneOptions ) {
+    default < T > T insert( T entity, InsertOneOptions insertOneOptions ) {
         return insert(entity, insertOneOptions, null);
     }
 
@@ -478,7 +498,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * Inserts an entity in to the mapped collection.
      */
     @Deprecated
-    < T > InsertOneResult insert( T entity, InsertOneOptions options, String collectionName );
+    < T > T insert( T entity, InsertOneOptions options, String collectionName );
 
 
     /**
@@ -517,14 +537,14 @@ interface Datastore extends IndexOperations, MongoOperations {
      * Inserts entities in to the mapped collection.
      */
     @Deprecated
-    < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options );
+    < T > Collection<T> insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options );
 
     /**
      * Inserts entities in to the mapped collection.
      */
 
     @Deprecated
-    < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
+    < T > Collection<T> insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
 
 
 

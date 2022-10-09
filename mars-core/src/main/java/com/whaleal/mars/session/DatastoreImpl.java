@@ -348,7 +348,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     @Override
-    public < T > InsertOneResult insert( T entity, InsertOneOptions options, String collectionName ) {
+    public < T > T insert( T entity, InsertOneOptions options, String collectionName ) {
 
         // 开启与数据库的连接
         ClientSession session = this.startSession();
@@ -360,11 +360,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
         InsertOneResult result = insertOneExecute(session, collection, null, options, entity);
 
-        return result;
+        return entity;
     }
 
     @Override
-    public < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options ) {
+    public < T > Collection<T> insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options ) {
         String collectionName = this.mapper.determineCollectionName(entityClass, null);
         return this.insert(entities,collectionName,options);
     }
@@ -372,7 +372,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 
     @Override
-    public < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName ,InsertManyOptions options) {
+    public < T > Collection<T> insert( Collection< ? extends T > entities, String collectionName ,InsertManyOptions options) {
 
         if (entities == null || entities.isEmpty()) {
             throw new IllegalArgumentException("entities in operation can't be null or empty ");
@@ -397,7 +397,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         InsertManyResult result = insertManyExecute(session, collection, null, options, entities);
 
-        return result;
+        return entities;
 
     }
 
@@ -1595,24 +1595,24 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return (T) insertOneResult;
     }
 
-    private <T> T insertManyExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+    private <T> Collection<T> insertManyExecute( ClientSession session, MongoCollection collection, Query query, Options options, Collection<T> data) {
 
-        InsertManyResult insertManyResult = new InsertManyResult();
+       // InsertManyResult insertManyResult = new InsertManyResult();
 
         //options == null是另外一种情况
         if (options == null) {
 
             if (session == null) {
 
-                insertManyResult.setOriginInsertManyResult(collection.insertMany((List) data));
+                collection.insertMany( (List<T>)data);
 
             } else {
 
-                insertManyResult.setOriginInsertManyResult(collection.insertMany(session, (List) data));
+                collection.insertMany(session,  (List<T>)data);
 
             }
 
-            return (T) insertManyResult;
+            return data;
 
         }
 
@@ -1627,15 +1627,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         if (session == null) {
 
 
-            insertManyResult.setOriginInsertManyResult(collection.insertMany((List) data, insertManyOptions.getOriginOptions()));
+            collection.insertMany((List) data);
 
         } else {
 
-            insertManyResult.setOriginInsertManyResult(collection.insertMany(session, (List) data, insertManyOptions.getOriginOptions()));
+            collection.insertMany(session, (List) data);
 
         }
 
-        return (T) insertManyResult;
+        return data;
     }
 
     private <T> T updateExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {

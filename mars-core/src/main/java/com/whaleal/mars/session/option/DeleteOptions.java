@@ -39,11 +39,10 @@ import com.mongodb.client.model.Collation;
  * 继承了原生的 Option 属性
  * 同时实现了自定义的 config 相关接口
  */
-public class DeleteOptions
-        implements WriteConfigurable<DeleteOptions> {
+public class DeleteOptions extends com.mongodb.client.model.DeleteOptions {
 
 
-    private WriteConcern writeConcern;
+
     /** 删除多条数据 */
     private boolean multi;
 
@@ -67,27 +66,6 @@ public class DeleteOptions
     }
 
 
-    public Collation getCollation() {
-        return originDeleteOptions.getCollation();
-    }
-
-    public DeleteOptions collation(Collation collation) {
-        originDeleteOptions.collation(collation);
-        return this;
-    }
-
-    @Override
-    public DeleteOptions writeConcern(WriteConcern writeConcern) {
-        this.writeConcern = writeConcern;
-        return this;
-    }
-
-    @Override
-    public WriteConcern writeConcern() {
-        return writeConcern;
-    }
-
-    @Override
     public com.mongodb.client.model.DeleteOptions getOriginOptions() {
         if (originDeleteOptions == null) {
             originDeleteOptions = new com.mongodb.client.model.DeleteOptions();
