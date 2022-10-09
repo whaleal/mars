@@ -37,7 +37,7 @@ public class PageRequest extends AbstractPageRequest {
 	 *
 	 * @param page zero-based page index, must not be negative.
 	 * @param size the size of the page to be returned, must be greater than 0.
-	 * @since 2.0
+	 *
 	 */
 	public static PageRequest of(int page, int size) {
 		return of(page, size, Sort.unsorted());
@@ -49,7 +49,7 @@ public class PageRequest extends AbstractPageRequest {
 	 * @param page zero-based page index.
 	 * @param size the size of the page to be returned.
 	 * @param sort must not be {@literal null}, use {@link Sort#unsorted()} instead.
-	 * @since 2.0
+	 * 
 	 */
 	public static PageRequest of(int page, int size, Sort sort) {
 		return new PageRequest(page, size, sort);
@@ -62,7 +62,7 @@ public class PageRequest extends AbstractPageRequest {
 	 * @param size the size of the page to be returned, must be greater than 0.
 	 * @param direction must not be {@literal null}.
 	 * @param properties must not be {@literal null}.
-	 * @since 2.0
+	 *
 	 */
 	public static PageRequest of(int page, int size, Direction direction, String... properties) {
 		return of(page, size, Sort.by(direction, properties));
@@ -73,7 +73,7 @@ public class PageRequest extends AbstractPageRequest {
 	 *
 	 * @param pageSize the size of the page to be returned, must be greater than 0.
 	 * @return a new {@link PageRequest}.
-	 * @since 2.5
+	 *
 	 */
 	public static PageRequest ofSize(int pageSize) {
 		return PageRequest.of(0, pageSize);
@@ -139,7 +139,7 @@ public class PageRequest extends AbstractPageRequest {
 	 *
 	 * @param pageNumber
 	 * @return a new {@link PageRequest}.
-	 * @since 2.5
+	 * 
 	 */
 	@Override
 	public PageRequest withPage(int pageNumber) {
@@ -152,7 +152,7 @@ public class PageRequest extends AbstractPageRequest {
 	 * @param direction must not be {@literal null}.
 	 * @param properties must not be {@literal null}.
 	 * @return a new {@link PageRequest}.
-	 * @since 2.5
+	 * 
 	 */
 	public PageRequest withSort(Direction direction, String... properties) {
 		return new PageRequest(getPageNumber(), getPageSize(), Sort.by(direction, properties));
@@ -163,7 +163,7 @@ public class PageRequest extends AbstractPageRequest {
 	 *
 	 * @param sort must not be {@literal null}.
 	 * @return a new {@link PageRequest}.
-	 * @since 2.5
+	 * 
 	 */
 	public PageRequest withSort(Sort sort) {
 		return new PageRequest(getPageNumber(), getPageSize(), sort);

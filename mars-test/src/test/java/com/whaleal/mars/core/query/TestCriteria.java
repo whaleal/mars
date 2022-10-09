@@ -2,7 +2,6 @@ package com.whaleal.mars.core.query;
 
 import com.whaleal.mars.core.query.filters.Filter;
 import com.whaleal.mars.core.query.filters.Filters;
-import com.whaleal.mars.core.query.filters.Filters;
 import org.bson.Document;
 import org.testng.annotations.Test;
 

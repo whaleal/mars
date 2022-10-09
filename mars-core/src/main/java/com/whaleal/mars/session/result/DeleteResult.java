@@ -33,6 +33,7 @@ package com.whaleal.mars.session.result;
  * @author cx
  * @Date 2020/12/22
  */
+@Deprecated
 public class DeleteResult extends com.mongodb.client.result.DeleteResult {
 
     private com.mongodb.client.result.DeleteResult originDeleteResult;

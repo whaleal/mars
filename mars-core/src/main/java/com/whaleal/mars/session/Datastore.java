@@ -31,19 +31,20 @@ package com.whaleal.mars.session;
 
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.ReadPreference;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertManyResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.Nullable;
+import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.option.*;
-import com.whaleal.mars.session.result.DeleteResult;
-import com.whaleal.mars.session.result.InsertManyResult;
-import com.whaleal.mars.session.result.InsertOneResult;
-import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.session.transactions.MarsTransaction;
 import org.bson.Document;
-import org.bson.types.ObjectId;
-
+import com.mongodb.client.model.ReplaceOptions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -79,29 +80,112 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 interface Datastore extends IndexOperations, MongoOperations {
 
 
-    default < T > UpdateResult replace( Query query, T entity ) {
-        return replace(query, entity, new ReplaceOptions());
-    }
+    /**
+     * 根据条件进行替换
+     * @param query
+     * @param replacement
+     * @param <T>
+     * @return
+     */
+    default < T > UpdateResult replace( Query query, T replacement ) {
 
-    @Deprecated
-    default < T > UpdateResult replace( Query query, T entity, ReplaceOptions options ) {
-        return replace(query, entity, options, null);
-    }
-
-    @Deprecated
-    < T > UpdateResult replace( Query query, T entity, ReplaceOptions options, String collectionName );
-
-    default < T > UpdateResult replacert( Query query, T entity ){
-        return replace(query ,entity ,new ReplaceOptions().upsert(true));
-    }
-
-    default < T > UpdateResult replacert( Query query, T entity, String collectionName ){
-        return replace(query ,entity ,new ReplaceOptions().upsert(true),collectionName);
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.notNull(replacement,"Replacement must not be null!");
+        return replace(query, replacement, new ReplaceOptions().upsert(false),getCollectionName(replacement.getClass()));
     }
 
 
+    /**
+     * 根据条件进行替换
+     * @param <T>
+     * @param query
+     * @param replacement
+     * @param options
+     * @return
+     */
+    default < T > UpdateResult replace( Query query, T replacement, ReplaceOptions options ) {
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.notNull(replacement,"Replacement must not be null!");
+        Precondition.notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
+        return replace(query, replacement, options, getCollectionName(replacement.getClass()));
+    }
+
+
+    /**
+     * 根据条件进行替换
+     * @param <T>
+     * @param query
+     * @param replacement
+     * @param collectionName
+     * @return
+     */
+    default < T > UpdateResult replace( Query query, T replacement, String collectionName ) {
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.notNull(collectionName, "CollectionName must not be null");
+        Precondition.notNull(replacement,"Replacement must not be null!");
+        return replace(query, replacement, new ReplaceOptions().upsert(false), collectionName);
+    }
+
+
+    /**
+     * 根据条件进行替换
+     * @param <T>
+     * @param query
+     * @param replacement
+     * @param options
+     * @param collectionName
+     * @return
+     */
+    < T > UpdateResult replace( Query query, T replacement, ReplaceOptions options, String collectionName );
+
+
+
+    /**
+     * Remove the given object from the collection by {@literal id} and (if applicable) its
+     *
+     * Use {@link DeleteResult#getDeletedCount()} for insight whether an {@link DeleteResult#wasAcknowledged()
+     * acknowledged} remove operation was successful or not.
+     *
+     * @param object must not be {@literal null}.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
+     *           {@link #getCollectionName(Class) derived} from the given object type.
+     */
+    default DeleteResult delete(Object object){
+        notNull(object, "Object must not be null");
+        return  delete(object ,getCollectionName(object.getClass()));
+    }
+
+
+
+    /**
+     * Removes the given object from the given collection by {@literal id} and (if applicable) its
+     *
+     * Use {@link DeleteResult#getDeletedCount()} for insight whether an {@link DeleteResult#wasAcknowledged()
+     * acknowledged} remove operation was successful or not.
+     *
+     * 根据 对象的 id  字段删除
+     *
+     * @param object must not be {@literal null}.
+     * @param collectionName name of the collection where the objects will removed, must not be {@literal null} or empty.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     */
+    DeleteResult delete( Object object, String collectionName );
+
+
+    /**
+     * Remove all documents that match the provided query document criteria from the collection used to store the
+     * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param entityClass class that determines the collection to use.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query} or {@literal entityClass} is {@literal null}.
+     * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
+     *           {@link #getCollectionName(Class) derived} from the given type.
+     */
     default < T > DeleteResult delete( Query query, Class< T > entityClass ) {
-        return delete(query, entityClass, new DeleteOptions());
+        return delete(query, entityClass,getCollectionName(entityClass));
     }
 
     @Deprecated
@@ -110,87 +194,275 @@ interface Datastore extends IndexOperations, MongoOperations {
     }
 
 
+    /**
+     * Remove all documents from the specified collection that match the provided query document criteria. There is no
+     * conversion/mapping done for any criteria using the id field. <br />
+     * <strong>NOTE:</strong> Any additional support for field mapping is not available due to the lack of domain type
+     * information. Use {@link #delete(Query, Class, String)} to get full type specific support.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param collectionName name of the collection where the objects will removed, must not be {@literal null} or empty.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
+     */
     default DeleteResult delete( Query query, String collectionName ) {
-        return delete(query, org.bson.Document.class, new DeleteOptions(), collectionName);
+        return delete(query, null, collectionName);
     }
 
 
     @Deprecated
     default DeleteResult delete( Query query, String collectionName, DeleteOptions options ) {
-        return delete(query, org.bson.Document.class, options, collectionName);
+        return delete(query, null, options, collectionName);
     }
 
 
-    default DeleteResult delete( Query query, Class< ? > entityClass, String collectionName ) {
+    /**
+     * Remove all documents that match the provided query document criteria from the collection used to store the
+     * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param entityClass class of the pojo to be operated on. Can be {@literal null}.
+     * @param collectionName name of the collection where the objects will removed, must not be {@literal null} or empty.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query}, {@literal entityClass} or {@literal collectionName} is
+     *           {@literal null}.
+     */
+    DeleteResult delete( Query query, @Nullable Class< ? > entityClass, String collectionName ) ;
 
-        notNull(entityClass, "EntityClass must not be null!");
-        return delete(query, entityClass, new DeleteOptions(), collectionName);
-    }
+
 
 
     @Deprecated
-    < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions options, String collectionName );
+    < T > DeleteResult delete( Query query, @Nullable Class< T > entityClass, DeleteOptions options, String collectionName );
 
-    default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass ) {
-        return findAll(query, entityClass, null);
-    }
+    // todo  delete multi
 
-    < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName );
-
-    default < T > Optional< T > findOne( Query query, Class< T > entityClass ) {
-        return findOne(query, entityClass, null);
+    /**
+     * Query for a list of objects of type T from the collection used by the entity class. <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used. <br />
+     * If your collection does not contain a homogeneous collection of types, this operation will not be an efficient way
+     * to map objects since the test for class type is done in the client and not on the server.
+     *
+     * @param entityClass the parametrized type of the returned list.
+     * @return the QueryCursor.
+     */
+    default < T > QueryCursor< T > findAll(  Class< T > entityClass ) {
+        return find(new Query(), entityClass, getCollectionName(entityClass));
     }
 
     /**
-     * 根据id查询记录
-     * @param id
-     * @param entityClass
-     * @param <T>
-     * @return
+     * Query for a list of objects of type T from the specified collection. <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used. <br />
+     * If your collection does not contain a homogeneous collection of types, this operation will not be an efficient way
+     * to map objects since the test for class type is done in the client and not on the server.
+     *
+     * @param entityClass the parametrized type of the returned list.
+     * @param collectionName name of the collection to retrieve the objects from.
+     * @return the QueryCursor.
      */
-    default <T> Optional< T > findById(Object id, Class< T > entityClass){
-        return this.findById(id,entityClass,null);
+    default < T > QueryCursor< T > findAll(  Class< T > entityClass ,String collectionName ) {
+        return find(new Query(), entityClass, collectionName);
     }
 
+
+
+    @Deprecated
+    default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass ) {
+        return findAll(query, entityClass, getCollectionName(entityClass));
+    }
+
+    @Deprecated
+    < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName );
+
+    /**
+     * Map the results of an ad-hoc query on the collection for the entity class to a List of the specified type. <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used. <br />
+     * The query is specified as a {@link Query} which can be created either using the {@link BasicQuery} or the more
+     * feature rich {@link Query}.
+     *
+     * @param query the query class that specifies the criteria used to find a record and also an optional fields
+     *          specification. Must not be {@literal null}.
+     * @param entityClass the parametrized type of the returned list. Must not be {@literal null}.
+     * @return the QueryCursor of converted objects.
+     */
+    default <T> QueryCursor<T> find(Query query, Class<T> entityClass){
+        return find(query ,entityClass ,getCollectionName(entityClass));
+    }
+
+    /**
+     * Map the results of an ad-hoc query on the specified collection to a List of the specified type. <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used. <br />
+     * The query is specified as a {@link Query} which can be created either using the {@link BasicQuery} or the more
+     * feature rich {@link Query}.
+     *
+     * @param query the query class that specifies the criteria used to find a record and also an optional fields
+     *          specification. Must not be {@literal null}.
+     * @param entityClass the parametrized type of the returned list. Must not be {@literal null}.
+     * @param collectionName name of the collection to retrieve the objects from. Must not be {@literal null}.
+     * @return the QueryCursor of converted objects.
+     */
+    <T> QueryCursor<T> find(Query query, Class<T> entityClass, String collectionName);
+
+
+
+    /**
+     * Map the results of an ad-hoc query on the collection for the entity class to a single instance of an object of the
+     * specified type. <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used. <br />
+     * The query is specified as a {@link Query} which can be created either using the {@link BasicQuery} or the more
+     * feature rich {@link Query}.
+     *
+     * @param query the query class that specifies the criteria used to find a record and also an optional fields
+     *          specification.
+     * @param entityClass the parametrized type of the returned list.
+     * @return the converted object.
+     */
+    default < T > Optional< T > findOne( Query query, Class< T > entityClass ) {
+        return findOne(query, entityClass, getCollectionName(entityClass));
+    }
+
+
+    /**
+     * Map the results of an ad-hoc query on the specified collection to a single instance of an object of the specified
+     * type. <br />
+     * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used. <br />
+     * The query is specified as a {@link Query} which can be created either using the {@link BasicQuery} or the more
+     * feature rich {@link Query}.
+     *
+     * @param query the query class that specifies the criteria used to find a record and also an optional fields
+     *          specification.
+     * @param entityClass the parametrized type of the returned list.
+     * @param collectionName name of the collection to retrieve the objects from.
+     * @return the converted object.
+     */
+    < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName );
+
+
+    /**
+     * Returns a document with the given id mapped onto the given class. The collection the query is ran against will be
+     * derived from the given target class as well.
+     *
+     * @param id the id of the document to return. Must not be {@literal null}.
+     * @param entityClass the type the document shall be converted into. Must not be {@literal null}.
+     * @return the document with the given id mapped onto the given target class.
+     */
+    default <T> Optional< T > findById(Object id, Class< T > entityClass){
+        return findById(id,entityClass,getCollectionName(entityClass));
+    }
+
+    /**
+     * Returns the document with the given id from the given collection mapped onto the given target class.
+     *
+     * @param id the id of the document to return.
+     * @param entityClass the type to convert the document to.
+     * @param collectionName the collection to query for the document.
+     * @return he converted object or {@literal null} if document does not exist.
+     */
     <T> Optional< T > findById(Object id,Class< T > entityClass,String collectionName);
 
 
-    < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName );
-
     /**
-     * 查询去重
-     * @param field
-     * @param entityClass
-     * @param resultClass
-     * @param <T>
-     * @return
+     * Finds the distinct values for a specified {@literal field} across a single {@link MongoCollection} or view and
+     * returns the results in a {@link List}.
+     *
+     * @param field the name of the field to inspect for distinct values. Must not be {@literal null}.
+     * @param entityClass the domain type used for determining the actual {@link MongoCollection}. Must not be
+     *          {@literal null}.
+     * @param resultClass the result type. Must not be {@literal null}.
+     * @return never {@literal null}.
+     *
      */
     default <T> QueryCursor<T> findDistinct(String field, Class<?> entityClass, Class<T> resultClass) {
         return this.findDistinct(new Query(), field, entityClass, resultClass);
     }
 
 
+    /**
+     * Finds the distinct values for a specified {@literal field} across a single {@link MongoCollection} or view and
+     * returns the results in a {@link List}.
+     *
+     * @param query filter {@link Query} to restrict search. Must not be {@literal null}.
+     * @param field the name of the field to inspect for distinct values. Must not be {@literal null}.
+     * @param entityClass the domain type used for determining the actual {@link MongoCollection} and mapping the
+     *          {@link Query} to the domain type fields. Must not be {@literal null}.
+     * @param resultClass the result type. Must not be {@literal null}.
+     * @return never {@literal null}.
+     *
+     */
     <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass);
 
+    /**
+     * Finds the distinct values for a specified {@literal field} across a single {@link MongoCollection} or view and
+     * returns the results in a {@link List}.
+     *
+     * @param query filter {@link Query} to restrict search. Must not be {@literal null}.
+     * @param field the name of the field to inspect for distinct values. Must not be {@literal null}.
+     * @param collectionName the explicit name of the actual {@link MongoCollection}. Must not be {@literal null}.
+     * @param entityClass the domain type used for mapping the {@link Query} to the domain type fields.
+     * @param resultClass the result type. Must not be {@literal null}.
+     * @return never {@literal null}.
+     *
+     */
     <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass);
 
+
+    /**
+     * Finds the distinct values for a specified {@literal field} across a single {@link MongoCollection} or view and
+     * returns the results in a {@link List}.
+     *
+     * @param query filter {@link Query} to restrict search. Must not be {@literal null}.
+     * @param field the name of the field to inspect for distinct values. Must not be {@literal null}.
+     * @param collection the explicit name of the actual {@link MongoCollection}. Must not be {@literal null}.
+     * @param resultClass the result type. Must not be {@literal null}.
+     * @return never {@literal null}.
+     *
+     */
     default <T> QueryCursor<T> findDistinct(Query query, String field, String collection, Class<T> resultClass) {
         return this.findDistinct(query, field, collection, Object.class, resultClass);
     }
 
     /**
-     * Inserts an entity in to the mapped collection.
+     * Insert the object into the collection for the entity type of the object to save. <br />
+     * The object is converted to the MongoDB native representation using an instance of {@see MongoConverter}. <br />
+     * If your object has an "Id' property, it will be set with the generated Id from MongoDB. If your Id property is a
+     * String then MongoDB ObjectId will be used to populate that string. Otherwise, the conversion from ObjectId to your
+     * property type will be handled by Spring's BeanWrapper class that leverages Type Conversion API. See
+     * <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#validation" > Spring's
+     * Type Conversion"</a> for more details. <br />
+     * Insert is used to initially store the object into the database. To update an existing object use the save method.
+     * <br />
+     * The {@code objectToSave} must not be collection-like.
+     *
+     * @param objectToSave the object to store in the collection. Must not be {@literal null}.
+     * @return the inserted object.
+     * @throws IllegalArgumentException in case the {@code objectToSave} is collection-like.
+     * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
+     *           {@link #getCollectionName(Class) derived} from the given object type.
      */
-    default < T > InsertOneResult insert( T entity ) {
-        return insert(entity, new InsertOneOptions());
+    default < T > T insert( T objectToSave ) {
+        return insert(objectToSave, getCollectionName(objectToSave.getClass()));
     }
 
     /**
-     * Inserts an entity in to the mapped collection.
+     * Insert the object into the specified collection. <br />
+     * The object is converted to the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+     * configured otherwise, an instance of {@link MongoMappingContext} will be used. <br />
+     * Insert is used to initially store the object into the database. To update an existing object use the save method.
+     * <br />
+     * The {@code objectToSave} must not be collection-like.
+     *
+     * @param objectToSave the object to store in the collection. Must not be {@literal null}.
+     * @param collectionName name of the collection to store the object in. Must not be {@literal null}.
+     * @return the inserted object.
+     * @throws IllegalArgumentException in case the {@code objectToSave} is collection-like.
      */
-    default < T > InsertOneResult insert( T entity, String collectionName ) {
-        return insert(entity, new InsertOneOptions(), collectionName);
-    }
+     < T > T insert( T objectToSave, String collectionName );
 
     /**
      * Inserts an entity in to the mapped collection.
@@ -205,37 +477,58 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Inserts an entity in to the mapped collection.
      */
+    @Deprecated
     < T > InsertOneResult insert( T entity, InsertOneOptions options, String collectionName );
 
 
     /**
-     * Inserts a List of entities in to the mapped collection.
+     * Insert a Collection of objects into a collection in a single batch write to the database.
+     *
+     * @param batchToSave the batch of objects to save. Must not be {@literal null}.
+     * @param entityClass class that determines the collection to use. Must not be {@literal null}.
+     * @return the inserted objects that.
+     * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
+     *           {@link #getCollectionName(Class) derived} from the given type.
      */
-    default < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass ) {
-        return insert(entities, entityClass, new InsertManyOptions());
-    }
+     < T > Collection<T> insert( Collection< ? extends T > batchToSave, Class< ? > entityClass ) ;
 
     /**
-     * Inserts a List of entities in to the mapped collection.
+     * Insert a batch of objects into the specified collection in a single batch write to the database.
+     *
+     * @param batchToSave the list of objects to save. Must not be {@literal null}.
+     * @param collectionName name of the collection to store the object in. Must not be {@literal null}.
+     * @return the inserted objects that.
      */
-    default < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName ) {
-        return insert(entities, collectionName, new InsertManyOptions());
-    }
+     < T > Collection<T>  insert( Collection< ? extends T > batchToSave, String collectionName ) ;
+
+    /**
+     * Insert a mixed Collection of objects into a database collection determining the collection name to use based on the
+     * class.
+     *
+     * @param objectsToSave the list of objects to save. Must not be {@literal null}.
+     * @return the inserted objects.
+     * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
+     *           {@link #getCollectionName(Class) derived} for the given objects.
+     */
+    <T> Collection<T> insertAll(Collection<? extends T> objectsToSave);
 
 
     /**
      * Inserts entities in to the mapped collection.
      */
+    @Deprecated
     < T > InsertManyResult insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options );
 
     /**
      * Inserts entities in to the mapped collection.
      */
 
+    @Deprecated
     < T > InsertManyResult insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
 
 
 
+    @Deprecated
     default < T > UpdateResult updateEntity( Query query, T entity ) {
         return updateEntity(query, entity, new UpdateOptions(), null);
     }
@@ -245,6 +538,7 @@ interface Datastore extends IndexOperations, MongoOperations {
         return updateEntity(query, entity, options, null);
     }
 
+    @Deprecated
     default < T > UpdateResult updateEntity( Query query, T entity, String collectionName ) {
         return updateEntity(query, entity, new UpdateOptions(), collectionName);
     }
@@ -253,11 +547,13 @@ interface Datastore extends IndexOperations, MongoOperations {
     @Deprecated
     < T > UpdateResult updateEntity( Query query, T entity, UpdateOptions options, String collectionName );
 
+    @Deprecated
     default < T > UpdateResult upertEntity( Query query, T entity){
 
         return  updateEntity(query, entity, new UpdateOptions().upsert(true), null);
     }
 
+    @Deprecated
     default < T > UpdateResult upertEntity( Query query, T entity , String collectionName){
         return  updateEntity(query, entity, new UpdateOptions().upsert(true), collectionName);
     }
@@ -482,15 +778,13 @@ interface Datastore extends IndexOperations, MongoOperations {
      * Saves an entity (Object) and updates the @Id field
      */
     default < T > T save( T entity ) {
-        return save(entity, new InsertOneOptions(), null);
+        return save(entity,  getCollectionName(entity.getClass()));
     }
 
     /**
      * Saves an entity (Object) and updates the @Id field
      */
-    default < T > T save( T entity, String collectionName ) {
-        return save(entity, new InsertOneOptions(), collectionName);
-    }
+     < T > T save( T entity, String collectionName ) ;
 
 
     /**
@@ -882,5 +1176,36 @@ interface Datastore extends IndexOperations, MongoOperations {
      *
      */
     Document executeCommand(Document command, @Nullable ReadPreference readPreference);
+
+
+    /**
+     * Determine result of given {@link Query} contains at least one element. <br />
+     * <strong>NOTE:</strong> Any additional support for query/field mapping, etc. is not available due to the lack of
+     * domain type information. Use {@link #exists(Query, Class, String)} to get full type specific support.
+     *
+     * @param query the {@link Query} class that specifies the criteria used to find a record.
+     * @param collectionName name of the collection to check for objects.
+     * @return {@literal true} if the query yields a result.
+     */
+    boolean exists(Query query, String collectionName);
+
+    /**
+     * Determine result of given {@link Query} contains at least one element.
+     *
+     * @param query the {@link Query} class that specifies the criteria used to find a record.
+     * @param entityClass the parametrized type.
+     * @return {@literal true} if the query yields a result.
+     */
+    boolean exists(Query query, Class<?> entityClass);
+
+    /**
+     * Determine result of given {@link Query} contains at least one element.
+     *
+     * @param query the {@link Query} class that specifies the criteria used to find a record.
+     * @param entityClass the parametrized type. Can be {@literal null}.
+     * @param collectionName name of the collection to check for objects.
+     * @return {@literal true} if the query yields a result.
+     */
+    boolean exists(Query query, @Nullable Class<?> entityClass, String collectionName);
 
 }

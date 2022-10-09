@@ -38,16 +38,9 @@ import com.whaleal.mars.session.option.CountOptions;
  * 用于查询 MongoDB  文档数量的相关方法
  * @Date 2020-01-14
  */
+@Deprecated
 interface Statistic {
 
-    <T> long estimatedCount( Class<T> clazz);
-
-    <T> long estimatedCount( String collName);
-
-    <T> long count( Query query, Class<T> clazz);
-    <T> long count( Query query, String collName);
-    long count(Query query, Class<?> entityClass, String collectionName);
-    long count(Query query ,Class<?> entityClass ,CountOptions countOptions,String collectionName );
 
 
 }

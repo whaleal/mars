@@ -16,8 +16,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.print.Doc;
-
 import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
 import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.array;
 import static com.whaleal.mars.core.aggregation.expressions.ArrayExpressions.concatArrays;

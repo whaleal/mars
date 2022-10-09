@@ -36,6 +36,7 @@ import org.bson.BsonValue;
  * @author cx
  * @Date 2020/12/22
  */
+@Deprecated
 public class UpdateResult extends com.mongodb.client.result.UpdateResult {
 
     private com.mongodb.client.result.UpdateResult originUpdateResult;

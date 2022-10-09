@@ -36,6 +36,7 @@ import org.bson.BsonValue;
  * @author cx
  * @Date 2020/12/22
  */
+@Deprecated
 public class InsertOneResult extends com.mongodb.client.result.InsertOneResult {
 
     private com.mongodb.client.result.InsertOneResult originInsertOneResult;

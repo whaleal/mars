@@ -37,6 +37,7 @@ import java.util.Map;
  * @author cx
  * @Date 2020/12/22
  */
+@Deprecated
 public class InsertManyResult extends com.mongodb.client.result.InsertManyResult {
 
     private com.mongodb.client.result.InsertManyResult originInsertManyResult;

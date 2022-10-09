@@ -1,5 +1,8 @@
 package com.whaleal.mars.core.crud;
 
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.util.SerializationUtil;
 import com.whaleal.mars.bean.*;
@@ -11,10 +14,7 @@ import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
-import com.whaleal.mars.session.result.DeleteResult;
-import com.whaleal.mars.session.result.InsertManyResult;
-import com.whaleal.mars.session.result.InsertOneResult;
-import com.whaleal.mars.session.result.UpdateResult;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.testng.Assert;

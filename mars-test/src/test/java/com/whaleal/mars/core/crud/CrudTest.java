@@ -1,5 +1,6 @@
 package com.whaleal.mars.core.crud;
 
+import com.mongodb.client.model.ReplaceOptions;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
@@ -10,7 +11,7 @@ import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.InsertOneOptions;
-import com.whaleal.mars.session.option.ReplaceOptions;
+
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.UpdateResult;

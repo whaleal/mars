@@ -37,6 +37,9 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
+import com.mongodb.client.result.InsertManyResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.map.MapUtil;
@@ -61,6 +64,7 @@ import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.core.gridfs.GridFsObject;
 import com.whaleal.mars.core.gridfs.GridFsResource;
 import com.whaleal.mars.core.internal.MongoNamespace;
+import com.mongodb.client.model.ReplaceOptions;
 
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.option.CountOptions;
@@ -71,13 +75,9 @@ import com.whaleal.mars.session.option.FindOneAndUpdateOptions;
 import com.whaleal.mars.session.option.IndexOptions;
 import com.whaleal.mars.session.option.InsertManyOptions;
 import com.whaleal.mars.session.option.InsertOneOptions;
-import com.whaleal.mars.session.option.ReplaceOptions;
 import com.whaleal.mars.session.option.TimeSeriesOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.result.DeleteResult;
-import com.whaleal.mars.session.result.InsertManyResult;
-import com.whaleal.mars.session.result.InsertOneResult;
-import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.core.query.BsonUtil;
 
 import com.whaleal.mars.session.transactions.MarsTransaction;
@@ -115,24 +115,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     private final GridFSBucket defaultGridFSBucket;
     //缓存 collectionName
     private final Map< Class<?> , String > collectionNameCache = new HashMap< Class<?>, String >();
-
-
-
-    @Override
-    public Document executeCommand( String jsonCommand ) {
-        Precondition.notNull(jsonCommand);
-        return this.database.runCommand(Document.parse(jsonCommand));
-    }
-
-    @Override
-    public Document executeCommand( Document command ) {
-        return this.database.runCommand(command);
-    }
-
-    @Override
-    public Document executeCommand( Document command, ReadPreference readPreference ) {
-        return this.database.runCommand(command,readPreference);
-    }
 
 
     protected DatastoreImpl( MongoClient mongoClient, String databaseName ) {
@@ -176,6 +158,76 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return this.mongoClient.getDatabase(databaseName).withCodecRegistry(super.mapper.getCodecRegistry());
     }
 
+
+    @Override
+    public Document executeCommand( String jsonCommand ) {
+        Precondition.notNull(jsonCommand);
+        return this.database.runCommand(Document.parse(jsonCommand));
+    }
+
+    @Override
+    public Document executeCommand( Document command ) {
+        return this.database.runCommand(command);
+    }
+
+    @Override
+    public Document executeCommand( Document command, ReadPreference readPreference ) {
+        return this.database.runCommand(command,readPreference);
+    }
+
+
+    @Override
+    public  < T > UpdateResult replace( Query query, T replacement, ReplaceOptions options, String collectionName ) {
+
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.notNull(collectionName, "CollectionName must not be null");
+        Precondition.notNull(replacement,"Replacement must not be null!");
+        Precondition.notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
+
+        MongoCollection<T> collection = this.getCollection((Class<T>) replacement.getClass(), collectionName);
+
+        if(query.getHint() != null){
+
+            String  hint = query.getHint();
+            try{
+                Document parse = Document.parse(hint);
+                options.hint(parse);
+            }catch (Exception e){
+                options.hintString(hint);
+            }
+        }
+
+        if(query.getCollation().isPresent()){
+            com.mongodb.client.model.Collation collation = query.getCollation().get();
+            options.collation(collation);
+        }
+        Meta meta = query.getMeta();
+        if (meta.hasValues()) {
+
+            if (StrUtil.hasText(meta.getComment())) {
+                options.comment(meta.getComment());
+            }
+
+        }
+
+
+        collection = query.getWriteConcern() == null ? this.withConcern(collection,replacement.getClass()) : this.withConcern(collection,replacement.getClass()).withWriteConcern(query.getWriteConcern());
+
+        return collection.replaceOne(query.getQueryObject(), replacement,options);
+
+    }
+
+    @Override
+    public com.mongodb.client.result.DeleteResult delete( Object object, String collectionName ) {
+        return null;
+    }
+
+    @Override
+    public com.mongodb.client.result.DeleteResult delete( Query query, Class< ? > entityClass, String collectionName ) {
+        return null;
+    }
+
+
     @Override
     public < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions options, String collectionName ) {
 
@@ -191,6 +243,63 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         return result;
 
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    protected <T> DeleteResult doDelete( Query query, @Nullable Class<T> entityClass,String collectionName,
+                                        boolean multi) {
+
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.hasText(collectionName, "Collection name must not be null or empty");
+
+        MongoPersistentEntity<?> entity = getPersistentEntity(entityClass);
+
+        DeleteContext deleteContext = multi ? queryOperations.deleteQueryContext(query)
+                : queryOperations.deleteSingleContext(query);
+        Document queryObject = deleteContext.getMappedQuery(entity);
+        DeleteOptions options = deleteContext.getDeleteOptions(entityClass);
+
+        MongoAction mongoAction = new MongoAction(writeConcern, MongoActionOperation.REMOVE, collectionName, entityClass,
+                null, queryObject);
+
+        WriteConcern writeConcernToUse = prepareWriteConcern(mongoAction);
+
+        return execute(collectionName, collection -> {
+
+            maybeEmitEvent(new BeforeDeleteEvent<>(queryObject, entityClass, collectionName));
+
+            Document removeQuery = queryObject;
+
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Remove using query: %s in collection: %s.", serializeToJsonSafely(removeQuery),
+                        collectionName));
+            }
+
+            if (query.getLimit() > 0 || query.getSkip() > 0) {
+
+                MongoCursor<Document> cursor = new QueryCursorPreparer(query, entityClass)
+                        .prepare(collection.find(removeQuery).projection(MappedDocument.getIdOnlyProjection())) //
+                        .iterator();
+
+                Set<Object> ids = new LinkedHashSet<>();
+                while (cursor.hasNext()) {
+                    ids.add(MappedDocument.of(cursor.next()).getId());
+                }
+
+                removeQuery = MappedDocument.getIdIn(ids);
+            }
+
+            MongoCollection<Document> collectionToUse = writeConcernToUse != null
+                    ? collection.withWriteConcern(writeConcernToUse)
+                    : collection;
+
+            DeleteResult result = multi ? collectionToUse.deleteMany(removeQuery, options)
+                    : collectionToUse.deleteOne(removeQuery, options);
+
+            maybeEmitEvent(new AfterDeleteEvent<>(queryObject, entityClass, collectionName));
+
+            return result;
+        });
     }
 
     @Override
@@ -473,7 +582,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         com.mongodb.client.result.UpdateResult result =  multi ?  collection.updateMany(query.getQueryObject(),update.getUpdateObject(),opts) : collection.updateOne(query.getQueryObject(),update.getUpdateObject(),opts);
 
-        return new UpdateResult(result);
+        return result;
 
     }
 
@@ -608,20 +717,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
 
-    @Override
-    public < T > UpdateResult replace( Query query, T entity, ReplaceOptions options, String collectionName ) {
-
-        ClientSession session = this.startSession();
-
-        MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
-
-//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.REPLACE);
-
-        UpdateResult execute = replaceExecute(session, collection, query, options, entity);
-
-        return execute;
-
-    }
 
     //索引操作
     @Override
@@ -1247,7 +1342,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                     .normalization(collation.normalization())
                     .build();
 
-            System.out.println(collationOption);
+            //System.out.println(collationOption);
             options = options.collation(collationOption);
 
         }
@@ -1461,7 +1556,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     private <T> T insertOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
-        InsertOneResult insertOneResult = new InsertOneResult();
+        //InsertOneResult insertOneResult = new InsertOneResult();
 
         //Entity insertDocument = new Entity((Map) data);
 
@@ -1631,47 +1726,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     }
 
-    private <T> T replaceExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
-        UpdateResult updateResult = new UpdateResult();
-
-
-        //options == null 是一种情况
-        if (options == null) {
-            if (session == null) {
-
-
-                updateResult.setOriginUpdateResult(collection.replaceOne(query.getQueryObject(), data));
-
-            } else {
-
-                updateResult.setOriginUpdateResult(collection.replaceOne(session, query.getQueryObject(), data));
-
-            }
-
-            return (T) updateResult;
-        }
-
-        //options != null也是一种情况
-        if (!(options instanceof ReplaceOptions)) {
-            throw new ClassCastException();
-        }
-
-        ReplaceOptions replaceOptions = (ReplaceOptions) options;
-
-        if (session == null) {
-
-            updateResult.setOriginUpdateResult(collection.replaceOne(query.getQueryObject(), data, replaceOptions.getOriginOptions()));
-
-        } else {
-
-            updateResult.setOriginUpdateResult(collection.replaceOne(session, query.getQueryObject(), data, replaceOptions.getOriginOptions()));
-
-        }
-
-
-        return (T) updateResult;
-    }
 
     private <T> T createIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 

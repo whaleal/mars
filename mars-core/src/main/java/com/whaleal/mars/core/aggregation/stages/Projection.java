@@ -9,6 +9,7 @@ package com.whaleal.mars.core.aggregation.stages;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Fields;
 import com.whaleal.mars.core.aggregation.expressions.impls.PipelineField;
+import com.whaleal.mars.core.domain.IProjection;
 import com.whaleal.mars.core.internal.ValidationException;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
  *
  * @aggregation.expression $projection
  */
-public class Projection extends Stage {
+public class Projection extends Stage implements IProjection {
     private Fields<Projection> includes;
     private Fields<Projection> excludes;
     private boolean suppressId;
@@ -58,6 +59,7 @@ public class Projection extends Stage {
      * @param name the field name
      * @return this
      */
+    @Override
     public Projection exclude(String name) {
         return exclude(name, value(false));
     }
@@ -87,6 +89,7 @@ public class Projection extends Stage {
      * @param value the value expression
      * @return this
      */
+    @Override
     public Projection include(String name, Expression value) {
         if (includes == null) {
             includes = Fields.on(this);
@@ -102,6 +105,7 @@ public class Projection extends Stage {
      * @param name the field name
      * @return this
      */
+    @Override
     public Projection include(String name) {
         return include(name, value(true));
     }
@@ -111,6 +115,7 @@ public class Projection extends Stage {
      *
      * @return this
      */
+    @Override
     public Projection suppressId() {
         suppressId = true;
         return this;

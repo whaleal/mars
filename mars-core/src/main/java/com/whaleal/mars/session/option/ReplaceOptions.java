@@ -37,6 +37,7 @@ import com.mongodb.client.model.Collation;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class ReplaceOptions implements WriteConfigurable<ReplaceOptions> {
 
     private WriteConcern writeConcern;

@@ -6,7 +6,6 @@ import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.Redact;
 import com.whaleal.mars.core.query.filters.Filters;
-import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;

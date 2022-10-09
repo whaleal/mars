@@ -1,9 +1,7 @@
 package com.whaleal.mars.core.aggreation;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
-import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.stages.*;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
@@ -13,8 +11,6 @@ import com.whaleal.mars.session.option.AggregationOptions;
 import org.bson.Document;
 import org.junit.Test;
 
-import javax.print.Doc;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

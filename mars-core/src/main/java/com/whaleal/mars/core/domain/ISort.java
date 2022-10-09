@@ -10,30 +10,30 @@ import java.util.List;
  */
 public interface ISort {
 
-    public boolean isSorted() ;
+    boolean isSorted() ;
 
-    public boolean isEmpty() ;
+    boolean isEmpty() ;
 
-    public boolean isUnsorted() ;
-
-
-    public ISort ascending( String field, String... additional ) ;
+    boolean isUnsorted() ;
 
 
-    public ISort descending( String field, String... additional );
-
-    public ISort meta( String field );
+    ISort ascending( String field, String... additional ) ;
 
 
-    public ISort and( ISort sort );
+    ISort descending( String field, String... additional );
+
+    ISort meta( String field );
 
 
-    public ISort natural( Direction direction );
+    ISort and( ISort sort );
 
 
-    public List< SortType > getSorts();
+    ISort natural( Direction direction );
 
-    public void encode( BsonWriter writer );
+
+    List< SortType > getSorts();
+
+    void encode( BsonWriter writer );
 
 
 }
