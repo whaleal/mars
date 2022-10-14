@@ -449,7 +449,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      *
      * @param query filter {@link Query} to restrict search. Must not be {@literal null}.
      * @param field the name of the field to inspect for distinct values. Must not be {@literal null}.
-     * @param collection the explicit name of the actual {@link MongoCollection}. Must not be {@literal null}.
+     * @param collectionName the explicit name of the actual {@link MongoCollection}. Must not be {@literal null}.
      * @param resultClass the result type. Must not be {@literal null}.
      * @return never {@literal null}.
      *
