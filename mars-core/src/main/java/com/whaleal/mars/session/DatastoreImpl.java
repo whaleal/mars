@@ -38,6 +38,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
 import com.mongodb.client.model.CreateCollectionOptions;
+import com.mongodb.client.model.CreateViewOptions;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
@@ -58,6 +59,7 @@ import com.whaleal.mars.codecs.pojo.annotations.Concern;
 import com.whaleal.mars.codecs.pojo.annotations.Collation;
 import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
+import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.index.IndexHelper;
@@ -165,6 +167,16 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return this.database.getCollection(collectionName);
     }
 
+    @Override
+    public <T> boolean collectionExists(Class<T> entityClass) {
+        return false;
+    }
+
+    @Override
+    public boolean collectionExists(String collectionName) {
+        return false;
+    }
+
     public < T > MongoCollection< T > getCollection( Class< T > type ) {
         String nameCache =null ;
         if( (nameCache = collectionNameCache.get(type) ) !=null){
@@ -216,6 +228,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public Document executeCommand( Document command, ReadPreference readPreference ) {
         return this.database.runCommand(command,readPreference);
+    }
+
+    @Override
+    public boolean exists(Query query, String collectionName) {
+        return false;
+    }
+
+    @Override
+    public boolean exists(Query query, Class<?> entityClass) {
+        return false;
+    }
+
+    @Override
+    public boolean exists(Query query, Class<?> entityClass, String collectionName) {
+        return false;
     }
 
 
@@ -361,6 +388,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     @Override
+    public <T> QueryCursor<T> find(Query query, Class<T> entityClass, String collectionName) {
+        return null;
+    }
+
+    @Override
     public < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName ) {
 
         ClientSession session = this.startSession();
@@ -401,9 +433,24 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         collection = prepareConcern(collection, options);
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
-        InsertOneResult result = insertOneExecute(session, collection, null, options, entity);
+        InsertOneResult result = insertOneExecute(session, collection, options, entity);
 
         return entity;
+    }
+
+    @Override
+    public <T> Collection<T> insert(Collection<? extends T> batchToSave, Class<?> entityClass) {
+        return null;
+    }
+
+    @Override
+    public <T> Collection<T> insert(Collection<? extends T> batchToSave, String collectionName) {
+        return null;
+    }
+
+    @Override
+    public <T> Collection<T> insertAll(Collection<? extends T> objectsToSave) {
+        return null;
     }
 
     @Override
@@ -575,6 +622,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Precondition.notNull(entityClass, "EntityClass must not be null");
 
         return doUpdate(collectionName, query, update, entityClass, false, true);
+    }
+
+    @Override
+    public <T> T save(T entity, String collectionName) {
+        return null;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -1146,6 +1198,26 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     @Override
+    public MongoCollection<Document> createCollection(String collectionName, CreateCollectionOptions collectionOptions) {
+        return null;
+    }
+
+    @Override
+    public MongoCollection<Document> createView(String name, Class<?> source, AggregationPipeline pipeline, CreateViewOptions options) {
+        return null;
+    }
+
+    @Override
+    public MongoCollection<Document> createView(String name, String source, AggregationPipeline pipeline, CreateViewOptions options) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getCollectionNames() {
+        return null;
+    }
+
+    @Override
     public < T > void dropCollection( Class< T > entityClass ) {
         dropCollection(this.mapper.getEntityModel(entityClass).getCollectionName());
     }
@@ -1548,6 +1620,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         QueryCursor<T> result = this.findDistinctExecute(session, collection, query, field, resultClass);
         return result;
     }
+
+    @Override
+    public <T> T insert(T objectToSave, String collectionName) {
+        return null;
+    }
+
     private <T> QueryCursor<T> findDistinctExecute(ClientSession session,MongoCollection collection,Query query,String field,Class<T> resultClass){
 
         DistinctIterable<T> distinctIterable;
@@ -1562,7 +1640,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return new QueryCursor<T>(distinctIterable.iterator());
     }
 
-    private <T> T insertOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+    private <T> T insertOneExecute( ClientSession session, MongoCollection collection,  Options options, Object data) {
 
         //InsertOneResult insertOneResult = new InsertOneResult();
 
@@ -1603,7 +1681,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return (T) insertOneResult;
     }
 
-    private <T> Collection<T> insertManyExecute( ClientSession session, MongoCollection collection, Query query, Options options, Collection<T> data) {
+    private <T> Collection<T> insertManyExecute( ClientSession session, MongoCollection collection, Options options, Collection<T> data) {
 
        // InsertManyResult insertManyResult = new InsertManyResult();
 

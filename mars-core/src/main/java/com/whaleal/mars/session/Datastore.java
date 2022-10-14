@@ -34,6 +34,7 @@ import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ClassUtil;
@@ -282,7 +283,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param collectionName name of the collection to retrieve the objects from.
      * @return the QueryCursor.
      */
-    default < T > QueryCursor< T > findAll(  Class< T > entityClass ,String collectionName ) {
+    default < T > QueryCursor< T > findAll(  @Nullable Class< T > entityClass ,String collectionName ) {
         return find(new Query(), entityClass, collectionName);
     }
 
@@ -290,11 +291,12 @@ interface Datastore extends IndexOperations, MongoOperations {
 
     @Deprecated
     default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass ) {
+        Precondition.notNull(query, "Query must not be null");
         return findAll(query, entityClass, getCollectionName(entityClass));
     }
 
     @Deprecated
-    < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName );
+    < T > QueryCursor< T > findAll( Query query, @Nullable Class< T > entityClass, String collectionName );
 
     /**
      * Map the results of an ad-hoc query on the collection for the entity class to a List of the specified type. <br />
@@ -309,6 +311,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return the QueryCursor of converted objects.
      */
     default <T> QueryCursor<T> find(Query query, Class<T> entityClass){
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.notNull(entityClass,"Class must not be null!");
         return find(query ,entityClass ,getCollectionName(entityClass));
     }
 
@@ -325,7 +329,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param collectionName name of the collection to retrieve the objects from. Must not be {@literal null}.
      * @return the QueryCursor of converted objects.
      */
-    <T> QueryCursor<T> find(Query query, Class<T> entityClass, String collectionName);
+    <T> QueryCursor<T> find(Query query, @Nullable Class<T> entityClass, String collectionName);
 
 
 
@@ -343,6 +347,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return the converted object.
      */
     default < T > Optional< T > findOne( Query query, Class< T > entityClass ) {
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.notNull(entityClass, "Class must not be null");
         return findOne(query, entityClass, getCollectionName(entityClass));
     }
 
@@ -361,7 +367,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param collectionName name of the collection to retrieve the objects from.
      * @return the converted object.
      */
-    < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName );
+    < T > Optional< T > findOne( Query query, @Nullable Class< T > entityClass, String collectionName );
 
 
     /**
@@ -373,6 +379,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return the document with the given id mapped onto the given target class.
      */
     default <T> Optional< T > findById(Object id, Class< T > entityClass){
+        Precondition.notNull(id, "Query must not be null");
+        Precondition.notNull(entityClass, "Class must not be null");
         return findById(id,entityClass,getCollectionName(entityClass));
     }
 
@@ -384,7 +392,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param collectionName the collection to query for the document.
      * @return he converted object or {@literal null} if document does not exist.
      */
-    <T> Optional< T > findById(Object id,Class< T > entityClass,String collectionName);
+    <T> Optional< T > findById(Object id,@Nullable Class< T > entityClass,String collectionName);
 
 
     /**
@@ -398,7 +406,9 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return never {@literal null}.
      *
      */
-    default <T> QueryCursor<T> findDistinct(String field, Class<?> entityClass, Class<T> resultClass) {
+    default <T> QueryCursor<T> findDistinct(String field, @Nullable Class<?> entityClass, Class<T> resultClass) {
+        Precondition.notNull(field, "field must not be null");
+        Precondition.notNull(resultClass, "Result class must not be null");
         return this.findDistinct(new Query(), field, entityClass, resultClass);
     }
 
@@ -417,6 +427,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      */
     <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass);
 
+
     /**
      * Finds the distinct values for a specified {@literal field} across a single {@link MongoCollection} or view and
      * returns the results in a {@link List}.
@@ -429,7 +440,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return never {@literal null}.
      *
      */
-    <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass);
+    <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, @Nullable Class<?> entityClass, Class<T> resultClass);
 
 
     /**
@@ -443,8 +454,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return never {@literal null}.
      *
      */
-    default <T> QueryCursor<T> findDistinct(Query query, String field, String collection, Class<T> resultClass) {
-        return this.findDistinct(query, field, collection, Object.class, resultClass);
+    default <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<T> resultClass) {
+        return this.findDistinct(query, field, collectionName, Object.class, resultClass);
     }
 
     /**
@@ -466,6 +477,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      *           {@link #getCollectionName(Class) derived} from the given object type.
      */
     default < T > T insert( T objectToSave ) {
+        Precondition.notNull(objectToSave, "ObjectToSave must not be null");
         return insert(objectToSave, getCollectionName(objectToSave.getClass()));
     }
 
@@ -768,6 +780,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * Saves the entities (Objects) and updates the @Id field
      */
     default < T > List< T > save( Collection< ? extends T > entities, String collectionName ) {
+        Precondition.notNull(entities, "Collection must not be null");
+        Precondition.notNull(collectionName, "CollectionName must not be null");
         return save(entities, new InsertManyOptions(), collectionName);
     }
 
