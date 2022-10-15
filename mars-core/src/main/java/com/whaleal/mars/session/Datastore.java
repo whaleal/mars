@@ -188,7 +188,7 @@ interface Datastore extends IndexOperations, MongoOperations {
 
 
     /**
-     * Remove one or multi documents that match the provided query document criteria from the collection used to store the
+     * Remove one  documents that match the provided query document criteria from the collection used to store the
      * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
      *
      * @param query the query document that specifies the criteria used to remove a record.
@@ -203,7 +203,7 @@ interface Datastore extends IndexOperations, MongoOperations {
         return delete(query, entityClass, deleteOptions, null);
     }
 
-    //todo 增加deleteMulti 实现接口
+
 
 
     /**
@@ -223,7 +223,7 @@ interface Datastore extends IndexOperations, MongoOperations {
 
 
     /**
-     * Remove one or Multi documents from the specified collection that match the provided query document criteria. There is no
+     * Remove one  documents from the specified collection that match the provided query document criteria. There is no
      * conversion/mapping done for any criteria using the id field. <br />
      * <strong>NOTE:</strong> Any additional support for field mapping is not available due to the lack of domain type
      * information. Use {@link #delete(Query, Class, String)} to get full type specific support.
@@ -255,7 +255,59 @@ interface Datastore extends IndexOperations, MongoOperations {
 
 
 
+    @Deprecated
     < T > DeleteResult delete( Query query, @Nullable Class< T > entityClass, DeleteOptions options, String collectionName );
+
+
+
+    /**
+     * Remove Multi documents that match the provided query document criteria from the collection used to store the
+     * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param entityClass class that determines the collection to use.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query} or {@literal entityClass} is {@literal null}.
+     * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
+     *           {@link #getCollectionName(Class) derived} from the given type.
+     */
+    default < T > DeleteResult deleteMulti( Query query, Class< T > entityClass ) {
+        return deleteMulti(query, entityClass,getCollectionName(entityClass));
+    }
+
+
+    /**
+     * Remove Multi documents from the specified collection that match the provided query document criteria. There is no
+     * conversion/mapping done for any criteria using the id field. <br />
+     * <strong>NOTE:</strong> Any additional support for field mapping is not available due to the lack of domain type
+     * information. Use {@link #delete(Query, Class, String)} to get full type specific support.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param collectionName name of the collection where the objects will removed, must not be {@literal null} or empty.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
+     */
+    default DeleteResult deleteMulti( Query query, String collectionName ) {
+        return deleteMulti(query, null, collectionName);
+    }
+
+    /**
+     * Remove Multi documents that match the provided query document criteria from the collection used to store the
+     * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+     *
+     * @param query the query document that specifies the criteria used to remove a record.
+     * @param entityClass class of the pojo to be operated on. Can be {@literal null}.
+     * @param collectionName name of the collection where the objects will removed, must not be {@literal null} or empty.
+     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
+     * @throws IllegalArgumentException when {@literal query}, {@literal entityClass} or {@literal collectionName} is
+     *           {@literal null}.
+     */
+    DeleteResult deleteMulti( Query query, @Nullable Class< ? > entityClass, String collectionName ) ;
+
+
+
+
+
 
 
 
