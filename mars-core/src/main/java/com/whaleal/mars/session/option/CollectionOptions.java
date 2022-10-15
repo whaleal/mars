@@ -40,6 +40,7 @@ import com.whaleal.mars.core.validation.Validator;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+@Deprecated
 public class CollectionOptions {
 
 
