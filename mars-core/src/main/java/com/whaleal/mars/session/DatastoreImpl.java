@@ -322,30 +322,42 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Precondition.notNull(query, "Query must not be null");
         Precondition.hasText(collectionName, "Collection name must not be null or empty");
 
-        MongoPersistentEntity<?> entity = getPersistentEntity(entityClass);
+//        MongoPersistentEntity<?> entity = mapper.getEntityModel(entityClass);
+        EntityModel<?> entity = mapper.getEntityModel(entityClass);
 
-        DeleteContext deleteContext = multi ? queryOperations.deleteQueryContext(query)
-                : queryOperations.deleteSingleContext(query);
-        Document queryObject = deleteContext.getMappedQuery(entity);
-        DeleteOptions options = deleteContext.getDeleteOptions(entityClass);
 
-        MongoAction mongoAction = new MongoAction(writeConcern, MongoActionOperation.REMOVE, collectionName, entityClass,
-                null, queryObject);
+//        DeleteContext deleteContext = multi ? queryOperations.deleteQueryContext(query)
+//                : queryOperations.deleteSingleContext(query);
 
-        WriteConcern writeConcernToUse = prepareWriteConcern(mongoAction);
+//        DeleteOptions deleteOptions = multi ? queryOperations.deleteQueryContext(query)
+//                : queryOperations.deleteSingleContext(query);
+//        Document queryObject = deleteContext.getMappedQuery(entity);
+
+//        DeleteOptions options = deleteContext.getDeleteOptions(entityClass);
+        DeleteOptions options = new DeleteOptions();
+        options.multi(multi);
+
+//        MongoAction mongoAction = new MongoAction(writeConcern, MongoActionOperation.REMOVE, collectionName, entityClass,
+//                null, queryObject);
+
+        //获取写偏好
+        WriteConcern writeConcernToUse = query.getWriteConcern();
 
         return execute(collectionName, collection -> {
 
-            maybeEmitEvent(new BeforeDeleteEvent<>(queryObject, entityClass, collectionName));
+            //todo 可能的预处理
+//            maybeEmitEvent(new BeforeDeleteEvent<>(queryObject, entityClass, collectionName));
 
-            Document removeQuery = queryObject;
+            Document removeQuery = query.getQueryObject();
 
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(String.format("Remove using query: %s in collection: %s.", serializeToJsonSafely(removeQuery),
                         collectionName));
             }
 
+            // 删除skip和limit限定范围内的文档
             if (query.getLimit() > 0 || query.getSkip() > 0) {
+
 
                 MongoCursor<Document> cursor = new QueryCursorPreparer(query, entityClass)
                         .prepare(collection.find(removeQuery).projection(MappedDocument.getIdOnlyProjection())) //
@@ -363,6 +375,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                     ? collection.withWriteConcern(writeConcernToUse)
                     : collection;
 
+
             DeleteResult result = multi ? collectionToUse.deleteMany(removeQuery, options)
                     : collectionToUse.deleteOne(removeQuery, options);
 
@@ -376,6 +389,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName ) {
 
         ClientSession session = this.startSession();
+
 
         MongoCollection collection = this.getCollection(entityClass, collectionName);
 

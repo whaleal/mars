@@ -199,9 +199,12 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
      *           {@link #getCollectionName(Class) derived} from the given type.
      */
+    @Deprecated
     default < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions deleteOptions ) {
         return delete(query, entityClass, deleteOptions, null);
     }
+
+    //todo 增加deleteMulti 实现接口
 
 
     /**
