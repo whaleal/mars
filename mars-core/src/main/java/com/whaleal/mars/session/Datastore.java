@@ -34,7 +34,6 @@ import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ClassUtil;
@@ -452,7 +451,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      *
      * @param query filter {@link Query} to restrict search. Must not be {@literal null}.
      * @param field the name of the field to inspect for distinct values. Must not be {@literal null}.
-     * @param collection the explicit name of the actual {@link MongoCollection}. Must not be {@literal null}.
+     * @param collectionName the explicit name of the actual {@link MongoCollection}. Must not be {@literal null}.
      * @param resultClass the result type. Must not be {@literal null}.
      * @return never {@literal null}.
      *

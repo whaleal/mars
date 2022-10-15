@@ -402,12 +402,17 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     @Override
-    public <T> QueryCursor<T> find(Query query, Class<T> entityClass, String collectionName) {
+    public < T > QueryCursor< T > find( Query query, @Nullable Class< T > entityClass, String collectionName ) {
+        Precondition.notNull(query, "Query must not be null");
+        Precondition.hasText(collectionName, "Collection name must not be null or empty");
+
+        //todo
         return null;
     }
 
+
     @Override
-    public < T > Optional< T > findOne( Query query, Class< T > entityClass, String collectionName ) {
+    public < T > Optional< T > findOne( Query query, @Nullable Class< T > entityClass, String collectionName ) {
 
         ClientSession session = this.startSession();
 
@@ -415,7 +420,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
 
-        T result = findOneExecute(session, collection, query, null, null);
+        T result = doFindOne(session, collection, query, null, null);
         if (LOGGER.isDebugEnabled() ) {
             LOGGER.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
                     query.getSortObject(), query.getFieldsObject(), collectionName);
@@ -1559,7 +1564,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
      * @param <T>
      * @return
      */
-    private <T> T findOneExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+    private <T> T doFindOne( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         FindIterable findIterable;
 

@@ -39,6 +39,7 @@ import org.bson.conversions.Bson;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class CreateCollectionOptions implements WriteConfigurable<CreateCollectionOptions> {
 
     private WriteConcern writeConcern;
