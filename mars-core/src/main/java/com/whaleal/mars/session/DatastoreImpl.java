@@ -250,7 +250,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public  < T > UpdateResult replace( Query query, T replacement, ReplaceOptions options, String collectionName ) {
 
         Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(collectionName, "CollectionName must not be null");
+        Precondition.hasText(collectionName, "Collection name must not be null or empty");
         Precondition.notNull(replacement,"Replacement must not be null!");
         Precondition.notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
 
