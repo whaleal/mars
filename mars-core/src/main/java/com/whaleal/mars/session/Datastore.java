@@ -253,11 +253,8 @@ interface Datastore extends IndexOperations, MongoOperations {
 
 
 
-
-
     @Deprecated
     < T > DeleteResult delete( Query query, @Nullable Class< T > entityClass, DeleteOptions options, String collectionName );
-
 
 
     /**
@@ -303,12 +300,6 @@ interface Datastore extends IndexOperations, MongoOperations {
      *           {@literal null}.
      */
     DeleteResult deleteMulti( Query query, @Nullable Class< ? > entityClass, String collectionName ) ;
-
-
-
-
-
-
 
 
 
@@ -1275,7 +1266,9 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param collectionName name of the collection to check for objects.
      * @return {@literal true} if the query yields a result.
      */
-    boolean exists(Query query, String collectionName);
+    default boolean exists(Query query, String collectionName){
+        return exists(query,null,collectionName);
+    }
 
     /**
      * Determine result of given {@link Query} contains at least one element.
@@ -1284,7 +1277,9 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param entityClass the parametrized type.
      * @return {@literal true} if the query yields a result.
      */
-    boolean exists(Query query, Class<?> entityClass);
+    default boolean exists(Query query, Class<?> entityClass){
+        return exists(query,entityClass,null);
+    }
 
     /**
      * Determine result of given {@link Query} contains at least one element.
