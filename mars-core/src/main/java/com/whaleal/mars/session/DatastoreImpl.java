@@ -169,11 +169,18 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public <T> boolean collectionExists(Class<T> entityClass) {
-        return false;
+        notNull(entityClass,"Class must not be null");
+        return collectionExists(getCollectionName(entityClass));
     }
 
     @Override
     public boolean collectionExists(String collectionName) {
+        Precondition.notNull(collectionName, "CollectionName must not be null");
+        for (String name : this.getDatabase().listCollectionNames()) {
+            if (name.equals(collectionName)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -233,7 +240,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public boolean exists(Query query, Class<?> entityClass, String collectionName) {
 
-        notNull(query,"Query passed in to exist can't be null");
+        Precondition.notNull(query,"Query passed in to exist can't be null");
         MongoCollection<?> collection = this.getCollection(entityClass, collectionName);
 
         if(ObjectUtil.isEmpty(collection)){
@@ -444,6 +451,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         // 开启与数据库的连接
         ClientSession session = this.startSession();
 
+        EntityModel entityModel = this.mapper.getEntityModel(entity.getClass());
+
         //根据传入的集合名和实体类获取对应的MongoCollection对象
         MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
 
@@ -451,22 +460,33 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
         InsertOneResult result = insertOneExecute(session, collection, options, entity);
 
+        //todo 对于插入是否成功的判断存在不确定
+        //todo 如何把插入成功的id 绑定到entity中
+        if(ObjectUtil.isEmpty(result.getInsertedId())){
+            return null;
+        }
         return entity;
     }
 
     @Override
     public <T> Collection<T> insert(Collection<? extends T> batchToSave, Class<?> entityClass) {
-        return null;
+        return insert(batchToSave,entityClass,new InsertManyOptions());
     }
 
     @Override
     public <T> Collection<T> insert(Collection<? extends T> batchToSave, String collectionName) {
-        return null;
+        return insert(batchToSave,collectionName,new InsertManyOptions());
     }
 
     @Override
     public <T> Collection<T> insertAll(Collection<? extends T> objectsToSave) {
-        return null;
+        Collection<T> collection = new HashSet<>();
+        for (T t : objectsToSave){
+            String collectionName = this.getCollectionName(t.getClass());
+            T insert = this.insert(t, collectionName);
+            collection.add(insert);
+        }
+        return collection;
     }
 
     @Override
@@ -642,7 +662,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public <T> T save(T entity, String collectionName) {
-        return null;
+        return save(entity,new InsertOneOptions(),collectionName);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -1793,8 +1813,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public <T> T insert(T objectToSave, String collectionName) {
-        return null;
-//        return insertOneExecute(objectToSave,collectionName,);
+        return insert(objectToSave,new InsertOneOptions(),collectionName);
     }
 
 
@@ -1827,14 +1846,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         }
 
 
-        InsertOneOptions insertOneOptions = options;
+//        InsertOneOptions insertOneOptions = options;
 
         if (session == null) {
-            insertOneResult = collection.insertOne(data, insertOneOptions.getOriginOptions());
+            insertOneResult = collection.insertOne(data, options.getOriginOptions());
 //            insertOneResult.setOriginInsertOneResult(collection.insertOne(data, insertOneOptions.getOriginOptions()));
 
         } else {
-            insertOneResult = collection.insertOne(session, data, insertOneOptions.getOriginOptions());
+            insertOneResult = collection.insertOne(session, data, options.getOriginOptions());
 //            insertOneResult.setOriginInsertOneResult(collection.insertOne(session, data, insertOneOptions.getOriginOptions()));
 
         }
@@ -1868,7 +1887,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
             throw new ClassCastException();
         }
 
-        InsertManyOptions insertManyOptions = (InsertManyOptions) options;
+        InsertManyOptions insertManyOptions =  options;
 
         if (session == null) {
 
