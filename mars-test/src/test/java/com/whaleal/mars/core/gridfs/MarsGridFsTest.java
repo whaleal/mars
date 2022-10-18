@@ -32,11 +32,11 @@ import java.util.regex.Pattern;
  * @create 2021/4/8
  * @desc
  */
+
 @SpringBootTest
-@Slf4j
 public class MarsGridFsTest {
     private static final String bucketName = "xx";
-    private static final String m1 = "/Users/cs/Documents/xxxx.jpeg";
+    private static final String m1 = "C:\\Users\\cc\\Pictures\\Saved Pictures\\7fee4b9be7560711f13db9da320d65f4.gif";
     private static final String m300 = "/usr/local/tmp/xxx.rar";
     private static final String g2 = "";
     private static final String m300Id = "6080dd5e878eb9205b437f7f";
@@ -125,13 +125,13 @@ public class MarsGridFsTest {
         mars.insert(str);
     }
 
-    @Test
-    public void testInsert() {
-        String str = "测试插入";
-        InsertOneResult result = mars.insert(str, new InsertOneOptions(), "fs.files");
-        System.out.println("插入结果");
-        System.out.println(result);
-    }
+//    @Test
+//    public void testInsert() {
+//        String str = "测试插入";
+//        InsertOneResult result = mars.insert(str, new InsertOneOptions(), "fs.files");
+//        System.out.println("插入结果");
+//        System.out.println(result);
+//    }
 
     @Test
     public void updateGridFs() {

@@ -129,10 +129,10 @@ public class CrudTest {
         options.upsert(true);
         options.multi(true);
 
-        UpdateResult result = mars.updateEntity(query, student, options, null);
-        mars.updateEntity(query, student);
-
-        System.out.println(result);
+//        UpdateResult result = mars.updateEntity(query, student, options, null);
+//        mars.updateEntity(query, student);
+//
+//        System.out.println(result);
 
     }
 
@@ -180,9 +180,9 @@ public class CrudTest {
         UpdateOptions options = new UpdateOptions();
         options.multi(true);
 
-        UpdateResult result = mars.update(query, entity, Student.class, options, null);
-
-        System.out.println(result);
+//        UpdateResult result = mars.update(query, entity, Student.class, options, null);
+//
+//        System.out.println(result);
 
     }
 
@@ -195,6 +195,7 @@ public class CrudTest {
 
 
         DeleteResult result = mars.delete(query, Student.class, options, null);
+
 
         System.out.println(result);
 

@@ -25,7 +25,8 @@ public class SortTest {
 
     @Before
     public void createCollection(){
-        List<Document> documents = CreateDataUtil.parseString("{ \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n" +
+        List<Document> documents = CreateDataUtil.parseString(
+                "{ \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n" +
                 "    { \"item\": \"notebook\", \"qty\": 75, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"A\" },\n" +
                 "    { \"item\": \"paper\", \"qty\": 100, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"D\" },\n" +
                 "    { \"item\": \"planner\", \"qty\": 75, \"size\": { \"h\": 22.85, \"w\": 30, \"uom\": \"cm\" }, \"status\": \"D\" },\n" +
@@ -48,12 +49,15 @@ public class SortTest {
 
 
 //        query.with(Sort.descending("qty"),Sort.ascending("status"));
-        query.with(Sort.ascending("size.w"),Sort.descending("status"));
+//        query.with(Sort.ascending("size.w"),Sort.descending("status"));
+        query.with(Sort.descending("qty")).limit(2);
 
         System.out.println(query.getSortObject());
 
         QueryCursor<Document> inventory = mars.findAll(query, Document.class, "inventory");
+        System.out.println("=====================");
         while (inventory.hasNext()){
+            System.out.println("+++++++++++++++++");
             System.out.println(inventory.next());
         }
     }
