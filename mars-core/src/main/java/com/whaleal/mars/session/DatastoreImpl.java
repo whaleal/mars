@@ -295,6 +295,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     //todo
     @Override
     public com.mongodb.client.result.DeleteResult delete( Object object, String collectionName ) {
+        Object id = this.mapper.getId(object);
+        notNull(id,"Object must has id");
+
+        if(ObjectUtil.isNotEmpty(id)){
+            Query query = Query.query(Criteria.where("_id").is(id));
+            return delete(query,collectionName);
+        }
         return null;
     }
 
