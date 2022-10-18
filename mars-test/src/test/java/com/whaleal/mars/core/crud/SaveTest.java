@@ -1,13 +1,19 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.bean.Animal;
+import com.whaleal.mars.bean.Book;
+import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.session.option.InsertManyOptions;
+import com.whaleal.mars.session.option.InsertOneOptions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: lyz
@@ -45,6 +51,127 @@ public class SaveTest {
 
         mars.insert(animal);
     }
+
+    @Test
+    public void saveToOtherTable(){
+        Animal animal = new Animal();
+        animal.setId("1111");
+        animal.setBirthday(new Date(1612202522L));
+
+        Book book = new Book();
+        book.setName("book");
+
+        animal.setBook(book);
+
+        mars.insert(animal,"cc");
+    }
+
+    @Test
+    public void saveManyByEntityClass(){
+        Animal animal = new Animal();
+        animal.setId("123123213");
+        animal.setBirthday(new Date());
+
+        Book book = new Book();
+        book.setName("book");
+
+        animal.setBook(book);
+
+        List list = new ArrayList();
+        list.add(animal);
+
+        mars.insert(list,Animal.class,new InsertManyOptions());
+    }
+
+
+    @Test
+    public void saveManyByCollectionName(){
+        Animal animal = new Animal();
+        animal.setId("saveManyByCollectionName");
+        animal.setBirthday(new Date());
+
+        List list = new ArrayList();
+        list.add(animal);
+
+        mars.insert(list,Animal.class,new InsertManyOptions());
+    }
+
+
+    @Test
+    public void saveForBatch(){
+        Animal animal = new Animal();
+        animal.setId("1001");
+        animal.setBirthday(new Date());
+
+        Animal animalTwo = new Animal();
+        animalTwo.setId("1002");
+        animalTwo.setBirthday(new Date());
+
+        List list = new ArrayList();
+        list.add(animal);
+        list.add(animalTwo);
+
+
+        mars.insert(list,Animal.class);
+    }
+
+
+    @Test
+    public void saveForBatchByCollectionName(){
+        Animal animal = new Animal();
+        animal.setId("2001");
+        animal.setBirthday(new Date());
+
+        Animal animalTwo = new Animal();
+        animalTwo.setId("2002");
+        animalTwo.setBirthday(new Date());
+
+        List list = new ArrayList();
+        list.add(animal);
+        list.add(animalTwo);
+
+
+        mars.insert(list,"cc");
+    }
+
+
+    @Test
+    public void saveOneOption(){
+        Animal animal = new Animal();
+        animal.setId("3001");
+        animal.setBirthday(new Date());
+
+        mars.insert(animal,new InsertOneOptions(),"cc");
+    }
+
+    @Test
+    public void saveOption(){
+        Animal animal = new Animal();
+        animal.setId("4001");
+        animal.setBirthday(new Date());
+
+        mars.insert(animal,new InsertOneOptions());
+    }
+
+    @Test
+    public void insertAll(){
+        Animal animal = new Animal();
+        animal.setId("6001");
+        animal.setBirthday(new Date());
+
+        Animal animalTow = new Animal();
+        animalTow.setId("7001");
+        animalTow.setBirthday(new Date());
+
+        List<Animal> list = new ArrayList();
+
+        list.add(animal);
+        list.add(animalTow);
+
+        mars.insertAll(list);
+
+    }
+
 
     @Test
     public void dropData(){
