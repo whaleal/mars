@@ -177,7 +177,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public boolean collectionExists(String collectionName) {
         Precondition.notNull(collectionName, "CollectionName must not be null");
         for (String name : this.getDatabase().listCollectionNames()) {
-            if (name.equals(collectionName)) {
+            if (collectionName.equals(name)) {
                 return true;
             }
         }
@@ -296,13 +296,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public com.mongodb.client.result.DeleteResult delete( Object object, String collectionName ) {
         Object id = this.mapper.getId(object);
-        notNull(id,"Object must has id");
+        notNull(id,"Object must has _id");
 
-        if(ObjectUtil.isNotEmpty(id)){
-            Query query = Query.query(Criteria.where("_id").is(id));
-            return delete(query,collectionName);
-        }
-        return null;
+        Query query = Query.query(Criteria.where("_id").is(id));
+        return delete(query,object.getClass(),collectionName);
     }
 
     @Override
@@ -339,9 +336,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Precondition.notNull(query, "Query must not be null");
         Precondition.hasText(collectionName, "Collection name must not be null or empty");
 
-        EntityModel<?> entity = mapper.getEntityModel(entityClass);
+//        EntityModel<?> entity = mapper.getEntityModel(entityClass);
         if(query.getHint() != null){
-
             String  hint = query.getHint();
             try{
                 Document parse = Document.parse(hint);
