@@ -216,8 +216,11 @@ public class CrudTest {
 
     @Test
     public void deleteMany() {
-
+        //find
         mars.delete(new Query(), Person.class, new DeleteOptions().multi(true));
+
+        //find
+
 
     }
 

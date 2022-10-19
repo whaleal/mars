@@ -366,7 +366,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         }
 
         MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
-        // 删除skip和limit限定范围内的文档
+        // 如果对要删除的记录数有限制，就根据_id进行删除
         //先查询要删除的文档的_id 然后根据id去删除对应文档
         if (query.getLimit() > 0 || query.getSkip() > 0) {
             MongoCursor<T> cursor = collection.find(query.getQueryObject()).cursor();
