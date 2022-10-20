@@ -5,15 +5,15 @@ import com.whaleal.mars.bean.*;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
+import com.whaleal.mars.util.CreateDataUtil;
+import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class InsertTest {
 
@@ -74,6 +74,37 @@ public class InsertTest {
         mars.delete(new Query(new Criteria("_id").is("1001")),Animal.class);
 
         Assert.assertEquals(animal,resultAnimal);
+
+    }
+
+    @After
+    public void dropCollections(){
+        mars.dropCollection("inventory");
+//        mars.dropCollection("inventory1");
+    }
+
+    @Test
+    public void testForInsertOneDocument(){
+        String s = "    { \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n";
+
+        Document parse = Document.parse(s);
+        Document insert = mars.insert(parse,"inventory");
+
+        System.out.println(insert);
+        Assert.assertEquals(insert,parse);
+    }
+
+    @Test
+    public void testForInsertManyDocument(){
+        String s = "{ \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n" +
+                "    { \"item\": \"notebook\", \"qty\": 50, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"A\" },\n" +
+                "    { \"item\": \"paper\", \"qty\": 100, \"size\": { \"h\": 8.5, \"w\": 11, \"uom\": \"in\" }, \"status\": \"D\" },\n" +
+                "    { \"item\": \"planner\", \"qty\": 75, \"size\": { \"h\": 22.85, \"w\": 30, \"uom\": \"cm\" }, \"status\": \"D\" },\n" +
+                "    { \"item\": \"postcard\", \"qty\": 45, \"size\": { \"h\": 10, \"w\": 15.25, \"uom\": \"cm\" }, \"status\": \"A\" }\n";
+        List<Document> documents = CreateDataUtil.parseString(s);
+
+        Collection<Document> inventory1 = mars.insert(documents, "inventory1");
+
 
     }
 

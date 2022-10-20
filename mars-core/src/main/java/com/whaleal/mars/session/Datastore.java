@@ -285,7 +285,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
      */
     default DeleteResult deleteMulti( Query query, String collectionName ) {
-        return deleteMulti(query, null, collectionName);
+        return deleteMulti(query, Document.class, collectionName);
     }
 
     /**
@@ -523,6 +523,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      */
     default < T > T insert( T objectToSave ) {
         Precondition.notNull(objectToSave, "ObjectToSave must not be null");
+        //todo 如果T类型不为实体类 是否要再次做出提示
         return insert(objectToSave, getCollectionName(objectToSave.getClass()));
     }
 

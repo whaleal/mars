@@ -185,6 +185,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     public < T > MongoCollection< T > getCollection( Class< T > type ) {
+        notNull(type,"type can not be null");
+
         String nameCache =null ;
         if( (nameCache = collectionNameCache.get(type) ) !=null){
             MongoCollection< T > collection = this.database.getCollection(nameCache, type);
@@ -207,7 +209,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 
     public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
-
         //集合名不为空，则有优先使用集合名
         if (collectionName != null) {
             MongoCollection< T > collection = this.database.getCollection(collectionName, type);
@@ -292,7 +293,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     }
 
-    //todo
+    //根据_id进行删除
     @Override
     public com.mongodb.client.result.DeleteResult delete( Object object, String collectionName ) {
         Object id = this.mapper.getId(object);
@@ -327,6 +328,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public com.mongodb.client.result.DeleteResult deleteMulti(Query query, Class<?> entityClass, String collectionName) {
+        notNull(query,"Query can not be null ");
+        notNull(entityClass,"EntityClass can not be null");
         return doDelete(query,entityClass,collectionName,new com.mongodb.client.model.DeleteOptions(),true);
     }
 
