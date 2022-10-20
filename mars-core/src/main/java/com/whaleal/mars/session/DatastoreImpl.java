@@ -68,10 +68,11 @@ import com.whaleal.mars.core.gridfs.GridFsObject;
 import com.whaleal.mars.core.gridfs.GridFsResource;
 import com.whaleal.mars.core.internal.MongoNamespace;
 import com.mongodb.client.model.ReplaceOptions;
+import java.util.concurrent.TimeUnit;
+
 
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.option.CountOptions;
-import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.FindOneAndDeleteOptions;
 import com.whaleal.mars.session.option.FindOneAndReplaceOptions;
 import com.whaleal.mars.session.option.FindOneAndUpdateOptions;
@@ -80,7 +81,6 @@ import com.whaleal.mars.session.option.InsertManyOptions;
 import com.whaleal.mars.session.option.InsertOneOptions;
 import com.whaleal.mars.session.option.TimeSeriesOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
-import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.core.query.BsonUtil;
 
 import com.whaleal.mars.session.transactions.MarsTransaction;
@@ -242,11 +242,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public boolean exists(Query query, Class<?> entityClass, String collectionName) {
 
         Precondition.notNull(query,"Query passed in to exist can't be null");
+        //todo 断言
         MongoCollection<?> collection = this.getCollection(entityClass, collectionName);
 
         if(ObjectUtil.isEmpty(collection)){
             return false;
         }
+        //todo query option
+        //todo getQueryObject并不能获取到所有的option 比如 meta之类的
         MongoCursor<?> cursor = collection.find(query.getQueryObject()).cursor();
         return cursor.hasNext();
     }
@@ -296,10 +299,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     //根据_id进行删除
     @Override
     public com.mongodb.client.result.DeleteResult delete( Object object, String collectionName ) {
+        notNull(object,"object can not be null");
+
         Object id = this.mapper.getId(object);
         notNull(id,"Object must has _id");
 
         Query query = Query.query(Criteria.where("_id").is(id));
+
+        //todo 删除逻辑直接在此实现，不调用其他方法
         return delete(query,object.getClass(),collectionName);
     }
 
@@ -309,27 +316,31 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
 
-    @Override
-    public < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions options, String collectionName ) {
-
-
-        MongoCollection collection = this.getCollection(entityClass, collectionName);
-
-
-        //根据query  去 删除相关数据
-        ClientSession session = this.startSession();
-//        CrudExecutor executor = CrudExecutorFactory.create(CrudEnum.DELETE);
-
-        DeleteResult result = deleteExecute(session, collection, query, options, null);
-
-        return result;
-
-    }
+//    @Override
+//    public < T > DeleteResult delete(Query query, Class< T > entityClass, DeleteOptions options, String collectionName ) {
+//
+//        com.mongodb.client.model.DeleteOptions originOptions = options.getOriginOptions();
+//
+//        return doDelete(query,entityClass,collectionName,options);
+//
+//        MongoCollection collection = this.getCollection(entityClass, collectionName);
+//
+//
+//        //根据query  去 删除相关数据
+//        ClientSession session = this.startSession();
+////        CrudExecutor executor = CrudExecutorFactory.create(CrudEnum.DELETE);
+//
+//        DeleteResult result = deleteExecute(session, collection, query, options, null);
+//
+//        return result;
+//
+//    }
 
     @Override
     public com.mongodb.client.result.DeleteResult deleteMulti(Query query, Class<?> entityClass, String collectionName) {
         notNull(query,"Query can not be null ");
         notNull(entityClass,"EntityClass can not be null");
+        notNull(collectionName,"CollectionName can not be null");
         return doDelete(query,entityClass,collectionName,new com.mongodb.client.model.DeleteOptions(),true);
     }
 
@@ -339,7 +350,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Precondition.notNull(query, "Query must not be null");
         Precondition.hasText(collectionName, "Collection name must not be null or empty");
 
-//        EntityModel<?> entity = mapper.getEntityModel(entityClass);
         if(query.getHint() != null){
             String  hint = query.getHint();
             try{
@@ -368,6 +378,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                     collectionName));
         }
 
+        //todo 判断entityClass 是否为空 为空就传object/document
         MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
         // 如果对要删除的记录数有限制，就根据_id进行删除
         //先查询要删除的文档的_id 然后根据id去删除对应文档
@@ -390,7 +401,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     }
 
-    @Override
     public < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName ) {
 
         Precondition.notNull(query, "Query must not be null");
@@ -416,8 +426,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Precondition.notNull(query, "Query must not be null");
         Precondition.hasText(collectionName, "Collection name must not be null or empty");
 
-        //todo
-        return findAll(query,entityClass,collectionName);
+        //todo 在这里实现，不再调方法
+//        return find(query,entityClass,collectionName);
+        return  null;
     }
 
 
@@ -445,14 +456,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     public <T> Optional<T> findById(Object id,Class<T> entityClass,String collectionName){
+        //todo 加断言 直接调find()传query
         ClientSession session = this.startSession();
         MongoCollection collection = this.getCollection(entityClass,collectionName);
         Optional<T> result = findByIdExecute(session, collection,id);
        return result;
     }
 
-    @Override
-    public < T > T insert( T entity, InsertOneOptions options, String collectionName ) {
+//    @Override
+    private  < T > T insert( T entity, InsertOneOptions options, String collectionName ) {
 
         // 开启与数据库的连接
         ClientSession session = this.startSession();
@@ -476,11 +488,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public <T> Collection<T> insert(Collection<? extends T> batchToSave, Class<?> entityClass) {
+        //todo 各自实现
         return insert(batchToSave,entityClass,new InsertManyOptions());
     }
 
     @Override
     public <T> Collection<T> insert(Collection<? extends T> batchToSave, String collectionName) {
+        //todo 各自实现
         return insert(batchToSave,collectionName,new InsertManyOptions());
     }
 
@@ -667,8 +681,19 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     @Override
+    public <T> List<T> save(Collection<? extends T> entities) {
+        return null;
+    }
+
+    @Override
+    public <T> List<T> save(Collection<? extends T> entities, String collectionName) {
+        return null;
+    }
+
+    @Override
     public <T> T save(T entity, String collectionName) {
-        return save(entity,new InsertOneOptions(),collectionName);
+        //todo 单独实现
+        return doSave(entity,new InsertOneOptions(),collectionName);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -982,8 +1007,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
      * }
      */
 
-    @Override
-    public < T > T save( T entity, InsertOneOptions options, String collectionName ) {
+
+    private  < T > T doSave( T entity, InsertOneOptions options, String collectionName ) {
 
 
         if (entity == null) {
@@ -1625,11 +1650,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
             }
 
-//            if(ObjectUtil.equal(timeSeries.enableExpire(),true)){
-//                if (ObjectUtil.isNotEmpty(timeSeries.expireAfterSeconds())){
-//                    toptions = toptions.expireAfterSeconds(timeSeries.expireAfterSeconds());
-//                }
-//            }
+            if(ObjectUtil.equal(timeSeries.enableExpire(),true)){
+                if (ObjectUtil.isNotEmpty(timeSeries.expireAfterSeconds())){
+                    if (TimeSeriesGranularity.SECONDS.equals(toptions.getGranularity())){
+                        options.expireAfter(timeSeries.expireAfterSeconds(),TimeUnit.SECONDS);
+                    }
+
+                    if (TimeSeriesGranularity.MINUTES.equals(toptions.getGranularity())){
+                        options.expireAfter(timeSeries.expireAfterSeconds(),TimeUnit.MINUTES);
+                    }
+
+                    if (TimeSeriesGranularity.HOURS.equals(toptions.getGranularity())){
+                        options.expireAfter(timeSeries.expireAfterSeconds(),TimeUnit.HOURS);
+                    }
+                }
+            }
 
             options = options.timeSeriesOptions(toptions);
 
@@ -1637,39 +1672,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 
         return options;
-    }
-
-    private <T> T deleteExecute( ClientSession session, MongoCollection collection, Query query, DeleteOptions options, Object data) {
-
-        if (!(options instanceof DeleteOptions)) {
-            throw new ClassCastException();
-        }
-
-        DeleteOptions option = (DeleteOptions) options;
-
-        DeleteResult deleteResult = new DeleteResult();
-
-        if (option.isMulti()) {
-
-            if (session == null) {
-                deleteResult.setOriginDeleteResult(collection.deleteMany(query.getQueryObject(), option.getOriginOptions()));
-            } else {
-                deleteResult.setOriginDeleteResult(collection.deleteMany(session, query.getQueryObject(), option.getOriginOptions()));
-            }
-
-            return (T) deleteResult;
-        } else {
-
-            if (session == null) {
-                deleteResult.setOriginDeleteResult(collection.deleteOne(query.getQueryObject(), option.getOriginOptions()));
-            } else {
-                deleteResult.setOriginDeleteResult(collection.deleteOne(session, query.getQueryObject(), option.getOriginOptions()));
-            }
-
-            return (T) deleteResult;
-
-        }
-
     }
 
     private <T> T findAllExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
@@ -1725,6 +1727,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
      * @param <T>
      * @return
      */
+    //todo 需要重写，不用重新传session
     private <T> T doFindOne( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
 
         FindIterable findIterable;
@@ -1781,18 +1784,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         }
     }
 
-    /**
-     * 查询去重
-     * @param query
-     * @param field
-     * @param entityClass
-     * @param resultClass
-     * @param <T>
-     * @return
-     */
-    public <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass) {
-        return this.findDistinct(query, field, this.getCollectionName(entityClass), entityClass, resultClass);
-    }
 
     public <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass) {
         ClientSession session = this.startSession();

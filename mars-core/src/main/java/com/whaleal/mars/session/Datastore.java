@@ -198,10 +198,10 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
      *           {@link #getCollectionName(Class) derived} from the given type.
      */
-    @Deprecated
-    default < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions deleteOptions ) {
-        return delete(query, entityClass, deleteOptions, null);
-    }
+//    @Deprecated
+//    default < T > DeleteResult delete( Query query, Class< T > entityClass, DeleteOptions deleteOptions ) {
+//        return delete(query, entityClass, deleteOptions, null);
+//    }
 
 
 
@@ -218,23 +218,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
      */
     default DeleteResult delete( Query query, String collectionName ) {
-        return delete(query, null, collectionName);
-    }
-
-
-    /**
-     * Remove one  documents from the specified collection that match the provided query document criteria. There is no
-     * conversion/mapping done for any criteria using the id field. <br />
-     * <strong>NOTE:</strong> Any additional support for field mapping is not available due to the lack of domain type
-     * information. Use {@link #delete(Query, Class, String)} to get full type specific support.
-     *
-     * @param query the query document that specifies the criteria used to remove a record.
-     * @param collectionName name of the collection where the objects will removed, must not be {@literal null} or empty.
-     * @return the {@link DeleteResult} which lets you access the results of the previous delete.
-     * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
-     */
-    default DeleteResult delete( Query query, String collectionName, DeleteOptions options ) {
-        return delete(query, null, options, collectionName);
+        return delete(query, Object.class, collectionName);
     }
 
 
@@ -253,9 +237,9 @@ interface Datastore extends IndexOperations, MongoOperations {
 
 
 
-    @Deprecated
-    < T > DeleteResult delete( Query query, @Nullable Class< T > entityClass, DeleteOptions options, String collectionName );
-
+//    @Deprecated
+//    < T > DeleteResult delete( Query query, @Nullable Class< T > entityClass, DeleteOptions options, String collectionName );
+//
 
     /**
      * Remove Multi documents that match the provided query document criteria from the collection used to store the
@@ -268,9 +252,9 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
      *           {@link #getCollectionName(Class) derived} from the given type.
      */
-    default < T > DeleteResult deleteMulti( Query query, Class< T > entityClass ) {
-        return deleteMulti(query, entityClass,getCollectionName(entityClass));
-    }
+//    default < T > DeleteResult deleteMulti( Query query, Class< T > entityClass ) {
+//        return deleteMulti(query, entityClass,getCollectionName(entityClass));
+//    }
 
 
     /**
@@ -285,7 +269,13 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
      */
     default DeleteResult deleteMulti( Query query, String collectionName ) {
+        //todo 断言判断
         return deleteMulti(query, Document.class, collectionName);
+    }
+
+    default DeleteResult deleteMulti( Query query, Class<?> entityClass ) {
+        //todo 断言判断
+        return deleteMulti(query, entityClass,this.getCollectionName(entityClass));
     }
 
     /**
@@ -337,11 +327,11 @@ interface Datastore extends IndexOperations, MongoOperations {
     @Deprecated
     default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass ) {
         Precondition.notNull(query, "Query must not be null");
-        return findAll(query, entityClass, getCollectionName(entityClass));
+        return find(query, entityClass, getCollectionName(entityClass));
     }
 
-    @Deprecated
-    < T > QueryCursor< T > findAll( Query query, @Nullable Class< T > entityClass, String collectionName );
+//    @Deprecated
+//    < T > QueryCursor< T > findAll( Query query, @Nullable Class< T > entityClass, String collectionName );
 
     /**
      * Map the results of an ad-hoc query on the collection for the entity class to a List of the specified type. <br />
@@ -470,7 +460,10 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return never {@literal null}.
      *
      */
-    <T> QueryCursor<T> findDistinct(Query query, String field, Class<?> entityClass, Class<T> resultClass);
+    default <T> QueryCursor<T> findDistinct(Query query, String field, @Nullable Class<?> entityClass, Class<T> resultClass){
+        //todo 加断言
+        return findDistinct(query, field, this.getCollectionName(entityClass), entityClass, resultClass);
+    }
 
 
     /**
@@ -545,18 +538,18 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Inserts an entity in to the mapped collection.
      */
-
-    @Deprecated
-    default < T > T insert( T entity, InsertOneOptions insertOneOptions ) {
-        return insert(entity, insertOneOptions, null);
-    }
+//
+//    @Deprecated
+//    default < T > T insert( T entity, InsertOneOptions insertOneOptions ) {
+//        return insert(entity, insertOneOptions, null);
+//    }
 
 
     /**
      * Inserts an entity in to the mapped collection.
      */
-    @Deprecated
-    < T > T insert( T entity, InsertOneOptions options, String collectionName );
+//    @Deprecated
+//    < T > T insert( T entity, InsertOneOptions options, String collectionName );
 
 
     /**
@@ -818,40 +811,13 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    default < T > List< T > save( Collection< ? extends T > entities ) {
-        return save(entities, new InsertManyOptions(), null);
-    }
+    //todo 单独实现
+    < T > List< T > save( Collection< ? extends T > entities );
 
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    default < T > List< T > save( Collection< ? extends T > entities, String collectionName ) {
-        Precondition.notNull(entities, "Collection must not be null");
-        Precondition.notNull(collectionName, "CollectionName must not be null");
-        return save(entities, new InsertManyOptions(), collectionName);
-    }
-
-    /**
-     * Saves the entities (Objects) and updates the @Id field
-     */
-    @Deprecated
-    default < T > List< T > save( Collection< ? extends T > entities, InsertManyOptions insertManyOptions ) {
-        return save(entities, insertManyOptions, null);
-    }
-
-    /**
-     * Saves the entities (Objects) and updates the @Id field
-     */
-    @Deprecated
-    default < T > List< T > save( Collection< ? extends T > entities, InsertManyOptions options, String collectionName ) {
-        if (entities.isEmpty()) {
-            return new ArrayList< T >();
-        }
-        InsertOneOptions insertOneOption = new InsertOneOptions()
-                .bypassDocumentValidation(options.getBypassDocumentValidation())
-                .writeConcern(options.writeConcern());
-        return entities.stream().map(entity -> save(entity, insertOneOption, collectionName)).collect(Collectors.toList());
-    }
+    < T > List< T > save( Collection< ? extends T > entities, String collectionName );
 
 
     /**
@@ -865,21 +831,6 @@ interface Datastore extends IndexOperations, MongoOperations {
      * Saves an entity (Object) and updates the @Id field
      */
      < T > T save( T entity, String collectionName ) ;
-
-
-    /**
-     * Saves an entity (Object) and updates the @Id field
-     */
-    @Deprecated
-    default < T > T save( T entity, InsertOneOptions options ) {
-        return save(entity, options, null);
-    }
-
-    /**
-     * Saves an entity (Object) and updates the @Id field
-     */
-    @Deprecated
-    < T > T save( T entity, InsertOneOptions options, String collectionName );
 
 
     /**
