@@ -88,6 +88,7 @@ import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import sun.jvm.hotspot.utilities.Assert;
 
 
 import java.io.InputStream;
@@ -241,8 +242,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public boolean exists(Query query, Class<?> entityClass, String collectionName) {
 
-        Precondition.notNull(query,"Query passed in to exist can't be null");
-        //todo 断言
+        Precondition.notNull(query,"Query can not  be null");
+        Precondition.hasText(collectionName,"CollectionName passed in to exist can't be null");
+
         MongoCollection<?> collection = this.getCollection(entityClass, collectionName);
 
         if(ObjectUtil.isEmpty(collection)){
@@ -315,34 +317,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return doDelete(query,entityClass,collectionName,new com.mongodb.client.model.DeleteOptions(),false);
     }
 
-
-//    @Override
-//    public < T > DeleteResult delete(Query query, Class< T > entityClass, DeleteOptions options, String collectionName ) {
-//
-//        com.mongodb.client.model.DeleteOptions originOptions = options.getOriginOptions();
-//
-//        return doDelete(query,entityClass,collectionName,options);
-//
-//        MongoCollection collection = this.getCollection(entityClass, collectionName);
-//
-//
-//        //根据query  去 删除相关数据
-//        ClientSession session = this.startSession();
-////        CrudExecutor executor = CrudExecutorFactory.create(CrudEnum.DELETE);
-//
-//        DeleteResult result = deleteExecute(session, collection, query, options, null);
-//
-//        return result;
-//
-//    }
-
     @Override
     public com.mongodb.client.result.DeleteResult deleteMulti(Query query, Class<?> entityClass, String collectionName) {
         notNull(query,"Query can not be null ");
-        notNull(entityClass,"EntityClass can not be null");
         notNull(collectionName,"CollectionName can not be null");
         return doDelete(query,entityClass,collectionName,new com.mongodb.client.model.DeleteOptions(),true);
     }
+
+
 
     @SuppressWarnings("ConstantConditions")
     protected <T> com.mongodb.client.result.DeleteResult doDelete(Query query, @Nullable Class<T> entityClass, String collectionName, com.mongodb.client.model.DeleteOptions options,
@@ -378,8 +360,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                     collectionName));
         }
 
+        MongoCollection<T> collection ;
+
         //todo 判断entityClass 是否为空 为空就传object/document
-        MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
+        if(ObjectUtil.isEmpty(entityClass)){
+            collection = (MongoCollection<T>)this.getCollection(Document.class, collectionName);
+        }else {
+            collection = this.getCollection(entityClass, collectionName);
+        }
         // 如果对要删除的记录数有限制，就根据_id进行删除
         //先查询要删除的文档的_id 然后根据id去删除对应文档
         if (query.getLimit() > 0 || query.getSkip() > 0) {
@@ -401,66 +389,91 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     }
 
-    public < T > QueryCursor< T > findAll( Query query, Class< T > entityClass, String collectionName ) {
-
-        Precondition.notNull(query, "Query must not be null");
-
-        ClientSession session = this.startSession();
-
-        MongoCollection collection = this.getCollection(entityClass, collectionName);
-        if(ObjectUtil.isEmpty(collection)){
-            //todo 保存信息提示需要在考虑
-            throw new MarsOrmException("entityClass or collectionName must not both be null");
-        }
-
-//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ALL);
-
-        MongoCursor< T > iterator = findAllExecute(session, collection, query, null, null);
-
-        return new QueryCursor< T >(iterator);
-
-    }
-
-    @Override
-    public < T > QueryCursor< T > find( Query query, @Nullable Class< T > entityClass, String collectionName ) {
+    protected  < T > QueryCursor< T > doFind( Query query, @Nullable Class< T > entityClass, String collectionName ) {
         Precondition.notNull(query, "Query must not be null");
         Precondition.hasText(collectionName, "Collection name must not be null or empty");
 
-        //todo 在这里实现，不再调方法
-//        return find(query,entityClass,collectionName);
-        return  null;
+        MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
+        ClientSession session = this.startSession();
+
+        collection = query.getReadConcern() == null ? collection : collection.withReadConcern(query.getReadConcern());
+
+        collection = query.getReadPreference() == null ? collection : collection.withReadPreference(query.getReadPreference());
+
+        FindIterable<T> findIterable = collection.find(session,query.getQueryObject());
+
+        if(ObjectUtil.isNotEmpty(query.getFieldsObject())){
+            findIterable.projection(query.getFieldsObject());
+        }
+
+        if(StrUtil.hasText(query.getHint())){
+            findIterable = findIterable.hint(Document.parse(query.getHint()));
+        }
+
+        if(ObjectUtil.isNotEmpty(query.getSortObject())){
+            findIterable.sort(query.getQueryObject());
+        }
+
+        if(ObjectUtil.isNotEmpty(query.getSkip())){
+            findIterable.skip((int)(query.getSkip()));
+        }
+
+        if(ObjectUtil.isNotEmpty(query.getMeta())){
+            Meta meta = query.getMeta();
+            if(ObjectUtil.isNotEmpty(meta.getComment())){
+                findIterable = findIterable.comment(meta.getComment());
+            }
+            if(ObjectUtil.isNotEmpty(meta.getAllowDiskUse())){
+                findIterable = findIterable.allowDiskUse(meta.getAllowDiskUse());
+            }
+            if(ObjectUtil.isNotEmpty(meta.getCursorBatchSize())){
+                findIterable = findIterable.batchSize(meta.getCursorBatchSize());
+            }
+            if(ObjectUtil.isNotEmpty(meta.getMaxTimeMsec())){
+                findIterable = findIterable.maxAwaitTime(query.getMeta().getMaxTimeMsec(),TimeUnit.MICROSECONDS);
+            }
+
+            for (Meta.CursorOption option : query.getMeta().getFlags()) {
+                switch (option) {
+                    case NO_TIMEOUT:
+                        findIterable = findIterable.noCursorTimeout(true);
+                        break;
+                    case PARTIAL:
+                        findIterable = findIterable.partial(true);
+                        break;
+                    case SECONDARY_READS:
+                        break;
+                    default:
+                        throw new IllegalArgumentException(String.format("%s is no supported flag.", option));
+                }
+            }
+        }
+
+        return new QueryCursor<>(findIterable.cursor());
     }
 
+    @Override
+    public <T> QueryCursor<T> find(Query query, Class<T> entityClass, String collectionName) {
+        return doFind(query,entityClass,collectionName);
+    }
 
     @Override
     public < T > Optional< T > findOne( Query query, @Nullable Class< T > entityClass, String collectionName ) {
-
-        ClientSession session = this.startSession();
-
-        MongoCollection collection = this.getCollection(entityClass, collectionName);
-
-//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.FIND_ONE);
-
-        T result = doFindOne(session, collection, query, null, null);
-        if (LOGGER.isDebugEnabled() ) {
-            LOGGER.debug("Executing query: {} sort: {} fields: {} in collection: {}", query.getQueryObject().toJson(),
-                    query.getSortObject(), query.getFieldsObject(), collectionName);
-        }
-
-        if (result == null) {
+        if(ObjectUtil.isEmpty(query.getSortObject())){
+            return doFindOne(query,entityClass,collectionName);
+        }else {
+            query.limit(1);
+            QueryCursor<T> tQueryCursor = doFind(query, entityClass, collectionName);
+            if(tQueryCursor.hasNext()){
+                return Optional.of(tQueryCursor.next());
+            }
             return Optional.empty();
         }
-
-        return Optional.ofNullable(result);
-
     }
 
     public <T> Optional<T> findById(Object id,Class<T> entityClass,String collectionName){
         //todo 加断言 直接调find()传query
-        ClientSession session = this.startSession();
-        MongoCollection collection = this.getCollection(entityClass,collectionName);
-        Optional<T> result = findByIdExecute(session, collection,id);
-       return result;
+        return doFindOne(Query.query(Criteria.where("_id").is(id)), entityClass, collectionName);
     }
 
 //    @Override
@@ -1719,69 +1732,64 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     /**
      *
      * find 操作本身没有相关 的Option 参数
-     * @param session
-     * @param collection
      * @param query
-     * @param options
-     * @param data
      * @param <T>
      * @return
      */
     //todo 需要重写，不用重新传session
-    private <T> T doFindOne( ClientSession session, MongoCollection collection, Query query, Options options, Object data) {
+    private <T> Optional<T> doFindOne(Query query,Class<T> entityClass,String collectionName ) {
 
-        FindIterable findIterable;
+        Precondition.notNull(query,"Query must not be null");
 
-        if (session == null) {
+        MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
+        ClientSession session = this.startSession();
 
-            findIterable = collection.find(query.getQueryObject());
+        collection = query.getReadConcern() == null ? collection : collection.withReadConcern(query.getReadConcern());
 
-        } else {
+        collection = query.getReadPreference() == null ? collection : collection.withReadPreference(query.getReadPreference());
 
-            findIterable = collection.find(session, query.getQueryObject());
+        FindIterable<T> findIterable = collection.find(session,query.getQueryObject());
 
+        if(ObjectUtil.isNotEmpty(query.getFieldsObject())){
+           findIterable.projection(query.getFieldsObject());
         }
 
-
-        if (query.getSkip() > 0) {
-            findIterable = findIterable.skip((int) query.getSkip());
+        if(StrUtil.hasText(query.getHint())){
+            findIterable = findIterable.hint(Document.parse(query.getHint()));
         }
 
-        if (query.getSortObject() != null) {
-            findIterable = findIterable.sort(query.getSortObject());
-        }
+        if(ObjectUtil.isNotEmpty(query.getMeta())){
+            Meta meta = query.getMeta();
+            if(ObjectUtil.isNotEmpty(meta.getComment())){
+                findIterable = findIterable.comment(meta.getComment());
+            }
+            if(ObjectUtil.isNotEmpty(meta.getAllowDiskUse())){
+                findIterable = findIterable.allowDiskUse(meta.getAllowDiskUse());
+            }
+            if(ObjectUtil.isNotEmpty(meta.getCursorBatchSize())){
+                findIterable = findIterable.batchSize(meta.getCursorBatchSize());
+            }
+            if(ObjectUtil.isNotEmpty(meta.getMaxTimeMsec())){
+                findIterable = findIterable.maxAwaitTime(query.getMeta().getMaxTimeMsec(),TimeUnit.MICROSECONDS);
+            }
 
+            for (Meta.CursorOption option : query.getMeta().getFlags()) {
+                switch (option) {
+                    case NO_TIMEOUT:
+                        findIterable = findIterable.noCursorTimeout(true);
+                        break;
+                    case PARTIAL:
+                        findIterable = findIterable.partial(true);
+                        break;
+                    case SECONDARY_READS:
+                        break;
+                    default:
+                        throw new IllegalArgumentException(String.format("%s is no supported flag.", option));
+                }
+            }
+        }
         findIterable.limit(1);
-
-        return (T) findIterable.first();
-
-
-    }
-
-
-
-    /**
-     * 根据id查询记录
-     * @param session
-     * @param collection
-     * @param <T>
-     * @return
-     */
-    private <T>Optional<T> findByIdExecute(ClientSession session,MongoCollection collection,Object id){
-
-        FindIterable<T> findIterable;
-        Document document = new Document().append("_id", id);
-        if(session==null){
-            findIterable = collection.find(document);
-        }else {
-            findIterable = collection.find(session,document);
-        }
-
-        if((T)findIterable.first()!=null){
-            return (Optional<T>) findIterable.first();
-        }else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(findIterable.first());
     }
 
 

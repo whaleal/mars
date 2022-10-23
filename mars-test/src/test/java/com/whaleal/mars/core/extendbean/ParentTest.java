@@ -152,7 +152,7 @@ public class ParentTest {
         mars.insert(p);
 
         Criteria id = Criteria.where("age").is(18);
-        com.mongodb.client.result.DeleteResult delete = mars.delete(new Query(id), Parent.class, new DeleteOptions().multi(true));
+        com.mongodb.client.result.DeleteResult delete = mars.delete(new Query(id), Parent.class);
         Assert.assertEquals(2, delete.getDeletedCount());
 
     }

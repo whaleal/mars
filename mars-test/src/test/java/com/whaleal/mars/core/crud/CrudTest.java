@@ -1,6 +1,7 @@
 package com.whaleal.mars.core.crud;
 
 import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.result.DeleteResult;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.bean.Student;
@@ -13,7 +14,6 @@ import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.InsertOneOptions;
 
 import com.whaleal.mars.session.option.UpdateOptions;
-import com.whaleal.mars.session.result.DeleteResult;
 import com.whaleal.mars.session.result.UpdateResult;
 import com.whaleal.mars.util.StudentGenerator;
 import org.bson.Document;
@@ -102,7 +102,7 @@ public class CrudTest {
     public void insertOption() {
         mars.dropCollection(Student.class);
         System.out.println("getTime: " + System.currentTimeMillis());
-        mars.insert(student,new InsertOneOptions());
+        mars.insert(student);
         System.out.println("endTime: " + System.currentTimeMillis());
     }
 
@@ -194,10 +194,10 @@ public class CrudTest {
         options.multi(true);
 
 
-        DeleteResult result = mars.delete(query, Student.class, options, null);
+        DeleteResult delete = mars.delete(query, Student.class);
 
 
-        System.out.println(result);
+        System.out.println(delete);
 
     }
 
@@ -217,11 +217,17 @@ public class CrudTest {
     @Test
     public void deleteMany() {
         //find
-        mars.delete(new Query(), Person.class, new DeleteOptions().multi(true));
+        mars.delete(new Query(), Person.class);
 
         //find
 
 
+    }
+
+    @Test
+    public void deleteWithCollectionName(){
+        DeleteResult student1 = mars.delete(new Query(),null, "student");
+        System.out.println(student1);
     }
 
 

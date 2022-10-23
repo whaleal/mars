@@ -60,7 +60,7 @@ public class StudentCrudTest {
     public void test01del() {
 
         mars.insert(stuList, Student.class, new InsertManyOptions().ordered(false));
-        com.mongodb.client.result.DeleteResult deleteResult = mars.delete(new Query(), Student.class, new DeleteOptions().multi(true));
+        com.mongodb.client.result.DeleteResult deleteResult = mars.delete(new Query(), Student.class);
 
         Assert.assertEquals(stuList.size(), deleteResult.getDeletedCount());
 

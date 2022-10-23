@@ -141,7 +141,7 @@ public class SaveTest {
         animal.setId("3001");
         animal.setBirthday(new Date());
 
-        mars.insert(animal,new InsertOneOptions(),"cc");
+        mars.insert(animal,"cc");
     }
 
     @Test
@@ -150,7 +150,7 @@ public class SaveTest {
         animal.setId("4001");
         animal.setBirthday(new Date());
 
-        mars.insert(animal,new InsertOneOptions());
+        mars.insert(animal);
     }
 
     @Test
