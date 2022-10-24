@@ -89,7 +89,6 @@ import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import sun.jvm.hotspot.utilities.Assert;
 
 
 import java.io.InputStream;
@@ -211,8 +210,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 
     public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
+        if(ObjectUtil.isEmpty(type)){
+            type = (Class<T>) Document.class;
+        }
         //集合名不为空，则有优先使用集合名
         if (collectionName != null) {
+
             MongoCollection< T > collection = this.database.getCollection(collectionName, type);
 
             return this.withConcern(collection, type);
@@ -378,7 +381,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     protected  < T > QueryCursor< T > doFind( Query query, @Nullable Class< T > entityClass, String collectionName ) {
         Precondition.notNull(query, "Query must not be null");
-        Precondition.hasText(collectionName, "Collection name must not be null or empty");
+        Precondition.hasText(collectionName, "CollectionName must not be null or empty");
 
         MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
         ClientSession session = this.startSession();
@@ -398,10 +401,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         }
 
         if(ObjectUtil.isNotEmpty(query.getSortObject())){
-            findIterable.sort(query.getQueryObject());
+            findIterable.sort(query.getSortObject());
         }
 
-        if(ObjectUtil.isNotEmpty(query.getSkip())){
+        if(ObjectUtil.isNotEmpty(query.getSkip()) && query.getSkip() > 0){
             findIterable.skip((int)(query.getSkip()));
         }
 
@@ -435,8 +438,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                 }
             }
         }
-
-        return new QueryCursor<>(findIterable.cursor());
+        MongoCursor<T> iterator = findIterable.iterator();
+        return new QueryCursor<>(iterator);
     }
 
     @Override

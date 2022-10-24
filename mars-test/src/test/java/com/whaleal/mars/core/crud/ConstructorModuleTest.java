@@ -37,11 +37,11 @@ public class ConstructorModuleTest {
         mars.insert(module1,"module");
 
 
-        QueryCursor< ConstructorModule > mm = mars.findAll(new Query(), ConstructorModule.class, "module");
+//        QueryCursor< ConstructorModule > mm = mars.findAll(new Query(), ConstructorModule.class, "module");
 
-        while (mm.hasNext()){
-            System.out.println(mm.next().toString());
-        }
+//        while (mm.hasNext()){
+//            System.out.println(mm.next().toString());
+//        }
 
 
     }

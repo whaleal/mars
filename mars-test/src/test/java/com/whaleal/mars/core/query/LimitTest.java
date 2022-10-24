@@ -25,12 +25,12 @@ public class LimitTest {
 
     @Before
     public void createData(){
-        mars.createCollection(Num.class);
-        mars.insert(new Num(1,"aa",1));
-        mars.insert(new Num(3,"aa",3));
-        mars.insert(new Num(4,"aa",4));
-        mars.insert(new Num(2,"aa",2));
-        mars.insert(new Num(5,"aa",5));
+//        mars.createCollection(Num.class);
+//        mars.insert(new Num(1,"aa",1));
+//        mars.insert(new Num(3,"aa",3));
+//        mars.insert(new Num(4,"aa",4));
+//        mars.insert(new Num(2,"aa",2));
+//        mars.insert(new Num(5,"aa",5));
     }
 
     @Test

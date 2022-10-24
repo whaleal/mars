@@ -1,5 +1,6 @@
 package com.whaleal.mars.bean;
 
+import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.pojo.annotations.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Articles {
 
     @Id

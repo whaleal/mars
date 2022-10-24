@@ -291,6 +291,12 @@ interface Datastore extends IndexOperations, MongoOperations {
         return find(query, entityClass, getCollectionName(entityClass));
     }
 
+    @Deprecated
+    default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass,String collectionName) {
+        Precondition.notNull(query, "Query must not be null");
+        return find(query, entityClass, collectionName);
+    }
+
     /**
      * Map the results of an ad-hoc query on the collection for the entity class to a List of the specified type. <br />
      * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
