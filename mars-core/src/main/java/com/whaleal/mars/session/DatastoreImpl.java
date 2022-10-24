@@ -39,6 +39,7 @@ import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.CreateViewOptions;
+import com.mongodb.client.model.DeleteOptions;
 import com.mongodb.client.model.ValidationOptions;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
@@ -245,15 +246,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Precondition.notNull(query,"Query can not  be null");
         Precondition.hasText(collectionName,"CollectionName passed in to exist can't be null");
 
-        MongoCollection<?> collection = this.getCollection(entityClass, collectionName);
-
-        if(ObjectUtil.isEmpty(collection)){
-            return false;
-        }
-        //todo query option
-        //todo getQueryObject并不能获取到所有的option 比如 meta之类的
-        MongoCursor<?> cursor = collection.find(query.getQueryObject()).cursor();
-        return cursor.hasNext();
+        Optional<?> o = doFindOne(query, entityClass, collectionName);
+        return o.isPresent();
     }
 
 
@@ -308,8 +302,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         Query query = Query.query(Criteria.where("_id").is(id));
 
-        //todo 删除逻辑直接在此实现，不调用其他方法
-        return delete(query,object.getClass(),collectionName);
+        return doDelete(query,object.getClass(),collectionName,new DeleteOptions(),false);
     }
 
     @Override
@@ -319,8 +312,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public com.mongodb.client.result.DeleteResult deleteMulti(Query query, Class<?> entityClass, String collectionName) {
-        notNull(query,"Query can not be null ");
-        notNull(collectionName,"CollectionName can not be null");
         return doDelete(query,entityClass,collectionName,new com.mongodb.client.model.DeleteOptions(),true);
     }
 
@@ -351,8 +342,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                 options.comment(meta.getComment());
             }
         }
-
-        //todo 可能的预处理
         Document removeQuery = query.getQueryObject();
 
         if (LOGGER.isDebugEnabled()) {
@@ -362,7 +351,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
         MongoCollection<T> collection ;
 
-        //todo 判断entityClass 是否为空 为空就传object/document
         if(ObjectUtil.isEmpty(entityClass)){
             collection = (MongoCollection<T>)this.getCollection(Document.class, collectionName);
         }else {
@@ -374,7 +362,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
             MongoCursor<T> cursor = collection.find(query.getQueryObject()).cursor();
             Set<Object> ids = new LinkedHashSet<>();
             while (cursor.hasNext()) {
-                //todo
                 ids.add(Document.parse(cursor.next().toString()).get("_id"));
             }
             removeQuery = new Document("_id", new Document("$in", ids));
@@ -472,12 +459,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     }
 
     public <T> Optional<T> findById(Object id,Class<T> entityClass,String collectionName){
-        //todo 加断言 直接调find()传query
+        notNull(id,"Id must not be null");
+        notNull(collectionName,"CollectionName must not be null");
         return doFindOne(Query.query(Criteria.where("_id").is(id)), entityClass, collectionName);
     }
 
 //    @Override
-    private  < T > T insert( T entity, InsertOneOptions options, String collectionName ) {
+    private  < T > T doInsertOne( T entity,  InsertOneOptions options,String collectionName) {
 
         // 开启与数据库的连接
         ClientSession session = this.startSession();
@@ -491,8 +479,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
         InsertOneResult result = insertOneExecute(session, collection, options, entity);
 
-        //todo 对于插入是否成功的判断存在不确定
-        //todo 如何把插入成功的id 绑定到entity中
         if(ObjectUtil.isEmpty(result.getInsertedId())){
             return null;
         }
@@ -501,14 +487,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public <T> Collection<T> insert(Collection<? extends T> batchToSave, Class<?> entityClass) {
-        //todo 各自实现
-        return insert(batchToSave,entityClass,new InsertManyOptions());
+        String collectionName = this.mapper.determineCollectionName(entityClass, null);
+        return doInsertMany(batchToSave,new InsertManyOptions(),collectionName);
     }
 
     @Override
     public <T> Collection<T> insert(Collection<? extends T> batchToSave, String collectionName) {
-        //todo 各自实现
-        return insert(batchToSave,collectionName,new InsertManyOptions());
+        return doInsertMany(batchToSave,new InsertManyOptions(),collectionName);
     }
 
     @Override
@@ -516,7 +501,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         Collection<T> collection = new HashSet<>();
         for (T t : objectsToSave){
             String collectionName = this.getCollectionName(t.getClass());
-            T insert = this.insert(t, collectionName);
+            T insert = this.doInsertOne(t,new InsertOneOptions(),collectionName);
             collection.add(insert);
         }
         return collection;
@@ -525,13 +510,20 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     @Override
     public < T > Collection<T> insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options ) {
         String collectionName = this.mapper.determineCollectionName(entityClass, null);
-        return this.insert(entities,collectionName,options);
+        return this.doInsertMany(entities,options,collectionName);
     }
 
-
+    @Override
+    public <T> Collection<T> insert(Collection<? extends T> entities, String collectionName, InsertManyOptions options) {
+        return doInsertMany(entities,options,collectionName);
+    }
 
     @Override
-    public < T > Collection<T> insert( Collection< ? extends T > entities, String collectionName ,InsertManyOptions options) {
+    public <T> T insert(T objectToSave, String collectionName) {
+        return doInsertOne(objectToSave,new InsertOneOptions(),collectionName);
+    }
+
+    private < T > Collection<T> doInsertMany( Collection< ? extends T > entities,InsertManyOptions options, String collectionName ) {
 
         if (entities == null || entities.isEmpty()) {
             throw new IllegalArgumentException("entities in operation can't be null or empty ");
@@ -695,17 +687,27 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public <T> List<T> save(Collection<? extends T> entities) {
-        return null;
+       List<T> list = new ArrayList<>();
+        for (T entity : entities){
+            String collectionName = this.mapper.determineCollectionName(entity.getClass(), null);
+            T t = doSave(entity, new InsertOneOptions(), collectionName);
+            list.add(t);
+        }
+        return list;
     }
 
     @Override
     public <T> List<T> save(Collection<? extends T> entities, String collectionName) {
-        return null;
+        List<T> list = new ArrayList<>();
+        for (T entity : entities){
+            T t = doSave(entity, new InsertOneOptions(), collectionName);
+            list.add(t);
+        }
+        return list;
     }
 
     @Override
     public <T> T save(T entity, String collectionName) {
-        //todo 单独实现
         return doSave(entity,new InsertOneOptions(),collectionName);
     }
 
@@ -1023,7 +1025,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     private  < T > T doSave( T entity, InsertOneOptions options, String collectionName ) {
 
-
         if (entity == null) {
             return null;
         }
@@ -1043,12 +1044,25 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
             replace(new Query(Criteria.where("_id").is(document.get("_id"))), entity, replaceOptiion, collectionName);
         } else {
-            insert(entity, options, collectionName);
+            doInsertOne(entity, options, collectionName);
         }
 
         return entity;
 
     }
+
+//    private  < T > Collection<? extends T>  doSaveMany(Collection<? extends T> entities, InsertOneOptions option, String collectionName ) {
+//
+//        if (entities.isEmpty()) {
+//            return null;
+//        }
+//
+//        for (T entity : entities){
+//            doSave(entity,option,collectionName);
+//        }
+//        return entities;
+//
+//    }
 
     @Override
     public < T > T storeGridFs( GridFsObject< T, InputStream > upload, String bucketName ) {
@@ -1736,7 +1750,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
      * @param <T>
      * @return
      */
-    //todo 需要重写，不用重新传session
     private <T> Optional<T> doFindOne(Query query,Class<T> entityClass,String collectionName ) {
 
         Precondition.notNull(query,"Query must not be null");
@@ -1795,7 +1808,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     public <T> QueryCursor<T> findDistinct(Query query, String field, String collectionName, Class<?> entityClass, Class<T> resultClass) {
         ClientSession session = this.startSession();
-        MongoCollection collection = this.getCollection(entityClass,collectionName);
+        MongoCollection<?> collection = this.getCollection(entityClass,collectionName);
         QueryCursor<T> result = this.findDistinctExecute(session, collection, query, field, resultClass);
         return result;
     }
@@ -1816,32 +1829,20 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         return new QueryCursor<T>(distinctIterable.iterator());
     }
 
-    @Override
-    public <T> T insert(T objectToSave, String collectionName) {
-        return insert(objectToSave,new InsertOneOptions(),collectionName);
-    }
 
 
     private <T> T insertOneExecute( ClientSession session, MongoCollection collection,  InsertOneOptions options, Object data) {
-
-//        InsertOneResult insertOneResult = new InsertOneResult();
-
-        //Entity insertDocument = new Entity((Map) data);
 
         InsertOneResult insertOneResult;
         if (options == null) {
 
             if (session == null) {
                  insertOneResult = collection.insertOne(data);
-//                insertOneResult.setOriginInsertOneResult();
 
             } else {
-
                  insertOneResult = collection.insertOne(session, data);
-//                insertOneResult.setOriginInsertOneResult(collection.insertOne(session, data));
 
             }
-
             return (T) insertOneResult;
 
         }
@@ -1850,17 +1851,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
             throw new ClassCastException();
         }
 
-
-//        InsertOneOptions insertOneOptions = options;
-
         if (session == null) {
             insertOneResult = collection.insertOne(data, options.getOriginOptions());
-//            insertOneResult.setOriginInsertOneResult(collection.insertOne(data, insertOneOptions.getOriginOptions()));
 
         } else {
             insertOneResult = collection.insertOne(session, data, options.getOriginOptions());
-//            insertOneResult.setOriginInsertOneResult(collection.insertOne(session, data, insertOneOptions.getOriginOptions()));
-
         }
         return (T) insertOneResult;
     }
@@ -1881,11 +1876,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                 collection.insertMany(session,  (List<T>)data);
 
             }
-
             return data;
 
         }
-
 
         //options != null是一种情况
         if (!(options instanceof InsertManyOptions)) {
