@@ -6,14 +6,13 @@ import com.whaleal.mars.bean.Num;
 import com.whaleal.mars.bean.Parent;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
+import com.whaleal.mars.core.query.Projection;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -161,6 +160,22 @@ public class CrudTestNew {
 
         Optional<Document> one = mars.findOne(Query.query(num2), Document.class,"num");
         System.out.println(one.get());
+    }
+
+    @Test
+    public void testForProjection(){
+        Criteria num = Criteria.where("num").lt(10);
+
+        Query query = Query.query(num);
+
+        Projection projection = new Projection();
+        query.withProjection(projection.include("num").exclude("_id"));
+
+        QueryCursor<Document> num1 = mars.find(query, Document.class, "num");
+
+        while (num1.hasNext()){
+            System.out.println(num1.next());
+        }
     }
 
 }

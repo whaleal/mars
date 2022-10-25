@@ -11,6 +11,7 @@ import com.whaleal.mars.core.aggregation.expressions.impls.Fields;
 import com.whaleal.mars.core.aggregation.expressions.impls.PipelineField;
 import com.whaleal.mars.core.domain.IProjection;
 import com.whaleal.mars.core.internal.ValidationException;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +120,11 @@ public class Projection extends Stage implements IProjection {
     public Projection suppressId() {
         suppressId = true;
         return this;
+    }
+
+    @Override
+    public Document getFieldsObject() {
+        return null;
     }
 
     private Projection exclude(String name, Expression value) {

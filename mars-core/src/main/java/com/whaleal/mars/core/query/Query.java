@@ -37,6 +37,7 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
+import com.whaleal.mars.core.domain.IProjection;
 import com.whaleal.mars.core.domain.ISort;
 import com.whaleal.mars.core.domain.Pageable;
 import com.whaleal.mars.core.domain.SortType;
@@ -61,7 +62,7 @@ public class Query {
     // 主要查询 criteria 可以拼接多个,这里是有序存储 。
     private final Map<String, CriteriaDefinition> criteria = new LinkedHashMap<>();
     // projection
-    private Projection projectionSpec = null;
+    private IProjection projectionSpec = null;
     // sorting
     //private List<Sort> sorts = new ArrayList<>();
     private ISort sorts = Sort.unsorted();
@@ -209,7 +210,7 @@ public class Query {
         return this;
     }
 
-    public Projection fields() {
+    public IProjection fields() {
 
         if (this.projectionSpec == null) {
             this.projectionSpec = new Projection();
@@ -218,7 +219,7 @@ public class Query {
         return this.projectionSpec;
     }
 
-    public Query withProjection(Projection projection) {
+    public Query withProjection(IProjection projection) {
 
         Precondition.notNull(projection, "projection must not be empty or null!");
         this.projectionSpec = projection;
