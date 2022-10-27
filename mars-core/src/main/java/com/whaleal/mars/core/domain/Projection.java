@@ -13,13 +13,18 @@ import java.util.Map;
  **/
 public abstract class Projection implements IProjection{
 
-    protected final Map<String, Object> criteria = new HashMap<>();
+    // 普通操作 用这 例如:{ item: 1, status: 1, "size.uom": 1 }
+    protected final Map<String, Object> criteria ;
+    protected static boolean suppressId;
+
 
     protected Projection(){
-
+        this.criteria = new HashMap<>();
     }
 
-    private boolean suppressId;
+    protected Projection(Map<String, Object> criteria){
+        this.criteria = criteria;
+    }
 
 
     /**
@@ -40,7 +45,7 @@ public abstract class Projection implements IProjection{
 
     @Override
     public IProjection suppressId() {
-        this.suppressId = true;
+        suppressId = true;
         return this;
     }
 

@@ -1,18 +1,18 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.bean.Articles;
-import com.whaleal.mars.bean.Num;
-import com.whaleal.mars.bean.Parent;
+import com.whaleal.mars.bean.*;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Projection;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class CrudTestNew {
     List<Num> nums = new ArrayList<>();
 
 
-    @Test
+    @BeforeMethod
     public void createData(){
         for (int i = 0;i < 20; i++){
             Num num = new Num();
@@ -41,14 +41,37 @@ public class CrudTestNew {
         }
 
         mars.insertAll(nums);
+
+
+        List<Document> zip = CreateDataUtil.parseString("{ \"_id\" : \"01001\", \"city\" : \"AGAWAM\", \"loc\" : [ -72.622739, 42.070206 ], \"pop\" : 15338, \"state\" : \"MA\" }\n" +
+                "{ \"_id\" : \"01002\", \"city\" : \"CUSHMAN\", \"loc\" : [ -72.51564999999999, 42.377017 ], \"pop\" : 36963, \"state\" : \"MA\" }\n" +
+                "{ \"_id\" : \"01005\", \"city\" : \"BARRE\", \"loc\" : [ -72.10835400000001, 42.409698 ], \"pop\" : 4546, \"state\" : \"MA\" }\n" +
+                "{ \"_id\" : \"01007\", \"city\" : \"BELCHERTOWN\", \"loc\" : [ -72.41095300000001, 42.275103 ], \"pop\" : 10579, \"state\" : \"MA\" }\n" +
+                "{ \"_id\" : \"01008\", \"city\" : \"BLANDFORD\", \"loc\" : [ -72.936114, 42.182949 ], \"pop\" : 1240, \"state\" : \"MA\" }\n" +
+                "{ \"_id\" : \"01010\", \"city\" : \"BRIMFIELD\", \"loc\" : [ -72.188455, 42.116543 ], \"pop\" : 3706, \"state\" : \"MA\" }");
+
+        mars.insert(zip,"zip");
+
+        List list = new ArrayList<>();
+        for(int i =0; i < 10;i++){
+            Vehicles vehicles = new Vehicles();
+            vehicles.setId(i);
+            vehicles.setType("a");
+            Spces spec = new Spces();
+            spec.setDoors(4);
+            spec.setWheels(4);
+            vehicles.setSpecs(spec);
+            list.add(vehicles);
+        }
+        mars.insert(list,Vehicles.class);
     }
 
 
     @AfterMethod
     public void drop(){
-//        mars.dropCollection(Articles.class);
-//        mars.dropCollection("articles1");
-//        mars.dropCollection(Parent.class);
+        mars.dropCollection("zip");
+        mars.dropCollection(Num.class);
+        mars.dropCollection(Vehicles.class);
     }
 
     @Test
@@ -168,16 +191,56 @@ public class CrudTestNew {
 
         Query query = Query.query(num);
 
+//        Projection projection = new Projection();
+//        query.withProjection(projection.include("num").exclude("_id"));
+
         Projection projection = new Projection();
-        query.withProjection(projection.include("num").exclude("_id"));
+        query.withProjection(projection.include("name","_id"));
 
         QueryCursor<Document> num1 = mars.find(query, Document.class, "num");
 
         while (num1.hasNext()){
             System.out.println(num1.next());
         }
+
     }
 
+
+    @Test
+    public void testForExtendProjection(){
+        Criteria criteria = Criteria.where("loc").is(-72.622739D);
+
+        Query query = Query.query(criteria);
+
+        //positional projection cannot be used with exclusion
+//        query.withProjection(Projection.projection().exclude("loc.$"));
+
+        query.withProjection(Projection.projection().include("loc.$").include("state"));
+
+        QueryCursor<Document> zip = mars.find(query, Document.class, "zip");
+        while (zip.hasNext()){
+            System.out.println(zip.next());
+        }
+    }
+
+    @Test
+    public void testForInnerClassProjection(){
+        Criteria criteria = new Criteria().and("specs.doors").is(4);
+
+        Query query = Query.query(criteria);
+        QueryCursor<Vehicles> all = mars.findAll(Vehicles.class);
+        while (all.hasNext()){
+            System.out.println(all.next());
+        }
+
+        query.withProjection(Projection.projection().include("type").include("spces.doors"));
+        QueryCursor<Vehicles> vehiclesQueryCursor = mars.find(query, Vehicles.class);
+        while (vehiclesQueryCursor.hasNext()){
+            System.out.println(vehiclesQueryCursor.next());
+        }
+
+
+    }
 }
 
 

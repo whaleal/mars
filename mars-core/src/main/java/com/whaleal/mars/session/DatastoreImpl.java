@@ -61,6 +61,7 @@ import com.whaleal.mars.codecs.pojo.annotations.Collation;
 import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
+import com.whaleal.mars.core.aggregation.stages.Stage;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.index.IndexHelper;
@@ -86,6 +87,7 @@ import com.whaleal.mars.core.query.BsonUtil;
 
 import com.whaleal.mars.session.transactions.MarsTransaction;
 import org.bson.Document;
+import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -98,8 +100,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import static com.whaleal.icefrog.core.lang.Precondition.isTrue;
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+import static com.whaleal.icefrog.core.lang.Precondition.*;
 
 
 /**
@@ -1303,12 +1304,32 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public MongoCollection<Document> createView(String name, Class<?> source, AggregationPipeline pipeline, CreateViewOptions options) {
-        return null;
+        String collectionName = this.mapper.getEntityModel(source).getCollectionName();
+        return doCreateView(name,collectionName,pipeline,options);
+
     }
 
     @Override
     public MongoCollection<Document> createView(String name, String source, AggregationPipeline pipeline, CreateViewOptions options) {
-        return null;
+        return doCreateView(name,source,pipeline,options);
+    }
+
+    public MongoCollection<Document> doCreateView(String name, String collectionName, AggregationPipeline pipeline, CreateViewOptions options) {
+        hasText(collectionName,"CollectionName can not be null");
+        notNull(pipeline,"Pipeline can not be null");
+        lock.lock();
+        try {
+            MongoDatabase database = this.getDatabase();
+
+            MarsSession session = this.startSession();
+
+            database.createView(session,name,collectionName,getDocuments(pipeline.getInnerStage()),options);
+            return database.getCollection(name, Document.class);
+        }finally {
+            lock.unlock();
+        }
+
+
     }
 
     @Override

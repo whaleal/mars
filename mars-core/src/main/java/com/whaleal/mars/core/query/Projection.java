@@ -59,8 +59,6 @@ import java.util.Map.Entry;
  */
 public class Projection extends com.whaleal.mars.core.domain.Projection {
 
-    // 普通操作 用这 例如:{ item: 1, status: 1, "size.uom": 1 }
-    // 这一块功能可以与 聚合框架匹配进行整合
 //    private final Map<String, Object> criteria = new HashMap<>();
     //以下示例使用 $slice 投影运算符返回 instock 数组中的最后一个元素：
     // { item: 1, status: 1, instock: { $slice: -1 } }
@@ -69,6 +67,18 @@ public class Projection extends com.whaleal.mars.core.domain.Projection {
     private final Map<String, Criteria> elemMatchs = new HashMap<>();
     private String positionKey;
     private int positionValue;
+
+//    public Projection(){
+//        super();
+//    }
+//
+//    public Projection(Map<String, Object> criteria){
+//        super(criteria);
+//    }
+
+    public static Projection projection(){
+        return new Projection();
+    }
 
     /**
      * Include one or more {@code fields} to be returned by the query operation.
