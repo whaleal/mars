@@ -95,7 +95,6 @@ import org.bson.types.ObjectId;
 
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -165,7 +164,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public MongoCollection< Document > getCollection( String collectionName ) {
-
+        hasText(collectionName,"CollectionName must not be null");
         return this.database.getCollection(collectionName);
     }
 
@@ -236,11 +235,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     @Override
     public Document executeCommand( Document command ) {
+        Precondition.notNull(command);
         return this.database.runCommand(command);
     }
 
     @Override
     public Document executeCommand( Document command, ReadPreference readPreference ) {
+        Precondition.notNull(command);
         return this.database.runCommand(command,readPreference);
     }
 
@@ -353,13 +354,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                     collectionName));
         }
 
-        MongoCollection<T> collection ;
+        MongoCollection<T> collection = this.getCollection(entityClass,collectionName);
 
-        if(ObjectUtil.isEmpty(entityClass)){
-            collection = (MongoCollection<T>)this.getCollection(Document.class, collectionName);
-        }else {
-            collection = this.getCollection(entityClass, collectionName);
-        }
         // 如果对要删除的记录数有限制，就根据_id进行删除
         //先查询要删除的文档的_id 然后根据id去删除对应文档
         if (query.getLimit() > 0 || query.getSkip() > 0) {
@@ -470,17 +466,16 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
 //    @Override
     private  < T > T doInsertOne( T entity,  InsertOneOptions options,String collectionName) {
+        Precondition.notNull(entity,"entity must not be null");
+        Precondition.hasText(collectionName,"collectionName must not be null");
 
         // 开启与数据库的连接
         ClientSession session = this.startSession();
 
-        EntityModel entityModel = this.mapper.getEntityModel(entity.getClass());
-
         //根据传入的集合名和实体类获取对应的MongoCollection对象
-        MongoCollection collection = this.getCollection(entity.getClass(), collectionName);
+        MongoCollection<?> collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
-//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_ONE);
         InsertOneResult result = insertOneExecute(session, collection, options, entity);
 
         if(ObjectUtil.isEmpty(result.getInsertedId())){
@@ -544,15 +539,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
             break;
         }
 
-        MongoCollection collection = this.getCollection(type, collectionName);
+        MongoCollection<?> collection = this.getCollection(type, collectionName);
 
         collection = prepareConcern(collection, options);
 
-//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INSERT_MANY);
-
         return (Collection<T>) insertManyExecute(session, collection, options, entities);
-
-//        return entities;
 
     }
 
@@ -567,8 +558,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         MongoCollection< ? > collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
-//        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.UPDATE);
-
 
         UpdateResult result = updateExecute(session, collection, query, options, entityDoc);
 
@@ -600,8 +589,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                     arrayFilterList.add(document);
                 }
             }
-
-
 /*
             // todo
             // option 本身 是否包含相关  arrayFilters
@@ -693,7 +680,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     public <T> List<T> save(Collection<? extends T> entities) {
        List<T> list = new ArrayList<>();
         for (T entity : entities){
-            String collectionName = this.mapper.determineCollectionName(entity.getClass(), null);
+            String collectionName = this.getCollectionName(entity.getClass());
             T t = doSave(entity, new InsertOneOptions(), collectionName);
             list.add(t);
         }
@@ -1037,6 +1024,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         final EntityModel model = this.mapper.getEntityModel(entity.getClass());
 
         final PropertyModel idField = model.getIdProperty();
+        //如果T中含有_id字段，则未save操作，没有则insert
         if (idField != null && idField.getPropertyAccessor().get(entity) != null) {
             //  调用replace
             ReplaceOptions replaceOptiion = new ReplaceOptions()
@@ -1044,7 +1032,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
                     .upsert(true);
 
             Document document = this.toDocument(entity);
-
 
             replace(new Query(Criteria.where("_id").is(document.get("_id"))), entity, replaceOptiion, collectionName);
         } else {
@@ -1055,18 +1042,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     }
 
-//    private  < T > Collection<? extends T>  doSaveMany(Collection<? extends T> entities, InsertOneOptions option, String collectionName ) {
-//
-//        if (entities.isEmpty()) {
-//            return null;
-//        }
-//
-//        for (T entity : entities){
-//            doSave(entity,option,collectionName);
-//        }
-//        return entities;
-//
-//    }
 
     @Override
     public < T > T storeGridFs( GridFsObject< T, InputStream > upload, String bucketName ) {
@@ -1548,27 +1523,26 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
 
     public  <T> MongoCollection<T> withConcern( MongoCollection<T> collection, Class<?> clazz ) {
 
-        EntityModel entityModel = this.mapper.getEntityModel(clazz);
+        EntityModel<?> entityModel = this.mapper.getEntityModel(clazz);
 
-        Concern annotation = (Concern) entityModel.getAnnotation(Concern.class);
+        Concern annotation =  entityModel.getAnnotation(Concern.class);
 
         //判断实体类是否有@Concern注解
         if (annotation != null) {
 
-            if (WriteConcern.valueOf(annotation.writeConcern()) != null) {
+            if(ObjectUtil.isNotEmpty(WriteConcern.valueOf(annotation.writeConcern()))){
                 collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.writeConcern()));
             }
 
-            if (ReadPreference.valueOf(annotation.readPreference()) != null) {
-                collection = collection.withWriteConcern(WriteConcern.valueOf(annotation.writeConcern()));
-
-            }
+           if(ObjectUtil.isNotEmpty(ReadPreference.valueOf(annotation.readPreference()))){
+               collection = collection.withReadPreference(ReadPreference.valueOf(annotation.readPreference()));
+           }
 
             ReadConcernLevel readConcernLevel = ReadConcernLevel.fromString(annotation.readConcern());
+           if(ObjectUtil.isNotEmpty(readConcernLevel)){
+               collection.withReadConcern(new ReadConcern(readConcernLevel));
+           }
 
-            if (readConcernLevel != null) {
-                collection.withReadConcern(new ReadConcern(readConcernLevel));
-            }
         }
         return collection;
 
@@ -1777,6 +1751,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
     private <T> Optional<T> doFindOne(Query query,Class<T> entityClass,String collectionName ) {
 
         Precondition.notNull(query,"Query must not be null");
+        Precondition.hasText(collectionName,"collectionName must not be null");
 
         MongoCollection<T> collection = this.getCollection(entityClass, collectionName);
         ClientSession session = this.startSession();
@@ -1930,7 +1905,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore{
         if (!(options instanceof UpdateOptions)) {
             throw new ClassCastException();
         }
-
 
 //        UpdateOptions option = (UpdateOptions) options;
 

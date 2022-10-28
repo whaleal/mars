@@ -29,7 +29,9 @@
  */
 package com.whaleal.mars.codecs.pojo.annotations;
 
+
 import java.lang.annotation.*;
+
 
 @Documented
 @Inherited
@@ -37,10 +39,10 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 public @interface Concern {
 
-    String writeConcern() default "";
+    String writeConcern() default "local";
 
-    String readConcern() default "";
+    String readConcern() default "w1";
 
-    String readPreference() default "";
+    String readPreference() default "primary";
 
 }

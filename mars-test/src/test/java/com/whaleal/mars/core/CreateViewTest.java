@@ -93,4 +93,10 @@ public class CreateViewTest {
         mars.createView("vehicles1",Vehicles.class,pipeline,new CreateViewOptions());
     }
 
+    @Test
+    public void dropView(){
+        mars.dropCollection("test");
+
+    }
+
 }
