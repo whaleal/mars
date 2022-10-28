@@ -12,7 +12,7 @@ import java.util.List;
  **/
 public class BuildInfoMetrics {
 
-    private final Document document ;
+    private static Document document ;
 
     public BuildInfoMetrics(MongoClient mongoClient){
         document = mongoClient.getDatabase("admin").runCommand(new Document("buildInfo", 1));

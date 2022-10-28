@@ -60,9 +60,9 @@ public class MemoryMetrics extends AbstractMonitor {
 
     @SuppressWarnings("unchecked")
     private <T> T getMemData(String key, Class<T> targetClass) {
-        Document mem = (Document) getServerStatus().get("mem");
+        Document mem = (Document) serverStatus.get("mem");
         // Class c = mem.get(key).getClass();
-        return (T) mem.get(key);
+        return (T) mem.get(key,targetClass);
     }
 
 }

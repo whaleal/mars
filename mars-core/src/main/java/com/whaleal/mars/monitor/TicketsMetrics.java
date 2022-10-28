@@ -12,6 +12,7 @@ import javax.print.Doc;
  * @date 2022-06-14 16:18
  **/
 public class TicketsMetrics extends AbstractMonitor{
+
     /**
      * @param mongoClient must not be {@literal null}.
      */
@@ -44,14 +45,14 @@ public class TicketsMetrics extends AbstractMonitor{
     }
 
     private Integer getWriteTicketsData(String key) {
-        Document writeTicketsDocument = (Document) getServerStatus().get("wiredTiger",Document.class)
+        Document writeTicketsDocument = (Document) serverStatus.get("wiredTiger",Document.class)
                 .get("concurrentTransactions", Document.class)
                 .get("write");
         return writeTicketsDocument.getInteger(key);
     }
 
     private Integer getReadTicketsData(String key) {
-        Document readTicketsDocument = (Document) getServerStatus().get("wiredTiger",Document.class)
+        Document readTicketsDocument = (Document) serverStatus.get("wiredTiger",Document.class)
                 .get("concurrentTransactions", Document.class)
                 .get("read");
         return readTicketsDocument.getInteger(key);

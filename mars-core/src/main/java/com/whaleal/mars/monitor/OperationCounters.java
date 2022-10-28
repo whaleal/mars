@@ -69,7 +69,7 @@ public class OperationCounters extends AbstractMonitor {
     }
 
     private Integer getOpCounter(String key) {
-        Document opCounters = (Document) getServerStatus().get("opcounters");
+        Document opCounters = (Document) serverStatus.get("opcounters");
         return NumberUtil.convertNumberToTargetClass((Number) opCounters.get(key), Integer.class);
     }
 }

@@ -12,98 +12,84 @@ import org.bson.Document;
  **/
 public class DBStatsMetrics{
 
-    private MongoClient mongoClient;
-
-    private String dbName;
-
-    //指定监控指标的单位1->byte 1024->kb
-    private int scale;
+    private static Document dbStats;
 
     /**
      * 如果不提供数据，则默认为test
+     *
+     * 指定监控指标的单位1->byte 1024->kb
      * @param mongoClient
      */
     public DBStatsMetrics(MongoClient mongoClient){
-        this.mongoClient = mongoClient;
-        this.scale = 1;
-        this.dbName = "test";
+        this(mongoClient,"test",1);
     }
 
     public DBStatsMetrics(MongoClient mongoClient,String dbName){
-        this.mongoClient = mongoClient;
-        this.scale = 1;
-        this.dbName = dbName;
+        this(mongoClient,dbName,1);
     }
 
     public DBStatsMetrics(MongoClient mongoClient,String dbName,int scale){
-        this.mongoClient = mongoClient;
-        this.dbName = dbName;
-        this.scale = scale;
+        dbStats = mongoClient.getDatabase(dbName).runCommand(new Document("dbStats",1).append("scale",scale).append("freeStorage",0));
     }
 
     public String getDBName(){
-        return dbName;
+        return dbStats.get("db",String.class);
     }
 
     public Integer getCollectionCount(){
-        return getDbBStatsData("collections",Integer.class);
+        return dbStats.get("collections",Integer.class);
     }
 
     public Integer getViewCount(){
-        return getDbBStatsData("views",Integer.class);
+        return dbStats.get("views",Integer.class);
     }
 
     public Integer getObjectCount(){
-        return getDbBStatsData("objects",Integer.class);
+        return dbStats.get("objects",Integer.class);
     }
 
     public Double getAvgObjSize(){
-        return getDbBStatsData("avgObjSize",Double.class);
+        return dbStats.get("avgObjSize",Double.class);
     }
 
     public Double getDataSize(){
-        return getDbBStatsData("dataSize",Double.class);
+        return dbStats.get("dataSize",Double.class);
     }
 
     public Double getStorageSize(){
-        return getDbBStatsData("storageSize",Double.class);
+        return dbStats.get("storageSize",Double.class);
     }
 
     public Integer getFreeStorageSize(){
-        return getDbBStatsData("freeStorageSize",Integer.class);
+        return dbStats.get("freeStorageSize",Integer.class);
     }
 
     public Integer getIndexs(){
-        return getDbBStatsData("indexs",Integer.class);
+        return dbStats.get("indexs",Integer.class);
     }
 
     public Double getIndexSize(){
-        return getDbBStatsData("indexSize",Double.class);
+        return dbStats.get("indexSize",Double.class);
     }
 
     public Integer getIndexFreeStorageSize(){
-        return getDbBStatsData("indexFreeStorageSize",Integer.class);
+        return dbStats.get("indexFreeStorageSize",Integer.class);
     }
 
     public Double getTotalSize(){
-        return getDbBStatsData("totalSize",Double.class);
+        return dbStats.get("totalSize",Double.class);
     }
 
     public Integer getTotalFreeStorageSize(){
-        return getDbBStatsData("totalFreeStorageSize",Integer.class);
+        return dbStats.get("totalFreeStorageSize",Integer.class);
     }
 
     public Double getScaleFactor(){
-        return getDbBStatsData("scaleFactor",Double.class);
+        return dbStats.get("scaleFactor",Double.class);
     }
 
     public Double getFsUsedSize(){
-        return getDbBStatsData("fsUsedSize",Double.class);
+        return dbStats.get("fsUsedSize",Double.class);
     }
 
-    private <T> T getDbBStatsData(String key,Class<T> targetClass){
-        Document dbStats = mongoClient.getDatabase(dbName).runCommand(new Document("dbStats",1).append("scale",scale).append("freeStorage",0));
-
-        return (T) dbStats.get(key,targetClass);
-    }
 }

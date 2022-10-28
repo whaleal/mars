@@ -69,7 +69,7 @@ public class BtreeIndexCounters extends AbstractMonitor {
     }
 
     private int getBtree(String key) {
-        Document indexCounters = (Document) getServerStatus().get("indexCounters");
+        Document indexCounters = (Document) serverStatus.get("indexCounters");
         if (indexCounters.get("note") != null) {
             String message = (String) indexCounters.get("note");
             if (message.contains("not supported")) {

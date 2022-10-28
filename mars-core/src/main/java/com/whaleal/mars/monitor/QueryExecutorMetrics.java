@@ -34,7 +34,7 @@ public class QueryExecutorMetrics extends AbstractMonitor{
     }
 
     private <T> T getQueryExecutorData(String key,Class<T> targetClass) {
-        Document mem = (Document) getServerStatus().get("metrics",Document.class)
+        Document mem = serverStatus.get("metrics",Document.class)
                 .get("queryExecutor",Document.class);
 
         return (T) mem.get(key,targetClass);

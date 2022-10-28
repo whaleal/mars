@@ -1,6 +1,7 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import org.bson.Document;
 
 /**
@@ -45,21 +46,25 @@ public class ConnPoolStatsMetrics extends AbstractMonitor{
     }
 
     private <T> T getConnStatsData(String key,Class<T> targetClass){
-        return (T)getConnPoolStats().get(key,targetClass);
+        return connPoolStats.get(key,targetClass);
     }
 
     public Document getPoolsGlobal(){
-        return getPoolStatsData("global",Document.class);
+        Document pools = connPoolStats.get("pools", Document.class);
+        if(ObjectUtil.isEmpty(pools)){
+            return null;
+        }
+        return pools.get("global",Document.class);
     }
 
-    private <T> T getPoolStatsData(String key,Class<T> targetClass){
-        Document pools = getConnPoolStats().get("pools", Document.class);
-
-        return (T) pools.get(key,targetClass);
-    }
+//    private <T> T getPoolStatsData(String key,Class<T> targetClass){
+//        Document pools = connPoolStats.get("pools", Document.class);
+//
+//        return (T) pools.get(key,targetClass);
+//    }
 
     public  Document getReplicaSetData(){
-        return getConnPoolStats().get("replicaSets", Document.class);
+        return connPoolStats.get("replicaSets", Document.class);
     }
 
 }

@@ -9,6 +9,7 @@ import org.bson.Document;
  * @date 2022-06-14 15:22
  **/
 public class CacheMetrics extends AbstractMonitor{
+
     /**
      * @param mongoClient must not be {@literal null}.
      */
@@ -26,7 +27,7 @@ public class CacheMetrics extends AbstractMonitor{
 
 
     private Integer getCacheData(String key) {
-        Document Preconditions = getServerStatus().get("wiredTiger",Document.class).get("cache",Document.class);
+        Document Preconditions = serverStatus.get("wiredTiger",Document.class).get("cache",Document.class);
         // Class c = btree.get(key).getClass();
         return  Preconditions.getInteger(key);
     }

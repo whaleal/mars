@@ -1,5 +1,6 @@
 package com.whaleal.mars.core.crud;
 
+import com.mongodb.ReadPreference;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.*;
 import com.whaleal.mars.core.Mars;
@@ -27,7 +28,7 @@ import java.util.Optional;
  **/
 public class CrudTestNew {
 
-    private Mars mars = new Mars(Constant.connectionStr);
+    private Mars mars = new Mars(Constant.connectionStrReplication);
     List<Num> nums = new ArrayList<>();
 
 
@@ -175,6 +176,8 @@ public class CrudTestNew {
     @Test
     public void testForFindByName(){
         Criteria num2 = Criteria.where("num").lt(10);
+        Query query = Query.query(num2);
+        query.setReadPreference(ReadPreference.nearest());
         QueryCursor<Document> num = mars.find(Query.query(num2), Document.class, "num");
 
         while (num.hasNext()){
@@ -205,6 +208,10 @@ public class CrudTestNew {
 
     }
 
+    @Test
+    public void testForSave(){
+
+    }
 
     @Test
     public void testForExtendProjection(){
