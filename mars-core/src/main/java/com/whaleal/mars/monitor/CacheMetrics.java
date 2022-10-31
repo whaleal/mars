@@ -25,11 +25,19 @@ public class CacheMetrics extends AbstractMonitor{
         return getCacheData("bytes written from cache");
     }
 
+    public Integer getTrackedDirtyBytesIntoCache(){
+        return getCacheData("tracked dirty bytes in the cache");
+    }
+
+    public Integer getBytesCurrentlyInTheCache(){
+        return getCacheData("bytes currently in the cache");
+    }
+
 
     private Integer getCacheData(String key) {
-        Document Preconditions = serverStatus.get("wiredTiger",Document.class).get("cache",Document.class);
+        Document cache = serverStatus.get("wiredTiger",Document.class).get("cache",Document.class);
         // Class c = btree.get(key).getClass();
-        return  Preconditions.getInteger(key);
+        return  cache.getInteger(key);
     }
 
 

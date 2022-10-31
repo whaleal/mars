@@ -20,5 +20,6 @@ public class QueryExecutorMetricsTest {
         System.out.println(queryExecutorMetrics.getScannedObjects());
         System.out.println(queryExecutorMetrics.getCollectionScanNonTailable());
         System.out.println(queryExecutorMetrics.getCollectionScanTotal());
+        System.out.println(queryExecutorMetrics.getScanAndOrder());
     }
 }
