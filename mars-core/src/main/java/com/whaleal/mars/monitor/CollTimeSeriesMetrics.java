@@ -2,6 +2,8 @@ package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
+import com.whaleal.icefrog.core.util.ObjectUtil;
+import org.bson.Document;
 
 /**
  * @author lyz
@@ -9,6 +11,7 @@ import com.mongodb.client.MongoDatabase;
  * @date 2022-06-15 13:32
  **/
 public class CollTimeSeriesMetrics extends CollStatsMetrics{
+
 
     public CollTimeSeriesMetrics(MongoClient mongoClient, MongoDatabase db, String collectionName) {
         super(mongoClient, db, collectionName);
@@ -70,4 +73,12 @@ public class CollTimeSeriesMetrics extends CollStatsMetrics{
         return getTimeSeriesData("numMeasurementsCommitted",Integer.class);
     }
 
+
+    protected  <T> T getTimeSeriesData(String key,Class<T> targetClass){
+        Document timeSeries = getCollStats("timeseries",Document.class);
+        if(ObjectUtil.isEmpty(timeSeries)){
+            return null;
+        }
+        return (T)timeSeries.get(key,targetClass);
+    }
 }

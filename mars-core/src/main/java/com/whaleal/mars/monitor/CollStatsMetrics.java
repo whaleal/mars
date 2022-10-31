@@ -14,9 +14,7 @@ import java.util.List;
  **/
 public class CollStatsMetrics extends AbstractMonitor{
 
-    private final MongoDatabase db;
-
-    private final String collectionName;
+    private static Document collStats;
 
     /**
      * @param
@@ -24,8 +22,7 @@ public class CollStatsMetrics extends AbstractMonitor{
 
     public CollStatsMetrics(MongoClient mongoClient,MongoDatabase db,String collectionName) {
         super(mongoClient);
-        this.db = db;
-        this.collectionName = collectionName;
+        collStats = db.runCommand(new Document("collStats",collectionName));
     }
 
     public String getNS(){
@@ -90,20 +87,10 @@ public class CollStatsMetrics extends AbstractMonitor{
     }
 
     protected <T> T getCollStats(String key,Class<T> targetClass){
-        Document document = db.runCommand(new Document("collStats",collectionName));
-        if(ObjectUtil.isEmpty(document)){
+        if(ObjectUtil.isEmpty(collStats)){
             return null;
         }
-        return (T) document.get(key,targetClass);
+        return (T) collStats.get(key,targetClass);
     }
 
-
-    protected  <T> T getTimeSeriesData(String key,Class<T> targetClass){
-        Document timeSeries = getCollStats("timeseries",Document.class);
-        if(ObjectUtil.isEmpty(timeSeries)){
-            return null;
-        }
-
-        return (T)timeSeries.get(key,targetClass);
-    }
 }

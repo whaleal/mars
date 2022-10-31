@@ -32,6 +32,7 @@ package com.whaleal.mars.monitor;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.MongoClient;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import org.bson.Document;
 
 import java.util.Date;
@@ -74,22 +75,35 @@ public class GlobalLockMetrics extends AbstractMonitor {
     public Integer getActiveClientsWriters() {
         return getaActiveClients("writers");
     }
+
     @SuppressWarnings("unchecked")
     private <T> T getGlobalLockData(String key, Class<T> targetClass) {
 
-        BasicDBObject globalLock1 = BasicDBObject.parse(getServerStatus().get("globalLock",Document.class).toJson());
+        BasicDBObject globalLock1 = BasicDBObject.parse(serverStatus.get("globalLock",Document.class).toJson());
         return (T) globalLock1.get(key);
     }
 
     private Integer getCurrentQueue(String key) {
-        Document globalLock = (Document) getServerStatus().get("globalLock");
-        Document currentQueue = (Document) globalLock.get("currentQueue");
+        Document globalLock = serverStatus.get("globalLock",Document.class);
+        if(ObjectUtil.isEmpty(globalLock)){
+            return 0;
+        }
+        Document currentQueue =  globalLock.get("currentQueue",Document.class);
+        if(ObjectUtil.isEmpty(currentQueue)){
+            return 0;
+        }
         return (Integer) currentQueue.get(key);
     }
 
     private Integer getaActiveClients(String key) {
-        Document globalLock = (Document) getServerStatus().get("globalLock");
-        Document currentQueue = (Document) globalLock.get("activeClients");
+        Document globalLock = serverStatus.get("globalLock",Document.class);
+        if(ObjectUtil.isEmpty(globalLock)){
+            return 0;
+        }
+        Document currentQueue = globalLock.get("activeClients",Document.class);
+        if(ObjectUtil.isEmpty(currentQueue)){
+            return 0;
+        }
         return (Integer) currentQueue.get(key);
     }
 }

@@ -22,6 +22,6 @@ public class PageFaultsMetrics extends AbstractMonitor{
 
     private Long getOpLatenciesData(String key) {
 
-        return getServerStatus().get("extra_info",Document.class).get(key,Long.class);
+        return serverStatus.get("extra_info",Document.class).get(key,Long.class);
     }
 }

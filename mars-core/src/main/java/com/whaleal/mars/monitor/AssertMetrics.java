@@ -38,6 +38,7 @@ import org.bson.Document;
  */
 public class AssertMetrics extends AbstractMonitor {
 
+
     /**
      * @param mongoClient must not be {@literal null}.
      */
@@ -66,8 +67,7 @@ public class AssertMetrics extends AbstractMonitor {
     }
 
     private Integer getBtree(String key) {
-        Document Preconditions = (Document) getServerStatus().get("asserts");
-        // Class c = btree.get(key).getClass();
+        Document Preconditions = (Document) serverStatus.get("asserts");
         return Preconditions.getInteger(key);
     }
 

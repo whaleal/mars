@@ -10,6 +10,8 @@ import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public class QueryTest {
 
     private Query query = new Query();
 
-    @Before
+    @BeforeMethod
     public void createCollection() {
 
         List<Document> list = CreateDataUtil.parseString("{ \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n" +
@@ -43,7 +45,7 @@ public class QueryTest {
         mars.insert(list,"inventory");
     }
 
-    @After
+    @AfterMethod
     public void dropCollection(){
         mars.dropCollection("inventory");
     }
@@ -245,7 +247,7 @@ public class QueryTest {
     @Test
     public void testForProjection(){
         Query query = new Query().withProjection(new Projection().include("test", field("item"))
-                .include("qty","size"));
+                .include("qty",field("size")));
 
         QueryCursor<Document> inventory = mars.findAll(query, Document.class, "inventory");
         while(inventory.hasNext()){

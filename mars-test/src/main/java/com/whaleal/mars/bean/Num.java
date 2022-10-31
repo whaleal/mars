@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Num {
 
     @Id
-    private int id;
+    private String id;
 
     private String name;
 

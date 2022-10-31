@@ -1,6 +1,7 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import org.bson.Document;
 
 
@@ -33,8 +34,15 @@ public class QueryExecutorMetrics extends AbstractMonitor{
         return getQueryExecutorData("collectionScans", Document.class).get("total",Long.class);
     }
 
+    public Long getScanAndOrder(){
+        if(ObjectUtil.isEmpty(getQueryExecutorData("operation",Document.class))){
+            return 0L;
+        }
+        return getQueryExecutorData("operation",Document.class).get("scanAndOrder",Long.class);
+    }
+
     private <T> T getQueryExecutorData(String key,Class<T> targetClass) {
-        Document mem = (Document) getServerStatus().get("metrics",Document.class)
+        Document mem = serverStatus.get("metrics",Document.class)
                 .get("queryExecutor",Document.class);
 
         return (T) mem.get(key,targetClass);

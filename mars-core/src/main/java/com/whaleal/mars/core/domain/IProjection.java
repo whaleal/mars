@@ -1,7 +1,7 @@
 package com.whaleal.mars.core.domain;
 
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
-
+import org.bson.Document;
 
 
 /**
@@ -41,4 +41,6 @@ public interface IProjection {
      * @return this
      */
     IProjection suppressId();
+
+    Document getFieldsObject();
 }

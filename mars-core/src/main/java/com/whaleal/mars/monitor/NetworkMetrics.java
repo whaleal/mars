@@ -30,7 +30,7 @@ public class NetworkMetrics extends AbstractMonitor{
     }
 
     private Long getNetworkData(String key) {
-        Document mem = (Document) getServerStatus().get("network");
+        Document mem = (Document) serverStatus.get("network");
         return mem.getLong(key);
     }
 }

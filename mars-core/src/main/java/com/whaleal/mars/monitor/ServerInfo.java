@@ -61,18 +61,18 @@ public class ServerInfo extends AbstractMonitor {
     }
 
     public Long getUptimeEstimate() {
-        return getServerStatus().get("uptimeEstimate",Long.class);
+        return serverStatus.get("uptimeEstimate",Long.class);
     }
 
     public String getVersion() {
-        return (String) getServerStatus().get("version");
+        return (String) serverStatus.get("version");
     }
 
     public Date getLocalTime() {
-        return getServerStatus().get("localTime",Date.class);
+        return serverStatus.get("localTime",Date.class);
     }
 
     public double getUptime() {
-        return (Double) getServerStatus().get("uptime");
+        return (Double) serverStatus.get("uptime");
     }
 }

@@ -157,7 +157,7 @@ public abstract class AggregationImpl {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private List<Document> getDocuments(List<Stage> stages) {
+    protected List<Document> getDocuments(List<Stage> stages) {
         return stages.stream()
                 .map(s -> {
                     Codec codec = mapper.getCodecRegistry().get(s.getClass());

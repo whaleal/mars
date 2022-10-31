@@ -72,12 +72,12 @@ public class BackgroundFlushingMetrics extends AbstractMonitor {
 
     @SuppressWarnings("unchecked")
     private <T> T getFlushingData(String key, Class<T> targetClass) {
-        Document mem = (Document) getServerStatus().get("backgroundFlushing");
+        Document mem = (Document) serverStatus.get("backgroundFlushing");
         return (T) mem.get(key);
     }
 
     private Date getLast() {
-        Document bgFlush = (Document) getServerStatus().get("backgroundFlushing");
+        Document bgFlush = (Document) serverStatus.get("backgroundFlushing");
         Date lastFinished = (Date) bgFlush.get("last_finished");
         return lastFinished;
     }

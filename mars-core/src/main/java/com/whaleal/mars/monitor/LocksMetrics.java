@@ -9,6 +9,7 @@ import org.bson.Document;
  * @date 2022-06-14 17:27
  **/
 public class LocksMetrics extends AbstractMonitor{
+
     /**
      * @param mongoClient must not be {@literal null}.
      */
@@ -113,7 +114,7 @@ public class LocksMetrics extends AbstractMonitor{
     }
 
     private Document getLockData(String lockLevel,String lockSort){
-        Document databaseLocks = getServerStatus().get("locks", Document.class)
+        Document databaseLocks = serverStatus.get("locks", Document.class)
                 .get(lockLevel, Document.class);
 
         return (Document)databaseLocks.get(lockSort);

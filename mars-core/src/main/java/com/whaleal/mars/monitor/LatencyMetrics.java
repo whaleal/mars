@@ -9,6 +9,7 @@ import org.bson.Document;
  * @date 2022-06-14 17:48
  **/
 public class LatencyMetrics extends AbstractMonitor{
+
     /**
      * @param mongoClient must not be {@literal null}.
      */
@@ -86,7 +87,7 @@ public class LatencyMetrics extends AbstractMonitor{
     }
 
     private Integer getLatencyData(String key){
-        Document databaseLocks = getServerStatus().get("wiredTiger", Document.class)
+        Document databaseLocks = serverStatus.get("wiredTiger", Document.class)
                 .get("perf", Document.class);
 
         return databaseLocks.getInteger(key);

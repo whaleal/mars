@@ -44,6 +44,10 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractMonitor {
 
+    protected static Document serverStatus ;
+
+    protected static Document  connPoolStats;
+
     private final MongoClient mongoClient;
 
     /**
@@ -51,6 +55,8 @@ public abstract class AbstractMonitor {
      */
     protected AbstractMonitor(MongoClient mongoClient) {
         this.mongoClient = mongoClient;
+        serverStatus = getServerStatus();
+        connPoolStats = getConnPoolStats();
     }
 
     /**

@@ -3,12 +3,14 @@ package com.whaleal.mars.bean;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.pojo.annotations.Id;
 import com.whaleal.mars.codecs.pojo.annotations.Property;
+import lombok.ToString;
 
 /**
  * @author wh
  */
 
 @Entity()
+@ToString
 public class Parent {
 
     public String getId() {

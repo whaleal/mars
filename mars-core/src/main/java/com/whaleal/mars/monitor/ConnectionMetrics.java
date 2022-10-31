@@ -32,6 +32,8 @@ package com.whaleal.mars.monitor;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
 
+import javax.print.Doc;
+
 /**
  * JMX Metrics for Connections
  * 解析db.serverStatus()的connection参数
@@ -55,7 +57,7 @@ public class ConnectionMetrics extends AbstractMonitor {
 
     @SuppressWarnings("unchecked")
     private <T> T getConnectionData(String key) {
-        Document mem = (Document) getServerStatus().get("connections");
+        Document mem = (Document) serverStatus.get("connections");
         return (T) mem.get(key);
     }
 
