@@ -1,14 +1,15 @@
 package com.whaleal.mars.core.crud;
 
 import com.mongodb.ReadPreference;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.*;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.query.Criteria;
-import com.whaleal.mars.core.query.Projection;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.core.query.Sort;
+import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.session.option.InsertManyOptions;
+import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.testng.Assert;
@@ -28,7 +29,7 @@ import java.util.Optional;
  **/
 public class CrudTestNew {
 
-    private Mars mars = new Mars(Constant.connectionStrReplication);
+    private Mars mars = new Mars(Constant.connectionStr);
     List<Num> nums = new ArrayList<>();
 
 
@@ -42,6 +43,7 @@ public class CrudTestNew {
         }
 
         mars.insertAll(nums);
+
 
 
         List<Document> zip = CreateDataUtil.parseString("{ \"_id\" : \"01001\", \"city\" : \"AGAWAM\", \"loc\" : [ -72.622739, 42.070206 ], \"pop\" : 15338, \"state\" : \"MA\" }\n" +
@@ -65,24 +67,33 @@ public class CrudTestNew {
             list.add(vehicles);
         }
         mars.insert(list,Vehicles.class);
+        mars.insert(list,"vehicle");
     }
 
 
     @AfterMethod
     public void drop(){
         mars.dropCollection("zip");
+        mars.dropCollection("cc");
         mars.dropCollection(Num.class);
         mars.dropCollection(Vehicles.class);
+        mars.dropCollection("vehicle");
+        mars.dropCollection(Articles.class);
+        mars.dropCollection("articles1");
+        mars.dropCollection("articles_chen");
     }
 
     @Test
     public void testForInsertOne(){
         Articles articles = new Articles(100,"ceshi","lyz",5);
         Articles insert = mars.insert(articles);
+        System.out.println("==========================");
         System.out.println(insert);
 
         Articles articles1 = mars.insert(articles, "articles1");
         System.out.println(articles1);
+        System.out.println("==========================");
+
 
         Articles articles2 = mars.findAll(Articles.class).tryNext();
         Assert.assertEquals(insert,articles2);
@@ -100,17 +111,36 @@ public class CrudTestNew {
             Articles articles = new Articles(i,"ceshi","lyz",5);
             objects.add(articles);
         }
+
+        ArrayList<Object> objects1 = new ArrayList<>();
+        for(int i = 3; i < 6 ; i++ ){
+
+            Articles articles = new Articles(i,"ceshi","lyz",5);
+            objects1.add(articles);
+        }
         Collection<Object> insert = mars.insert(objects, Articles.class);
         for (Object o : insert){
             System.out.println(o);
         }
         Assert.assertEquals(insert,objects);
 
+        Collection<Object> insert1 = mars.insert(objects1, Articles.class,new InsertManyOptions());
+        for (Object o : insert1){
+            System.out.println(o);
+        }
+        Assert.assertEquals(insert1,objects);
+
         Collection<Object> articles1 = mars.insert(objects, "articles1");
         for (Object o : articles1) {
             System.out.println(o);
         }
         Assert.assertEquals(articles1,objects);
+
+        Collection<Object> articles11 = mars.insert(objects1, "articles1",new InsertManyOptions());
+        for (Object o : articles11) {
+            System.out.println(o);
+        }
+        Assert.assertEquals(articles11,objects);
 
     }
 
@@ -134,6 +164,48 @@ public class CrudTestNew {
             System.out.println(o);
         }
         Assert.assertEquals(objects,objects1);
+    }
+
+    @Test
+    public void testForSave(){
+
+        Articles articles = new Articles(1001,"test","chen",6);
+        Articles save = mars.save(articles);
+        System.out.println(save);
+
+        Articles articles_chen = mars.save(articles, "articles_chen");
+        System.out.println(articles_chen);
+
+        Articles tryNext = mars.findAll(Articles.class).tryNext();
+        Assert.assertEquals(save,tryNext);
+
+        Object next = mars.findAll(null, "articles_chen").tryNext();
+        Assert.assertEquals(articles_chen,next);
+
+    }
+
+    @Test
+    public void testForSaveMany(){
+
+        ArrayList<Object> objects = new ArrayList<>();
+        for(int i = 0; i < 3 ; i++ ){
+
+            Articles articles = new Articles(i,"ceshi","chen",5);
+            objects.add(articles);
+        }
+
+        List<Object> save = mars.save(objects);
+        for (Object o : save){
+            System.out.println(o);
+        }
+        Assert.assertEquals(objects,save);
+
+        List<Object> cc = mars.save(objects,"cc");
+        for (Object o : cc){
+            System.out.println(o);
+        }
+        Assert.assertEquals(objects,cc);
+
     }
 
     @Test
@@ -167,6 +239,7 @@ public class CrudTestNew {
         while (numQueryCursor.hasNext()) {
             System.out.println(numQueryCursor.next());
         }
+        System.out.println("-------------------");
 
         Optional<Num> one = mars.findOne(query, Num.class);
         System.out.println(one.get());
@@ -209,11 +282,6 @@ public class CrudTestNew {
     }
 
     @Test
-    public void testForSave(){
-
-    }
-
-    @Test
     public void testForExtendProjection(){
         Criteria criteria = Criteria.where("loc").is(-72.622739D);
 
@@ -248,6 +316,160 @@ public class CrudTestNew {
 
 
     }
+
+    @Test
+    public void deleteQueryEntity(){
+
+        DeleteResult delete = mars.delete(new Query(new Criteria("_id").is(1)),Vehicles.class);
+        Assert.assertEquals(delete.getDeletedCount(),1);
+    }
+
+    @Test
+    public void deleteQueryCollection(){
+
+        DeleteResult delete = mars.delete(new Query(new Criteria("_id").is("01002")),"zip");
+
+        Assert.assertEquals(delete.getDeletedCount(),1);
+    }
+
+    @Test
+    public void testForDeleteQueryCollection(){
+
+
+        DeleteResult delete = mars.delete(new Query(new Criteria("_id").is(6)),Vehicles.class,"vehicle");
+
+        Assert.assertEquals(delete.getDeletedCount(),1);
+    }
+
+    @Test
+    public void testForDeleteObject(){
+        Vehicles vehicles = new Vehicles();
+        vehicles.setId(2);
+
+        DeleteResult delete = mars.delete(vehicles);
+        Assert.assertEquals(delete.getDeletedCount(),1);
+    }
+
+    @Test
+    public void testForDeleteCollection(){
+        Num num = new Num();
+        num.setId("01005");
+
+        DeleteResult delete = mars.delete(num,"zip");
+
+        Assert.assertEquals(delete.getDeletedCount(),1);
+    }
+
+    @Test
+    public void testForDeleteMultiWithOutClass(){
+
+        DeleteResult deleteResult = mars.deleteMulti(Query.query(Criteria.where("state").is("MA")), "zip");
+
+        Assert.assertEquals(deleteResult.getDeletedCount(),6);
+    }
+
+    @Test
+    public void testForDeleteMultiWithClass(){
+
+        DeleteResult deleteResult = mars.deleteMulti(Query.query(Criteria.where("_id").is(6)), Vehicles.class);
+
+        Assert.assertEquals(deleteResult.getDeletedCount(),1);
+    }
+
+    @Test
+    public void testForDeleteMultiWithClassAndName(){
+
+        DeleteResult deleteResult = mars.deleteMulti(Query.query(Criteria.where("_id").is(6)), Vehicles.class,"vehicle");
+
+        Assert.assertEquals(deleteResult.getDeletedCount(),1);
+    }
+
+    @Test
+    public void testForUpdateMultiWithClass(){
+
+        Update update = new Update();
+        update.set("type","b");
+
+        mars.updateMulti(Query.query(new Criteria("_id").is(6)), update, Vehicles.class);
+        Vehicles vehicles = mars.findOne(Query.query(new Criteria("_id").is(6)), Vehicles.class).orElse(null);
+
+        Assert.assertEquals(vehicles.getType(),"b");
+    }
+
+    @Test
+    public void testForUpdateMultiWithCollection(){
+
+        Update update = new Update();
+        update.set("type","c");
+
+        mars.updateMulti(Query.query(new Criteria("_id").is(6)), update, "vehicle");
+        Vehicles vehicles = mars.findOne(Query.query(new Criteria("_id").is(6)), Vehicles.class,"vehicle").orElse(null);
+
+        Assert.assertEquals(vehicles.getType(),"c");
+    }
+
+    @Test
+    public void testForUpdateMultiWithClassAndCollection(){
+
+        Update update = new Update();
+        update.set("type","b");
+
+        mars.updateMulti(Query.query(new Criteria("_id").is(6)), update, Vehicles.class,"vehicle");
+        Vehicles vehicles = mars.findOne(Query.query(new Criteria("_id").is(6)), Vehicles.class,"vehicle").orElse(null);
+
+        Assert.assertEquals(vehicles.getType(),"b");
+    }
+
+    @Test
+    public void testForUpdateEntity(){
+
+        Vehicles vehicles = new Vehicles();
+        vehicles.setId(6);
+        vehicles.setType("999");
+
+        mars.updateEntity(Query.query(new Criteria("_id").is(6)), vehicles,new UpdateOptions(),"vehicle");
+        Vehicles result = mars.findOne(Query.query(new Criteria("_id").is(6)), Vehicles.class,"vehicle").orElse(null);
+
+        Assert.assertEquals(result.getType(),"999");
+    }
+
+    @Test
+    public void testForUpdateFirstWithClass(){
+
+        Update update = new Update();
+        update.set("type","b");
+
+        mars.updateFirst(Query.query(new Criteria("_id").is(6)), update, Vehicles.class);
+        Vehicles vehicles = mars.findOne(Query.query(new Criteria("_id").is(6)), Vehicles.class).orElse(null);
+
+        Assert.assertEquals(vehicles.getType(),"b");
+    }
+
+    @Test
+    public void testForUpdateFirstWithCollection(){
+
+        Update update = new Update();
+        update.set("type","c");
+
+        mars.updateFirst(Query.query(new Criteria("_id").is(6)), update, "vehicle");
+        Vehicles vehicles = mars.findOne(Query.query(new Criteria("_id").is(6)), Vehicles.class,"vehicle").orElse(null);
+
+        Assert.assertEquals(vehicles.getType(),"c");
+    }
+
+    @Test
+    public void testForUpdateFirstWithClassAndCollection(){
+
+        Update update = new Update();
+        update.set("type","b");
+
+        mars.updateFirst(Query.query(new Criteria("_id").is(6)), update, Vehicles.class,"vehicle");
+        Vehicles vehicles = mars.findOne(Query.query(new Criteria("_id").is(6)), Vehicles.class,"vehicle").orElse(null);
+
+        Assert.assertEquals(vehicles.getType(),"b");
+    }
+
+
 }
 
 

@@ -95,16 +95,20 @@ public class DeleteTest {
 
 
     @Test
-    public void delete(){
+    public void deleteQueryEntity(){
 
-//        Animal animal = new Animal();
-//        animal.setId("1001");
-//        DeleteResult delete = mars.delete(animal);
+
         DeleteResult delete = mars.delete(new Query(new Criteria("_id").is("1001")),Animal.class);
         System.out.println(delete.getDeletedCount());
+        Assert.assertEquals(delete.getDeletedCount(),1);
+    }
 
+    @Test
+    public void deleteQueryCollection(){
 
+        DeleteResult delete = mars.delete(new Query(new Criteria("_id").is("1001")),"cc");
 
+        Assert.assertEquals(delete.getDeletedCount(),1);
     }
 
     @Test
@@ -117,11 +121,13 @@ public class DeleteTest {
     }
 
     @Test
-    public void testForInsertList(){
-        QueryCursor<Document> inventory = mars.find(Query.query(new Criteria()), Document.class, "inventory");
-        while (inventory.hasNext()){
-            System.out.println(inventory.next());
-        }
+    public void testForDeleteObject1(){
+        Animal animal = new Animal();
+        animal.setId("1001");
+
+        DeleteResult delete = mars.delete(animal);
+
+        Assert.assertEquals(delete.getDeletedCount(),1);
     }
 
     @Test
