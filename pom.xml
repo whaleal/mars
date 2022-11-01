@@ -25,7 +25,8 @@
         <maven.compiler.target>8</maven.compiler.target>
         <!-- spring boot 版本 当前以次新版本为主 , spring boot 3 也将要求最低 java 版本为 17-->
         <!-- 需要考虑到 spring 6 以后的兼容性版本,最低java版本要求改为17-->
-        <spring.version>2.7.4</spring.version>
+        <spring.version>5.3.23</spring.version>
+        <spring-boot.version>2.7.4</spring-boot.version>
         <icefrog.version>1.1.8</icefrog.version>
     </properties>
 
