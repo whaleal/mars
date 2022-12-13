@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 public class Read {
 
 
-    private Mars mars = new Mars(Constant.connectionStrReplication);
+//    private Mars mars = new Mars(Constant.connectionStrReplication);
+    private Mars mars = new Mars(Constant.connectionStr);
 
     @Test
     void test1(){
@@ -22,9 +23,85 @@ public class Read {
 
 
     @Test
+    void readQueryConcernMAJORITY(){
+
+        String id = "6397ec51b36f393b3820fd47";
+        Query query = new Query(new Criteria("_id").is(id));
+        query.setReadConcern(ReadConcern.MAJORITY);
+
+        Animal a = mars.findOne(query,Animal.class).orElse(null);
+        System.out.println(query.getReadConcern());
+        System.out.println(a);
+    }
+
+    @Test
+    void readQueryConcernDEFAULT(){
+
+        String id = "6397ec51b36f393b3820fd47";
+        Query query = new Query(new Criteria("_id").is(id));
+        query.setReadConcern(ReadConcern.DEFAULT);
+
+        Animal a = mars.findOne(query,Animal.class).orElse(null);
+        System.out.println(query.getReadConcern());
+        System.out.println(a);
+    }
+
+    @Test
+    void readQueryConcernSNAPSHOT(){
+
+        String id = "6397ec51b36f393b3820fd47";
+        Query query = new Query(new Criteria("_id").is(id));
+        query.setReadConcern(ReadConcern.SNAPSHOT);
+
+        Animal a = mars.findOne(query,Animal.class).orElse(null);
+        System.out.println(query.getReadConcern());
+        System.out.println(a);
+    }
+
+    @Test
+    void readQueryConcernAVAILABLE(){
+
+        String id = "6397ecd7f4fed14e29039f21";
+        Query query = new Query(new Criteria("_id").is(id));
+        query.setReadConcern(ReadConcern.AVAILABLE);
+
+        Animal a = mars.findOne(query,Animal.class).orElse(null);
+        System.out.println(query.getReadConcern());
+        System.out.println(a);
+    }
+
+    @Test
+    void readQueryConcernLINEARIZABLE(){
+
+        String id = "6397ecd7f4fed14e29039f21";
+        Query query = new Query(new Criteria("_id").is(id));
+        query.setReadConcern(ReadConcern.LINEARIZABLE);
+
+        Animal a = mars.findOne(query,Animal.class).orElse(null);
+        System.out.println(query.getReadConcern());
+        System.out.println(a);
+    }
+
+    @Test
+    void readQueryConcernLOCAL(){
+
+        String id = "6397ecd7f4fed14e29039f21";
+        Query query = new Query(new Criteria("_id").is(id));
+        query.setReadConcern(ReadConcern.LOCAL);
+
+        Animal a = mars.findOne(query,Animal.class).orElse(null);
+        System.out.println(query.getReadConcern());
+        System.out.println(a);
+    }
+
+
+
+
+
+    @Test
     void readConcernMAJORITY(){
 
-        String id = "639480ca052dc0638c9855a9";
+        String id = "6397ee20d1558e4034f60786";
 
         mars.setReadConcern(ReadConcern.MAJORITY);
         System.out.println(mars.getReadConcern());
@@ -37,7 +114,7 @@ public class Read {
     @Test
     void readConcernDEFAULT(){
 
-        String id = "6394814a0ee0005c5c340b0f";
+        String id = "6397eee060d1f315ae56a483";
 
         mars.setReadConcern(ReadConcern.DEFAULT);
         System.out.println(mars.getReadConcern());
@@ -50,7 +127,7 @@ public class Read {
     @Test
     void readConcernSNAPSHOT(){
 
-        String id = "639481de07e2fb33fa5050d7";
+        String id = "6397eee060d1f315ae56a483";
 
         mars.setReadConcern(ReadConcern.SNAPSHOT);
         System.out.println(mars.getReadConcern());
@@ -63,7 +140,7 @@ public class Read {
     @Test
     void readConcernAVAILABLE(){
 
-        String id = "6394824b15d77f52588cff16";
+        String id = "6397ef498815db67a4ec5f17";
 
         mars.setReadConcern(ReadConcern.AVAILABLE);
         System.out.println(mars.getReadConcern());
@@ -73,12 +150,10 @@ public class Read {
         System.out.println(a);
     }
 
-
-
     @Test
     void readConcernLINEARIZABLE(){
 
-        String id = "639482c4bad73f176ebdf001";
+        String id = "6397ef498815db67a4ec5f17";
 
         mars.setReadConcern(ReadConcern.LINEARIZABLE);
         System.out.println(mars.getReadConcern());
@@ -91,7 +166,7 @@ public class Read {
     @Test
     void readConcernLOCAL(){
 
-        String id = "6394837ddbe6633a217087cd";
+        String id = "6397ef498815db67a4ec5f17";
 
         mars.setReadConcern(ReadConcern.LOCAL);
         System.out.println(mars.getReadConcern());
@@ -100,5 +175,7 @@ public class Read {
 
         System.out.println(a);
     }
+
+
 
 }

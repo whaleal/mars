@@ -17,7 +17,8 @@ import javax.annotation.Resource;
 
 public class Write {
 
-    private Mars mars = new Mars(Constant.connectionStrReplication);
+//    private Mars mars = new Mars(Constant.connectionStrReplication);
+    private Mars mars = new Mars(Constant.connectionStr);
 
 
 
@@ -109,7 +110,6 @@ public class Write {
         System.out.println(insert);
     }
 
-
     @Test
     void writeConcernACKNOWLEDGED(){
 
@@ -128,7 +128,6 @@ public class Write {
         Animal insert = mars.insert(animal,"animal");
         System.out.println(insert);
     }
-
 
     @Test
     void writeConcernJOURNALED(){
@@ -165,5 +164,6 @@ public class Write {
         Animal insert = mars.insert(animal,"animal");
         System.out.println(insert);
     }
+
 
 }
