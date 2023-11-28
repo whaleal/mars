@@ -43,11 +43,11 @@ import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.transactions.MarsTransaction;
 import org.bson.Document;
 import com.mongodb.client.model.ReplaceOptions;
-import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
@@ -511,7 +511,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
      *           {@link #getCollectionName(Class) derived} from the given type.
      */
-     < T > Collection<T> insert( Collection< ? extends T > batchToSave, Class< ? > entityClass ) ;
+     < T > List< T > insert( List< T > batchToSave, Class< ? > entityClass ) ;
 
     /**
      * Insert a batch of objects into the specified collection in a single batch write to the database.
@@ -520,32 +520,32 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @param collectionName name of the collection to store the object in. Must not be {@literal null}.
      * @return the inserted objects that.
      */
-     < T > Collection<T>  insert( Collection< ? extends T > batchToSave, String collectionName ) ;
+     < T > List< T > insert( List< T > batchToSave, String collectionName ) ;
 
     /**
      * Insert a mixed Collection of objects into a database collection determining the collection name to use based on the
      * class.
      *
-     * @param objectsToSave the list of objects to save. Must not be {@literal null}.
+     * @param entities the list of objects to save. Must not be {@literal null}.
      * @return the inserted objects.
      * @throws com.whaleal.mars.codecs.MarsOrmException if the target collection name cannot be
      *           {@link #getCollectionName(Class) derived} for the given objects.
      */
-    <T> Collection<T> insertAll(Collection<? extends T> objectsToSave);
+    <T> List<T> insertAll( List< T > entities );
 
 
     /**
      * Inserts entities in to the mapped collection.
      */
     @Deprecated
-    < T > Collection<T> insert( Collection< ? extends T > entities, Class< ? > entityClass, InsertManyOptions options );
+    < T > Collection<T> insert( List<  T > entities, Class< ? > entityClass, InsertManyOptions options );
 
     /**
      * Inserts entities in to the mapped collection.
      */
 
     @Deprecated
-    < T > Collection<T> insert( Collection< ? extends T > entities, String collectionName, InsertManyOptions options );
+    < T > Collection<T> insert( List<  T > entities, String collectionName, InsertManyOptions options );
 
 
 
@@ -760,14 +760,15 @@ interface Datastore extends IndexOperations, MongoOperations {
 
     /**
      * Saves the entities (Objects) and updates the @Id field
+     * @param entities
      */
     //todo 单独实现
-    < T > List< T > save( Collection< ? extends T > entities );
+    < T > List< T > save( List< T > entities );
 
     /**
      * Saves the entities (Objects) and updates the @Id field
      */
-    < T > List< T > save( Collection< ? extends T > entities, String collectionName );
+    < T > List< T > save( List< T > entities, String collectionName );
 
 
     /**

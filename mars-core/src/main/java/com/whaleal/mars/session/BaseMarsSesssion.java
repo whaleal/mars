@@ -51,7 +51,10 @@ import org.bson.BsonTimestamp;
  * 子类为 为 MarsSessionImpl
  *
  * @Date 2020-12-03
+ *
  */
+
+@Deprecated
 public class BaseMarsSesssion extends DatastoreImpl implements MarsSession {
     //  内部封装了一个 clientSession
     private final ClientSession session;

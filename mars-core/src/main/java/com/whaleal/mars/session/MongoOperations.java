@@ -43,8 +43,17 @@ import org.bson.Document;
 import java.util.Arrays;
 import java.util.Set;
 
+/**
+ * 库表级别的  MongoDB  操作
+ * 比如以下
+ * 删除
+ * 创建
+ * 视图
+ * count
+ *
+ *
+ */
 interface MongoOperations extends GridFsOperations {
-
     /**
      * 传递一个类对象，根据对象创建集合
      *
@@ -281,6 +290,21 @@ interface MongoOperations extends GridFsOperations {
      * @see #estimatedCount(String)
      */
     long count( Query query, Class< ? > entityClass, String collectionName );
+
+
+    /**
+     * 基于 session  模式新增的几种count  methos
+     * @param session
+     * @param query
+     * @param entityClass
+     * @param <T>
+     * @return
+     */
+    < T > long count( MarsSession session , Query query, Class< T > entityClass );
+
+    < T > long count(  MarsSession session ,Query query, String collectionName );
+
+    long count(  MarsSession session ,Query query, Class< ? > entityClass, String collectionName );
 
     @Deprecated
     long count( Query query, Class< ? > entityClass, CountOptions countOptions, String collectionName );

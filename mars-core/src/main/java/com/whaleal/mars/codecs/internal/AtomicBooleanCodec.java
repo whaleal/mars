@@ -38,6 +38,11 @@ import org.bson.codecs.EncoderContext;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
+/**
+ * 用于实现 AtomicBoolean 类的编码
+ * @author wh
+ *
+ */
 public class AtomicBooleanCodec implements Codec<AtomicBoolean> {
     @Override
     public void encode(final BsonWriter writer, final AtomicBoolean value, final EncoderContext encoderContext) {

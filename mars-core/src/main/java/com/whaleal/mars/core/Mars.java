@@ -32,6 +32,7 @@ package com.whaleal.mars.core;
 import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.session.DatastoreImpl;
 
@@ -47,6 +48,7 @@ import com.whaleal.mars.session.DatastoreImpl;
  * @see DatastoreImpl
  */
 public class Mars extends DatastoreImpl {
+
     /**
      * 这个是连接级别的读写关注
      * 即为库级别的读写关注
@@ -67,8 +69,10 @@ public class Mars extends DatastoreImpl {
         this(new ConnectionString(connectionString));
     }
 
+
     public Mars( MongoClient mongoClient, String databaseName ) {
         super(mongoClient, databaseName == null ? "test" : databaseName);
+
     }
 
     public Mars(Mars that ,String databaseName){

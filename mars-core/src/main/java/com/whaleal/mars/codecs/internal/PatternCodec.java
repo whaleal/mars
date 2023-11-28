@@ -41,6 +41,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
+/**
+ * 用于 Pattern  类的编码
+ * 需要尤其注意该类的序列化问题
+ * @author wh
+ *
+ */
 public class PatternCodec implements Codec<Pattern> {
     @Override
     public void encode(final BsonWriter writer, final Pattern value, final EncoderContext encoderContext) {

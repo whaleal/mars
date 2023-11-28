@@ -36,6 +36,10 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.Symbol;
 
+/**
+ * 用于 Symbol 类的编码
+ * @author wh
+ */
 public class SymbolCodec implements Codec<Symbol> {
     @Override
     public Symbol decode(final BsonReader reader, final DecoderContext decoderContext) {
