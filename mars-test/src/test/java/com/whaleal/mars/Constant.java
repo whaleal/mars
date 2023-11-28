@@ -3,10 +3,7 @@ package com.whaleal.mars;
 public class Constant {
 
 
-    public final static String connectionStr = "mongodb://localhost:27017/mars";
-
-    public final static String connectionStrReplication = "mongodb://192.168.12.14:35536/mars";
-
+    public final static String connectionStr = "mongodb://root:pass123@server100:27000,server190:27000,server200:27000/wh?replicaSet=appdb&authSource=admin";
 
 
 }
