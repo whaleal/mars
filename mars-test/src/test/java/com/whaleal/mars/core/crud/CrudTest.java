@@ -1,26 +1,19 @@
 package com.whaleal.mars.core.crud;
 
-import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.result.DeleteResult;
+
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.bean.Articles;
-import com.whaleal.mars.bean.Child;
-import com.whaleal.mars.bean.Person;
+
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.core.query.Update;
-import com.whaleal.mars.session.QueryCursor;
-import com.whaleal.mars.session.option.DeleteOptions;
-import com.whaleal.mars.session.option.InsertOneOptions;
 
-import com.whaleal.mars.session.option.UpdateOptions;
-import com.whaleal.mars.session.result.UpdateResult;
+import com.whaleal.mars.session.QueryCursor;
+
 import com.whaleal.mars.util.StudentGenerator;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.json.JSONObject;
+
 import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,8 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 

@@ -484,17 +484,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         Precondition.hasText(collectionName, "collectionName must not be null");
 
         // 开启与数据库的连接
-        ClientSession session = this.startSession();
+        //ClientSession session = this.startSession();
 
         //根据传入的集合名和实体类获取对应的MongoCollection对象
-        MongoCollection< ? > collection = this.getCollection(entity.getClass(), collectionName);
+        MongoCollection< T > collection = this.getCollection((Class<T>)entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
-        InsertOneResult result = insertOneExecute(session, collection, options, entity);
+        this.operations.insertOne(collection,entity,options.getOriginOptions());
+        //InsertOneResult result = insertOneExecute(session, collection, options, entity);
 
-        if (ObjectUtil.isEmpty(result.getInsertedId())) {
-            return null;
-        }
         return entity;
     }
 
@@ -535,6 +533,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     public < T > T insert( T objectToSave, String collectionName ) {
         return doInsertOne(objectToSave, new InsertOneOptions(), collectionName);
     }
+
 
     private < T > List< T > doInsertMany( List< T > entities, InsertManyOptions options, String collectionName ) {
 
@@ -1029,7 +1028,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         final EntityModel model = this.mapper.getEntityModel(entity.getClass());
 
         final PropertyModel idField = model.getIdProperty();
-        //如果T中含有_id字段，则未save操作，没有则insert
+        //如果对象内部属性中含有_id字段且_id 字段有值，则执行save操作，没有则执行insert
         if (idField != null && idField.getPropertyAccessor().get(entity) != null) {
             //  调用replace
             ReplaceOptions replaceOptiion = new ReplaceOptions()
@@ -1857,6 +1856,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
     private < T > T insertOneExecute( ClientSession session, MongoCollection collection, InsertOneOptions options, Object data ) {
+
 
         InsertOneResult insertOneResult;
         if (options == null) {

@@ -584,8 +584,10 @@ interface Datastore extends IndexOperations, MongoOperations {
     /**
      * todo
      * 修改更新的定义
+     * @see  Datastore#updateFirst(Query, UpdateDefinition, Class)
+     * @see  Datastore#updateMulti(Query, UpdateDefinition, Class)
+     *
      */
-
     @Deprecated
     default < T > UpdateResult update( Query query, UpdateDefinition update, Class< T > entityClass ) {
         return update(query, update, entityClass, new UpdateOptions());

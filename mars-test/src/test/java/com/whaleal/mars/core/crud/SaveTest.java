@@ -1,5 +1,7 @@
 package com.whaleal.mars.core.crud;
 
+import com.whaleal.icefrog.core.collection.CollUtil;
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.bean.Student;
@@ -8,6 +10,8 @@ import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.InsertManyOptions;
 import com.whaleal.mars.session.option.InsertOneOptions;
+import com.whaleal.mars.util.StudentGenerator;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +26,17 @@ import java.util.List;
  **/
 public class SaveTest {
 
-    private Mars mars = new Mars("mongodb://localhost:27017/mars");
+    private Mars mars ;
+    @Before
+    public void init(){
+        mars = new Mars(Constant.connectionStr);
+
+    }
+
+
+
+
+
 
 
 //    @Before
@@ -69,8 +83,8 @@ public class SaveTest {
         System.out.println(insert);
 
 
-        Animal insert2 = mars.insert(animal);
-        System.out.println(insert2);
+       /* Animal insert2 = mars.insert(animal);
+        System.out.println(insert2);*/
 
         InsertOneOptions options = new InsertOneOptions();
         InsertManyOptions optionsMany = new InsertManyOptions();
@@ -212,4 +226,18 @@ public class SaveTest {
     public void dropData(){
         mars.dropCollection(Animal.class);
     }
+    
+    
+    @Test
+    public  void saveBatch(){
+        List< Student > stus = CollUtil.asList(StudentGenerator.getInstance(1001),
+                StudentGenerator.getInstance(1002));
+
+        mars.save(stus);
+
+        long estimatedCount = mars.estimatedCount(Student.class);
+        Assert.assertEquals(2,estimatedCount);
+    }
+
+
 }

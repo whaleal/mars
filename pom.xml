@@ -20,7 +20,7 @@
     </modules>
 
     <properties>
-        <mongodb.version>4.7.1</mongodb.version>
+        <mongodb.version>4.11.1</mongodb.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <!-- spring boot 版本 当前以次新版本为主 , spring boot 3 也将要求最低 java 版本为 17-->
