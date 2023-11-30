@@ -34,7 +34,7 @@ import com.mongodb.TransactionOptions;
 import com.mongodb.client.MongoClient;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
-import com.whaleal.mars.config.transaction.MongoTransactionManager;
+//import com.whaleal.mars.config.transaction.MongoTransactionManager;
 import com.whaleal.mars.core.Mars;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -105,11 +105,11 @@ public class MarsAutoConfiguration {
         return (MongoClient)(new MongoClientFactory((List)builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
     }
 
-    @Bean
+   /* @Bean
     @ConditionalOnMissingBean({MongoTransactionManager.class})
     public MongoTransactionManager mongoTransactionManager(MongoMappingContext context, TransactionOptions transactionOptions, MongoClient mongoClient) {
         return (MongoTransactionManager)(new MongoTransactionManager(context,transactionOptions,mongoClient));
-    }
+    }*/
 
     @Configuration(
             proxyBeanMethods = false
