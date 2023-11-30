@@ -59,13 +59,8 @@ class ArrayCodec implements Codec<Object> {
         int length = Array.getLength(value);
         for (int i = 0; i < length; i++) {
             Object element = Array.get(value, i);
-            // 空值单独处理，按顺序写入。
-            if(null == element){
-               writer.writeNull();
-            }else {
-                Codec codec = mapper.getCodecRegistry().get(element.getClass());
-                codec.encode(writer, element, encoderContext);
-            }
+            //  集中在 writeValue  方法内处理
+            writeValue(writer,encoderContext,element);
 
         }
         writer.writeEndArray();
@@ -113,4 +108,14 @@ class ArrayCodec implements Codec<Object> {
         return bsonTypeCodecMap;
     }
 
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void writeValue(final BsonWriter writer, final EncoderContext encoderContext, final Object value) {
+        if (value == null) {
+            writer.writeNull();
+        } else {
+            Codec codec = mapper.getCodecRegistry().get(value.getClass());
+            codec.encode(writer, value, encoderContext);
+        }
+    }
 }
