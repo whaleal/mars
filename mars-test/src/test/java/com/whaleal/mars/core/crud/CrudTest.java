@@ -11,7 +11,7 @@ import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
 
 import com.whaleal.mars.util.StudentGenerator;
-import org.bson.Document;
+
 import org.bson.types.ObjectId;
 
 import org.junit.After;
@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 
 
 import java.util.Optional;
@@ -40,7 +39,6 @@ public class CrudTest {
     Mars mars;
 
     Student student;
-
 
     Integer stuNo = 10000;
 
@@ -78,9 +76,10 @@ public class CrudTest {
     public void findOne() {
 
         Query query = Query.query(Criteria.where("_id").is(new ObjectId("6034c9c9e73be70704731635")));
-        Optional< Student > one = mars.findOne(query, Student.class, null);
+        Optional< Student > one = mars.findOne(query, Student.class);
+        Student student = one.get();
 
-        System.out.println(one);
+        Assert.assertNotNull(student);
     }
 
     @Test

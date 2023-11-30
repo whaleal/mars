@@ -1,3 +1,4 @@
+/*
 package com.whaleal.mars.config.transaction;
 
 import com.mongodb.ClientSessionOptions;
@@ -16,11 +17,13 @@ import org.springframework.transaction.support.*;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+*/
 /**
  * @author lyz
  * @desc
  * @create: 2022-10-31 14:24
- **/
+ **//*
+
 @Component
 public class MongoTransactionManager extends AbstractPlatformTransactionManager implements ResourceTransactionManager, InitializingBean {
     @Nullable
@@ -31,6 +34,7 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
     private MongoClient mongoClient;
 
     public MongoTransactionManager() {
+
     }
 
     public MongoTransactionManager(MongoMappingContext dbFactory) {
@@ -284,3 +288,4 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
         }
     }
 }
+*/

@@ -1,9 +1,11 @@
 package com.whaleal.mars.base;
 
 import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CreateCollectionOptions;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.NumberBean;
+import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Projection;
@@ -29,7 +31,7 @@ public class CollationTest {
 
     @After
     public void dropCollection() {
-       // mars.getDatabase().drop();
+        mars.getDatabase().drop();
     }
 
 
@@ -38,6 +40,7 @@ public class CollationTest {
      */
     @Test
     public void testForWhenCreate() {
+
         mars.createCollection("student", CollectionOptions.just(Collation.builder().locale("zh").build()));
         List< Document > list = CreateDataUtil.parseString("{\"name\" : \"张七\" }\n" +
                 "{\"name\" : \"张三\" }\n" +
@@ -119,4 +122,8 @@ public class CollationTest {
         Assert.assertEquals(list1, list2);
 
     }
+
+
+
+
 }

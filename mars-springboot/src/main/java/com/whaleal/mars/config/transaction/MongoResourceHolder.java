@@ -1,3 +1,4 @@
+/*
 package com.whaleal.mars.config.transaction;
 
 import com.mongodb.client.ClientSession;
@@ -6,11 +7,13 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.ResourceHolderSupport;
 
+*/
 /**
  * @author lyz
  * @desc
  * @create: 2022-10-31 16:32
- **/
+ **//*
+
 @Component
 public class MongoResourceHolder extends ResourceHolderSupport {
     @Nullable
@@ -75,3 +78,4 @@ public class MongoResourceHolder extends ResourceHolderSupport {
         }
     }
 }
+*/
