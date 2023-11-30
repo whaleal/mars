@@ -30,7 +30,7 @@
 package com.whaleal.mars.config;
 
 import com.mongodb.MongoClientSettings;
-import com.mongodb.TransactionOptions;
+//import com.mongodb.TransactionOptions;
 import com.mongodb.client.MongoClient;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
