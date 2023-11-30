@@ -8,11 +8,10 @@ import com.whaleal.mars.core.Mars;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
+
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class QueryTest {
 
     private Query query = new Query();
 
-    @BeforeMethod
+    @Before
     public void createCollection() {
 
         List<Document> list = CreateDataUtil.parseString("{ \"item\": \"journal\", \"qty\": 25, \"size\": { \"h\": 14, \"w\": 21, \"uom\": \"cm\" }, \"status\": \"A\" },\n" +
@@ -45,7 +44,7 @@ public class QueryTest {
         mars.insert(list,"inventory");
     }
 
-    @AfterMethod
+    @After
     public void dropCollection(){
         mars.dropCollection("inventory");
     }

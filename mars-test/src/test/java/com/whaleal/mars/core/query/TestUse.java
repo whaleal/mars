@@ -5,8 +5,9 @@ import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.option.UpdateOptions;
 import org.bson.Document;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class TestUse {
 
     private MongoMappingContext context;
 
-    @BeforeMethod
+    @Before
     public void before() {
         context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
         mars = new Mars(Constant.connectionStr);

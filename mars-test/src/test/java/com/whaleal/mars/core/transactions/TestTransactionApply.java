@@ -4,8 +4,9 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
+
 
 /**
  * @author wh

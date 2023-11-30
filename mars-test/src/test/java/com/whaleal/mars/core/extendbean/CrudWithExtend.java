@@ -7,10 +7,11 @@ import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class CrudWithExtend {
     List< Person > people = new ArrayList<>();
 
 
-    @BeforeMethod
+    @Before
     public void init() {
         mars = new Mars(Constant.connectionStr);
 

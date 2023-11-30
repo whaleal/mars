@@ -4,7 +4,8 @@ import com.mongodb.client.MongoClients;
 import com.whaleal.mars.bean.IdEntity;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.codecs.Codec;
-import org.testng.annotations.Test;
+import org.junit.Test;
+
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

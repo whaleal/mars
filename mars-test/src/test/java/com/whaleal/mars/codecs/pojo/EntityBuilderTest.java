@@ -14,9 +14,10 @@ import org.bson.BsonType;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
@@ -24,7 +25,7 @@ public class EntityBuilderTest {
 
     MongoMappingContext context;
 
-    @BeforeMethod
+    @Before
     public void init() {
         MongoClient client = MongoClients.create(Constant.connectionStr);
         context = new MongoMappingContext(client.getDatabase("mars"));

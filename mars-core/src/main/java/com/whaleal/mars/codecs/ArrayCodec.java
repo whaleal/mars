@@ -59,8 +59,14 @@ class ArrayCodec implements Codec<Object> {
         int length = Array.getLength(value);
         for (int i = 0; i < length; i++) {
             Object element = Array.get(value, i);
-            Codec codec = mapper.getCodecRegistry().get(element.getClass());
-            codec.encode(writer, element, encoderContext);
+            // 空值单独处理，按顺序写入。
+            if(null == element){
+               writer.writeNull();
+            }else {
+                Codec codec = mapper.getCodecRegistry().get(element.getClass());
+                codec.encode(writer, element, encoderContext);
+            }
+
         }
         writer.writeEndArray();
     }

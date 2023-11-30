@@ -13,7 +13,7 @@ import com.whaleal.mars.session.option.UpdateOptions;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 
 /**
@@ -37,6 +37,7 @@ public class UpdateTest {
     public void dropCollection(){
         mars.dropCollection("letters");
     }
+
 
 
     @Test

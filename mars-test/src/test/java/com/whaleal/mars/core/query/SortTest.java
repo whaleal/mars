@@ -4,10 +4,11 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.util.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
+import org.junit.After;
 import org.junit.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class SortTest {
 
     LinkedList<Student> list ;
 
-    @BeforeMethod
+    @Before
     public void init() {
         //准备数据准备一次就足够了，不能准备多次
         list = new LinkedList<>();
@@ -36,7 +37,7 @@ public class SortTest {
     }
 
 
-    @AfterMethod
+    @After
     public void destory() {
 
         mars.dropCollection(Student.class);

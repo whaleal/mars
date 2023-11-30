@@ -12,10 +12,11 @@ import com.whaleal.mars.session.option.InsertManyOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,7 @@ public class CrudTestNew {
     List<Num> nums = new ArrayList<>();
 
 
-    @BeforeMethod
+    @Before
     public void createData(){
         for (int i = 0;i < 20; i++){
             Num num = new Num();
@@ -71,7 +72,7 @@ public class CrudTestNew {
     }
 
 
-    @AfterMethod
+    @After
     public void drop(){
         mars.dropCollection("zip");
         mars.dropCollection("cc");

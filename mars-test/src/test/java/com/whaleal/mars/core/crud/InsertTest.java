@@ -24,6 +24,7 @@ public class InsertTest {
     @Test
     public void insert(){
 
+
         String [] code = {"20000"};
 
         Book book = new Book();
@@ -71,8 +72,10 @@ public class InsertTest {
         System.out.println(insert);
         Animal resultAnimal = mars.findOne(new Query(), Animal.class).orElse(null);
 
-        mars.delete(new Query(new Criteria("_id").is("1001")),Animal.class);
+        //mars.delete(new Query(new Criteria("_id").is("1001")),Animal.class);
 
+        System.out.println(insert);
+        System.out.println(resultAnimal);
         Assert.assertEquals(animal,resultAnimal);
 
     }
@@ -105,6 +108,31 @@ public class InsertTest {
 
         Collection<Document> inventory1 = mars.insert(documents, "inventory1");
 
+
+    }
+
+
+    /**
+     *
+     *  尝试插入文档 ，文档内部为 对象数组
+     *
+     *
+     */
+
+    @Test
+    public void insertObjectArray(){
+
+        Map  test = new HashMap<>();
+        test.put("1","hp");
+        test.put("2","ckkkk");
+
+
+        Object[] objects = {"hello", test, "beer", null,null,19,"eyJhbGciOiJIUzUxMiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAKtWKi5NUrJS8g8I1vV19XVyDVLSUUqtKFCyMjQ3MDS2tDQyM9JRSkxOzi_NKwGqS0zJzcwDKslMAXLMTM3MDc1NDSyMUy0szUzTLJIMUyxSjE2B8kX5Oalw5bUA6NVnoGYAAAA._oPZZw7CIbELv_VhIzyYYNbourC7tKfZSYCtMyXUfoScgX_7yxJrQZJGEqJIyQt9xbDp-Iq6mICn28qJ5BaOOw"};
+
+        Document doc = new Document();
+        doc.put("field",objects);
+
+        mars.insert(doc,"test");
 
     }
 

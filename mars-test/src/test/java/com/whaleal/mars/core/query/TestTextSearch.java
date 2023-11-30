@@ -1,21 +1,18 @@
 package com.whaleal.mars.core.query;
 
-import com.whaleal.icefrog.core.bean.BeanUtil;
-import com.whaleal.icefrog.core.collection.ListUtil;
+
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Articles;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.session.QueryCursor;
-import com.whaleal.mars.util.CreateDataUtil;
-import org.bson.Document;
+
 import org.junit.After;
 import org.junit.Before;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 /**

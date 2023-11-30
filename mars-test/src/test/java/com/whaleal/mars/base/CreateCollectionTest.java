@@ -12,8 +12,9 @@ import com.whaleal.mars.monitor.CollTimeSeriesMetrics;
 import com.whaleal.mars.session.option.CollectionOptions;
 import org.bson.Document;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
+
 
 
 

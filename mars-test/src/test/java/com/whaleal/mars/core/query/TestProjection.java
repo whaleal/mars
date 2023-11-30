@@ -4,9 +4,9 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -21,7 +21,7 @@ public class TestProjection {
 
     private MongoMappingContext context;
 
-    @BeforeMethod
+    @Before
     public void before() {
         context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
 

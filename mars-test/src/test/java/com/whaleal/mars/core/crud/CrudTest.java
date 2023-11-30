@@ -15,11 +15,12 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
 
 
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class CrudTest {
 
     Integer stuNo = 10000;
 
-    @BeforeMethod
+    @Before
     public void isNull() {
 
         mars = new Mars(Constant.connectionStr);

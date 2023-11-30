@@ -7,8 +7,9 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class TestGeoQueries {
 
     private Query query;
 
-    @BeforeMethod
+    @Before
     public void before() {
 //        Mars mars = new Mars(Constant.connectionStr);
         context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());

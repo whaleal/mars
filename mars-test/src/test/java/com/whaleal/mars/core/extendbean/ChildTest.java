@@ -12,9 +12,10 @@ import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.result.InsertManyResult;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ChildTest {
 //    @Autowired
     Mars mars = new Mars(Constant.connectionStr);
 
-    @BeforeMethod
+    @Before
     public void init() {
         try {
             mars.dropCollection(Child.class);

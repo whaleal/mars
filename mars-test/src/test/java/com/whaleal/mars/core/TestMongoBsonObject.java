@@ -3,8 +3,9 @@ package com.whaleal.mars.core;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
+
 
 import java.util.Collection;
 import java.util.Map;

@@ -13,10 +13,11 @@ import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +35,14 @@ public class ParentTest {
 //    @Autowired
     Mars mars = new Mars(Constant.connectionStr);
 
-    @BeforeMethod
+    @Before
     public void init() {
 
 
     }
 
 
-    @AfterMethod
+    @After
     public void destory() {
 
         try {

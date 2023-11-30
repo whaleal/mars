@@ -9,10 +9,11 @@ import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.option.IndexOptions;
 import org.bson.Document;
+import org.junit.Assert;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

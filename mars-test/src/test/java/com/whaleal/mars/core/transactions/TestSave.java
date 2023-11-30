@@ -1,12 +1,15 @@
 package com.whaleal.mars.core.transactions;
 
-import com.mongodb.client.MongoDatabase;
-import com.sun.tools.javac.util.List;
+
+
+import com.whaleal.icefrog.core.collection.ListUtil;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.MarsSessionImpl;
 import com.whaleal.mars.util.StudentGenerator;
+
+import java.util.List;
 
 /**
  * @author wh
@@ -20,7 +23,7 @@ public class TestSave {
 
         Student instance = StudentGenerator.getInstance(1004);
         Student  instance2 = StudentGenerator.getInstance(1005);
-        List< Student > of = List.of(instance, instance2);
+        List< Student > of = ListUtil.of(instance, instance2);
         marsSession.save(of);
 
 

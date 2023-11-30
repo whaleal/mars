@@ -18,9 +18,9 @@ import com.whaleal.mars.session.option.InsertManyOptions;
 import com.whaleal.mars.session.result.InsertManyResult;
 import com.whaleal.mars.session.result.InsertOneResult;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
+
 
 import java.util.ArrayList;
 import java.util.LinkedList;

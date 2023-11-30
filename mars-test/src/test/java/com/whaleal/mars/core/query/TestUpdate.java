@@ -3,12 +3,13 @@ package com.whaleal.mars.core.query;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.aggregation.stages.Sort;
+
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 
 
 /**
@@ -22,7 +23,7 @@ public class TestUpdate {
     private final Update update = new Update();
     private MongoMappingContext context;
 
-    @BeforeMethod
+    @Before
     public void before() {
 //        Mars mars = new Mars(Constant.connectionStr);
         context = new MongoMappingContext(new Mars(Constant.connectionStr).getDatabase());
@@ -37,6 +38,7 @@ public class TestUpdate {
         update.currentDate("lastModified");
 
         Document document = context.toDocument(update.getUpdateObject());
+
         Assert.assertEquals(document, Document.parse("   {\n" +
                 "     $set: { \"size.uom\": \"cm\", status: \"P\" },\n" +
                 "     $currentDate: { lastModified: true }\n" +

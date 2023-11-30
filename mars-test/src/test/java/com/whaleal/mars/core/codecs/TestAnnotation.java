@@ -5,15 +5,16 @@ import com.whaleal.mars.codecs.pojo.EntityModelBuilder;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
 import com.whaleal.mars.codecs.pojo.annotations.Id;
 import com.whaleal.mars.codecs.pojo.annotations.Property;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.testng.Assert.*;
+import static org.junit.Assert.*;
 
 
 public class TestAnnotation {
@@ -21,7 +22,7 @@ public class TestAnnotation {
 
     private EntityModel entityEntityModel;
 
-    @BeforeMethod
+    @Before
     public void mapping() {
         entityEntityModel = new EntityModelBuilder(TestEntity.class).build();
     }

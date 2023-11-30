@@ -10,15 +10,17 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.MarsSession;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.testng.Assert;
+
 
 import java.util.List;
 
 import static com.mongodb.ClientSessionOptions.builder;
 import static com.mongodb.WriteConcern.MAJORITY;
-import static org.testng.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 /**
