@@ -22,23 +22,15 @@ public class MongoPropertiesTest {
 
     @Before
     public void init() {
-
         Assert.assertNotNull(properties);
-
     }
 
 
     @Test
-    public void test01() {
-
-        Assert.assertNotNull(properties.getUri(), "uri is not null");
-    }
-
-
-    @Test
-    public void testProperties() {
+    public void test() {
 
         Assert.assertNotNull(properties.getUri());
+        Assert.assertNotNull(properties.getUri(), "uri is not null");
     }
 
 }

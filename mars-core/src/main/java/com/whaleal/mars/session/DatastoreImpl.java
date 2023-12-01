@@ -422,6 +422,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             findIterable = findIterable.limit(query.getLimit());
         }
 
+        if(query.getCollation().isPresent()){
+            findIterable =  findIterable.collation(query.getCollation().get());
+        }
+
         if (ObjectUtil.isNotEmpty(query.getMeta())) {
             Meta meta = query.getMeta();
             if (ObjectUtil.isNotEmpty(meta.getComment())) {
@@ -1275,7 +1279,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     public < T > MongoCollection< Document > createCollection( Class< T > entityClass ) {
         notNull(entityClass, "EntityClass must not be null!");
 
-        return createCollection(entityClass, getMongoCollectionOptions(entityClass));
+        return createCollection(entityClass, scanEntityCollectionOptions(entityClass));
     }
 
     private GridFSUploadOptions computeUploadOptionsFor( String contentType, Document metadata ) {
@@ -1312,22 +1316,22 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         CreateCollectionOptions options = collectionOptions != null ? collectionOptions : new CreateCollectionOptions();
 
-        Document document = convertToDocument(options);
+        //Document document = convertToDocument(options);
 
-        return doCreateCollection(this.mapper.getEntityModel(entityClass).getCollectionName(), document);
+        return doCreateCollection(this.mapper.getEntityModel(entityClass).getCollectionName(), collectionOptions);
     }
 
     @Override
     public MongoCollection< Document > createCollection( String collectionName ) {
         notNull(collectionName, "CollectionName must not be null!");
 
-        return doCreateCollection(collectionName, new Document());
+        return doCreateCollection(collectionName, new CreateCollectionOptions());
     }
 
     @Override
     public MongoCollection< Document > createCollection( String collectionName, CreateCollectionOptions collectionOptions ) {
         notNull(collectionName, "collectionName must not be null");
-        return doCreateCollection(collectionName, convertToDocument(collectionOptions));
+        return doCreateCollection(collectionName, collectionOptions);
     }
 
     @Override
@@ -1375,7 +1379,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         dropCollection(this.mapper.getEntityModel(entityClass).getCollectionName());
     }
 
-    //    @Override
+    @Deprecated
     public MongoCollection< Document > createCollection( String collectionName, CollectionOptions collectionOptions ) {
 
         notNull(collectionName, "CollectionName must not be null!");
@@ -1498,6 +1502,27 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         return document;
     }
 
+
+    protected MongoCollection< Document > doCreateCollection( String collectionName, CreateCollectionOptions createcollectionOptions ) {
+        lock.lock();
+        MongoCollection< Document > coll ;
+        try{
+            this.database.createCollection(collectionName, createcollectionOptions);
+
+            coll = database.getCollection(collectionName, Document.class);
+            //如果配置文件中开启了自动创建索引，则在表创建成功后创建索引
+            if (this.mapper.isAutoIndexCreation()) {
+                Class< Object > entity = this.mapper.getClassFromCollection(collectionName);
+                ensureIndexes(entity, coll.getNamespace().getCollectionName());
+            }
+
+        } finally {
+            lock.unlock();
+        }
+
+        return coll;
+    }
+
     protected MongoCollection< Document > doCreateCollection( String collectionName, Document collectionOptions ) {
         lock.lock();
         try {
@@ -1515,7 +1540,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
             //如果选项里面有关于collation方面的操作，
             if (collectionOptions.containsKey("collation")) {
-                co.collation(com.whaleal.mars.core.query.Collation.from((Document.parse(collectionOptions.get("collation").toString()))).toMongoCollation());
+                String collation = collectionOptions.get("collation").toString();
+                System.out.println(collation);
+                Document parse = Document.parse(collation);
+                System.out.println(parse);
+                co.collation(com.whaleal.mars.core.query.Collation.from((parse)).toMongoCollation());
             }
 
             if (collectionOptions.containsKey("validator")) {
@@ -1672,7 +1701,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     //todo 此方法是额外写的方法 与getCollectionOptions一致 是用来解决报错 后续可能不需要
-    private CreateCollectionOptions getMongoCollectionOptions( Class< ? > entity ) {
+    private CreateCollectionOptions scanEntityCollectionOptions( Class< ? > entity ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(entity);
         notNull(entity, "EntityClass must not be null!");

@@ -6,7 +6,6 @@ import com.whaleal.mars.core.Mars;
 import org.bson.Document;
 import org.junit.Test;
 
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,6 @@ public class SerializationUtil {
 
             if (i <= 0) {
                 break;
-
             }
         }
 

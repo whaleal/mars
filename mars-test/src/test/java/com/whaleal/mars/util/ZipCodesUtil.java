@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class ZipCodesUtil {
 
-    public static List<Document> createDocument() throws IOException, ClassNotFoundException {
+    public static List<Document> createDocument(){
 
         List<Document> doc = new ArrayList<>();
         BufferedReader reader;
@@ -24,7 +24,6 @@ public class ZipCodesUtil {
             String line = reader.readLine();
             while (line != null) {
                 doc.add(Document.parse(line));
-//                System.out.println(line);
                 line = reader.readLine();
             }
             reader.close();
@@ -37,12 +36,8 @@ public class ZipCodesUtil {
 
     @Test
     public void test(){
-        try {
-            List<Document> document = createDocument();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+
+        List<Document> document = createDocument();
+
     }
 }

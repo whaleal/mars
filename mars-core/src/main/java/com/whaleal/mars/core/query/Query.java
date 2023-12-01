@@ -535,7 +535,9 @@ public class Query {
      *
      * @param collation can be {@literal null}.
      * @return this.
+     *
      */
+    @Deprecated
     public Query collation(Collation collation ) {
 
         this.collation = Optional.ofNullable(collation.toMongoCollation());

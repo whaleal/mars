@@ -56,6 +56,7 @@ import java.util.Optional;
  * query itself specifies the same collation.
  */
 
+@Deprecated
 public class Collation {
 
     private static final Collation SIMPLE = of("simple");
@@ -75,6 +76,7 @@ public class Collation {
     private Optional<Boolean> normalization = Optional.empty();
     private Optional<String> version = Optional.empty();
 
+    @Deprecated
     private Collation(CollationLocale locale) {
 
         Precondition.notNull(locale, "ICULocale must not be null!");
@@ -97,6 +99,7 @@ public class Collation {
      * @param locale must not be {@literal null}.
      * @return new instance of {@link Collation}.
      */
+
     public static Collation of(Locale locale) {
 
         Precondition.notNull(locale, "Locale must not be null!");
