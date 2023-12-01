@@ -33,6 +33,7 @@ import com.mongodb.ClientSessionOptions;
 import com.mongodb.ServerAddress;
 import com.mongodb.TransactionOptions;
 import com.mongodb.client.*;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -226,8 +227,8 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
      */
     private class TransactionalOperations extends DatastoreOperations {
         @Override
-        public <T> long countDocuments( MongoCollection<T> collection, Document query, com.mongodb.client.model.CountOptions options) {
-            return collection.countDocuments(session, query, options);
+        public <T> long countDocuments( MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.CountOptions options) {
+            return collection.countDocuments(session, queryDocument, options);
         }
 
         @Override
@@ -241,8 +242,8 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
         }
 
         @Override
-        public <E> FindIterable<E> find(MongoCollection<E> collection, Document query) {
-            return collection.find(session, query);
+        public <E> FindIterable<E> find(MongoCollection<E> collection, Document queryDocument) {
+            return collection.find(session, queryDocument);
         }
 
         @Override
@@ -251,8 +252,13 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
         }
 
         @Override
-        public <T> T findOneAndUpdate(MongoCollection<T> collection, Document query, Document update, com.mongodb.client.model.FindOneAndUpdateOptions options) {
-            return collection.findOneAndUpdate(session, query, update, options);
+        public <T> T findOneAndUpdate(MongoCollection<T> collection, Document queryDocument, Document updateOperations, com.mongodb.client.model.FindOneAndUpdateOptions options) {
+            return collection.findOneAndUpdate(session, queryDocument, updateOperations, options);
+        }
+
+        @Override
+        public < T > T findOneAndReplace( MongoCollection< T > collection, Document queryDocument, T entity, FindOneAndReplaceOptions options ) {
+            return collection.findOneAndReplace(session,queryDocument,entity,options);
         }
 
         @Override
@@ -266,8 +272,8 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
         }
 
         @Override
-        public <T> UpdateResult replaceOne( MongoCollection<T> collection, T entity, Document filter, com.mongodb.client.model.ReplaceOptions options) {
-            return collection.replaceOne(session, filter, entity, options);
+        public <T> UpdateResult replaceOne( MongoCollection<T> collection, T entity, Document queryDocument, com.mongodb.client.model.ReplaceOptions options) {
+            return collection.replaceOne(session, queryDocument, entity, options);
         }
 
         @Override
@@ -278,27 +284,27 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
         }
 
         @Override
-        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryObject, Document updateOperations,
+        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryDocument, Document updateOperations,
                                            com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateMany(session, queryObject, updateOperations, options);
+            return collection.updateMany(session, queryDocument, updateOperations, options);
         }
 
         @Override
-        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryObject, List<Document> updateOperations,
+        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryDocument, List<Document> updateOperations,
                                            com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateMany(session, queryObject, updateOperations, options);
+            return collection.updateMany(session, queryDocument, updateOperations, options);
         }
 
         @Override
-        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryObject, Document updateOperations,
+        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryDocument, Document updateOperations,
                                           com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateOne(session, queryObject, updateOperations, options);
+            return collection.updateOne(session, queryDocument, updateOperations, options);
         }
 
         @Override
-        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryObject, List<Document> updateOperations,
+        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryDocument, List<Document> updateOperations,
                                           com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateOne(session, queryObject, updateOperations, options);
+            return collection.updateOne(session, queryDocument, updateOperations, options);
         }
     }
 

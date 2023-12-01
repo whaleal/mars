@@ -202,7 +202,6 @@ public class MongoMappingContext {
     public <T> T fromDocument(Class<T> type, Document document) {
         Class<T> aClass = type;
 
-
         CodecRegistry codecRegistry = getCodecRegistry();
 
         DocumentReader reader = new DocumentReader(document);

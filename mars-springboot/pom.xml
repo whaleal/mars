@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.whaleal.mars</groupId>
         <artifactId>mars</artifactId>
-        <version>0.9.8</version>
+        <version>0.9.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,15 +24,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
             <version>${spring-boot.version}</version>
+
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
-        <dependency>
+      <!--  <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
-        </dependency>
 
-
+        </dependency>-->
     </dependencies>
 
 </project>

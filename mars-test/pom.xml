@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.whaleal.mars</groupId>
         <artifactId>mars</artifactId>
-        <version>0.9.8</version>
+        <version>0.9.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -67,6 +67,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
+            <scope>test</scope>
 
         </dependency>
         <dependency>

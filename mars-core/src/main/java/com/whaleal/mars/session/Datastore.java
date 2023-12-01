@@ -1183,7 +1183,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return {@literal true} if the query yields a result.
      */
     default boolean exists(Query query, Class<?> entityClass){
-        return exists(query,entityClass,null);
+        return exists(query,entityClass,getCollectionName(entityClass));
     }
 
     /**

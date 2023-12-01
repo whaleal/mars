@@ -70,7 +70,6 @@ import com.whaleal.mars.core.gridfs.GridFsResource;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.index.IndexHelper;
-import com.whaleal.mars.core.internal.MongoNamespace;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.option.CountOptions;
 import com.whaleal.mars.session.option.FindOneAndDeleteOptions;
@@ -83,6 +82,7 @@ import com.whaleal.mars.session.option.TimeSeriesOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.transactions.MarsTransaction;
+
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
@@ -147,8 +147,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
                 }
             }
         }
-
-
     }
 
 
@@ -173,7 +171,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public MongoCollection< Document > getCollection( String collectionName ) {
-        hasText(collectionName, "CollectionName must not be null");
+        MongoNamespace.checkCollectionNameValidity(collectionName);
         return this.database.getCollection(collectionName);
     }
 
@@ -300,7 +298,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         collection = query.getWriteConcern() == null ? this.withConcern(collection, replacement.getClass()) : this.withConcern(collection, replacement.getClass()).withWriteConcern(query.getWriteConcern());
 
-        return   this.operations.replaceOne(collection,replacement,query.getQueryObject(),options);
+        //  todo  优化  这块的 query  相关 需要优化
+        return this.operations.replaceOne(collection, replacement, query.getQueryObject(), options);
         //return collection.replaceOne(query.getQueryObject(), replacement, options);
 
     }
@@ -381,30 +380,30 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         }
 
 
-        return multi ?operations.deleteMany(collection,removeQuery,options):operations.deleteOne(collection,removeQuery,options);
+        return multi ? operations.deleteMany(collection, removeQuery, options) : operations.deleteOne(collection, removeQuery, options);
        /* return multi ? collection.deleteMany(removeQuery, options)
                 : collection.deleteOne(removeQuery, options);*/
 
 
     }
 
-    protected < T > QueryCursor< T > doFind( Query query, @Nullable Class< T > entityClass, String collectionName ) {
+    protected < T > FindIterable< T > doFind( Query query, @Nullable Class< T > entityClass, String collectionName ) {
         Precondition.notNull(query, "Query must not be null");
         Precondition.hasText(collectionName, "CollectionName must not be null or empty");
 
         MongoCollection< T > collection = this.getCollection(entityClass, collectionName);
-        ClientSession session = this.startSession();
+        //ClientSession session = this.startSession();
 
         collection = query.getReadConcern() == null ? collection : collection.withReadConcern(query.getReadConcern());
 
         collection = query.getReadPreference() == null ? collection : collection.withReadPreference(query.getReadPreference());
 
-        FindIterable< T > findIterable = this.operations.find(collection ,query.getQueryObject());
+        FindIterable< T > findIterable = this.operations.find(collection, query.getQueryObject());
 
         //FindIterable< T > findIterable = collection.find(session, query.getQueryObject());
 
         if (ObjectUtil.isNotEmpty(query.getFieldsObject())) {
-            findIterable.projection(query.getFieldsObject());
+            findIterable = findIterable.projection(query.getFieldsObject());
         }
 
         if (StrUtil.hasText(query.getHint())) {
@@ -412,11 +411,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         }
 
         if (ObjectUtil.isNotEmpty(query.getSortObject())) {
-            findIterable.sort(query.getSortObject());
+            findIterable = findIterable.sort(query.getSortObject());
         }
 
         if (ObjectUtil.isNotEmpty(query.getSkip()) && query.getSkip() > 0) {
-            findIterable.skip((int) (query.getSkip()));
+            findIterable = findIterable.skip((int) (query.getSkip()));
+        }
+
+        if (ObjectUtil.isNotEmpty(query.getLimit()) && query.getLimit() > 0) {
+            findIterable = findIterable.limit(query.getLimit());
         }
 
         if (ObjectUtil.isNotEmpty(query.getMeta())) {
@@ -449,13 +452,16 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
                 }
             }
         }
-        MongoCursor< T > iterator = findIterable.iterator();
-        return new QueryCursor<>(iterator);
+
+        return findIterable;
+        //MongoCursor< T > iterator = findIterable.iterator();
+        //return new QueryCursor<>(iterator);
     }
 
     @Override
     public < T > QueryCursor< T > find( Query query, Class< T > entityClass, String collectionName ) {
-        return doFind(query, entityClass, collectionName);
+        QueryCursor< T > cursor = new QueryCursor<>(doFind(query, entityClass, collectionName).iterator());
+        return cursor;
     }
 
     @Override
@@ -464,9 +470,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             return doFindOne(query, entityClass, collectionName);
         } else {
             query.limit(1);
-            QueryCursor< T > tQueryCursor = doFind(query, entityClass, collectionName);
-            if (tQueryCursor.hasNext()) {
-                return Optional.of(tQueryCursor.next());
+            QueryCursor< T > cursor = new QueryCursor<>(doFind(query, entityClass, collectionName).iterator());
+            if (cursor.hasNext()) {
+                return Optional.of(cursor.next());
             }
             return Optional.empty();
         }
@@ -487,10 +493,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         //ClientSession session = this.startSession();
 
         //根据传入的集合名和实体类获取对应的MongoCollection对象
-        MongoCollection< T > collection = this.getCollection((Class<T>)entity.getClass(), collectionName);
+        MongoCollection< T > collection = this.getCollection((Class< T >) entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
-        this.operations.insertOne(collection,entity,options.getOriginOptions());
+        this.operations.insertOne(collection, entity, options.getOriginOptions());
         //InsertOneResult result = insertOneExecute(session, collection, options, entity);
 
         return entity;
@@ -547,22 +553,22 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         for (T entity : entities) {
 
-            type = (Class<  T >)entity.getClass() ;
+            type = (Class< T >) entity.getClass();
 
             break;
         }
 
-        MongoCollection<T> collection = this.getCollection(type, collectionName);
+        MongoCollection< T > collection = this.getCollection(type, collectionName);
 
         collection = prepareConcern(collection, options);
 
-        ArrayList< T > ts = (ArrayList< T >) ListUtil.toList(entities);
+        ArrayList< T > ts = ListUtil.toList(entities);
 
 
-        this.operations.insertMany(collection , entities ,options.getOriginOptions());
+        this.operations.insertMany(collection, entities, options.getOriginOptions());
 
 
-        return entities ;
+        return entities;
 
         //return (Collection< T >) insertManyExecute(session, collection, options, entities);
 
@@ -575,18 +581,18 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         if (entityDoc == null) {
             throw new IllegalArgumentException();
         }
-        ClientSession session = this.startSession();
+        //ClientSession session = this.startSession();
         MongoCollection< ? > collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
 
         //UpdateResult result = updateExecute(session, collection, query, options, entityDoc);
 
-        return  options.isMulti() ? this.operations.updateMany(collection,query.getQueryObject(),entityDoc,options.getOriginOptions())
-                :this.operations.updateOne(collection,query.getQueryObject(),entityDoc,options.getOriginOptions());
+        return options.isMulti() ? this.operations.updateMany(collection, query.getQueryObject(), entityDoc, options.getOriginOptions())
+                : this.operations.updateOne(collection, query.getQueryObject(), entityDoc, options.getOriginOptions());
 
 
-       // return result;
+        // return result;
 
     }
 
@@ -825,27 +831,48 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         notNull(collectionName, "CollectionName must not be null!");
         notNull(resultType, "ResultType must not be null! Use Object.class instead.");
 
+        //  sort  skip 已经不重要了 可以呗忽略了
         isTrue(query.getLimit() <= 1, "Query must not define a limit other than 1 ore none!");
         isTrue(query.getSkip() <= 0, "Query must not define skip.");
 
 
-        MarsSession marsSession = this.startSession();
+        //MarsSession marsSession = this.startSession();
+
+
 
         if (entityType == resultType) {
-            S oneAndReplace = this.database.getCollection(collectionName, entityType).findOneAndReplace(marsSession, query.getQueryObject(), replacement, options.getOriginOptions());
+            //S oneAndReplace = this.database.getCollection(collectionName, entityType).findOneAndReplace(marsSession, query.getQueryObject(), replacement, options.getOriginOptions());
 
-            return (T) oneAndReplace;
+            MongoCollection< S > collection = this.database.getCollection(collectionName,entityType);
+
+            return  (T) this.operations.findOneAndReplace(collection, query.getQueryObject(), replacement, options.getOriginOptions());
+
         }
 
-        Document document = this.toDocument(replacement);
-        Document oneAndReplace = this.database.getCollection(collectionName).findOneAndReplace(marsSession, query.getQueryObject(), document, options.getOriginOptions());
-        if (oneAndReplace == null) {
+        Document replacemenDocument = this.toDocument(replacement);
+
+        MongoCollection< Document > collection = this.database.getCollection(collectionName);
+
+        Document oneAndReplace = this.operations.findOneAndReplace(collection, query.getQueryObject(), replacemenDocument, options.getOriginOptions());
+
+        if(oneAndReplace == null){
+
+            return null ;
+        }else{
+            T t = this.mapper.fromDocument(resultType, oneAndReplace);
+
+            return t ;
+        }
+
+
+        //Document oneAndReplace = this.database.getCollection(collectionName).findOneAndReplace(marsSession, query.getQueryObject(), document, options.getOriginOptions());
+       /* if (oneAndReplace == null) {
             return null;
-        }
+        }*/
 
-        T first = this.database.getCollection(collectionName, resultType).find(marsSession, new Document("_id", oneAndReplace.get("_id"))).limit(1).first();
+        //T first = this.database.getCollection(collectionName, resultType).find(marsSession, new Document("_id", oneAndReplace.get("_id"))).limit(1).first();
 
-        return first;
+        //return first;
 
 
     }
@@ -856,9 +883,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         notNull(entityClass, "EntityClass must not be null!");
         notNull(collectionName, "CollectionName must not be null!");
 
-        MarsSession marsSession = this.startSession();
+        //MarsSession marsSession = this.startSession();
 
-        T oneAndDelete = this.database.getCollection(collectionName, entityClass).findOneAndDelete(marsSession, query.getQueryObject(), options.getOriginOptions());
+        MongoCollection< T > collection = this.database.getCollection(collectionName, entityClass);
+        T oneAndDelete = this.operations.findOneAndDelete(collection, query.getQueryObject(), options.getOriginOptions());
+
+        //T oneAndDelete = this.database.getCollection(collectionName, entityClass).findOneAndDelete(marsSession, query.getQueryObject(), options.getOriginOptions());
 
 
         return oneAndDelete;
@@ -873,21 +903,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
 
-    private < T > T doFindAndModify( String collectionName, Query query, Class< T > entityClass, UpdateDefinition update, FindOneAndUpdateOptions optionsToUse ) {
+    private < T > T doFindAndModify( String collectionName, Query query, Class< T > entityClass, UpdateDefinition update, FindOneAndUpdateOptions optons ) {
         MongoCollection< T > collection = getCollection(entityClass, collectionName);
 
         Document updateObject = update.getUpdateObject();
-        MarsSession marsSession = this.startSession();
 
-        if (update instanceof UpdatePipeline) {
-            //todo
-            return null;
-        } else {
+        T oneAndUpdate = this.operations.findOneAndUpdate(collection, query.getQueryObject(), updateObject, optons.getOriginOptions());
 
-            T oneAndUpdate = collection.findOneAndUpdate(marsSession, query.getQueryObject(), updateObject, optionsToUse.getOriginOptions());
-            return oneAndUpdate;
-
-        }
+        return oneAndUpdate ;
 
     }
 
@@ -1178,7 +1201,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     public long count( Query query, Class< ? > entityClass, CountOptions countOptions, String collectionName ) {
 
         String s = this.mapper.determineCollectionName(entityClass, collectionName);
-        return this.database.getCollection(s).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
+        //return this.database.getCollection(s).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
+        return this.operations.countDocuments(this.database.getCollection(s),query.getQueryObject(),countOptions.getOriginOptions());
     }
 
     @Override
@@ -1199,7 +1223,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
         }
-        return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions);
+
+        return this.operations.countDocuments(this.database.getCollection(collectionName),query.getQueryObject(),countOptions);
+
+
+        //return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions);
     }
 
 
@@ -1773,61 +1801,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
      * @param <T>
      * @return
      */
-    private < T > Optional< T > doFindOne( Query query, Class< T > entityClass, String collectionName ) {
+    private < T > Optional< T > doFindOne( Query query, @Nullable Class< T > entityClass, String collectionName ) {
 
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.hasText(collectionName, "collectionName must not be null");
-
-        MongoCollection< T > collection = this.getCollection(entityClass, collectionName);
-        //ClientSession session = this.startSession();
-
-        collection = query.getReadConcern() == null ? collection : collection.withReadConcern(query.getReadConcern());
-
-        collection = query.getReadPreference() == null ? collection : collection.withReadPreference(query.getReadPreference());
-
-        FindIterable< T > findIterable = this.operations.find(collection,query.getQueryObject());
-        //FindIterable< T > findIterable = collection.find(session, query.getQueryObject());
-
-        if (ObjectUtil.isNotEmpty(query.getFieldsObject())) {
-            findIterable.projection(query.getFieldsObject());
-        }
-
-        if (StrUtil.hasText(query.getHint())) {
-            findIterable = findIterable.hint(Document.parse(query.getHint()));
-        }
-
-        if (ObjectUtil.isNotEmpty(query.getMeta())) {
-            Meta meta = query.getMeta();
-            if (ObjectUtil.isNotEmpty(meta.getComment())) {
-                findIterable = findIterable.comment(meta.getComment());
-            }
-            if (ObjectUtil.isNotEmpty(meta.getAllowDiskUse())) {
-                findIterable = findIterable.allowDiskUse(meta.getAllowDiskUse());
-            }
-            if (ObjectUtil.isNotEmpty(meta.getCursorBatchSize())) {
-                findIterable = findIterable.batchSize(meta.getCursorBatchSize());
-            }
-            if (ObjectUtil.isNotEmpty(meta.getMaxTimeMsec())) {
-                findIterable = findIterable.maxAwaitTime(query.getMeta().getMaxTimeMsec(), TimeUnit.MICROSECONDS);
-            }
-
-            for (Meta.CursorOption option : query.getMeta().getFlags()) {
-                switch (option) {
-                    case NO_TIMEOUT:
-                        findIterable = findIterable.noCursorTimeout(true);
-                        break;
-                    case PARTIAL:
-                        findIterable = findIterable.partial(true);
-                        break;
-                    case SECONDARY_READS:
-                        break;
-                    default:
-                        throw new IllegalArgumentException(String.format("%s is no supported flag.", option));
-                }
-            }
-        }
-        findIterable.limit(1);
-        return Optional.ofNullable(findIterable.first());
+        FindIterable< T > ts = doFind(query, entityClass, collectionName);
+        ts.limit(1);
+        return Optional.ofNullable(ts.first());
     }
 
 
@@ -2104,11 +2082,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
                         v = Double.valueOf(o.get("background").toString());
                         if (v > 0) {
                             indexOptions.background(true);
-                        } else if (v < 0) {
-                            indexOptions.background(true);
-                        } else {
-                            indexOptions.background(false);
-                        }
+                        } else indexOptions.background(v < 0);
                     } catch (Exception e) {
                         LOGGER.warn("Index background Option parse error from  index name %s  with background value %s ", o.get("name"), o.get("background"));
                         indexOptions.background(true);
@@ -2334,38 +2308,41 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
     public abstract static class DatastoreOperations {
-        public abstract < T > long countDocuments( MongoCollection< T > collection, Document query, com.mongodb.client.model.CountOptions options );
+        public abstract < T > long countDocuments( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.CountOptions options );
 
         public abstract < T > DeleteResult deleteMany( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options );
 
         public abstract < T > DeleteResult deleteOne( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options );
 
-        public abstract < E > FindIterable< E > find( MongoCollection< E > collection, Document query );
+        public abstract < E > FindIterable< E > find( MongoCollection< E > collection, Document queryDocument );
 
         @Nullable
-        public abstract < T > T findOneAndDelete( MongoCollection< T > mongoCollection, Document queryDocument, com.mongodb.client.model.FindOneAndDeleteOptions options );
+        public abstract < T > T findOneAndDelete( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.FindOneAndDeleteOptions options );
 
         @Nullable
-        public abstract < T > T findOneAndUpdate( MongoCollection< T > collection, Document toDocument, Document update, com.mongodb.client.model.FindOneAndUpdateOptions options );
+        public abstract < T > T findOneAndUpdate( MongoCollection< T > collection, Document queryDocument, Document updateOperations, com.mongodb.client.model.FindOneAndUpdateOptions options );
+
+        @Nullable
+        public abstract < T > T findOneAndReplace( MongoCollection< T > collection, Document queryDocument, T entity, com.mongodb.client.model.FindOneAndReplaceOptions options );
 
         public abstract < T > InsertManyResult insertMany( MongoCollection< T > collection, List< T > list, com.mongodb.client.model.InsertManyOptions options );
 
         public abstract < T > InsertOneResult insertOne( MongoCollection< T > collection, T entity, com.mongodb.client.model.InsertOneOptions options );
 
-        public abstract < T > UpdateResult replaceOne( MongoCollection< T > collection, T entity, Document filter, com.mongodb.client.model.ReplaceOptions options );
+        public abstract < T > UpdateResult replaceOne( MongoCollection< T > collection, T entity, Document queryDocument, com.mongodb.client.model.ReplaceOptions options );
 
         public abstract Document runCommand( Document command );
 
-        public abstract < T > UpdateResult updateMany( MongoCollection< T > collection, Document queryObject, Document updateOperations,
+        public abstract < T > UpdateResult updateMany( MongoCollection< T > collection, Document queryDocument, Document updateOperations,
                                                        com.mongodb.client.model.UpdateOptions options );
 
-        public abstract < T > UpdateResult updateMany( MongoCollection< T > collection, Document queryObject, List< Document > updateOperations,
+        public abstract < T > UpdateResult updateMany( MongoCollection< T > collection, Document queryDocument, List< Document > updateOperations,
                                                        com.mongodb.client.model.UpdateOptions options );
 
-        public abstract < T > UpdateResult updateOne( MongoCollection< T > collection, Document queryObject, Document updateOperations,
+        public abstract < T > UpdateResult updateOne( MongoCollection< T > collection, Document queryDocument, Document updateOperations,
                                                       com.mongodb.client.model.UpdateOptions options );
 
-        public abstract < T > UpdateResult updateOne( MongoCollection< T > collection, Document queryObject, List< Document > updateOperations,
+        public abstract < T > UpdateResult updateOne( MongoCollection< T > collection, Document queryDocument, List< Document > updateOperations,
                                                       com.mongodb.client.model.UpdateOptions options );
 
     }
@@ -2373,16 +2350,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     /**
      * 具体操作的一种实现
      *
-     * @see  Datastore
-     *
-     * @see  com.whaleal.mars.session.MarsSessionImpl
-     *
-     *
+     * @see Datastore
+     * @see com.whaleal.mars.session.MarsSessionImpl
      */
     private class CollectionOperations extends DatastoreOperations {
         @Override
         public < T > long countDocuments( MongoCollection< T > collection, Document query, com.mongodb.client.model.CountOptions options ) {
-            return collection.countDocuments( query, options);
+            return collection.countDocuments(query, options);
         }
 
         @Override
@@ -2401,14 +2375,20 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         }
 
         @Override
-        public < T > T findOneAndDelete( MongoCollection< T > mongoCollection, Document queryDocument, com.mongodb.client.model.FindOneAndDeleteOptions options ) {
-            return mongoCollection.findOneAndDelete(queryDocument, options);
+        public < T > T findOneAndDelete( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.FindOneAndDeleteOptions options ) {
+            return collection.findOneAndDelete(queryDocument, options);
         }
 
         @Override
-        public < T > T findOneAndUpdate( MongoCollection< T > collection, Document query, Document update, com.mongodb.client.model.FindOneAndUpdateOptions options ) {
-            return collection.findOneAndUpdate(query, update, options);
+        public < T > T findOneAndUpdate( MongoCollection< T > collection, Document queryDocument, Document update, com.mongodb.client.model.FindOneAndUpdateOptions options ) {
+            return collection.findOneAndUpdate(queryDocument, update, options);
         }
+
+        @Override
+        public < T > T findOneAndReplace( MongoCollection< T > collection, Document queryDocument, T entity, com.mongodb.client.model.FindOneAndReplaceOptions options ) {
+            return collection.findOneAndReplace(queryDocument,entity,options);
+        }
+
 
         @Override
         public < T > InsertManyResult insertMany( MongoCollection< T > collection, List< T > list, com.mongodb.client.model.InsertManyOptions options ) {
