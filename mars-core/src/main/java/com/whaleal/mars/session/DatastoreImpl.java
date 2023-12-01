@@ -469,8 +469,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         if (ObjectUtil.isEmpty(query.getSortObject())) {
             return doFindOne(query, entityClass, collectionName);
         } else {
-            query.limit(1);
-            QueryCursor< T > cursor = new QueryCursor<>(doFind(query, entityClass, collectionName).iterator());
+            MongoCursor< T > iterator = doFind(query, entityClass, collectionName).limit(1).iterator();
+            QueryCursor< T > cursor = new QueryCursor<>(iterator);
             if (cursor.hasNext()) {
                 return Optional.of(cursor.next());
             }
