@@ -7,7 +7,6 @@ import com.whaleal.mars.core.index.IndexDirection;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**

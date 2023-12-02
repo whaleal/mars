@@ -1,7 +1,6 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.bean.Orders;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;

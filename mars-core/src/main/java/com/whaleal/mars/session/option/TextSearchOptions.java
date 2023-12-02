@@ -37,6 +37,7 @@ import com.mongodb.ReadPreference;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class TextSearchOptions implements ReadConfigurable<TextSearchOptions> {
 
     private ReadConcern readConcern;

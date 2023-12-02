@@ -1,8 +1,6 @@
 package com.whaleal.mars.core.query.filters;
 
 import com.mongodb.lang.Nullable;
-
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
 import com.whaleal.mars.core.internal.OperationTarget;
@@ -11,7 +9,6 @@ import org.bson.BsonWriter;
 import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
-
 
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 import static java.lang.String.format;

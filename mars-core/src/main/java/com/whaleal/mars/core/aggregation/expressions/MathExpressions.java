@@ -2,7 +2,8 @@ package com.whaleal.mars.core.aggregation.expressions;
 
 
 import com.whaleal.icefrog.core.collection.ListUtil;
-import com.whaleal.mars.core.aggregation.expressions.impls.*;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
+import com.whaleal.mars.core.aggregation.expressions.impls.MathExpression;
 
 import java.util.ArrayList;
 import java.util.List;

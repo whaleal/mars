@@ -9,7 +9,6 @@ import com.whaleal.mars.Constant;
 import org.bson.Document;
 import org.junit.Test;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

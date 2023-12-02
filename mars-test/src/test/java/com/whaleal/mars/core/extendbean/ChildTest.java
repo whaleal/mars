@@ -10,12 +10,9 @@ import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.session.QueryCursor;
-import com.whaleal.mars.session.option.DeleteOptions;
-import com.whaleal.mars.session.result.InsertManyResult;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,6 @@ package com.whaleal.mars.core.query;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
-
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.junit.Assert;

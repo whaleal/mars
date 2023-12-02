@@ -76,6 +76,7 @@ public @interface TimeSeries {
      * Optional. Enable the automatic deletion of documents in a time series collection by specifying the number of seconds
      * after which documents expire. MongoDB deletes expired documents automatically. See Set up Automatic Removal for
      * Time Series Collections (TTL) for more information.
+     * https://www.mongodb.com/docs/manual/core/timeseries/timeseries-automatic-removal/
      * 此参数生效需要指定enableExpire有效
      * @return expireAfterSeconds
      */

@@ -1,8 +1,6 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.whaleal.mars.core.Mars;
 import org.bson.Document;
 
 /**

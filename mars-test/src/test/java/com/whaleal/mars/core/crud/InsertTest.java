@@ -3,7 +3,6 @@ package com.whaleal.mars.core.crud;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.*;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;

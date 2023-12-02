@@ -5,12 +5,7 @@ import com.mongodb.client.model.MergeOptions.WhenNotMatched;
 import com.mongodb.lang.Nullable;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 

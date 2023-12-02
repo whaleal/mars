@@ -1,6 +1,5 @@
 package com.whaleal.mars.core.aggreation;
 
-import com.whaleal.mars.util.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
@@ -8,6 +7,7 @@ import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.util.StudentGenerator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;

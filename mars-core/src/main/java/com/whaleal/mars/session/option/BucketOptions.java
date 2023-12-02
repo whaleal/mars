@@ -39,6 +39,7 @@ import java.util.List;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class BucketOptions implements ReadConfigurable<BucketOptions> {
 
     private ReadConcern readConcern;

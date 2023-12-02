@@ -37,6 +37,7 @@ import com.mongodb.client.model.Collation;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class CreateViewOptions implements WriteConfigurable<CreateViewOptions> {
 
     private WriteConcern writeConcern;

@@ -1,26 +1,22 @@
 package com.whaleal.mars.core.crud;
 
-import com.mongodb.client.result.DeleteResult;
+
 import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Animal;
-import com.whaleal.mars.core.query.Criteria;
-import com.whaleal.mars.util.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Group;
 import com.whaleal.mars.core.aggregation.stages.Sort;
+import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
-import com.whaleal.mars.session.option.DeleteOptions;
 import com.whaleal.mars.session.option.InsertManyOptions;
-import com.whaleal.mars.session.result.InsertManyResult;
-import com.whaleal.mars.session.result.InsertOneResult;
+import com.whaleal.mars.util.StudentGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
-
 
 import java.util.ArrayList;
 import java.util.LinkedList;

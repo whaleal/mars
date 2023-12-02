@@ -1,9 +1,5 @@
 package com.whaleal.mars.monitor;
 
-import org.bson.Document;
-
-import javax.print.Doc;
-
 /**
  * @author lyz
  * @description db.runCommand({"listCollections: 1"})

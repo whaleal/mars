@@ -1,7 +1,6 @@
 package com.whaleal.mars.core.aggreation;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.util.ZipCodesUtil;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
@@ -10,6 +9,7 @@ import com.whaleal.mars.core.aggregation.stages.Projection;
 import com.whaleal.mars.core.aggregation.stages.Sort;
 import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.util.ZipCodesUtil;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;

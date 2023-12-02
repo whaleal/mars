@@ -32,9 +32,7 @@ package com.whaleal.mars.core.query;
 
 import org.bson.Document;
 
-
 import java.util.LinkedHashSet;
-
 import java.util.Set;
 
 public class UpdatePipeline extends BasicUpdate {

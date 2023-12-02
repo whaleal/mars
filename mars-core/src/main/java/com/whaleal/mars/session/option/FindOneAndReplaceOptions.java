@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class FindOneAndReplaceOptions implements WriteConfigurable<FindOneAndReplaceOptions> {
 
     private WriteConcern writeConcern;

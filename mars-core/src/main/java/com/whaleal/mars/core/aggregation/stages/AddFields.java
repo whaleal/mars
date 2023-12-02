@@ -1,8 +1,9 @@
 package com.whaleal.mars.core.aggregation.stages;
 
 
-import com.whaleal.mars.core.aggregation.expressions.*;
-import com.whaleal.mars.core.aggregation.expressions.impls.*;
+import com.whaleal.mars.core.aggregation.expressions.Expressions;
+import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
 /**
 * Adds new fields to documents. $addFields outputs documents that contain all existing fields from the input documents and newly added

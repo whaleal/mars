@@ -14,7 +14,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.*;
+import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.first;
+import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;
 import static com.whaleal.mars.core.aggregation.expressions.MathExpressions.round;

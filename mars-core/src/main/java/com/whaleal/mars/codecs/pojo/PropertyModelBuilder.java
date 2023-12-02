@@ -36,10 +36,10 @@ import org.bson.codecs.pojo.PropertyAccessor;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 public final class PropertyModelBuilder<T> {
     private String name;

@@ -32,7 +32,6 @@ package com.whaleal.mars.core.query;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import org.bson.Document;
 
 import java.util.HashMap;

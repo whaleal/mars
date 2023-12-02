@@ -3,7 +3,6 @@ package com.whaleal.mars.core.aggregation.stages;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.domain.Direction;
 import com.whaleal.mars.core.domain.ISort;
-
 import com.whaleal.mars.core.domain.SortType;
 import org.bson.BsonWriter;
 

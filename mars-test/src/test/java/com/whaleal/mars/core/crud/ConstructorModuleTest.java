@@ -5,8 +5,6 @@ import com.whaleal.mars.bean.ConstructorModule;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.QueryCursor;
 import org.junit.Before;
 import org.junit.Test;
 

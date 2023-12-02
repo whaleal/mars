@@ -37,6 +37,7 @@ import org.bson.conversions.Bson;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class GraphLookupOptions implements ReadConfigurable<GraphLookupOptions> {
 
     private ReadConcern readConcern;

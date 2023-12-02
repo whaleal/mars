@@ -4,10 +4,6 @@ import com.whaleal.mars.codecs.pojo.annotations.Entity;
 import com.whaleal.mars.codecs.pojo.annotations.Id;
 import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
 import com.whaleal.mars.codecs.pojo.annotations.Transient;
-import com.whaleal.mars.core.index.annotation.Field;
-import com.whaleal.mars.core.index.annotation.Index;
-import com.whaleal.mars.core.index.annotation.IndexOptions;
-import com.whaleal.mars.core.index.annotation.Indexes;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +17,9 @@ import java.util.Map;
  * @author lyz
  * @description
  * @date 2022-06-24 14:06
+ *
+ * 这个对象属性为 非基本类型
+ * 默认值为null
  **/
 @Entity
 @Data
@@ -33,7 +32,7 @@ public class Animal {
     @Id
     private String id;
 
-    private int age;
+    private Integer age;
 
     private Boolean isAlive;
 

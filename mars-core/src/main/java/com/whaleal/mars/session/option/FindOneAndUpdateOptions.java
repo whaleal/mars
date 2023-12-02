@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class FindOneAndUpdateOptions implements WriteConfigurable<FindOneAndUpdateOptions> {
 
     private WriteConcern writeConcern;

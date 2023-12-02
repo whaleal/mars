@@ -1,7 +1,5 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.icefrog.core.collection.ListUtil;
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
@@ -10,10 +8,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.print.Doc;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Author: cjq

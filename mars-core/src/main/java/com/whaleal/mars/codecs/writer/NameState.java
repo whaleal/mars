@@ -30,7 +30,6 @@
 package com.whaleal.mars.codecs.writer;
 
 import com.mongodb.lang.Nullable;
-import org.bson.Document;
 
 import static com.whaleal.mars.codecs.writer.PendingValue.SLUG;
 import static java.lang.String.format;

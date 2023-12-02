@@ -29,16 +29,16 @@ public class CreateCollectionTest {
 
     @After
     public void dropCollection(){
-        mars.dropCollection("book");
+        mars.getDatabase().drop();
+       /* mars.dropCollection("book");
         mars.dropCollection("book1");
         mars.dropCollection("weather");
-        mars.dropCollection("person");
+        mars.dropCollection("person");*/
     }
 
     @Test
     public void testForCreateCommon(){
         mars.createCollection("book");
-
         MongoCollection<Document> person = mars.getCollection(Document.class, "book");
         Assert.assertEquals(person.getNamespace().getCollectionName(),"book");
     }
@@ -58,7 +58,7 @@ public class CreateCollectionTest {
 
         MongoCollection<Book> collection = mars.getCollection(Book.class);
 
-        Assert.assertEquals(collection.getNamespace().getCollectionName(),"book1");
+        Assert.assertEquals(collection.getNamespace().getCollectionName(),"book");
 
     }
 

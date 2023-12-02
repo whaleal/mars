@@ -36,8 +36,8 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
-import static java.lang.String.format;
 import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+import static java.lang.String.format;
 
 
 public class CharacterCodec implements Codec<Character> {

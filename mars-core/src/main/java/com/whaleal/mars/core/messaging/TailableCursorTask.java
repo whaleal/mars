@@ -34,8 +34,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Collation;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.internal.ErrorHandler;
+import com.whaleal.mars.core.query.Query;
 import org.bson.Document;
 
 import java.util.concurrent.TimeUnit;

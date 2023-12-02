@@ -28,6 +28,7 @@
         <spring.version>5.3.27</spring.version>
         <spring-boot.version>2.5.15</spring-boot.version>
         <icefrog.version>1.1.8</icefrog.version>
+        <hutool.version>6.0.0-M8</hutool.version>
     </properties>
 
     <!--发布的标准，这个是按照mongodb的标准来做的-->
@@ -135,7 +136,7 @@
                 </executions>
             </plugin>
             <!-- GPG 打包插件-->
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
@@ -147,7 +148,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <!--将组件部署到OSSRH并将其发布到Central Repository-->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>

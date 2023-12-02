@@ -1,23 +1,14 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
 
-
-
-
-
-
-
 import com.whaleal.icefrog.core.collection.ListUtil;
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.expressions.impls.*;
-
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 import static java.util.Arrays.asList;

@@ -16,7 +16,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 import static com.whaleal.mars.core.aggregation.stages.Group.id;

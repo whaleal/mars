@@ -1,6 +1,6 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
-import com.whaleal.mars.core.aggregation.expressions.impls.*;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
 /**
  * Defines helper methods for the data size expressions

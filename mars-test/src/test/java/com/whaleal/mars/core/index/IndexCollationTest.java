@@ -2,12 +2,9 @@ package com.whaleal.mars.core.index;
 
 import com.mongodb.client.model.Collation;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.bean.Address;
 import com.whaleal.mars.bean.Book;
-import com.whaleal.mars.bean.Weather;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.option.IndexOptions;
-import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

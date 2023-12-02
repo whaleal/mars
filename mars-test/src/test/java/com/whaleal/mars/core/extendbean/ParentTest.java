@@ -10,14 +10,10 @@ import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Sort;
 import com.whaleal.mars.session.QueryCursor;
-import com.whaleal.mars.session.option.DeleteOptions;
-import com.whaleal.mars.session.result.InsertManyResult;
-import com.whaleal.mars.session.result.InsertOneResult;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +23,10 @@ import java.util.Optional;
  * @author wh
  */
 
-//@SpringBootTest
 
 public class ParentTest {
 
 
-//    @Autowired
     Mars mars = new Mars(Constant.connectionStr);
 
     @Before

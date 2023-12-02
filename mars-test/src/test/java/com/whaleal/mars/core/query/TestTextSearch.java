@@ -7,7 +7,6 @@ import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.session.QueryCursor;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

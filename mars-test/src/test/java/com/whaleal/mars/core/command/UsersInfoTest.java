@@ -1,6 +1,5 @@
 package com.whaleal.mars.core.command;
 
-import com.whaleal.icefrog.core.collection.ListUtil;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;

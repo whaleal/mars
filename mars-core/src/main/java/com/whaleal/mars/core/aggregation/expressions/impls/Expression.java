@@ -1,8 +1,6 @@
 package com.whaleal.mars.core.aggregation.expressions.impls;
 
 import com.mongodb.lang.Nullable;
-
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import org.bson.BsonWriter;

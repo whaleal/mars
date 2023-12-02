@@ -32,7 +32,6 @@ package com.whaleal.mars.core;
 import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.session.DatastoreImpl;
 

@@ -1,6 +1,5 @@
 package com.whaleal.mars.monitor;
 
-import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.junit.Test;
 

@@ -4,15 +4,12 @@ import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.MultiPolygon;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Polygon;
-
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.query.Term;
 import org.bson.BsonWriter;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
-
 
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.*;
 import static java.lang.String.format;

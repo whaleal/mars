@@ -1,7 +1,10 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.icefrog.core.collection.ListUtil;
-import com.whaleal.mars.bean.*;
+import com.whaleal.mars.bean.Book;
+import com.whaleal.mars.bean.Contacts;
+import com.whaleal.mars.bean.Status;
+import com.whaleal.mars.bean.Weather01;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;

@@ -40,6 +40,7 @@ import java.util.List;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class MergeOptions implements ReadConfigurable<MergeOptions> {
 
     private ReadConcern readConcern;

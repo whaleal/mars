@@ -85,6 +85,7 @@ import java.util.concurrent.TimeUnit;
  *  wildcardProjection
  *
  */
+
 public class IndexOptions extends com.mongodb.client.model.IndexOptions implements WriteConfigurable<IndexOptions> {
 
     private WriteConcern writeConcern;

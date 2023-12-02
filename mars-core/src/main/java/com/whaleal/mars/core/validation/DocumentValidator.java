@@ -31,7 +31,6 @@ package com.whaleal.mars.core.validation;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
-
 import org.bson.Document;
 
 

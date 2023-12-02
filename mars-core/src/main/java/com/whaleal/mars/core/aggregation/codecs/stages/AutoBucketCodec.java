@@ -1,9 +1,6 @@
 package com.whaleal.mars.core.aggregation.codecs.stages;
 
 
-
-
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
@@ -11,8 +8,8 @@ import com.whaleal.mars.core.aggregation.stages.AutoBucket;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-
-import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.*;
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
+import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.expression;
 
 
 public class AutoBucketCodec extends StageCodec< AutoBucket > {

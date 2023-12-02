@@ -30,12 +30,9 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mongodb.client.MongoClient;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import org.bson.Document;
-
-import java.util.Date;
 
 /**
  * JMX Metrics for Global Locks

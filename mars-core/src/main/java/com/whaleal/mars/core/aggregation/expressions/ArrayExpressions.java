@@ -1,18 +1,8 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
 
-
-
-
-
-
-
-
-
-
 import com.whaleal.icefrog.core.collection.ListUtil;
 import com.whaleal.mars.core.aggregation.expressions.impls.*;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 

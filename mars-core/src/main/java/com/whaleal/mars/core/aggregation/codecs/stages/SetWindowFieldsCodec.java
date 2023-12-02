@@ -1,16 +1,12 @@
 package com.whaleal.mars.core.aggregation.codecs.stages;
 
 import com.mongodb.lang.Nullable;
-
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.expressions.TimeUnit;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.SetWindowFields;
-
 import com.whaleal.mars.core.domain.ISort;
 import com.whaleal.mars.core.domain.SortType;
-import com.whaleal.mars.core.query.Sort;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;

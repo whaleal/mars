@@ -1,7 +1,6 @@
 package com.whaleal.mars.core.crud;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.bean.Scores;
 import com.whaleal.mars.bean.Spces;
 import com.whaleal.mars.bean.Vehicles;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Optional;
 
 public class FindTest {
 

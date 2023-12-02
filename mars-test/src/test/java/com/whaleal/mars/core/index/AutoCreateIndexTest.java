@@ -1,18 +1,12 @@
 package com.whaleal.mars.core.index;
 
-import com.mongodb.client.ListIndexesIterable;
-import com.mongodb.client.MongoCollection;
 import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.monitor.CollStatsMetrics;
-import org.bson.Document;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author lyz

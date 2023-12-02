@@ -33,7 +33,6 @@ package com.whaleal.mars.codecs;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.internal.NotMappableException;
-
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 

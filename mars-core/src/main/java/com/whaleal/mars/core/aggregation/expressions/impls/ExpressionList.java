@@ -1,15 +1,12 @@
 package com.whaleal.mars.core.aggregation.expressions.impls;
 
 import com.mongodb.lang.NonNull;
-
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.array;
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.wrapExpression;

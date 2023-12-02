@@ -1,8 +1,10 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
 
-
-import com.whaleal.mars.core.aggregation.expressions.impls.*;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
+import com.whaleal.mars.core.aggregation.expressions.impls.ExpressionList;
+import com.whaleal.mars.core.aggregation.expressions.impls.IfNull;
+import com.whaleal.mars.core.aggregation.expressions.impls.SwitchExpression;
 
 
 /**

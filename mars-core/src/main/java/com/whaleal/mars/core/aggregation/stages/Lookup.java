@@ -5,7 +5,6 @@ import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 
-
 import java.util.List;
 
 import static java.util.Arrays.asList;

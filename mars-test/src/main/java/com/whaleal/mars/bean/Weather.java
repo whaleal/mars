@@ -1,7 +1,11 @@
 package com.whaleal.mars.bean;
 
 import com.mongodb.client.model.TimeSeriesGranularity;
-import com.whaleal.mars.codecs.pojo.annotations.*;
+import com.whaleal.mars.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.codecs.pojo.annotations.Id;
+import com.whaleal.mars.codecs.pojo.annotations.Property;
+import com.whaleal.mars.codecs.pojo.annotations.TimeSeries;
+
 import java.util.Date;
 
 /**

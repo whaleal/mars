@@ -32,7 +32,6 @@ package com.whaleal.mars.core.aggregation;
 
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
-
 import com.whaleal.mars.core.query.filters.Filter;
 import com.whaleal.mars.session.option.AggregationOptions;
 

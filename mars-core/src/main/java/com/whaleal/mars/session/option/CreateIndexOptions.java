@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class CreateIndexOptions implements WriteConfigurable<CreateIndexOptions> {
 
     private WriteConcern writeConcern;

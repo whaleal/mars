@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
  * @see <a href=
  *      "https://docs.mongodb.com/manual/core/timeseries-collections">https://docs.mongodb.com/manual/core/timeseries-collections</a>
  */
+@Deprecated
 public class TimeSeriesOptions {
 
     private final String timeField;

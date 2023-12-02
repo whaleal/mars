@@ -35,10 +35,8 @@ import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-
 import com.whaleal.mars.core.internal.ErrorHandler;
-
+import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;

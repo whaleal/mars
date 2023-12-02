@@ -30,7 +30,6 @@
 package com.whaleal.mars.codecs.reader;
 
 import com.mongodb.DBRef;
-
 import org.bson.BsonBinary;
 import org.bson.BsonType;
 import org.bson.Document;

@@ -1,21 +1,13 @@
 package com.whaleal.mars.core.aggregation.codecs.stages;
 
 
-
-
 import com.whaleal.mars.codecs.MongoMappingContext;
-
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.ReplaceWith;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;
 
-import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.wrapExpression;
-
-
-import org.bson.BsonWriter;
-import org.bson.codecs.EncoderContext;
 
 
 

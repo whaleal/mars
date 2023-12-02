@@ -1,8 +1,8 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
 
-
-import com.whaleal.mars.core.aggregation.expressions.impls.*;
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
+import com.whaleal.mars.core.aggregation.expressions.impls.LetExpression;
 /**
  * Defines helper methods for the variable expressions
  *

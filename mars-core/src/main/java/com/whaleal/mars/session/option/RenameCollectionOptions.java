@@ -35,6 +35,7 @@ import com.mongodb.WriteConcern;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class RenameCollectionOptions implements WriteConfigurable<RenameCollectionOptions> {
 
     private WriteConcern writeConcern;

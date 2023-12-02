@@ -34,17 +34,15 @@ import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.MultiPoint;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
+import com.whaleal.icefrog.core.codec.Base64;
 import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
-
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.icefrog.core.codec.Base64 ;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.bson.types.Binary;
-
 
 import java.util.*;
 import java.util.Map.Entry;

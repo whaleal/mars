@@ -50,6 +50,7 @@ import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.collection.ListUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.map.MapUtil;
+import com.whaleal.icefrog.core.util.NumberUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
@@ -82,7 +83,6 @@ import com.whaleal.mars.session.option.TimeSeriesOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.transactions.MarsTransaction;
-
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
@@ -1314,7 +1314,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         notNull(entityClass, "EntityClass must not be null!");
 
-        CreateCollectionOptions options = collectionOptions != null ? collectionOptions : new CreateCollectionOptions();
+        //CreateCollectionOptions options = collectionOptions != null ? collectionOptions : new CreateCollectionOptions();
 
         //Document document = convertToDocument(options);
 
@@ -1757,9 +1757,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
             }
 
-            if (ObjectUtil.equal(timeSeries.enableExpire(), true)) {
-                if (ObjectUtil.isNotEmpty(timeSeries.expireAfterSeconds())) {
-                    if (TimeSeriesGranularity.SECONDS.equals(toptions.getGranularity())) {
+            if (ObjectUtil.equal(true, timeSeries.enableExpire())) {
+                if ((timeSeries.expireAfterSeconds()) >0) {
+                    options = options.expireAfter(timeSeries.expireAfterSeconds(),TimeUnit.SECONDS);
+                    /*if (TimeSeriesGranularity.SECONDS.equals(toptions.getGranularity())) {
                         options.expireAfter(timeSeries.expireAfterSeconds(), TimeUnit.SECONDS);
                     }
 
@@ -1769,7 +1770,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
                     if (TimeSeriesGranularity.HOURS.equals(toptions.getGranularity())) {
                         options.expireAfter(timeSeries.expireAfterSeconds(), TimeUnit.HOURS);
-                    }
+                    }*/
                 }
             }
 

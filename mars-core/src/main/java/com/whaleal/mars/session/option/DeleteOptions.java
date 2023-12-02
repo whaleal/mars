@@ -29,16 +29,14 @@
  */
 package com.whaleal.mars.session.option;
 
-import com.mongodb.WriteConcern;
-import com.mongodb.client.model.Collation;
-
-
 /**
  * @author cx
  * @Date 2020-12-15
  * 继承了原生的 Option 属性
  * 同时实现了自定义的 config 相关接口
  */
+
+@Deprecated
 public class DeleteOptions extends com.mongodb.client.model.DeleteOptions {
 
 

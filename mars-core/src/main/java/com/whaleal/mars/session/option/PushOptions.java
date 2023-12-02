@@ -36,6 +36,8 @@ import org.bson.conversions.Bson;
  * @author cx
  * @Date 2020/12/15
  */
+
+@Deprecated
 public class PushOptions implements WriteConfigurable<PushOptions> {
 
     private WriteConcern writeConcern;

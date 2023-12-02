@@ -18,7 +18,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 public class EntityBuilderTest {
@@ -38,10 +37,12 @@ public class EntityBuilderTest {
         EntityModelBuilder< Person > personEntityModelBuilder = new EntityModelBuilder<>(Person.class);
 
         String idPropertyName = personEntityModelBuilder.getIdPropertyName();
-        System.out.println(idPropertyName);
+        Assert.assertNull(idPropertyName);
         EntityModel< Person > build = personEntityModelBuilder.build();
 
-        System.out.println(build.getIdProperty());
+        Assert.assertNotNull(build.getIdProperty());
+        System.out.println(build.getIdProperty().getName());
+        Assert.assertNotNull(build.getIdProperty().getName());
 
     }
 
@@ -80,10 +81,13 @@ public class EntityBuilderTest {
 
         System.out.println(idProperty);
 
+        Assert.assertNotNull(idProperty);
+
         PropertyModel firstname = model.getPropertyModel("firstName");
 
         System.out.println(firstname);
 
+        Assert.assertNotNull(firstname);
     }
 
 
@@ -172,6 +176,8 @@ public class EntityBuilderTest {
         PropertyModel< ? > idProperty = build.getIdProperty();
 
         System.out.println(idProperty);
+
+        Assert.assertNotNull(idProperty);
 
 
     }

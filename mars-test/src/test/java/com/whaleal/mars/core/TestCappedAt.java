@@ -2,7 +2,6 @@ package com.whaleal.mars.core;
 
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Book;
-import com.whaleal.mars.bean.Child;
 import com.whaleal.mars.monitor.CollStatsMetrics;
 import org.junit.Test;
 

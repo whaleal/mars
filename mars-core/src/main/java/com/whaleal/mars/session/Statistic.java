@@ -30,9 +30,6 @@
 package com.whaleal.mars.session;
 
 
-import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.CountOptions;
-
 /**
  * @author wh
  * 用于查询 MongoDB  文档数量的相关方法

@@ -33,7 +33,6 @@ import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.FullDocument;
 import com.whaleal.icefrog.core.lang.Precondition;
-
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import org.bson.BsonValue;
 import org.bson.Document;

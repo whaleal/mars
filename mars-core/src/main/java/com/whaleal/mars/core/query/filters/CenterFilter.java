@@ -2,7 +2,6 @@ package com.whaleal.mars.core.query.filters;
 
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.lang.NonNull;
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.BsonWriter;
 import org.bson.codecs.EncoderContext;

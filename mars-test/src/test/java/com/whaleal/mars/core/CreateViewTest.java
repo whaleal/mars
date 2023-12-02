@@ -1,6 +1,5 @@
 package com.whaleal.mars.core;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.CreateViewOptions;
@@ -11,11 +10,8 @@ import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.query.filters.Filters;
 import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 

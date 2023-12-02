@@ -3,23 +3,21 @@ package com.whaleal.mars.core.transactions;
 import com.mongodb.TransactionOptions;
 import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.session.MarsSessionImpl;
-import com.whaleal.mars.util.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.core.query.Update;
 import com.whaleal.mars.session.MarsSession;
+import com.whaleal.mars.session.MarsSessionImpl;
+import com.whaleal.mars.util.StudentGenerator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.List;
 
 import static com.mongodb.ClientSessionOptions.builder;
 import static com.mongodb.WriteConcern.MAJORITY;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.*;
 
 

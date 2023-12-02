@@ -1,22 +1,15 @@
 package com.whaleal.mars.core.aggreation;
 
-import com.mongodb.client.*;
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.expressions.DateExpressions;
-import com.whaleal.mars.core.aggregation.expressions.impls.DocumentExpression;
 import com.whaleal.mars.core.aggregation.stages.Projection;
-import com.whaleal.mars.session.QueryCursor;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.value;

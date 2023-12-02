@@ -36,6 +36,7 @@ import com.mongodb.WriteConcern;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class InsertOneOptions implements WriteConfigurable<InsertOneOptions> {
 
     private WriteConcern writeConcern;

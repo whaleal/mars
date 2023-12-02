@@ -31,8 +31,6 @@ package com.whaleal.mars.session.option;
 
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Collation;
-import com.whaleal.mars.core.query.Criteria;
-import com.whaleal.mars.core.query.Query;
 import org.bson.conversions.Bson;
 
 import java.util.List;
@@ -43,6 +41,7 @@ import java.util.List;
  * 继承了原生的 Option  属性
  * 同时实现了自定义的 config  相关接口
  */
+@Deprecated
 public class UpdateOptions implements WriteConfigurable<UpdateOptions> {
 
     private WriteConcern writeConcern;

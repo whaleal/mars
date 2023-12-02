@@ -1,14 +1,13 @@
 package com.whaleal.mars.core.query;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.util.StudentGenerator;
 import com.whaleal.mars.bean.Student;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.util.StudentGenerator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.LinkedList;
 import java.util.List;

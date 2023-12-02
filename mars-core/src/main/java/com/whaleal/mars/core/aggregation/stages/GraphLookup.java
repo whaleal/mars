@@ -1,9 +1,8 @@
 package com.whaleal.mars.core.aggregation.stages;
 
 import com.mongodb.lang.Nullable;
-
+import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.query.filters.Filter;
-import com.whaleal.mars.core.aggregation.expressions.impls.*;
 
 /**
  * Performs a recursive search on a collection, with options for restricting the search by recursion depth and query filter.

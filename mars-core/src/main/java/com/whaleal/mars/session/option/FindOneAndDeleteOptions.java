@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  * 继承了原生的 Option 属性
  * 同时实现了自定义的 config 相关接口
  */
+@Deprecated
 public class FindOneAndDeleteOptions implements WriteConfigurable<FindOneAndDeleteOptions> {
     private WriteConcern writeConcern;
 

@@ -31,6 +31,7 @@ package com.whaleal.mars.codecs.pojo;
 
 
 import com.whaleal.icefrog.core.lang.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
 

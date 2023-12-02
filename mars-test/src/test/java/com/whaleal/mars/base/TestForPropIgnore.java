@@ -10,6 +10,7 @@ import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.types.ObjectId;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -48,14 +49,32 @@ public class TestForPropIgnore {
         animal.setId(new ObjectId().toString());
         animal.setIsAlive(true);
 
-        mars.insert(animal);
+         mars.insert(animal);
+
+        QueryCursor< Animal > all = mars.findAll(Animal.class);
+        while (all.hasNext()){
+            Animal next = all.next();
+
+            Assert.assertNotNull(next.getId());
+            Assert.assertNotNull(next.getAge());
+            Assert.assertNotNull(next.getIsAlive());
+
+            Assert.assertNull(next.getBook());
+            Assert.assertNull(next.getNum());
+            Assert.assertNull(next.getArt());
+            Assert.assertNull(next.getStatus());
+
+            Assert.assertNull(next.getBirthday());
+
+        }
+
     }
 
     @Test
     public void testForQuery(){
-        Query query = new Query(new Criteria());
+        //Query query = new Query(new Criteria());
 
-        QueryCursor<Animal> all = mars.findAll(query, Animal.class);
+        QueryCursor<Animal> all = mars.findAll( Animal.class);
         while (all.hasNext()){
             System.out.println(all.next());
         }

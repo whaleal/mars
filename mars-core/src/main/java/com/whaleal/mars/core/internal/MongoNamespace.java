@@ -1,12 +1,10 @@
 package com.whaleal.mars.core.internal;
 
 
-
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.codecs.pojo.annotations.Constructor;
 import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
 import com.whaleal.mars.codecs.pojo.annotations.Property;
-
 
 import java.io.Serializable;
 import java.util.HashSet;

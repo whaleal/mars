@@ -35,7 +35,6 @@ import com.whaleal.icefrog.core.util.URLUtil;
 import com.whaleal.icefrog.log.Log;
 import com.whaleal.icefrog.log.LogFactory;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,13 +1,11 @@
 package com.whaleal.mars.core.concern;
 
 import com.mongodb.ReadConcern;
-import com.mongodb.WriteConcern;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
 public class Read {

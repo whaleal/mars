@@ -30,14 +30,13 @@
 package com.whaleal.mars.codecs.pojo;
 
 
-
 import com.whaleal.icefrog.core.util.ClassUtil;
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
+import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isProtected;
 import static java.lang.reflect.Modifier.isPublic;

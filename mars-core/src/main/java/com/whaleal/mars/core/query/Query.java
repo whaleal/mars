@@ -42,8 +42,6 @@ import com.whaleal.mars.core.domain.ISort;
 import com.whaleal.mars.core.domain.Pageable;
 import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-
-
 import org.bson.Document;
 
 import java.time.Duration;

@@ -6,7 +6,6 @@ import com.whaleal.mars.bean.*;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
 import org.bson.types.ObjectId;

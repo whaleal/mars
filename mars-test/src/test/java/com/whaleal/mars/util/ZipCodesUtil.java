@@ -3,7 +3,9 @@ package com.whaleal.mars.util;
 import org.bson.Document;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

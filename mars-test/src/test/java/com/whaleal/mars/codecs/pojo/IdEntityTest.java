@@ -6,7 +6,6 @@ import com.whaleal.mars.codecs.MongoMappingContext;
 import org.bson.codecs.Codec;
 import org.junit.Test;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;

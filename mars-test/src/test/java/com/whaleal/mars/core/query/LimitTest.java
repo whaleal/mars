@@ -4,14 +4,9 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Num;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.session.QueryCursor;
-import org.bson.Document;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author cjq

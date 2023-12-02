@@ -8,7 +8,6 @@ import org.bson.codecs.EncoderContext;
 import java.util.Arrays;
 import java.util.List;
 
-
 import static com.whaleal.mars.core.aggregation.codecs.ExpressionHelper.document;
 import static java.lang.String.format;
 

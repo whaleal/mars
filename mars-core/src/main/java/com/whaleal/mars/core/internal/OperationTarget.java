@@ -1,7 +1,6 @@
 package com.whaleal.mars.core.internal;
 
 import com.mongodb.lang.Nullable;
-
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.PropertyModel;
 import com.whaleal.mars.codecs.writer.DocumentWriter;

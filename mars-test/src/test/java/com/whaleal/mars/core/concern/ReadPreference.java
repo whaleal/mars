@@ -1,6 +1,5 @@
 package com.whaleal.mars.core.concern;
 
-import com.mongodb.ReadConcern;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.core.Mars;

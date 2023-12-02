@@ -39,6 +39,7 @@ import org.bson.conversions.Bson;
  * @author cx
  * @Date 2020/12/15
  */
+@Deprecated
 public class ValidationOptions implements ReadConfigurable<ValidationOptions> {
 
     private ReadConcern readConcern;

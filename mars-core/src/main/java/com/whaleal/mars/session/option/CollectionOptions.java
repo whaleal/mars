@@ -36,7 +36,6 @@ import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.mars.core.validation.Validator;
 
-
 import javax.annotation.Nullable;
 import java.util.Optional;
 

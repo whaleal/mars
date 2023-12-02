@@ -30,15 +30,13 @@
 package com.whaleal.mars.codecs.pojo;
 
 
-import com.whaleal.icefrog.core.util.ClassUtil;
-import com.whaleal.icefrog.core.util.ReflectUtil;
 import org.bson.codecs.pojo.TypeWithTypeParameters;
 
 import java.lang.reflect.*;
 import java.util.*;
 
-import static java.lang.String.format;
 import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+import static java.lang.String.format;
 
 
 public final class TypeData< T > implements TypeWithTypeParameters< T > {

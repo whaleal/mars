@@ -1,17 +1,16 @@
 package com.whaleal.mars.core.query;
 
 import com.whaleal.mars.Constant;
-import com.whaleal.mars.session.QueryCursor;
-import com.whaleal.mars.util.CreateDataUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
+import com.whaleal.mars.session.QueryCursor;
+import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.List;
 
