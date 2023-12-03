@@ -50,12 +50,9 @@ import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.collection.ListUtil;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.map.MapUtil;
-import com.whaleal.icefrog.core.util.NumberUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
-import com.whaleal.icefrog.log.Log;
-import com.whaleal.icefrog.log.LogFactory;
 import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
@@ -71,6 +68,8 @@ import com.whaleal.mars.core.gridfs.GridFsResource;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.index.IndexHelper;
+import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.option.CountOptions;
 import com.whaleal.mars.session.option.FindOneAndDeleteOptions;
@@ -95,6 +94,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+
 import static com.whaleal.icefrog.core.lang.Precondition.*;
 
 
@@ -106,7 +106,7 @@ import static com.whaleal.icefrog.core.lang.Precondition.*;
 public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
-    private static final Log LOGGER = LogFactory.get(DatastoreImpl.class);
+    private static  final Logger  LOGGER = LogFactory.getLogger(DatastoreImpl.class);
 
     private final Lock lock = new ReentrantLock();
     private final MongoClient mongoClient;
@@ -1194,7 +1194,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Executing count: {} in collection: {}", "{}", collectionName);
+
+            LOGGER.debug(String.format("Executing count: %s in collection %s ", "{}", collectionName));
         }
         return this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
 
@@ -1225,7 +1226,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
+
+            LOGGER.debug(String.format("Executing count: %s in collection %s ", query.getQueryObject().toJson(), collectionName));
         }
 
         return this.operations.countDocuments(this.database.getCollection(collectionName),query.getQueryObject(),countOptions);
@@ -1257,9 +1259,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Executing count: {} in collection: {}", "{}", collectionName);
+            LOGGER.debug(String.format("Executing estimatedCount: %s in collection: %s", "{}", collectionName));
         }
-
 
         return this.database.getCollection(collectionName).estimatedDocumentCount(new com.mongodb.client.model.EstimatedDocumentCountOptions());
     }
@@ -1268,7 +1269,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     public < T > long count( Query query, String collectionName ) {
         com.mongodb.client.model.CountOptions countOptions = decorateCountOption(query);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Executing count: {} in collection: {}", query.getQueryObject().toJson(), collectionName);
+            LOGGER.debug(String.format("Executing count: %s in collection: {}", query.getQueryObject().toJson(), collectionName));
         }
         return this.database.getCollection(collectionName).countDocuments(query.getQueryObject(), countOptions);
     }
@@ -1394,8 +1395,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             MongoCollection< Document > collection = this.database.getCollection(collectionName);
             collection.drop();
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Dropped collection [{}]",
-                        collection.getNamespace() != null ? collection.getNamespace().getCollectionName() : collectionName);
+                LOGGER.debug(String.format("Dropped collection %s",
+                        collection.getNamespace() != null ? collection.getNamespace().getCollectionName() : collectionName));
             }
         } finally {
             lock.unlock();
@@ -2114,7 +2115,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
                             indexOptions.background(true);
                         } else indexOptions.background(v < 0);
                     } catch (Exception e) {
-                        LOGGER.warn("Index background Option parse error from  index name %s  with background value %s ", o.get("name"), o.get("background"));
+                        LOGGER.warn(String.format("Index background Option parse error from  index name %s  with background value %s ", o.get("name"), o.get("background")));
                         indexOptions.background(true);
                     }
                 }

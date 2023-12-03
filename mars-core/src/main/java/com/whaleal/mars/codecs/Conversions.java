@@ -30,9 +30,10 @@
 package com.whaleal.mars.codecs;
 
 
-import com.whaleal.icefrog.log.Log;
-import com.whaleal.icefrog.log.LogFactory;
+
 import com.whaleal.mars.core.internal.NotMappableException;
+import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
@@ -57,7 +58,7 @@ import static java.lang.Boolean.FALSE;
  */
 
 public final class Conversions {
-    private static final Log log = LogFactory.get(Conversions.class);
+    private static final Logger log = LogFactory.getLogger(Conversions.class);
     private static final Map<Class<?>, Map<Class<?>, Function<?, ?>>> CONVERSIONS = new HashMap<>();
 
     static {

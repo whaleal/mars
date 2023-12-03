@@ -1,8 +1,7 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
 
-import com.whaleal.icefrog.log.Log;
-import com.whaleal.icefrog.log.LogFactory;
+
 import com.whaleal.mars.core.aggregation.expressions.impls.*;
 
 import static java.util.Arrays.asList;
@@ -12,7 +11,7 @@ import static java.util.Arrays.asList;
  *
  */
 public final class StringExpressions {
-    private static final Log Log = LogFactory.get(StringExpressions.class);
+
 
     private StringExpressions() {
     }

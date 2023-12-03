@@ -32,11 +32,12 @@ package com.whaleal.mars.core.messaging;
 
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.icefrog.log.Log;
-import com.whaleal.icefrog.log.LogFactory;
+
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.ErrorHandler;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
@@ -50,7 +51,7 @@ import java.util.concurrent.Executors;
  */
 
 public class DefaultMessageListenerContainer implements MessageListenerContainer {
-    private static final Log log = LogFactory.get(DefaultMessageListenerContainer.class);
+    private static final Logger LOGGER = LogFactory.getLogger(DefaultMessageListenerContainer.class);
     private final Executor taskExecutor;
     private final TaskFactory taskFactory;
     private final Optional<ErrorHandler> errorHandler;
@@ -264,8 +265,8 @@ public class DefaultMessageListenerContainer implements MessageListenerContainer
         @Override
         public void handleError(Throwable t) {
 
-            if (log.isErrorEnabled()) {
-                log.error("Unexpected error occurred while listening to MongoDB.", t);
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Unexpected error occurred while listening to MongoDB.", t);
             }
 
             delegate.handleError(t);

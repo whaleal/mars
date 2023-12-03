@@ -32,8 +32,9 @@ package com.whaleal.mars.core.gridfs;
 import com.mongodb.MongoGridFSException;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.log.Log;
-import com.whaleal.icefrog.log.LogFactory;
+
+import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 import com.whaleal.mars.core.query.BsonUtil;
 
 import java.io.ByteArrayInputStream;
@@ -51,7 +52,7 @@ import java.util.Optional;
 
 public class GridFsResource extends InputStreamResource implements GridFsObject<Object, InputStream> {
 
-    private static final Log log = LogFactory.get(GridFsResource.class);
+    private static final Logger LOGGER = LogFactory.getLogger(GridFsResource.class);
     public static final String CONTENT_TYPE_FIELD = "_contentType";
     private static final ByteArrayInputStream EMPTY_INPUT_STREAM = new ByteArrayInputStream(new byte[0]);
 
@@ -253,7 +254,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
         try {
             return getInputStream();
         } catch (IOException e) {
-            log.error("Failed to obtain input stream for " + filename);
+            LOGGER.error("Failed to obtain input stream for " + filename);
             throw new IllegalStateException("Failed to obtain input stream for " + filename, e);
         }
     }
@@ -277,7 +278,7 @@ public class GridFsResource extends InputStreamResource implements GridFsObject<
     private void verifyExists() throws FileNotFoundException {
 
         if (!exists()) {
-            log.error(String.format("%s does not exist.", getDescription()));
+            LOGGER.error(String.format("%s does not exist.", getDescription()));
             throw new FileNotFoundException(String.format("%s does not exist.", getDescription()));
         }
     }

@@ -32,8 +32,9 @@ package com.whaleal.mars.core.gridfs;
 
 import com.whaleal.icefrog.core.exceptions.UtilException;
 import com.whaleal.icefrog.core.util.URLUtil;
-import com.whaleal.icefrog.log.Log;
-import com.whaleal.icefrog.log.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,7 +47,7 @@ import java.nio.channels.ReadableByteChannel;
 
 
 public abstract class AbstractResource implements Resource {
-    private static final Log log = LogFactory.get(AbstractResource.class);
+    private static final Logger LOGGER = LogFactory.getLogger(AbstractResource.class);
 
     /**
      * This implementation checks whether a File can be opened,
@@ -60,8 +61,8 @@ public abstract class AbstractResource implements Resource {
             try {
                 return getFile().exists();
             } catch (IOException ex) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Could not retrieve File for existence check of " + getDescription(), ex);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Could not retrieve File for existence check of " + getDescription(), ex);
                 }
             }
         }
@@ -70,8 +71,8 @@ public abstract class AbstractResource implements Resource {
             getInputStream().close();
             return true;
         } catch (Throwable ex) {
-            if (log.isDebugEnabled()) {
-                log.debug("Could not retrieve InputStream for existence check of " + getDescription(), ex);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Could not retrieve InputStream for existence check of " + getDescription(), ex);
             }
             return false;
         }
@@ -168,8 +169,8 @@ public abstract class AbstractResource implements Resource {
             try {
                 is.close();
             } catch (IOException ex) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Could not close content-length InputStream for " + getDescription(), ex);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Could not close content-length InputStream for " + getDescription(), ex);
                 }
             }
         }

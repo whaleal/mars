@@ -30,14 +30,15 @@
 package com.whaleal.mars.core.index;
 
 import com.mongodb.client.MongoCollection;
-import com.whaleal.icefrog.log.Log;
-import com.whaleal.icefrog.log.LogFactory;
+
 import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
 import com.whaleal.mars.core.index.annotation.Index;
 import com.whaleal.mars.core.index.annotation.*;
 import com.whaleal.mars.core.internal.PathTarget;
+import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public final class IndexHelper {
-    private static final Log log = LogFactory.get(IndexHelper.class);
+    private static final Logger LOGGER = LogFactory.getLogger(IndexHelper.class);
 
     private final MongoMappingContext mapper ;
 
@@ -142,7 +143,7 @@ public final class IndexHelper {
                 if (!index.options().disableValidation()) {
                     throw new MarsOrmException("error  with : " + path + entityModel.getType().getName());
                 }
-                log.warn("error  with : " + path + entityModel.getType().getName());
+                LOGGER.warn("error  with : " + path + entityModel.getType().getName());
             }
             keys.putAll(new Document(path, field.type().toIndexValue()));
         }
