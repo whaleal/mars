@@ -17,6 +17,7 @@
             <groupId>com.whaleal.icefrog</groupId>
             <artifactId>icefrog-core</artifactId>
             <version>${icefrog.version}</version>
+            <optional>true</optional>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
@@ -26,10 +27,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!--计划在 0.9.x  中删除 -->
        <!-- <dependency>
              <groupId>com.whaleal.icefrog</groupId>
              <artifactId>icefrog-log</artifactId>
              <version>${icefrog.version}</version>
+            <optional>true</optional>
          </dependency>-->
         <dependency>
             <groupId>org.mongodb</groupId>

@@ -5,7 +5,8 @@ import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.core.Mars;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
 
 public class Write {
 

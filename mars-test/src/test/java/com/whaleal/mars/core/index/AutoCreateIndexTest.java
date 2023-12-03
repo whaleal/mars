@@ -2,7 +2,7 @@ package com.whaleal.mars.core.index;
 
 import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.core.Mars;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

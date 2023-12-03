@@ -4,7 +4,8 @@ import com.mongodb.client.model.changestream.FullDocument;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
 
 /**
  * 不需要容器的changeStream的启动方法

@@ -5,13 +5,12 @@ import com.whaleal.mars.bean.Weather;
 import com.whaleal.mars.core.Mars;
 import org.bson.Document;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -52,7 +51,7 @@ public class TestTimeSeries {
 
         for (Document document1 : list) {
             if ("weather".equals(document1.get("name"))) {
-                Assert.assertEquals("timeseries", document1.get("type"));
+                assertEquals("timeseries", document1.get("type"));
                 Document document2 = document1.get("options", Document.class);
 
                 Document parse = Document.parse("{\n" +

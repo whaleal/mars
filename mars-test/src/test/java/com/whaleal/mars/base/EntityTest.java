@@ -1,3 +1,4 @@
+/*
 //package com.whaleal.mars.base;
 //
 //import com.mongodb.MongoNamespace;
@@ -74,3 +75,4 @@
 //    }
 //
 //}
+*/

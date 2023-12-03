@@ -1,7 +1,7 @@
 package com.whaleal.mars.core;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.core.query.*;

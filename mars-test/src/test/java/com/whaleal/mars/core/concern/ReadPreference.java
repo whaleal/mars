@@ -5,7 +5,8 @@ import com.whaleal.mars.bean.Animal;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
 
 public class ReadPreference {
 

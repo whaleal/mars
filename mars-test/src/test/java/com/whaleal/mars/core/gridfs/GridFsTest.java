@@ -12,7 +12,7 @@ import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
