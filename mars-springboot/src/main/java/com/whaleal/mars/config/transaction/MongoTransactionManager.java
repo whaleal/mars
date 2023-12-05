@@ -1,4 +1,3 @@
-/*
 package com.whaleal.mars.config.transaction;
 
 import com.mongodb.ClientSessionOptions;
@@ -7,7 +6,9 @@ import com.mongodb.TransactionOptions;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.core.Mars;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
@@ -17,17 +18,19 @@ import org.springframework.transaction.support.*;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-*/
 /**
  * @author lyz
  * @desc
  * @create: 2022-10-31 14:24
- **//*
+ **/
 
 @Component
 public class MongoTransactionManager extends AbstractPlatformTransactionManager implements ResourceTransactionManager, InitializingBean {
     @Nullable
     private MongoMappingContext dbFactory;
+
+    private Mars mars;
+
     @Nullable
     private TransactionOptions options;
 
@@ -37,25 +40,27 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
 
     }
 
-    public MongoTransactionManager(MongoMappingContext dbFactory) {
-        this(dbFactory, (TransactionOptions)null);
+    public MongoTransactionManager(Mars mars) {
+        this(mars, (TransactionOptions)null);
     }
 
-    public MongoTransactionManager(MongoMappingContext dbFactory, @Nullable TransactionOptions options,MongoClient client) {
+    public MongoTransactionManager(Mars mars, @Nullable TransactionOptions options,MongoClient client) {
         Assert.notNull(dbFactory, "DbFactory must not be null!");
-        this.dbFactory = dbFactory;
+        this.dbFactory = mars.getMapper();
         this.options = options;
         this.mongoClient = client;
     }
 
-    public MongoTransactionManager(MongoMappingContext dbFactory, @Nullable TransactionOptions options) {
-        Assert.notNull(dbFactory, "DbFactory must not be null!");
-        this.dbFactory = dbFactory;
+    @Autowired
+    public MongoTransactionManager(Mars mars, @Nullable TransactionOptions options) {
+//        Assert.notNull(dbFactory, "DbFactory must not be null!");
+        this.mars = mars;
+        this.dbFactory = mars.getMapper();
         this.options = options;
     }
 
     protected Object doGetTransaction() throws TransactionException {
-        MongoResourceHolder resourceHolder = (MongoResourceHolder) TransactionSynchronizationManager.getResource(this.getRequiredDbFactory());
+        MongoResourceHolder resourceHolder = (MongoResourceHolder) TransactionSynchronizationManager.getResource(mars.getMapper());
         return new MongoTransactionObject(resourceHolder);
     }
 
@@ -163,19 +168,20 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
     }
 
     public void afterPropertiesSet() {
-        this.getRequiredDbFactory();
+//        this.getRequiredDbFactory();
     }
 
     private MongoResourceHolder newResourceHolder(TransactionDefinition definition, ClientSessionOptions options) {
         MongoMappingContext dbFactory = this.getResourceFactory();
-        MongoResourceHolder resourceHolder = new MongoResourceHolder(mongoClient.startSession(options), dbFactory);
+        mongoClient = mars.getMongoClient();
+        MongoResourceHolder resourceHolder = new MongoResourceHolder(mongoClient.startSession(options), mars);
         resourceHolder.setTimeoutIfNotDefaulted(this.determineTimeout(definition));
         return resourceHolder;
     }
 
     private MongoMappingContext getRequiredDbFactory() {
-        Assert.state(this.dbFactory != null, "MongoTransactionManager operates upon a MongoDbFactory. Did you forget to provide one? It's required.");
-        return this.dbFactory;
+//        Assert.state(this.dbFactory != null, "MongoTransactionManager operates upon a MongoDbFactory. Did you forget to provide one? It's required.");
+        return mars.getMapper();
     }
 
     private static MongoTransactionObject extractMongoTransaction(Object transaction) {
@@ -288,4 +294,4 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
         }
     }
 }
-*/
+

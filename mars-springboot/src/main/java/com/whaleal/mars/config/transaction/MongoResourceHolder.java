@@ -1,28 +1,28 @@
-/*
 package com.whaleal.mars.config.transaction;
 
 import com.mongodb.client.ClientSession;
 import com.whaleal.mars.codecs.MongoMappingContext;
+import com.whaleal.mars.core.Mars;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.ResourceHolderSupport;
 
-*/
 /**
  * @author lyz
  * @desc
  * @create: 2022-10-31 16:32
- **//*
+ **/
 
 @Component
 public class MongoResourceHolder extends ResourceHolderSupport {
     @Nullable
     private ClientSession session;
-    private MongoMappingContext dbFactory;
 
-    MongoResourceHolder(@Nullable ClientSession session, MongoMappingContext dbFactory) {
+    private Mars mars;
+
+    MongoResourceHolder(@Nullable ClientSession session, Mars mars) {
         this.session = session;
-        this.dbFactory = dbFactory;
+        this.mars = mars;
     }
 
     @Nullable
@@ -40,7 +40,7 @@ public class MongoResourceHolder extends ResourceHolderSupport {
     }
 
     public MongoMappingContext getDbFactory() {
-        return this.dbFactory;
+        return this.mars.getMapper();
     }
 
     public void setSession(@Nullable ClientSession session) {
@@ -78,4 +78,4 @@ public class MongoResourceHolder extends ResourceHolderSupport {
         }
     }
 }
-*/
+
