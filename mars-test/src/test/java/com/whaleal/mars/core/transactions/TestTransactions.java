@@ -42,6 +42,7 @@ public class TestTransactions {
     }
 
 
+
     @Test
     public void delete() {
 
@@ -56,6 +57,7 @@ public class TestTransactions {
          **/
 
         mars.withTransaction(( session ) -> {
+            //  同一个 session
             session.insert(student);
 
             assertNotNull(session.find(new Query(), Student.class).tryNext());
@@ -128,9 +130,9 @@ public class TestTransactions {
 
         /**
          *
-         * 插入 在事务体外
+         * 阶段1 插入 在事务体外
          *
-         * 事务体内执行  删除-插入-插入 过程中有异常
+         * 阶段2 事务体内执行  删除-插入-插入 过程中有异常
          *
          * 结果应当为有数据
          *
@@ -227,6 +229,7 @@ public class TestTransactions {
             return null;
         });
 
+        //  统计数量
         assertEquals(mars.estimatedCount(Student.class), 2);
     }
 
@@ -260,7 +263,7 @@ public class TestTransactions {
 
 
     /**
-     * 这里调整为 多表 事务
+     * 这里调整为多文档 事务
      */
     @Test
     public void manual() {
@@ -307,7 +310,10 @@ public class TestTransactions {
 
 
     /**
-     *
+     *  事务中更新操作
+     *  原始值
+     *  事务体内的 修改值是可见的
+     *  事务体外的修改值是不可见的
      *
      */
     @Test
