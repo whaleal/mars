@@ -109,8 +109,8 @@ public class MarsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean({MongoTransactionManager.class})
     @ConditionalOnClass(Mars.class)
-    public MongoTransactionManager mongoTransactionManager(Mars mars, TransactionOptions transactionOptions) {
-        return new MongoTransactionManager(mars,transactionOptions);
+    public MongoTransactionManager mongoTransactionManager(Mars mars) {
+        return new MongoTransactionManager(mars);
     }
 
     @Configuration(
@@ -131,4 +131,5 @@ public class MarsAutoConfiguration {
             return new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
         }
     }
+
 }
