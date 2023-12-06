@@ -1,15 +1,13 @@
 package com.whaleal.mars.config.transaction;
 
-import com.mongodb.ClientSessionOptions;
 import com.mongodb.MongoException;
 import com.mongodb.TransactionOptions;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.session.MarsSession;
+import com.whaleal.mars.session.MarsSessionImpl;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
@@ -28,37 +26,35 @@ import org.springframework.util.ClassUtils;
 
 public class MongoTransactionManager extends AbstractPlatformTransactionManager implements ResourceTransactionManager, InitializingBean {
 
-
     private Mars mars;
-
 
     @Nullable
     private TransactionOptions options;
 
 
 
-    @Autowired
-    public MongoTransactionManager(Mars mars) {
-        this(mars, TransactionOptions.builder().build());
+    public MongoTransactionManager() {
+
     }
 
-    public MongoTransactionManager(Mars mars, @Nullable TransactionOptions options) {
+    public MongoTransactionManager(Mars mars) {
+        this(mars, (TransactionOptions)null);
+    }
 
+    //@Autowired
+    public MongoTransactionManager(Mars mars, @Nullable TransactionOptions options) {
+        //Assert.notNull(dbFactory, "DbFactory must not be null!");
+        //this.dbFactory = mars.getMapper();
         this.options = options;
         this.mars = mars ;
+
     }
 
-  /*  @Autowired
-    public MongoTransactionManager(Mars mars, @Nullable TransactionOptions options) {
-//        Assert.notNull(dbFactory, "DbFactory must not be null!");
-        this.mars = mars;
-        this.dbFactory = mars.getMapper();
-        this.options = options;
-    }
-*/
+
     protected Object doGetTransaction() throws TransactionException {
-        MongoResourceHolder resourceHolder = (MongoResourceHolder) TransactionSynchronizationManager.getResource(mars.getMapper());
+        MongoResourceHolder resourceHolder = (MongoResourceHolder)TransactionSynchronizationManager.getResource(mars);
         return new MongoTransactionObject(resourceHolder);
+//        return new MongoTransactionObject(this.mars);
     }
 
     protected boolean isExistingTransaction(Object transaction) throws TransactionException {
@@ -67,20 +63,22 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
 
     protected void doBegin(Object transaction, TransactionDefinition definition) throws TransactionException {
         MongoTransactionObject mongoTransactionObject = extractMongoTransaction(transaction);
-        MongoResourceHolder resourceHolder = this.newResourceHolder(definition, ClientSessionOptions.builder().causallyConsistent(true).build());
+
+//        MongoResourceHolder resourceHolder = mongoTransactionObject.getRequiredResourceHolder();
+        MongoResourceHolder resourceHolder = this.newResourceHolder(definition);
         mongoTransactionObject.setResourceHolder(resourceHolder);
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug(String.format("About to start transaction for session %s.", debugString(resourceHolder.getSession())));
+//            this.logger.debug(String.format("About to start transaction for session %s.", debugString(resourceHolder.getSession())));
         }
 
         try {
-            mongoTransactionObject.startTransaction(this.options);
+            mongoTransactionObject.startTransaction();
         } catch (MongoException var6) {
             throw new TransactionSystemException(String.format("Could not start Mongo transaction for session %s.", debugString(mongoTransactionObject.getSession())), var6);
         }
 
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug(String.format("Started transaction for session %s.", debugString(resourceHolder.getSession())));
+//            this.logger.debug(String.format("Started transaction for session %s.", debugString(resourceHolder.getSession())));
         }
 
         resourceHolder.setSynchronizedWithTransaction(true);
@@ -145,13 +143,22 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
 
         mongoTransactionObject.closeSession();
     }
+/*
 
-
+    public void setDbFactory(MongoMappingContext dbFactory) {
+        Assert.notNull(dbFactory, "DbFactory must not be null!");
+        this.dbFactory = dbFactory;
+    }
+*/
 
     public void setOptions(@Nullable TransactionOptions options) {
         this.options = options;
     }
 
+   /* @Nullable
+    public MongoMappingContext getDbFactory() {
+        return this.dbFactory;
+    }*/
 
     public MongoMappingContext getResourceFactory() {
         return this.getRequiredDbFactory();
@@ -161,9 +168,9 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
 //        this.getRequiredDbFactory();
     }
 
-    private MongoResourceHolder newResourceHolder(TransactionDefinition definition, ClientSessionOptions options) {
+    private MongoResourceHolder newResourceHolder(TransactionDefinition definition) {
 
-        MongoResourceHolder resourceHolder = new MongoResourceHolder( mars);
+        MongoResourceHolder resourceHolder = new MongoResourceHolder(mars);
         resourceHolder.setTimeoutIfNotDefaulted(this.determineTimeout(definition));
         return resourceHolder;
     }
@@ -224,6 +231,10 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
             this.resourceHolder = resourceHolder;
         }
 
+        MongoTransactionObject(@Nullable Mars mars) {
+            this.resourceHolder = new MongoResourceHolder(mars);
+        }
+
         void setResourceHolder(@Nullable MongoResourceHolder resourceHolder) {
             this.resourceHolder = resourceHolder;
         }
@@ -232,13 +243,9 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
             return this.resourceHolder != null;
         }
 
-        void startTransaction(@Nullable TransactionOptions options) {
+        void startTransaction() {
             ClientSession session = this.getRequiredSession();
-            if (options != null) {
-                session.startTransaction(options);
-            } else {
-                session.startTransaction();
-            }
+            session.startTransaction();
 
         }
 
@@ -255,7 +262,6 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
             if (session.getServerSession() != null && !session.getServerSession().isClosed()) {
                 session.close();
             }
-
         }
 
         @Nullable

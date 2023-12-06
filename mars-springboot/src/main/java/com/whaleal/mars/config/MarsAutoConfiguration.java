@@ -30,8 +30,7 @@
 package com.whaleal.mars.config;
 
 import com.mongodb.MongoClientSettings;
-//import com.mongodb.TransactionOptions;
-import com.mongodb.TransactionOptions;
+
 import com.mongodb.client.MongoClient;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
@@ -106,9 +105,20 @@ public class MarsAutoConfiguration {
         return (MongoClient)(new MongoClientFactory((List)builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
     }
 
+/*    @Bean
+    @ConditionalOnMissingBean({MarsSessionImpl.class})
+    @ConditionalOnBean({Mars.class})
+    public MarsSessionImpl marsSessionImpl(Mars mars) {
+        return mars.startSession();
+    }*/
+
     @Bean
     @ConditionalOnMissingBean({MongoTransactionManager.class})
+<<<<<<< HEAD
     @ConditionalOnClass(Mars.class)
+=======
+    @ConditionalOnClass({Mars.class})
+>>>>>>> 8e63eb8bfceb6e3a028fa0ab36a83abc2143e81d
     public MongoTransactionManager mongoTransactionManager(Mars mars) {
         return new MongoTransactionManager(mars);
     }
