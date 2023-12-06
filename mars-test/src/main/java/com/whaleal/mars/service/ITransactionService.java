@@ -1,5 +1,7 @@
 package com.whaleal.mars.service;
 
+import com.whaleal.mars.session.MarsSessionImpl;
+
 /**
  * @author lyz
  * @desc
