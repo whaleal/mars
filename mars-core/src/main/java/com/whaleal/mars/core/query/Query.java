@@ -375,7 +375,7 @@ public class Query {
             });
             return writer.getDocument();
         }
-        return null;
+        return new Document();
     }
 
     /**

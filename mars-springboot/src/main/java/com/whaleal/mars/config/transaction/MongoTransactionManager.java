@@ -3,13 +3,11 @@ package com.whaleal.mars.config.transaction;
 import com.mongodb.MongoException;
 import com.mongodb.TransactionOptions;
 import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoClient;
+
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.session.MarsSessionImpl;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionSystemException;

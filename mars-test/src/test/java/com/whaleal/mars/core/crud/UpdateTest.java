@@ -197,7 +197,7 @@ public class UpdateTest {
         animal.setAge(12332145);
         animal.setBook(book);
 
-//        mars.updateFirst(new Query());
+        //mars.updateFirst(new Query());
     }
 
 

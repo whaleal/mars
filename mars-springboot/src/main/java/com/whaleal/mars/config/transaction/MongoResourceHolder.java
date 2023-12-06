@@ -3,7 +3,6 @@ package com.whaleal.mars.config.transaction;
 import com.mongodb.client.ClientSession;
 import com.whaleal.mars.core.Mars;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.ResourceHolderSupport;
 
 /**
