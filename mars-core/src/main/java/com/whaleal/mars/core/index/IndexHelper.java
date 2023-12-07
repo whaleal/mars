@@ -252,4 +252,5 @@ public final class IndexHelper {
         return new PathTarget(mapper, entityModel, path, !options.disableValidation()).translatedPath();
 
     }
+
 }

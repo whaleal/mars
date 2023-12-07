@@ -32,11 +32,9 @@ package com.whaleal.mars.session;
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.ServerAddress;
 import com.mongodb.TransactionOptions;
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.TransactionBody;
+import com.mongodb.client.*;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
+import com.mongodb.client.model.IndexModel;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -230,6 +228,31 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
      */
     private class TransactionalOperations extends DatastoreOperations {
         @Override
+        public < T > String createIndex( MongoCollection< T > collection, IndexModel index ) {
+            return collection.createIndex(session,index.getKeys() ,index.getOptions());
+        }
+
+        @Override
+        public < T > void dropIndex( MongoCollection< T > collection, Document bsonkey  ) {
+            collection.dropIndex(session,bsonkey);
+        }
+
+        @Override
+        public < T > List< String > createIndexes( MongoCollection< T > collection, List< IndexModel > indexes ) {
+            return collection.createIndexes(session,indexes);
+        }
+
+        @Override
+        public < T > void dropIndexes( MongoCollection< T > collection ) {
+            collection.dropIndexes(session);
+        }
+
+        @Override
+        public < T > ListIndexesIterable< Document > getIndexes( MongoCollection< T > collection ) {
+            return null;
+        }
+
+        @Override
         public <T> long countDocuments( MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.CountOptions options) {
             return collection.countDocuments(session, queryDocument, options);
         }
@@ -247,6 +270,11 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
         @Override
         public <E> FindIterable<E> find(MongoCollection<E> collection, Document queryDocument) {
             return collection.find(session, queryDocument);
+        }
+
+        @Override
+        public < E > DistinctIterable< E > distinct( MongoCollection< E > collection, Document query, String fieldName, Class< E > resultClass ) {
+            return collection.distinct(session , fieldName,query,resultClass);
         }
 
         @Override

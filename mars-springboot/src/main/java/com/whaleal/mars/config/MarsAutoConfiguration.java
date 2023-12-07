@@ -103,20 +103,7 @@ public class MarsAutoConfiguration {
     public MongoClient mongo(ObjectProvider<MongoClientSettingsBuilderCustomizer> builderCustomizers, MongoClientSettings settings) {
         return (MongoClient)(new MongoClientFactory((List)builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
     }
-
-/*    @Bean
-    @ConditionalOnMissingBean({MarsSessionImpl.class})
-    @ConditionalOnBean({Mars.class})
-    public MarsSessionImpl marsSessionImpl(Mars mars) {
-        return mars.startSession();
-    }*/
-
-/*    @Bean
-    @ConditionalOnMissingBean({MongoTransactionManager.class})
-    @ConditionalOnClass(Mars.class)
-    public MongoTransactionManager mongoTransactionManager(Mars mars) {
-        return new MongoTransactionManager(mars);
-    }*/
+    
 
 
     @Configuration(

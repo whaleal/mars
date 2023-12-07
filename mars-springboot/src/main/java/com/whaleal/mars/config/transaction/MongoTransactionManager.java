@@ -1,3 +1,4 @@
+/*
 package com.whaleal.mars.config.transaction;
 
 import com.mongodb.MongoException;
@@ -15,11 +16,13 @@ import org.springframework.transaction.support.*;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+*/
 /**
  * @author lyz
  * @desc
  * @create: 2022-10-31 14:24
- **/
+ **//*
+
 
 
 public class MongoTransactionManager extends AbstractPlatformTransactionManager implements ResourceTransactionManager, InitializingBean {
@@ -141,22 +144,26 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
 
         mongoTransactionObject.closeSession();
     }
+*/
 /*
 
     public void setDbFactory(MongoMappingContext dbFactory) {
         Assert.notNull(dbFactory, "DbFactory must not be null!");
         this.dbFactory = dbFactory;
     }
-*/
+*//*
+
 
     public void setOptions(@Nullable TransactionOptions options) {
         this.options = options;
     }
 
-   /* @Nullable
+   */
+/* @Nullable
     public MongoMappingContext getDbFactory() {
         return this.dbFactory;
-    }*/
+    }*//*
+
 
     public MongoMappingContext getResourceFactory() {
         return this.getRequiredDbFactory();
@@ -288,3 +295,4 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
     }
 }
 
+*/

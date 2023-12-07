@@ -68,6 +68,7 @@ import com.whaleal.mars.core.gridfs.GridFsResource;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
 import com.whaleal.mars.core.index.IndexHelper;
+import com.whaleal.mars.core.index.IndexUtil;
 import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
 import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 import com.whaleal.mars.core.query.*;
@@ -93,7 +94,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-
 
 import static com.whaleal.icefrog.core.lang.Precondition.*;
 
@@ -392,7 +392,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         Precondition.hasText(collectionName, "CollectionName must not be null or empty");
 
         MongoCollection< T > collection = this.getCollection(entityClass, collectionName);
-        //ClientSession session = this.startSession();
+
 
         collection = query.getReadConcern() == null ? collection : collection.withReadConcern(query.getReadConcern());
 
@@ -493,8 +493,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         Precondition.notNull(entity, "entity must not be null");
         Precondition.hasText(collectionName, "collectionName must not be null");
 
-        // 开启与数据库的连接
-        //ClientSession session = this.startSession();
+
 
         //根据传入的集合名和实体类获取对应的MongoCollection对象
         MongoCollection< T > collection = this.getCollection((Class< T >) entity.getClass(), collectionName);
@@ -551,7 +550,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             throw new IllegalArgumentException("entities in operation can't be null or empty ");
         }
 
-        //ClientSession session = this.startSession();
 
         Class< T > type = null;
 
@@ -585,7 +583,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         if (entityDoc == null) {
             throw new IllegalArgumentException();
         }
-        //ClientSession session = this.startSession();
+
         MongoCollection< ? > collection = this.getCollection(entity.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
@@ -639,7 +637,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         }
 
-        ClientSession session = this.startSession();
+
         MongoCollection< T > collection = this.getCollection(entityClass, collectionName);
         collection = prepareConcern(collection, options);
 
@@ -647,9 +645,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             //todo
             // 针对所有的 UpdateDefinition
             //getUpdateObject () 方法 在这里都需要处理
-            return null;
+            throw  new UnsupportedOperationException("UpdatePipeline  is not supported  in current version  ") ;
+            //return null;
         } else {
-            UpdateResult result = updateDefinitionExecute(session, collection, query, options, update.getUpdateObject());
+
+
+            UpdateResult result = updateDefinitionExecute( collection, query,options, update.getUpdateObject());
 
             return result;
         }
@@ -840,8 +841,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         isTrue(query.getSkip() <= 0, "Query must not define skip.");
 
 
-        //MarsSession marsSession = this.startSession();
-
 
 
         if (entityType == resultType) {
@@ -887,12 +886,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         notNull(entityClass, "EntityClass must not be null!");
         notNull(collectionName, "CollectionName must not be null!");
 
-        //MarsSession marsSession = this.startSession();
+
 
         MongoCollection< T > collection = this.database.getCollection(collectionName, entityClass);
         T oneAndDelete = this.operations.findOneAndDelete(collection, query.getQueryObject(), options.getOriginOptions());
 
-        //T oneAndDelete = this.database.getCollection(collectionName, entityClass).findOneAndDelete(marsSession, query.getQueryObject(), options.getOriginOptions());
 
 
         return oneAndDelete;
@@ -923,14 +921,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public void createIndex( Index index, String collectionName ) {
 
-        ClientSession session = this.startSession();
+        //ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
 
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_CREATE_ONE);
 
 
-        createIndexExecute(session, collection, null, index.getIndexOptions(), index);
+        //createIndexExecute( collection,  index.getIndexOptions(), index);
+        this.operations.createIndex(collection , new IndexModel(index.getIndexKeys(),index.getIndexOptions()));
 
     }
 
@@ -947,41 +946,55 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public void dropIndex( Index index, String collectionName ) {
 
-        ClientSession session = this.startSession();
+        //ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
 
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_ONE);
 
-        dropOneIndexExecute(session, collection, null, null, index);
+        //dropOneIndexExecute(collection,  index);
+
+        collection.dropIndex(index.getIndexKeys());
+
+        this.operations.dropIndex(collection,index.getIndexKeys());
 
     }
 
     @Override
     public void dropIndexes( String collectionName ) {
 
-        ClientSession session = this.startSession();
+        //ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
 
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_DROP_MANY);
 
-        dropManyIndexExecute(session, collection, null, null, null);
+        //dropManyIndexExecute(session, collection, null, null, null);
+
+        //collection.dropIndexes();
+        this.operations.dropIndexes(collection);
 
     }
 
     @Override
     public List< Index > getIndexes( String collectionName ) {
 
-        ClientSession session = this.startSession();
+        //ClientSession session = this.startSession();
 
         MongoCollection collection = database.getCollection(collectionName);
 
 //        CrudExecutor crudExecutor = CrudExecutorFactory.create(CrudEnum.INDEX_FIND);
 
-        List< Index > execute = findManyIndexExecute(session, collection, null, null, null);
+        //List< Index > execute = findManyIndexExecute(session, collection, null, null, null);
 
-        return execute;
+        //session.close();
+        MongoCursor<Document> iterator = this.operations.getIndexes(collection).iterator();
+
+        List<Index>  indexes = new ArrayList<>();
+        while (iterator.hasNext()){
+            indexes.add(IndexUtil.of(iterator.next()));
+        }
+        return indexes;
 
     }
 
@@ -1359,6 +1372,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             database.createView(session, name, collectionName, getDocuments(pipeline.getInnerStage()), options);
             return database.getCollection(name, Document.class);
         } finally {
+
+
             lock.unlock();
         }
 
@@ -1841,31 +1856,31 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
     public < T > QueryCursor< T > findDistinct( Query query, String field, String collectionName, Class< ? > entityClass, Class< T > resultClass ) {
-        ClientSession session = this.startSession();
+
         MongoCollection< ? > collection = this.getCollection(entityClass, collectionName);
-        QueryCursor< T > result = this.findDistinctExecute(session, collection, query, field, resultClass);
+        QueryCursor< T > result = this.findDistinctExecute( collection, query, field, resultClass);
         return result;
     }
 
 
-    private < T > QueryCursor< T > findDistinctExecute( ClientSession session, MongoCollection collection, Query query, String field, Class< T > resultClass ) {
+    private < T > QueryCursor< T > findDistinctExecute( MongoCollection collection, Query query, String field, Class< T > resultClass ) {
 
         DistinctIterable< T > distinctIterable;
         if (query != null) {
-            distinctIterable = collection.distinct(session, field, query.getQueryObject(), resultClass);
+            distinctIterable = collection.distinct( field, query.getQueryObject(), resultClass);
             if (query.getCollation().orElse(null) != null) {
 
                 distinctIterable = distinctIterable.collation(query.getCollation().get());
             }
         } else {
-            distinctIterable = collection.distinct(session, field, null, resultClass);
+            distinctIterable = collection.distinct(field, null, resultClass);
         }
         return new QueryCursor< T >(distinctIterable.iterator());
     }
 
 
+    @Deprecated
     private < T > T insertOneExecute( ClientSession session, MongoCollection collection, InsertOneOptions options, Object data ) {
-
 
         InsertOneResult insertOneResult;
         if (options == null) {
@@ -1894,6 +1909,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         return (T) insertOneResult;
     }
 
+    @Deprecated
     private < T > Collection< T > insertManyExecute( ClientSession session, MongoCollection collection, InsertManyOptions options, Collection< T > data ) {
 
         // InsertManyResult insertManyResult = new InsertManyResult();
@@ -1935,6 +1951,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         return data;
     }
 
+    @Deprecated
     private < T > T updateExecute( ClientSession session, MongoCollection collection, Query query, UpdateOptions options, Object data ) {
 
         if (!(options instanceof UpdateOptions)) {
@@ -1971,41 +1988,45 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     }
 
-    private < T > T updateDefinitionExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data ) {
+    @Deprecated
+    private < T > UpdateResult updateDefinitionExecute(  MongoCollection<T> collection, Query query, UpdateOptions options, Document data ) {
 
-
+/*
         Document dd = (Document) data;
         dd.containsKey(UpdatePipeline.Updatepipeline);
-        List< Document > list = dd.getList(UpdatePipeline.Updatepipeline, Document.class);
+        List< Document > list = dd.getList(UpdatePipeline.Updatepipeline, Document.class);*/
 
-        if (!(options instanceof UpdateOptions)) {
+       /* if (!(options instanceof UpdateOptions)) {
             throw new ClassCastException();
-        }
+        }*/
 
-        UpdateOptions option = (UpdateOptions) options;
+        //UpdateOptions option = (UpdateOptions) options;
 
         UpdateResult updateResult;
 
-        if (option.isMulti()) {
+        if (options.isMulti()) {
 
-            if (session == null) {
+            updateResult = this.operations.updateMany(collection , query.getQueryObject(), (Document)data, options.getOriginOptions());
+           /* if (session == null) {
                 updateResult = collection.updateMany(query.getQueryObject(), (Document) data, option.getOriginOptions());
             } else {
                 updateResult = collection.updateMany(session, query.getQueryObject(), (Document) data, option.getOriginOptions());
-            }
+            }*/
 
-            return (T) updateResult;
+            return  updateResult;
 
         } else {
 
+            updateResult = this.operations.updateOne(collection ,query.getQueryObject() ,(Document) data, options.getOriginOptions());
 
+            /*
             if (session == null) {
                 updateResult = collection.updateOne(query.getQueryObject(), (Document) data, option.getOriginOptions());
             } else {
                 updateResult = collection.updateOne(session, query.getQueryObject(), (Document) data, option.getOriginOptions());
-            }
+            }*/
 
-            return (T) updateResult;
+            return  updateResult;
 
         }
 
@@ -2013,7 +2034,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
 
-    private < T > T createIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data ) {
+    @Deprecated
+    private < T > T createIndexExecute(  MongoCollection collection ,  Options options, Object data ) {
 
         Index index = (Index) data;
 
@@ -2021,45 +2043,30 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         if (indexOptions == null) {
 
-            if (session == null) {
 
                 collection.createIndex(index.getIndexKeys());
 
-            } else {
-
-                collection.createIndex(session, index.getIndexKeys());
-
-            }
 
         } else {
 
-            if (session == null) {
+
                 collection.createIndex(index.getIndexKeys(), indexOptions.getOriginOptions());
-            } else {
-                collection.createIndex(session, index.getIndexKeys(), indexOptions.getOriginOptions());
-            }
+
         }
 
         return null;
     }
 
-    private < T > T dropOneIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data ) {
+    @Deprecated
+    private < T > void dropOneIndexExecute( MongoCollection collection, Index index ) {
 
-        Index index = (Index) data;
-
-        if (session == null) {
 
             collection.dropIndex(index.getIndexKeys());
 
-        } else {
 
-            collection.dropIndex(session, index.getIndexKeys());
-
-        }
-
-        return null;
     }
 
+    @Deprecated
     private < T > T dropManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data ) {
 
         if (session == null) {
@@ -2073,6 +2080,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         return null;
     }
 
+
+    @Deprecated
     private < T > T findManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data ) {
 
         ListIndexesIterable indexIterable = null;
@@ -2084,14 +2093,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
             indexIterable = collection.listIndexes(session);
         }
-
-
         MongoCursor iterator = indexIterable.iterator();
-
-
         List indexes = new ArrayList();
-
-
         while (iterator.hasNext()) {
 
             Document o = (Document) iterator.next();
@@ -2254,6 +2257,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
 
+    @Deprecated
     private < T > T createManyIndexExecute( ClientSession session, MongoCollection collection, Query query, Options options, Object data ) {
 
         List< Index > indexes = (List) data;
@@ -2298,7 +2302,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             if (marsSession == null) {
                 throw new IllegalStateException("No session could be found for the transaction.");
             }
-            return marsSession.getSession().withTransaction(() -> body.execute(marsSession));
+            return marsSession.withTransaction(() -> body.execute(marsSession));
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return null;
@@ -2339,6 +2343,17 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
     public abstract static class DatastoreOperations {
+        public abstract < T > String createIndex( MongoCollection< T > collection, IndexModel index );
+
+        public abstract < T > void dropIndex( MongoCollection< T > collection, Document bsonkey );
+
+        public abstract < T > List< String > createIndexes( MongoCollection< T > collection, List< IndexModel > indexes );
+
+        public abstract < T > void dropIndexes( MongoCollection< T > collection );
+
+        public abstract < T > ListIndexesIterable< Document > getIndexes( MongoCollection< T > collection );
+
+
         public abstract < T > long countDocuments( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.CountOptions options );
 
         public abstract < T > DeleteResult deleteMany( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options );
@@ -2346,6 +2361,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         public abstract < T > DeleteResult deleteOne( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options );
 
         public abstract < E > FindIterable< E > find( MongoCollection< E > collection, Document queryDocument );
+
+        public abstract < E > DistinctIterable< E > distinct( MongoCollection< E > collection, Document query, String fieldName, Class< E > resultClass );
 
         @Nullable
         public abstract < T > T findOneAndDelete( MongoCollection< T > collection, Document queryDocument, com.mongodb.client.model.FindOneAndDeleteOptions options );
@@ -2385,6 +2402,34 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
      * @see com.whaleal.mars.session.MarsSessionImpl
      */
     private class CollectionOperations extends DatastoreOperations {
+
+        @Override
+        public String createIndex( MongoCollection collection, IndexModel index ) {
+            return collection.createIndex(index.getKeys(), index.getOptions());
+        }
+
+
+        @Override
+        public < T > void dropIndex( MongoCollection< T > collection, Document bsonkey  ) {
+            collection.dropIndex(bsonkey);
+        }
+
+        @Override
+        public < T > List< String > createIndexes( MongoCollection< T > collection, List< IndexModel > indexes ) {
+            return collection.createIndexes(indexes);
+        }
+
+        @Override
+        public < T > void dropIndexes( MongoCollection< T > collection ) {
+            collection.dropIndexes();
+        }
+
+        @Override
+        public < T > ListIndexesIterable< Document > getIndexes( MongoCollection< T > collection ) {
+            return collection.listIndexes();
+
+        }
+
         @Override
         public < T > long countDocuments( MongoCollection< T > collection, Document query, com.mongodb.client.model.CountOptions options ) {
             return collection.countDocuments(query, options);
@@ -2403,6 +2448,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         @Override
         public < E > FindIterable< E > find( MongoCollection< E > collection, Document query ) {
             return collection.find(query);
+        }
+
+        @Override
+        public < E > DistinctIterable< E > distinct( MongoCollection< E > collection, Document query, String fieldName, Class< E > resultClass ) {
+
+            return collection.distinct(fieldName, query, resultClass);
         }
 
         @Override
