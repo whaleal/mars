@@ -40,7 +40,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScanner;
-import org.springframework.boot.autoconfigure.mongo.*;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.ApplicationContext;
@@ -103,16 +103,11 @@ public class MarsAutoConfiguration {
     public MongoClient mongo(ObjectProvider<MongoClientSettingsBuilderCustomizer> builderCustomizers, MongoClientSettings settings) {
         return (MongoClient)(new MongoClientFactory((List)builderCustomizers.orderedStream().collect(Collectors.toList()))).createMongoClient(settings);
     }
-    
 
 
-    @Configuration(
-            proxyBeanMethods = false
-    )
-    @ConditionalOnMissingBean({MongoClientSettings.class})
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnMissingBean(MongoClientSettings.class)
     static class MongoClientSettingsConfiguration {
-        MongoClientSettingsConfiguration() {
-        }
 
         @Bean
         MongoClientSettings mongoClientSettings() {
@@ -120,9 +115,10 @@ public class MarsAutoConfiguration {
         }
 
         @Bean
-        MongoPropertiesClientSettingsBuilderCustomizer mongoPropertiesCustomizer(MongoProperties properties, Environment environment) {
+        MongoPropertiesClientSettingsBuilderCustomizer mongoPropertiesCustomizer( MongoProperties properties,Environment environment) {
             return new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
         }
+
     }
 
 }

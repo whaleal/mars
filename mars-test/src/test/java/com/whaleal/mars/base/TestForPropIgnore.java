@@ -6,8 +6,7 @@ import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.bean.Num;
 import com.whaleal.mars.bean.Status;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.query.Criteria;
-import com.whaleal.mars.core.query.Query;
+
 import com.whaleal.mars.session.QueryCursor;
 import org.bson.types.ObjectId;
 import org.junit.Assert;
