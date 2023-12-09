@@ -24,13 +24,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
             <version>${spring-boot.version}</version>
-          <!--  <version>3.2.0</version>-->
+            <optional>true</optional>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
       <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

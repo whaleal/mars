@@ -20,7 +20,7 @@
     </modules>
 
     <properties>
-        <mongodb.version>4.11.1</mongodb.version>
+        <mongo.version>4.11.1</mongo.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <!-- spring boot 版本 当前以次新版本为主 , spring boot 3 也将要求最低 java 版本为 17-->
@@ -28,14 +28,13 @@
         <spring.version>5.3.27</spring.version>
         <spring-boot.version>2.5.15</spring-boot.version>
         <icefrog.version>1.1.8</icefrog.version>
-        <hutool.version>6.0.0-M8</hutool.version>
     </properties>
 
     <!--发布的标准，这个是按照mongodb的标准来做的-->
     <licenses>
         <license>
             <name>The Server Side Public License, Version 1</name>
-            <url>https://docs.whaleal.com/marsdocs/licensing/server-side-public-license</url>
+            <url>https://docs.whaleal.com/licensing/Server_Side_Public_License_VERSION_1</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
