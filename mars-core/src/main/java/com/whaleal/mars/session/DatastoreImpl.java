@@ -48,7 +48,6 @@ import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.collection.ListUtil;
-import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.map.MapUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.OptionalUtil;
@@ -95,7 +94,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import static com.whaleal.icefrog.core.lang.Precondition.*;
+import static com.whaleal.mars.util.Assert.*;
 
 
 /**
@@ -183,7 +182,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public boolean collectionExists( String collectionName ) {
-        Precondition.notNull(collectionName, "CollectionName must not be null");
+        notNull(collectionName, "CollectionName must not be null");
         for (String name : this.getDatabase().listCollectionNames()) {
             if (collectionName.equals(name)) {
                 return true;
@@ -234,27 +233,27 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public Document executeCommand( String jsonCommand ) {
-        Precondition.notNull(jsonCommand);
+        notNull(jsonCommand);
         return this.database.runCommand(Document.parse(jsonCommand));
     }
 
     @Override
     public Document executeCommand( Document command ) {
-        Precondition.notNull(command);
+        notNull(command);
         return this.database.runCommand(command);
     }
 
     @Override
     public Document executeCommand( Document command, ReadPreference readPreference ) {
-        Precondition.notNull(command);
+        notNull(command);
         return this.database.runCommand(command, readPreference);
     }
 
     @Override
     public boolean exists( Query query, Class< ? > entityClass, String collectionName ) {
 
-        Precondition.notNull(query, "Query can not  be null");
-        Precondition.hasText(collectionName, "CollectionName passed in to exist can't be null");
+        notNull(query, "Query can not  be null");
+        hasText(collectionName, "CollectionName passed in to exist can't be null");
 
         Optional< ? > o = doFindOne(query, entityClass, collectionName);
         return o.isPresent();
@@ -264,10 +263,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public < T > UpdateResult replace( Query query, T replacement, ReplaceOptions options, String collectionName ) {
 
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.hasText(collectionName, "Collection name must not be null or empty");
-        Precondition.notNull(replacement, "Replacement must not be null!");
-        Precondition.notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
+        notNull(query, "Query must not be null");
+        hasText(collectionName, "Collection name must not be null or empty");
+        notNull(replacement, "Replacement must not be null!");
+        notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
 
         MongoCollection< T > collection = this.getCollection((Class< T >) replacement.getClass(), collectionName);
 
@@ -332,8 +331,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @SuppressWarnings("ConstantConditions")
     protected < T > com.mongodb.client.result.DeleteResult doDelete( Query query, @Nullable Class< T > entityClass, String collectionName, com.mongodb.client.model.DeleteOptions options,
                                                                      boolean multi ) {
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.hasText(collectionName, "Collection name must not be null or empty");
+        notNull(query, "Query must not be null");
+        hasText(collectionName, "Collection name must not be null or empty");
 
         if (query.getHint() != null) {
             String hint = query.getHint();
@@ -388,8 +387,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     protected < T > FindIterable< T > doFind( Query query, @Nullable Class< T > entityClass, String collectionName ) {
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.hasText(collectionName, "CollectionName must not be null or empty");
+        notNull(query, "Query must not be null");
+        hasText(collectionName, "CollectionName must not be null or empty");
 
         MongoCollection< T > collection = this.getCollection(entityClass, collectionName);
 
@@ -490,8 +489,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     //    @Override
     private < T > T doInsertOne( T entity, InsertOneOptions options, String collectionName ) {
-        Precondition.notNull(entity, "entity must not be null");
-        Precondition.hasText(collectionName, "collectionName must not be null");
+        notNull(entity, "entity must not be null");
+        hasText(collectionName, "collectionName must not be null");
 
 
 
@@ -671,7 +670,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public UpdateResult upsert( Query query, UpdateDefinition update, Class< ? > entityClass, String collectionName ) {
 
-        Precondition.notNull(entityClass, "EntityClass must not be null");
+        notNull(entityClass, "EntityClass must not be null");
 
         return doUpdate(collectionName, query, update, entityClass, true, false);
     }
@@ -689,7 +688,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public UpdateResult updateFirst( Query query, UpdateDefinition update, Class< ? > entityClass, String collectionName ) {
 
-        Precondition.notNull(entityClass, "EntityClass must not be null");
+        notNull(entityClass, "EntityClass must not be null");
 
         return doUpdate(collectionName, query, update, entityClass, false, false);
     }
@@ -707,7 +706,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public UpdateResult updateMulti( Query query, UpdateDefinition update, Class< ? > entityClass, String collectionName ) {
 
-        Precondition.notNull(entityClass, "EntityClass must not be null");
+        notNull(entityClass, "EntityClass must not be null");
 
         return doUpdate(collectionName, query, update, entityClass, false, true);
     }
@@ -742,9 +741,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     protected < T > UpdateResult doUpdate( String collectionName, Query query, UpdateDefinition update,
                                            @Nullable Class< ? > entityClass, boolean upsert, boolean multi ) {
 
-        Precondition.notNull(collectionName, "CollectionName must not be null");
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(update, "Update must not be null");
+        notNull(collectionName, "CollectionName must not be null");
+        notNull(query, "Query must not be null");
+        notNull(update, "Update must not be null");
 
         if (query.isSorted() && LOGGER.isWarnEnabled()) {
 
