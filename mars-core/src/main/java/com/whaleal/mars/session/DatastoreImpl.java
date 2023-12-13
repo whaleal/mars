@@ -1066,7 +1066,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
         final EntityModel model = this.mapper.getEntityModel(entity.getClass());
-
         final PropertyModel idField = model.getIdProperty();
         //如果对象内部属性中含有_id字段且_id 字段有值，则执行save操作，没有则执行insert
         if (idField != null && idField.getPropertyAccessor().get(entity) != null) {
@@ -1079,7 +1078,19 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
             replace(new Query(Criteria.where("_id").is(document.get("_id"))), entity, replaceOptiion, collectionName);
         } else {
-            doInsertOne(entity, options, collectionName);
+
+            Document document = this.toDocument(entity);
+            if(document.containsKey("_id")){
+                ReplaceOptions replaceOptiion = new ReplaceOptions()
+                        .bypassDocumentValidation(options.getBypassDocumentValidation())
+                        .upsert(true);
+                replace(new Query(Criteria.where("_id").is(document.get("_id"))), entity, replaceOptiion, collectionName);
+
+            }else {
+
+                doInsertOne(entity, options, collectionName);
+            }
+
         }
 
         return entity;
