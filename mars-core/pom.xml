@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mars</artifactId>
         <groupId>com.whaleal.mars</groupId>
-        <version>0.9.14</version>
+        <version>0.9.15</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,17 +27,10 @@
             <optional>true</optional>
         </dependency>
 
-        <!--计划在 0.9.x  中删除 -->
-       <!-- <dependency>
-             <groupId>com.whaleal.icefrog</groupId>
-             <artifactId>icefrog-log</artifactId>
-             <version>${icefrog.version}</version>
-            <optional>true</optional>
-         </dependency>-->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>${mongo.version}</version>
+            <version>4.11.1</version>
         </dependency>
     </dependencies>
 </project>
