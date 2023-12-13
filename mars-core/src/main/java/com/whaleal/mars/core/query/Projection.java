@@ -174,7 +174,7 @@ public class Projection extends com.whaleal.mars.core.domain.Projection {
     public Document getFieldsObject() {
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        Document document = new Document((Map) criteria);
+        Document document = new Document( criteria);
 
         for (Entry<String, Object> entry : slices.entrySet()) {
             document.put(entry.getKey(), new Document("$slice", entry.getValue()));

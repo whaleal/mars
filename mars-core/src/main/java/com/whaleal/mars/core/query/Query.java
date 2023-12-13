@@ -357,7 +357,11 @@ public class Query {
      * @return the field {@link Document}.
      */
     public Document getFieldsObject() {
-        return this.projectionSpec == null ? new Document() : projectionSpec.getFieldsObject();
+        if (this.projectionSpec == null) {
+            this.projectionSpec = new Projection();
+        }
+
+        return projectionSpec.getFieldsObject();
     }
 
     /**
