@@ -47,10 +47,7 @@ import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.collection.ListUtil;
-import com.whaleal.icefrog.core.map.MapUtil;
 import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.codecs.MongoMappingContext;
@@ -563,7 +560,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         collection = prepareConcern(collection, options);
 
-        ArrayList< T > ts = ListUtil.toList(entities);
+        //ArrayList< T > ts = ListUtil.toList(entities);
 
 
         this.operations.insertMany(collection, entities, options.getOriginOptions());
@@ -748,7 +745,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         if (query.isSorted() && LOGGER.isWarnEnabled()) {
 
             LOGGER.warn(String.format("%s does not support sort ('%s'); Please use findAndModify() instead",
-                    upsert ? "Upsert" : "UpdateFirst", MapUtil.toString(query.getSortObject())));
+                    upsert ? "Upsert" : "UpdateFirst", query.getSortObject().toJson()));
         }
 
         com.mongodb.client.model.UpdateOptions opts = new com.mongodb.client.model.UpdateOptions();
@@ -817,10 +814,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
         //  do with collation
-        OptionalUtil.ifAllPresent(query.getCollation(), options.getCollation(), ( l, r ) -> {
+        if(query.getCollation().isPresent() && options.getCollation().isPresent()){
             throw new IllegalArgumentException(
                     "Both Query and FindOneAndModifyOptions define a collation. Please provide the collation only via one of the two.");
-        });
+        };
 
 
         return doFindAndModify(collectionName, query, entityClass, update, options);
