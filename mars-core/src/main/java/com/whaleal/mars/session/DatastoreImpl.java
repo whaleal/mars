@@ -560,9 +560,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         collection = prepareConcern(collection, options);
 
-        //ArrayList< T > ts = ListUtil.toList(entities);
-
-
         this.operations.insertMany(collection, entities, options.getOriginOptions());
 
 
