@@ -38,7 +38,6 @@ import org.bson.json.JsonObject;
 import org.bson.json.JsonReader;
 import org.bson.json.JsonWriter;
 import org.bson.json.JsonWriterSettings;
-
 import java.io.StringWriter;
 
 

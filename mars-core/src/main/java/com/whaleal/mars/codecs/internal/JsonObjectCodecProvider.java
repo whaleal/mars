@@ -30,7 +30,6 @@
 package com.whaleal.mars.codecs.internal;
 
 import org.bson.codecs.Codec;
-import org.bson.codecs.JsonObjectCodec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.json.JsonObject;
