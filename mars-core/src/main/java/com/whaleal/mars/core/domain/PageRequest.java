@@ -3,7 +3,7 @@ package com.whaleal.mars.core.domain;
 
 
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 
 /**
  * Basic Java Bean implementation of {@link Pageable}.
@@ -27,7 +27,7 @@ public class PageRequest extends AbstractPageRequest {
 
 		super(page, size);
 
-		Precondition.notNull(sort, "Sort must not be null!");
+		Assert.notNull(sort, "Sort must not be null!");
 
 		this.sort = sort;
 	}

@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.validation;
 
 
-import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.util.ObjectUtil;
 import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 

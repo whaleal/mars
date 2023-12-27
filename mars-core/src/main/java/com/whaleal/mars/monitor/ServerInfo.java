@@ -30,7 +30,7 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
-import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.mars.util.StrUtil;
 
 import java.net.UnknownHostException;
 import java.util.Date;

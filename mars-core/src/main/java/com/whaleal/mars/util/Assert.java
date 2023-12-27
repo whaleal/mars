@@ -38,7 +38,6 @@ import com.whaleal.icefrog.core.collection.CollUtil;
 import com.whaleal.icefrog.core.collection.CollectionUtil;
 import com.whaleal.icefrog.core.map.MapUtil;
 import com.whaleal.icefrog.core.util.ArrayUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.core.query.MarsQueryException;
 
 import java.math.BigInteger;
@@ -46,7 +45,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.whaleal.icefrog.core.util.StrUtil.lenientFormat;
+import static com.whaleal.mars.util.StrUtil.lenientFormat;
 import static java.lang.String.format;
 
 /**

@@ -31,7 +31,7 @@ package com.whaleal.mars.core.index;
 
 
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 import com.whaleal.mars.session.option.IndexOptions;
 import org.bson.Document;
 
@@ -63,16 +63,16 @@ public class Index {
 
     public Index( String field, IndexDirection direction ) {
 
-        Precondition.notNull("field can't be null in Index", field);
-        Precondition.notNull("direction can't be null in Index", direction);
+        Assert.notNull(field,"field can't be null in Index") ;
+        Assert.notNull(direction,"direction can't be null in Index");
         key.put(field, direction);
     }
 
     public Index( String field, IndexDirection direction, IndexOptions options ) {
 
-        Precondition.notNull("field can't be null in Index", field);
-        Precondition.notNull("direction can't be null in Index", direction);
-        Precondition.notNull("IndexOptions can't be null in Index", options);
+        Assert.notNull(field,"field can't be null in Index" );
+        Assert.notNull(direction,"direction can't be null in Index" );
+        Assert.notNull(options, "IndexOptions can't be null in Index" );
         key.put(field, direction);
         this.options = options;
 
@@ -80,8 +80,8 @@ public class Index {
 
     public Index on( String field, IndexDirection direction ) {
 
-        Precondition.notNull("field can't be null in Index", field);
-        Precondition.notNull("direction can't be null in Index", direction);
+        Assert.notNull(field, "field can't be null in Index");
+        Assert.notNull(direction, "direction can't be null in Index");
         key.put(field, direction);
         return this;
     }
@@ -89,7 +89,7 @@ public class Index {
 
     public Index setOptions( IndexOptions options ) {
 
-        Precondition.notNull("IndexOptions can't be null", options);
+        Assert.notNull(options,"IndexOptions can't be null" );
         this.options = options;
         return this;
     }

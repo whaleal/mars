@@ -31,7 +31,7 @@ package com.whaleal.mars.core.messaging;
 
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.changestream.FullDocument;
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import org.bson.BsonTimestamp;
@@ -283,7 +283,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder collation(Collation collation) {
 
-            Precondition.notNull(collation, "Collation must not be null nor empty!");
+            Assert.notNull(collation, "Collation must not be null nor empty!");
 
             this.collation = collation;
             return this;
@@ -298,7 +298,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder filter( AggregationPipeline filter) {
 
-            Precondition.notNull(filter, "Filter must not be null!");
+            Assert.notNull(filter, "Filter must not be null!");
 
             this.filter = filter;
             return this;
@@ -312,7 +312,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder filter(Document... filter) {
 
-            Precondition.noNullElements(filter, "Filter must not contain null values");
+            Assert.noNullElements(filter, "Filter must not contain null values");
 
             this.filter = Arrays.asList(filter);
             return this;
@@ -327,7 +327,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder resumeToken(BsonValue resumeToken) {
 
-            Precondition.notNull(resumeToken, "ResumeToken must not be null!");
+            Assert.notNull(resumeToken, "ResumeToken must not be null!");
 
             this.resumeToken = resumeToken;
 
@@ -356,7 +356,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder fullDocumentLookup(FullDocument lookup) {
 
-            Precondition.notNull(lookup, "Lookup must not be null!");
+            Assert.notNull(lookup, "Lookup must not be null!");
 
             this.fullDocumentLookup = lookup;
             return this;
@@ -370,7 +370,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder resumeAt(Instant resumeTimestamp) {
 
-            Precondition.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
+            Assert.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
 
             this.resumeTimestamp = resumeTimestamp;
             return this;
@@ -384,7 +384,7 @@ public class ChangeStreamOptions {
          */
         public ChangeStreamOptionsBuilder resumeAt(BsonTimestamp resumeTimestamp) {
 
-            Precondition.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
+            Assert.notNull(resumeTimestamp, "ResumeTimestamp must not be null!");
 
             this.resumeTimestamp = resumeTimestamp;
             return this;

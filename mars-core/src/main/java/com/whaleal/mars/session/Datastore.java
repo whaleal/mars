@@ -939,7 +939,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      */
     @Nullable
     default < T > T findAndReplace( Query query, T replacement, FindOneAndReplaceOptions options ) {
-        return findAndReplace(query, replacement, options, getCollectionName(ClassUtil.getClass(replacement)));
+        Class<T>  clazz = ((null == replacement) ? null : (Class<T>) replacement.getClass());
+        return findAndReplace(query, replacement, options, getCollectionName(clazz));
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.whaleal.mars.core.aggregation.stages;
 
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 import com.whaleal.mars.core.domain.Direction;
 import com.whaleal.mars.core.domain.ISort;
 import com.whaleal.mars.core.domain.SortType;
@@ -58,7 +58,7 @@ public class Sort extends Stage implements ISort {
      */
     public static Sort by( SortType... orders) {
 
-        Precondition.notNull(orders, "Orders must not be null!");
+        Assert.notNull(orders, "Orders must not be null!");
 
         return new Sort(Arrays.asList(orders));
     }
@@ -72,9 +72,9 @@ public class Sort extends Stage implements ISort {
      */
     public static Sort by( Direction direction, String... properties) {
 
-        Precondition.notNull(direction, "Direction must not be null!");
-        Precondition.notNull(properties, "Properties must not be null!");
-        Precondition.isTrue(properties.length > 0, "At least one property must be given!");
+        Assert.notNull(direction, "Direction must not be null!");
+        Assert.notNull(properties, "Properties must not be null!");
+        Assert.isTrue(properties.length > 0, "At least one property must be given!");
 
         return Sort.by(Arrays.stream(properties)//
                 .map(it -> new SortType(it ,direction))//
@@ -108,7 +108,7 @@ public class Sort extends Stage implements ISort {
      */
     public static Sort by( String... properties) {
 
-        Precondition.notNull(properties, "Properties must not be null!");
+        Assert.notNull(properties, "Properties must not be null!");
 
         return properties.length == 0 //
                 ? Sort.unsorted() //
@@ -123,7 +123,7 @@ public class Sort extends Stage implements ISort {
      */
     public static Sort by( List< SortType > orders) {
 
-        Precondition.notNull(orders, "Orders must not be null!");
+        Assert.notNull(orders, "Orders must not be null!");
 
         return orders.isEmpty() ? Sort.unsorted() : new Sort(orders);
     }
@@ -216,7 +216,7 @@ public class Sort extends Stage implements ISort {
 
     @Override
     public Sort and( ISort sort ) {
-        Precondition.notNull(sort, "Sort must not be null!");
+        Assert.notNull(sort, "Sort must not be null!");
 
         ArrayList<SortType> these = new ArrayList<>(this.getSorts());
 

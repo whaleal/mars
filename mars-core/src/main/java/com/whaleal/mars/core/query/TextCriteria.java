@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.query;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import org.bson.Document;
@@ -85,7 +85,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public static TextCriteria forLanguage(String language) {
 
-        Precondition.hasText(language, "Language must not be null or empty!");
+        Assert.hasText(language, "Language must not be null or empty!");
         return new TextCriteria(language);
     }
 
@@ -111,7 +111,7 @@ public class TextCriteria implements CriteriaDefinition {
      */
     public TextCriteria matching(Term term) {
 
-        Precondition.notNull(term, "Term to add must not be null.");
+        Assert.notNull(term, "Term to add must not be null.");
 
         this.terms.add(term);
         return this;

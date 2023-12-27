@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.core.validation;
 
-import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.util.Assert;
+import com.whaleal.mars.util.ObjectUtil;
 import com.whaleal.mars.core.query.CriteriaDefinition;
 import org.bson.Document;
 
@@ -55,7 +55,7 @@ class CriteriaValidator implements Validator {
      */
     static CriteriaValidator of(CriteriaDefinition criteria) {
 
-        Precondition.notNull(criteria, "Criteria must not be null!");
+        Assert.notNull(criteria, "Criteria must not be null!");
 
         return new CriteriaValidator(criteria);
     }

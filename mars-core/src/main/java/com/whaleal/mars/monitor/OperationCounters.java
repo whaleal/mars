@@ -30,7 +30,7 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
-import com.whaleal.icefrog.core.util.NumberUtil;
+import com.whaleal.mars.util.StrUtil;
 import org.bson.Document;
 
 /**
@@ -70,6 +70,6 @@ public class OperationCounters extends AbstractMonitor {
 
     private Integer getOpCounter(String key) {
         Document opCounters = (Document) serverStatus.get("opcounters");
-        return NumberUtil.convertNumberToTargetClass((Number) opCounters.get(key), Integer.class);
+        return Integer.parseInt(StrUtil.toString(opCounters.get(key)));
     }
 }

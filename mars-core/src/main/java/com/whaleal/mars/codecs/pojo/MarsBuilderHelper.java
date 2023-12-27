@@ -31,12 +31,13 @@ package com.whaleal.mars.codecs.pojo;
 
 
 import com.whaleal.icefrog.core.util.ClassUtil;
+import com.whaleal.mars.util.Assert;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isProtected;
 import static java.lang.reflect.Modifier.isPublic;
@@ -67,7 +68,7 @@ final class MarsBuilderHelper {
     @SuppressWarnings("unchecked")
     static <T> void configureClassModelBuilder(final EntityModelBuilder<T> entityModelBuilder, final Class<T> clazz) {
         // 断言 非空 并封装 type
-        entityModelBuilder.type(notNull("clazz", clazz));
+        entityModelBuilder.type(Assert.notNull( clazz));
 
         //  类对象上的 注解保存
         List<Annotation> annotations = new ArrayList<Annotation>();
@@ -208,8 +209,8 @@ final class MarsBuilderHelper {
     }
 
     private static boolean isAssignableClass(final Class<?> propertyTypeClass, final Class<?> typeDataClass) {
-        notNull("propertyTypeClass", propertyTypeClass);
-        notNull("typeDataClass", typeDataClass);
+        Assert.notNull(propertyTypeClass);
+        Assert.notNull( typeDataClass);
         return propertyTypeClass.isAssignableFrom(typeDataClass) || typeDataClass.isAssignableFrom(propertyTypeClass);
     }
 

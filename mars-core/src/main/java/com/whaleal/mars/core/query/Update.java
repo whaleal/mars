@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.query;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 import com.whaleal.icefrog.core.map.MapUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
@@ -301,7 +301,7 @@ public class Update implements UpdateDefinition {
      */
     public Update multiply( String key, Number multiplier) {
 
-        Precondition.notNull(multiplier, "Multiplier must not be null.");
+        Assert.notNull(multiplier, "Multiplier must not be null.");
         addMultiFieldOperation("$mul", key, multiplier.doubleValue());
         return this;
     }
@@ -315,7 +315,7 @@ public class Update implements UpdateDefinition {
      */
     public Update max( String key, Object value) {
 
-        Precondition.notNull(value, "Value for max operation must not be null.");
+        Assert.notNull(value, "Value for max operation must not be null.");
         addMultiFieldOperation("$max", key, value);
         return this;
     }
@@ -329,7 +329,7 @@ public class Update implements UpdateDefinition {
      */
     public Update min( String key, Object value) {
 
-        Precondition.notNull(value, "Value for min operation must not be null.");
+        Assert.notNull(value, "Value for min operation must not be null.");
         addMultiFieldOperation("$min", key, value);
         return this;
     }
@@ -411,7 +411,7 @@ public class Update implements UpdateDefinition {
     @Deprecated
     protected void addFieldOperation(String operator, String key, Object value) {
 
-        Precondition.hasText(key, "Key/Path for update must not be null or blank.");
+        Assert.hasText(key, "Key/Path for update must not be null or blank.");
 
         modifierOps.put(operator, new Document(key, value));
         this.keysToUpdate.add(key);
@@ -419,7 +419,7 @@ public class Update implements UpdateDefinition {
 
     protected void addMultiFieldOperation( String operator, String key, Object value ) {
 
-        Precondition.hasText(key, "Key/Path for update must not be null or blank.");
+        Assert.hasText(key, "Key/Path for update must not be null or blank.");
         Object existingValue = this.modifierOps.get(operator);
         Document keyValueMap;
 
@@ -523,8 +523,8 @@ public class Update implements UpdateDefinition {
          */
         protected BitwiseOperatorBuilder( Update reference, String key) {
 
-            Precondition.notNull(reference, "Reference must not be null!");
-            Precondition.notNull(key, "Key must not be null!");
+            Assert.notNull(reference, "Reference must not be null!");
+            Assert.notNull(key, "Key must not be null!");
 
             this.reference = reference;
             this.key = key;
@@ -632,7 +632,7 @@ public class Update implements UpdateDefinition {
          */
         public PushOperatorBuilder sort( int direction) {
 
-            Precondition.notNull(direction, "Direction must not be null.");
+            Assert.notNull(direction, "Direction must not be null.");
             this.modifiers.put("$sort",direction);
             return this;
         }
@@ -646,7 +646,7 @@ public class Update implements UpdateDefinition {
          */
         public PushOperatorBuilder sort(Sort sort) {
 
-            Precondition.notNull(sort, "Sort must not be null.");
+            Assert.notNull(sort, "Sort must not be null.");
 
             DocumentWriter writer = new DocumentWriter() ;
             ExpressionHelper.document(writer, () -> {

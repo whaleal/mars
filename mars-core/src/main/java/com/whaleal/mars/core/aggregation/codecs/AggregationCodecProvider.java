@@ -5,7 +5,9 @@ import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.aggregation.codecs.stages.*;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+
+
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -20,7 +22,7 @@ public class AggregationCodecProvider implements CodecProvider {
     private final MongoMappingContext mapper;
     private Map<Class, StageCodec > codecs;
 
-    @SuppressFBWarnings("EI_EXPOSE_REP2")
+    @SuppressWarnings("EI_EXPOSE_REP2")
     public AggregationCodecProvider( MongoMappingContext mapper) {
         this.mapper = mapper;
         expressionCodec = new ExpressionCodec(mapper);

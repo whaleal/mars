@@ -29,10 +29,8 @@
  */
 package com.whaleal.mars.core.query;
 
-
-
-import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.mars.util.StrUtil;
+import com.whaleal.mars.util.ObjectUtil;
 import com.whaleal.mars.util.Assert;
 
 import java.time.Duration;

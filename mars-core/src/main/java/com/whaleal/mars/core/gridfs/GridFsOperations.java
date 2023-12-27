@@ -31,11 +31,13 @@ package com.whaleal.mars.core.gridfs;
 
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.whaleal.icefrog.core.util.ObjectUtil;
+
 import com.whaleal.icefrog.core.util.ReUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
+
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
+import com.whaleal.mars.util.ObjectUtil;
+import com.whaleal.mars.util.StrUtil;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

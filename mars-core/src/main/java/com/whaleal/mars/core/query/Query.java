@@ -34,7 +34,7 @@ import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 
-import com.whaleal.icefrog.core.util.ObjectUtil;
+
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.domain.IProjection;
@@ -43,14 +43,14 @@ import com.whaleal.mars.core.domain.Pageable;
 import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.mars.util.Assert;
+import com.whaleal.mars.util.ObjectUtil;
 import org.bson.Document;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeEquals;
-import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
+
 
 
 /**
@@ -610,13 +610,13 @@ public class Query {
     protected boolean querySettingsEquals(Query that) {
 
         boolean criteriaEqual = this.criteria.equals(that.criteria);
-        boolean fieldsEqual = nullSafeEquals(this.projectionSpec, that.projectionSpec);
+        boolean fieldsEqual = ObjectUtil.nullSafeEquals(this.projectionSpec, that.projectionSpec);
         boolean sortEqual = this.sorts.equals(that.sorts);
-        boolean hintEqual = nullSafeEquals(this.hint, that.hint);
+        boolean hintEqual = ObjectUtil.nullSafeEquals(this.hint, that.hint);
         boolean skipEqual = this.skip == that.skip;
         boolean limitEqual = this.limit == that.limit;
-        boolean metaEqual = nullSafeEquals(this.meta, that.meta);
-        boolean collationEqual = nullSafeEquals(this.collation.orElse(null), that.collation.orElse(null));
+        boolean metaEqual = ObjectUtil.nullSafeEquals(this.meta, that.meta);
+        boolean collationEqual = ObjectUtil.nullSafeEquals(this.collation.orElse(null), that.collation.orElse(null));
 
         return criteriaEqual && fieldsEqual && sortEqual && hintEqual && skipEqual && limitEqual && metaEqual
                 && collationEqual;
@@ -632,13 +632,13 @@ public class Query {
         int result = 17;
 
         result += 31 * criteria.hashCode();
-        result += 31 * nullSafeHashCode(projectionSpec);
-        result += 31 * nullSafeHashCode(sorts);
-        result += 31 * nullSafeHashCode(hint);
+        result += 31 * ObjectUtil.nullSafeHashCode(projectionSpec);
+        result += 31 * ObjectUtil.nullSafeHashCode(sorts);
+        result += 31 * ObjectUtil.nullSafeHashCode(hint);
         result += 31 * skip;
         result += 31 * limit;
-        result += 31 * nullSafeHashCode(meta);
-        result += 31 * nullSafeHashCode(collation.orElse(null));
+        result += 31 * ObjectUtil.nullSafeHashCode(meta);
+        result += 31 * ObjectUtil.nullSafeHashCode(collation.orElse(null));
 
         return result;
     }

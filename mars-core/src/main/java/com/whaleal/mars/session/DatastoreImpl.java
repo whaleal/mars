@@ -47,8 +47,7 @@ import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
+
 import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
@@ -79,6 +78,9 @@ import com.whaleal.mars.session.option.TimeSeriesOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.transactions.MarsTransaction;
+import com.whaleal.mars.util.Assert;
+import com.whaleal.mars.util.ObjectUtil;
+import com.whaleal.mars.util.StrUtil;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
@@ -173,13 +175,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public < T > boolean collectionExists( Class< T > entityClass ) {
-        notNull(entityClass, "Class must not be null");
+        Assert.notNull(entityClass, "Class must not be null");
         return collectionExists(getCollectionName(entityClass));
     }
 
     @Override
     public boolean collectionExists( String collectionName ) {
-        notNull(collectionName, "CollectionName must not be null");
+        Assert.notNull(collectionName, "CollectionName must not be null");
         for (String name : this.getDatabase().listCollectionNames()) {
             if (collectionName.equals(name)) {
                 return true;
@@ -189,7 +191,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     public < T > MongoCollection< T > getCollection( Class< T > type ) {
-        notNull(type, "type can not be null");
+        Assert.notNull(type, "type can not be null");
 
         String nameCache = null;
         if ((nameCache = collectionNameCache.get(type)) != null) {
@@ -230,26 +232,26 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public Document executeCommand( String jsonCommand ) {
-        notNull(jsonCommand);
+        Assert.notNull(jsonCommand);
         return this.database.runCommand(Document.parse(jsonCommand));
     }
 
     @Override
     public Document executeCommand( Document command ) {
-        notNull(command);
+        Assert.notNull(command);
         return this.database.runCommand(command);
     }
 
     @Override
     public Document executeCommand( Document command, ReadPreference readPreference ) {
-        notNull(command);
+        Assert.notNull(command);
         return this.database.runCommand(command, readPreference);
     }
 
     @Override
     public boolean exists( Query query, Class< ? > entityClass, String collectionName ) {
 
-        notNull(query, "Query can not  be null");
+        Assert.notNull(query, "Query can not  be null");
         hasText(collectionName, "CollectionName passed in to exist can't be null");
 
         Optional< ? > o = doFindOne(query, entityClass, collectionName);
@@ -260,10 +262,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public < T > UpdateResult replace( Query query, T replacement, ReplaceOptions options, String collectionName ) {
 
-        notNull(query, "Query must not be null");
+        Assert.notNull(query, "Query must not be null");
         hasText(collectionName, "Collection name must not be null or empty");
-        notNull(replacement, "Replacement must not be null!");
-        notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
+        Assert.notNull(replacement, "Replacement must not be null!");
+        Assert.notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
 
         MongoCollection< T > collection = this.getCollection((Class< T >) replacement.getClass(), collectionName);
 
@@ -303,10 +305,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     //根据_id进行删除
     @Override
     public com.mongodb.client.result.DeleteResult delete( Object object, String collectionName ) {
-        notNull(object, "object can not be null");
+        Assert.notNull(object, "object can not be null");
 
         Object id = this.mapper.getId(object);
-        notNull(id, "Object must has _id");
+        Assert.notNull(id, "Object must has _id");
 
         Query query = Query.query(Criteria.where("_id").is(id));
 
@@ -328,7 +330,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @SuppressWarnings("ConstantConditions")
     protected < T > com.mongodb.client.result.DeleteResult doDelete( Query query, @Nullable Class< T > entityClass, String collectionName, com.mongodb.client.model.DeleteOptions options,
                                                                      boolean multi ) {
-        notNull(query, "Query must not be null");
+        Assert.notNull(query, "Query must not be null");
         hasText(collectionName, "Collection name must not be null or empty");
 
         if (query.getHint() != null) {
@@ -384,7 +386,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     protected < T > FindIterable< T > doFind( Query query, @Nullable Class< T > entityClass, String collectionName ) {
-        notNull(query, "Query must not be null");
+        Assert.notNull(query, "Query must not be null");
         hasText(collectionName, "CollectionName must not be null or empty");
 
         MongoCollection< T > collection = this.getCollection(entityClass, collectionName);
@@ -479,14 +481,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     public < T > Optional< T > findById( Object id, Class< T > entityClass, String collectionName ) {
-        notNull(id, "Id must not be null");
-        notNull(collectionName, "CollectionName must not be null");
+        Assert.notNull(id, "Id must not be null");
+        Assert.notNull(collectionName, "CollectionName must not be null");
         return doFindOne(Query.query(Criteria.where("_id").is(id)), entityClass, collectionName);
     }
 
     //    @Override
     private < T > T doInsertOne( T entity, InsertOneOptions options, String collectionName ) {
-        notNull(entity, "entity must not be null");
+        Assert.notNull(entity, "entity must not be null");
         hasText(collectionName, "collectionName must not be null");
 
 
@@ -664,7 +666,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public UpdateResult upsert( Query query, UpdateDefinition update, Class< ? > entityClass, String collectionName ) {
 
-        notNull(entityClass, "EntityClass must not be null");
+        Assert.notNull(entityClass, "EntityClass must not be null");
 
         return doUpdate(collectionName, query, update, entityClass, true, false);
     }
@@ -682,7 +684,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public UpdateResult updateFirst( Query query, UpdateDefinition update, Class< ? > entityClass, String collectionName ) {
 
-        notNull(entityClass, "EntityClass must not be null");
+        Assert.notNull(entityClass, "EntityClass must not be null");
 
         return doUpdate(collectionName, query, update, entityClass, false, false);
     }
@@ -700,7 +702,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public UpdateResult updateMulti( Query query, UpdateDefinition update, Class< ? > entityClass, String collectionName ) {
 
-        notNull(entityClass, "EntityClass must not be null");
+        Assert.notNull(entityClass, "EntityClass must not be null");
 
         return doUpdate(collectionName, query, update, entityClass, false, true);
     }
@@ -735,9 +737,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     protected < T > UpdateResult doUpdate( String collectionName, Query query, UpdateDefinition update,
                                            @Nullable Class< ? > entityClass, boolean upsert, boolean multi ) {
 
-        notNull(collectionName, "CollectionName must not be null");
-        notNull(query, "Query must not be null");
-        notNull(update, "Update must not be null");
+        Assert.notNull(collectionName, "CollectionName must not be null");
+        Assert.notNull(query, "Query must not be null");
+        Assert.notNull(update, "Update must not be null");
 
         if (query.isSorted() && LOGGER.isWarnEnabled()) {
 
@@ -803,11 +805,11 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public < T > T findAndModify( Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class< T > entityClass, String collectionName ) {
-        notNull(query, "Query must not be null!");
-        notNull(update, "Update must not be null!");
-        notNull(options, "Options must not be null!");
-        notNull(entityClass, "EntityClass must not be null!");
-        notNull(collectionName, "CollectionName must not be null!");
+        Assert.notNull(query, "Query must not be null!");
+        Assert.notNull(update, "Update must not be null!");
+        Assert.notNull(options, "Options must not be null!");
+        Assert.notNull(entityClass, "EntityClass must not be null!");
+        Assert.notNull(collectionName, "CollectionName must not be null!");
 
 
         //  do with collation
@@ -822,12 +824,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public < S, T > T findAndReplace( Query query, S replacement, FindOneAndReplaceOptions options, Class< S > entityType, String collectionName, Class< T > resultType ) {
-        notNull(query, "Query must not be null!");
-        notNull(replacement, "Replacement must not be null!");
-        notNull(options, "Options must not be null! Use FindOneAndReplaceOptions#new() instead.");
-        notNull(entityType, "EntityType must not be null!");
-        notNull(collectionName, "CollectionName must not be null!");
-        notNull(resultType, "ResultType must not be null! Use Object.class instead.");
+        Assert.notNull(query, "Query must not be null!");
+        Assert.notNull(replacement, "Replacement must not be null!");
+        Assert.notNull(options, "Options must not be null! Use FindOneAndReplaceOptions#new() instead.");
+        Assert.notNull(entityType, "EntityType must not be null!");
+        Assert.notNull(collectionName, "CollectionName must not be null!");
+        Assert.notNull(resultType, "ResultType must not be null! Use Object.class instead.");
 
         //  sort  skip 已经不重要了 可以呗忽略了
         isTrue(query.getLimit() <= 1, "Query must not define a limit other than 1 ore none!");
@@ -875,9 +877,9 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public < T > T findAndDelete( Query query, Class< T > entityClass, String collectionName, FindOneAndDeleteOptions options ) {
-        notNull(query, "Query must not be null!");
-        notNull(entityClass, "EntityClass must not be null!");
-        notNull(collectionName, "CollectionName must not be null!");
+        Assert.notNull(query, "Query must not be null!");
+        Assert.notNull(entityClass, "EntityClass must not be null!");
+        Assert.notNull(collectionName, "CollectionName must not be null!");
 
 
 
@@ -1132,7 +1134,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public GridFSFindIterable findGridFs( Query query, String bucketName ) {
 
-        notNull(query, "Query must not be null!");
+        Assert.notNull(query, "Query must not be null!");
 
         Document queryObject = query.getQueryObject();
         Document sortObject = query.getSortObject();
@@ -1147,7 +1149,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         }
 
         MongoCursor< GridFSFile > iterator = iterable.iterator();
-        notNull(iterator.tryNext(), "No file found with the query");
+        Assert.notNull(iterator.tryNext(), "No file found with the query");
 
         return iterable;
     }
@@ -1171,7 +1173,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         GridFSFindIterable iterable = findGridFs(query);
         MongoCursor< GridFSFile > iterator = iterable.iterator();
-        notNull(iterator.tryNext(), "no file found to delete");
+        Assert.notNull(iterator.tryNext(), "no file found to delete");
         while (iterator.hasNext()) {
             getGridFsBucket(bucketName).delete(iterator.next().getObjectId());
         }
@@ -1186,7 +1188,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public GridFsResource getResource( GridFSFile file, String bucketName ) {
 
-        notNull(file, "GridFSFile must not be null!");
+        Assert.notNull(file, "GridFSFile must not be null!");
 
         return new GridFsResource(file, getGridFsBucket(bucketName).openDownloadStream(file.getId()));
     }
@@ -1295,7 +1297,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     //只传入实体类的方式，根据实体类的注解获取CollectionOptions
     @Override
     public < T > MongoCollection< Document > createCollection( Class< T > entityClass ) {
-        notNull(entityClass, "EntityClass must not be null!");
+        Assert.notNull(entityClass, "EntityClass must not be null!");
 
         return createCollection(entityClass, scanEntityCollectionOptions(entityClass));
     }
@@ -1330,7 +1332,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     public < T > MongoCollection< Document > createCollection( Class< T > entityClass,
                                                                CreateCollectionOptions collectionOptions ) {
 
-        notNull(entityClass, "EntityClass must not be null!");
+        Assert.notNull(entityClass, "EntityClass must not be null!");
 
         //CreateCollectionOptions options = collectionOptions != null ? collectionOptions : new CreateCollectionOptions();
 
@@ -1341,14 +1343,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public MongoCollection< Document > createCollection( String collectionName ) {
-        notNull(collectionName, "CollectionName must not be null!");
+        Assert.notNull(collectionName, "CollectionName must not be null!");
 
         return doCreateCollection(collectionName, new CreateCollectionOptions());
     }
 
     @Override
     public MongoCollection< Document > createCollection( String collectionName, CreateCollectionOptions collectionOptions ) {
-        notNull(collectionName, "collectionName must not be null");
+        Assert.notNull(collectionName, "collectionName must not be null");
         return doCreateCollection(collectionName, collectionOptions);
     }
 
@@ -1366,7 +1368,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     public MongoCollection< Document > doCreateView( String name, String collectionName, AggregationPipeline pipeline, CreateViewOptions options ) {
         hasText(collectionName, "CollectionName can not be null");
-        notNull(pipeline, "Pipeline can not be null");
+        Assert.notNull(pipeline, "Pipeline can not be null");
         lock.lock();
         try {
             MongoDatabase database = this.getDatabase();
@@ -1402,13 +1404,13 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Deprecated
     public MongoCollection< Document > createCollection( String collectionName, CollectionOptions collectionOptions ) {
 
-        notNull(collectionName, "CollectionName must not be null!");
+        Assert.notNull(collectionName, "CollectionName must not be null!");
         return doCreateCollection(collectionName, convertToDocument(collectionOptions));
     }
 
     @Override
     public void dropCollection( String collectionName ) {
-        notNull(collectionName, "CollectionName must not be null!");
+        Assert.notNull(collectionName, "CollectionName must not be null!");
         lock.lock();
         try {
             MongoCollection< Document > collection = this.database.getCollection(collectionName);
@@ -1653,7 +1655,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     private CollectionOptions getCollectionOptions( Class< ? > entity ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(entity);
-        notNull(entity, "EntityClass must not be null!");
+        Assert.notNull(entity, "EntityClass must not be null!");
         CollectionOptions options = CollectionOptions.empty();
 
 
@@ -1724,7 +1726,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     private CreateCollectionOptions scanEntityCollectionOptions( Class< ? > entity ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(entity);
-        notNull(entity, "EntityClass must not be null!");
+        Assert.notNull(entity, "EntityClass must not be null!");
         CreateCollectionOptions options = new CreateCollectionOptions();
 
         //TODO it may contains some bug，so please use it carefully.
