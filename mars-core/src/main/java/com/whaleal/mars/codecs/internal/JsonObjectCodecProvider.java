@@ -35,6 +35,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.json.JsonObject;
 
 
+@Deprecated
 public final class JsonObjectCodecProvider implements CodecProvider {
 
     @Override

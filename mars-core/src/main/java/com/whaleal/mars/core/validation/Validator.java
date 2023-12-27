@@ -29,8 +29,8 @@
  */
 package com.whaleal.mars.core.validation;
 
-import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.core.query.CriteriaDefinition;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 
 
@@ -53,7 +53,7 @@ public interface Validator {
      */
     static Validator document(Document validationRules) {
 
-        Precondition.notNull(validationRules, "ValidationRules must not be null!");
+        Assert.notNull(validationRules, "ValidationRules must not be null!");
         return DocumentValidator.of(validationRules);
     }
 
@@ -66,7 +66,7 @@ public interface Validator {
      */
 	/*static Validator schema(MongoJsonSchema schema) {
 
-		Precondition.notNull(schema, "Schema must not be null!");
+		Assert.notNull(schema, "Schema must not be null!");
 		return JsonSchemaValidator.of(schema);
 	}*/
 
@@ -80,7 +80,7 @@ public interface Validator {
      */
     static Validator criteria(CriteriaDefinition criteria) {
 
-        Precondition.notNull(criteria, "Criteria must not be null!");
+        Assert.notNull(criteria, "Criteria must not be null!");
         return CriteriaValidator.of(criteria);
     }
 }

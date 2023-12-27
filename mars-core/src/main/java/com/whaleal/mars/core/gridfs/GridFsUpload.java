@@ -30,8 +30,8 @@
 package com.whaleal.mars.core.gridfs;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.lang.loader.Lazy;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -55,9 +55,9 @@ public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
 
     private GridFsUpload( ID id, Lazy<InputStream> dataStream, String filename, Options options ) {
 
-        Precondition.notNull(dataStream, "Data Stream must not be null");
-        Precondition.notNull(filename, "Filename must not be null");
-        Precondition.notNull(options, "Options must not be null");
+        Assert.notNull(dataStream, "Data Stream must not be null");
+        Assert.notNull(filename, "Filename must not be null");
+        Assert.notNull(options, "Options must not be null");
 
         this.id = id;
         this.dataStream = dataStream;
@@ -143,7 +143,7 @@ public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
          */
         public GridFsUploadBuilder<T> content(InputStream stream) {
 
-            Precondition.notNull(stream, "InputStream must not be null");
+            Assert.notNull(stream, "InputStream must not be null");
 
             return content(() -> stream);
         }
@@ -156,7 +156,7 @@ public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
          */
         public GridFsUploadBuilder<T> content(Supplier<InputStream> stream) {
 
-            Precondition.notNull(stream, "InputStream Supplier must not be null");
+            Assert.notNull(stream, "InputStream Supplier must not be null");
 
             this.dataStream = Lazy.of(stream);
             return this;
@@ -195,7 +195,7 @@ public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
          */
         public GridFsUploadBuilder<T> options(Options options) {
 
-            Precondition.notNull(options, "Options must not be null");
+            Assert.notNull(options, "Options must not be null");
 
             this.options = options;
             return this;
@@ -233,7 +233,7 @@ public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
          */
         public GridFsUploadBuilder<T> gridFsFile(GridFSFile gridFSFile) {
 
-            Precondition.notNull(gridFSFile, "GridFSFile must not be null");
+            Assert.notNull(gridFSFile, "GridFSFile must not be null");
 
             this.id = gridFSFile.getId();
             this.filename = gridFSFile.getFilename();

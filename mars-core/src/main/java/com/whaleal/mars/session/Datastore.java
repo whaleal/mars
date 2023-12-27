@@ -36,19 +36,18 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.query.*;
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.transactions.MarsTransaction;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 /**
  * 数据操作的顶级接口
@@ -86,8 +85,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      */
     default < T > UpdateResult replace( Query query, T replacement ) {
 
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(replacement,"Replacement must not be null!");
+        Assert.notNull(query, "Query must not be null");
+        Assert.notNull(replacement,"Replacement must not be null!");
         return replace(query, replacement, new ReplaceOptions().upsert(false),getCollectionName(replacement.getClass()));
     }
 
@@ -101,9 +100,9 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return
      */
     default < T > UpdateResult replace( Query query, T replacement, ReplaceOptions options ) {
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(replacement,"Replacement must not be null!");
-        Precondition.notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
+        Assert.notNull(query, "Query must not be null");
+        Assert.notNull(replacement,"Replacement must not be null!");
+        Assert.notNull(options, "Options must not be null Use ReplaceOptions#new() instead");
         return replace(query, replacement, options, getCollectionName(replacement.getClass()));
     }
 
@@ -117,9 +116,9 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return
      */
     default < T > UpdateResult replace( Query query, T replacement, String collectionName ) {
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(collectionName, "CollectionName must not be null");
-        Precondition.notNull(replacement,"Replacement must not be null!");
+        Assert.notNull(query, "Query must not be null");
+        Assert.notNull(collectionName, "CollectionName must not be null");
+        Assert.notNull(replacement,"Replacement must not be null!");
         return replace(query, replacement, new ReplaceOptions().upsert(false), collectionName);
     }
 
@@ -149,7 +148,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      *           {@link #getCollectionName(Class) derived} from the given object type.
      */
     default DeleteResult delete(Object object){
-        notNull(object, "Object must not be null");
+        Assert.notNull(object, "Object must not be null");
         return delete(object ,getCollectionName(object.getClass()));
     }
 
@@ -228,13 +227,13 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @throws IllegalArgumentException when {@literal query} or {@literal collectionName} is {@literal null}.
      */
     default DeleteResult deleteMulti( Query query, String collectionName ) {
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.hasText(collectionName, "Collection name must not be null or empty");
+        Assert.notNull(query, "Query must not be null");
+        Assert.hasText(collectionName, "Collection name must not be null or empty");
         return deleteMulti(query, Document.class, collectionName);
     }
 
     default DeleteResult deleteMulti( Query query, Class<?> entityClass ) {
-        Precondition.notNull(query, "Query must not be null");
+        Assert.notNull(query, "Query must not be null");
         return deleteMulti(query, entityClass,this.getCollectionName(entityClass));
     }
 
@@ -286,13 +285,13 @@ interface Datastore extends IndexOperations, MongoOperations {
 
     @Deprecated
     default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass ) {
-        Precondition.notNull(query, "Query must not be null");
+        Assert.notNull(query, "Query must not be null");
         return find(query, entityClass, getCollectionName(entityClass));
     }
 
     @Deprecated
     default < T > QueryCursor< T > findAll( Query query, Class< T > entityClass,String collectionName) {
-        Precondition.notNull(query, "Query must not be null");
+        Assert.notNull(query, "Query must not be null");
         return find(query, entityClass, collectionName);
     }
 
@@ -309,8 +308,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return the QueryCursor of converted objects.
      */
     default <T> QueryCursor<T> find(Query query, Class<T> entityClass){
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(entityClass,"Class must not be null!");
+        Assert.notNull(query, "Query must not be null");
+        Assert.notNull(entityClass,"Class must not be null!");
         return find(query ,entityClass ,getCollectionName(entityClass));
     }
 
@@ -345,8 +344,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return the converted object.
      */
     default < T > Optional< T > findOne( Query query, Class< T > entityClass ) {
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(entityClass, "Class must not be null");
+        Assert.notNull(query, "Query must not be null");
+        Assert.notNull(entityClass, "Class must not be null");
         return findOne(query, entityClass, getCollectionName(entityClass));
     }
 
@@ -377,8 +376,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      * @return the document with the given id mapped onto the given target class.
      */
     default <T> Optional< T > findById(Object id, Class< T > entityClass){
-        Precondition.notNull(id, "Query must not be null");
-        Precondition.notNull(entityClass, "Class must not be null");
+        Assert.notNull(id, "Query must not be null");
+        Assert.notNull(entityClass, "Class must not be null");
         return findById(id,entityClass,getCollectionName(entityClass));
     }
 
@@ -405,8 +404,8 @@ interface Datastore extends IndexOperations, MongoOperations {
      *
      */
     default <T> QueryCursor<T> findDistinct(String field, @Nullable Class<?> entityClass, Class<T> resultClass) {
-        Precondition.notNull(field, "field must not be null");
-        Precondition.notNull(resultClass, "Result class must not be null");
+        Assert.notNull(field, "field must not be null");
+        Assert.notNull(resultClass, "Result class must not be null");
         return this.findDistinct(new Query(), field, entityClass, resultClass);
     }
 
@@ -424,9 +423,9 @@ interface Datastore extends IndexOperations, MongoOperations {
      *
      */
     default <T> QueryCursor<T> findDistinct(Query query, String field, @Nullable Class<?> entityClass, Class<T> resultClass){
-        Precondition.notNull(query, "Query must not be null");
-        Precondition.notNull(field, "field must not be null");
-        Precondition.notNull(resultClass, "Result class must not be null");
+        Assert.notNull(query, "Query must not be null");
+        Assert.notNull(field, "field must not be null");
+        Assert.notNull(resultClass, "Result class must not be null");
         return findDistinct(query, field, this.getCollectionName(entityClass), entityClass, resultClass);
     }
 
@@ -480,7 +479,7 @@ interface Datastore extends IndexOperations, MongoOperations {
      *           {@link #getCollectionName(Class) derived} from the given object type.
      */
     default < T > T insert( T objectToSave ) {
-        Precondition.notNull(objectToSave, "ObjectToSave must not be null");
+        Assert.notNull(objectToSave, "ObjectToSave must not be null");
         return insert(objectToSave, getCollectionName(objectToSave.getClass()));
     }
 
@@ -962,7 +961,7 @@ interface Datastore extends IndexOperations, MongoOperations {
     @Nullable
     default < T > T findAndReplace( Query query, T replacement, FindOneAndReplaceOptions options, String collectionName ) {
 
-        notNull(replacement, "Replacement must not be null!");
+        Assert.notNull(replacement, "Replacement must not be null!");
         return findAndReplace(query, replacement, options, (Class< T >) ClassUtil.getClass(replacement), collectionName);
     }
 

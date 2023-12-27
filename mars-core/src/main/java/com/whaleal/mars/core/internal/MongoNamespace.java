@@ -1,10 +1,11 @@
 package com.whaleal.mars.core.internal;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.mars.codecs.pojo.annotations.Constructor;
 import com.whaleal.mars.codecs.pojo.annotations.PropIgnore;
 import com.whaleal.mars.codecs.pojo.annotations.Property;
+import com.whaleal.mars.util.Assert;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -305,7 +306,7 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
          */
         public MongoNamespace.MongoNamespaceBuilder databaseName( String databaseName) {
 
-            Precondition.notNull(databaseName, "Database name must not be null!");
+            Assert.notNull(databaseName, "Database name must not be null!");
 
             this.databaseName = databaseName;
             return this;
@@ -317,7 +318,7 @@ public class MongoNamespace  implements Comparable<MongoNamespace>, Serializable
          */
         public MongoNamespace.MongoNamespaceBuilder collectionName( String collectionName) {
 
-            Precondition.notNull(collectionName, "Collection name must not be null!");
+            Assert.notNull(collectionName, "Collection name must not be null!");
 
             this.collectionName = collectionName;
             return this;

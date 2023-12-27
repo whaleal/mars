@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.messaging;
 
 import com.mongodb.client.MongoCursor;
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.ErrorHandler;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
@@ -248,8 +248,8 @@ abstract class CursorReadingTask<T, R> implements Task {
     @Override
     public boolean awaitStart(Duration timeout) throws InterruptedException {
 
-        Precondition.notNull(timeout, "Timeout must not be null!");
-        Precondition.isTrue(!timeout.isNegative(), "Timeout must not be negative!");
+        Assert.notNull(timeout, "Timeout must not be null!");
+        Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative!");
 
         return awaitStart.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }

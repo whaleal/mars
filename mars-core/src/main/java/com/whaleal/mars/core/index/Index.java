@@ -29,7 +29,8 @@
  */
 package com.whaleal.mars.core.index;
 
-import com.whaleal.icefrog.core.annotation.Nullable;
+
+import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.lang.Precondition;
 import com.whaleal.mars.session.option.IndexOptions;
 import org.bson.Document;

@@ -30,15 +30,15 @@
 package com.whaleal.mars.codecs.pojo;
 
 
-import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.mars.util.StrUtil;
 import com.whaleal.mars.codecs.Convention;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.util.Assert;
 import org.bson.codecs.pojo.IdGenerator;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.lang.String.format;
 import static java.util.Collections.*;
 
@@ -71,7 +71,8 @@ public class EntityModelBuilder<T> {
 
 
     public EntityModelBuilder(final Class<T> type) {
-        MarsBuilderHelper.configureClassModelBuilder(this, notNull("type", type));
+        Assert.notNull(type);
+        MarsBuilderHelper.configureClassModelBuilder(this, type);
         initCollectionName();
     }
 
@@ -98,7 +99,8 @@ public class EntityModelBuilder<T> {
 
 
     public EntityModelBuilder<T> instanceCreatorFactory(final InstanceCreatorFactory<T> instanceCreatorFactory) {
-        this.instanceCreatorFactory = notNull("instanceCreatorFactory", instanceCreatorFactory);
+        Assert.notNull(instanceCreatorFactory);
+        this.instanceCreatorFactory = instanceCreatorFactory ;
         return this;
     }
 
@@ -114,7 +116,8 @@ public class EntityModelBuilder<T> {
      * @return
      */
     public EntityModelBuilder<T> type(final Class<T> type) {
-        this.type = notNull("type", type);
+        Assert.notNull(type);
+        this.type = type ;
         return this;
     }
 
@@ -125,7 +128,8 @@ public class EntityModelBuilder<T> {
 
 
     public EntityModelBuilder<T> conventions(final List<Convention> conventions) {
-        this.conventions = notNull("conventions", conventions);
+        Assert.notNull(conventions);
+        this.conventions =conventions;
         return this;
     }
 
@@ -136,7 +140,8 @@ public class EntityModelBuilder<T> {
 
 
     public EntityModelBuilder<T> annotations(final List<Annotation> annotations) {
-        this.annotations = notNull("annotations", annotations);
+        Assert.notNull(annotations);
+        this.annotations = annotations;
         return this;
     }
 
@@ -187,12 +192,13 @@ public class EntityModelBuilder<T> {
 
 
     public boolean removeProperty(final String propertyName) {
-        return propertyModelBuilders.remove(getProperty(notNull("propertyName", propertyName)));
+        Assert.notNull(propertyName);
+        return propertyModelBuilders.remove(getProperty( propertyName));
     }
 
 
     public PropertyModelBuilder<?> getProperty(final String propertyName) {
-        notNull("propertyName", propertyName);
+        Assert.notNull(propertyName);
         for (PropertyModelBuilder<?> propertyModelBuilder : propertyModelBuilders) {
             if (propertyModelBuilder.getName().equals(propertyName)) {
                 return propertyModelBuilder;
@@ -229,7 +235,8 @@ public class EntityModelBuilder<T> {
     EntityModelBuilder<T> addProperty(final PropertyModelBuilder<?> propertyModelBuilder) {
 
         if(propertyModelBuilder.isReadable() || propertyModelBuilder.isWritable()){
-            propertyModelBuilders.add(notNull("propertyModelBuilder", propertyModelBuilder));
+            Assert.notNull(propertyModelBuilder);
+            propertyModelBuilders.add(propertyModelBuilder);
         }
 
         return this;

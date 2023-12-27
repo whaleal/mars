@@ -30,9 +30,10 @@
 package com.whaleal.mars.core.query;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.mars.util.Assert;
 
 import java.time.Duration;
 import java.util.*;
@@ -100,7 +101,7 @@ public class Meta {
      */
     public void setMaxTime(Duration timeout) {
 
-        Precondition.notNull(timeout, "Timeout must not be null!");
+        Assert.notNull(timeout, "Timeout must not be null!");
         setValue(MetaKey.MAX_TIME_MS.key, timeout.toMillis());
     }
 
@@ -148,7 +149,7 @@ public class Meta {
      */
     public boolean addFlag(CursorOption option) {
 
-        Precondition.notNull(option, "CursorOption must not be null!");
+        Assert.notNull(option, "CursorOption must not be null!");
         return this.flags.add(option);
     }
 
@@ -202,7 +203,7 @@ public class Meta {
      */
     void setValue( String key, Object value ) {
 
-        Precondition.hasText(key, "Meta key must not be 'null' or blank.");
+        Assert.hasText(key, "Meta key must not be 'null' or blank.");
 
         if (value == null || (value instanceof String && !StrUtil.hasText((String) value))) {
             this.values.remove(key);

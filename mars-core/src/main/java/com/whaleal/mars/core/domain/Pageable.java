@@ -1,6 +1,5 @@
 package com.whaleal.mars.core.domain;
 
-import com.whaleal.icefrog.core.lang.Precondition;
 
 import java.util.Optional;
 
@@ -81,8 +80,6 @@ public interface Pageable {
      * @return
      */
     default ISort getSortOr(ISort sort) {
-
-        Precondition.notNull(sort, "Fallback Sort must not be null!");
 
         return getSort().isSorted() ? getSort() : sort;
     }

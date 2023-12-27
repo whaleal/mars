@@ -41,6 +41,7 @@ import org.bson.json.JsonWriterSettings;
 import java.io.StringWriter;
 
 
+@Deprecated
 public class JsonObjectCodec implements Codec<JsonObject> {
     private final JsonWriterSettings writerSettings;
 

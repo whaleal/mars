@@ -36,7 +36,7 @@ import org.bson.codecs.pojo.PropertyAccessor;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+import static com.whaleal.mars.util.Assert.notNull;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -110,7 +110,7 @@ public final class PropertyModelBuilder<T> {
 
 
     public PropertyModelBuilder<T> propertySerialization(final PropertySerialization<T> propertySerialization) {
-        this.propertySerialization = notNull("propertySerialization", propertySerialization);
+        this.propertySerialization = notNull(propertySerialization);
         return this;
     }
 
@@ -126,7 +126,7 @@ public final class PropertyModelBuilder<T> {
 
 
     public PropertyModelBuilder<T> readAnnotations(final List<Annotation> annotations) {
-        this.readAnnotations = unmodifiableList(notNull("annotations", annotations));
+        this.readAnnotations = unmodifiableList(notNull( annotations));
         return this;
     }
 
@@ -209,7 +209,7 @@ public final class PropertyModelBuilder<T> {
     }
 
     PropertyModelBuilder<T> propertyName(final String propertyName) {
-        this.name = notNull("propertyName", propertyName);
+        this.name = notNull( propertyName);
         return this;
     }
 
@@ -218,7 +218,7 @@ public final class PropertyModelBuilder<T> {
     }
 
     PropertyModelBuilder<T> typeData(final TypeData<T> typeData) {
-        this.typeData = notNull("typeData", typeData);
+        this.typeData = notNull( typeData);
         return this;
     }
 

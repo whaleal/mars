@@ -30,12 +30,13 @@
 package com.whaleal.mars.core.aggregation;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.mars.core.aggregation.expressions.Expressions;
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.stages.*;
 import com.whaleal.mars.core.query.filters.Filter;
 import com.whaleal.mars.session.option.AggregationOptions;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -63,12 +64,12 @@ public class AggregationPipeline<T> implements Aggregation<T> {
     }
 
     public static <T> AggregationPipeline<T> create(Class<T> outputType,List<Stage> stages){
-        Precondition.checkNotNull(outputType,"outputType can't be null in AggregationPipeline") ;
+        Assert.checkNotNull(outputType,"outputType can't be null in AggregationPipeline") ;
         return new AggregationPipeline<T>(outputType,stages);
     }
 
     public static <T> AggregationPipeline<T> create(Class<T> outputType){
-        Precondition.checkNotNull(outputType,"outputType can't be null in AggregationPipeline") ;
+        Assert.checkNotNull(outputType,"outputType can't be null in AggregationPipeline") ;
         return new AggregationPipeline<T>(outputType);
     }
 

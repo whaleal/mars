@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.messaging;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+import com.whaleal.mars.util.Assert;
 
 import java.time.Duration;
 
@@ -64,7 +64,7 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
          */
         static RequestOptions justDatabase(String database) {
 
-            Precondition.notNull(database, "Database must not be null!");
+            Assert.notNull(database, "Database must not be null!");
 
             return new RequestOptions() {
 
@@ -88,7 +88,7 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
          */
         static RequestOptions justCollection(String collection) {
 
-            Precondition.notNull(collection, "Collection must not be null!");
+            Assert.notNull(collection, "Collection must not be null!");
             return () -> collection;
         }
 
@@ -119,8 +119,8 @@ public interface SubscriptionRequest<S, T, O extends SubscriptionRequest.Request
          */
         static RequestOptions of(String database, String collection) {
 
-            Precondition.notNull(database, "Database must not be null!");
-            Precondition.notNull(collection, "Collection must not be null!");
+            Assert.notNull(database, "Database must not be null!");
+            Assert.notNull(collection, "Collection must not be null!");
 
             return new RequestOptions() {
 

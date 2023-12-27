@@ -37,6 +37,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.MinKey;
 
 
+@Deprecated
 public class MinKeyCodec implements Codec<MinKey> {
     @Override
     public void encode(final BsonWriter writer, final MinKey value, final EncoderContext encoderContext) {

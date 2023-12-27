@@ -37,6 +37,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.MaxKey;
 
 
+@Deprecated
 public class MaxKeyCodec implements Codec<MaxKey> {
     @Override
     public void encode(final BsonWriter writer, final MaxKey value, final EncoderContext encoderContext) {

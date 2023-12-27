@@ -30,17 +30,17 @@
 package com.whaleal.mars.codecs.pojo;
 
 
-import com.whaleal.icefrog.core.lang.Pair;
+import com.whaleal.mars.util.Assert;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.util.Collections.unmodifiableMap;
 
 
 final class TypeParameterMap {
-    private final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap;
+    private final Map<Integer,  AbstractMap.SimpleEntry<Integer, TypeParameterMap> > propertyToClassParamIndexMap;
 
 
     static Builder builder() {
@@ -48,7 +48,7 @@ final class TypeParameterMap {
     }
 
 
-    Map<Integer, Pair<Integer, TypeParameterMap> > getPropertyToClassParamIndexMap() {
+    Map<Integer,  AbstractMap.SimpleEntry<Integer, TypeParameterMap> > getPropertyToClassParamIndexMap() {
         return propertyToClassParamIndexMap;
     }
 
@@ -58,26 +58,30 @@ final class TypeParameterMap {
 
 
     static final class Builder  {
-        private final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap = new HashMap<>();
+        private final Map<Integer,  AbstractMap.SimpleEntry<Integer, TypeParameterMap> > propertyToClassParamIndexMap = new HashMap<>();
 
         private Builder() {
         }
 
 
         Builder addIndex(final int classTypeParameterIndex) {
-            propertyToClassParamIndexMap.put(-1,  new Pair<>(notNull("value", classTypeParameterIndex), null));
+
+            Assert.notNull(classTypeParameterIndex);
+            propertyToClassParamIndexMap.put(-1,  new  AbstractMap.SimpleEntry<>(classTypeParameterIndex, null));
             return this;
         }
 
 
         Builder addIndex(final int propertyTypeParameterIndex, final int classTypeParameterIndex) {
-            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, new Pair<>(notNull("value", classTypeParameterIndex), null));
+            Assert.notNull(classTypeParameterIndex);
+            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, new  AbstractMap.SimpleEntry<>( classTypeParameterIndex, null));
             return this;
         }
 
 
         Builder addIndex(final int propertyTypeParameterIndex, final TypeParameterMap typeParameterMap) {
-            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, new Pair<>(null, notNull("value", typeParameterMap)));
+            Assert.notNull(typeParameterMap);
+            propertyToClassParamIndexMap.put(propertyTypeParameterIndex, new  AbstractMap.SimpleEntry<>(null, typeParameterMap));
             return this;
         }
 
@@ -120,7 +124,7 @@ final class TypeParameterMap {
         return getPropertyToClassParamIndexMap().hashCode();
     }
 
-    private TypeParameterMap(final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap) {
+    private TypeParameterMap(final Map<Integer,  AbstractMap.SimpleEntry<Integer, TypeParameterMap> > propertyToClassParamIndexMap) {
         this.propertyToClassParamIndexMap = unmodifiableMap(propertyToClassParamIndexMap);
     }
 }

@@ -33,7 +33,7 @@ package com.whaleal.mars.core.query;
 import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
@@ -42,6 +42,7 @@ import com.whaleal.mars.core.domain.ISort;
 import com.whaleal.mars.core.domain.Pageable;
 import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 
 import java.time.Duration;
@@ -142,7 +143,7 @@ public class Query {
      */
     public static Query of(Query source) {
 
-        Precondition.notNull(source, "Source must not be null!");
+        Assert.notNull(source, "Source must not be null!");
 
         Document sourceFields = source.getFieldsObject();
         Document sourceSort = source.getSortObject();
@@ -192,7 +193,7 @@ public class Query {
      */
     public Query addCriteria(CriteriaDefinition criteriaDefinition) {
 
-        Precondition.notNull(criteriaDefinition, "CriteriaDefinition must not be null!");
+        Assert.notNull(criteriaDefinition, "CriteriaDefinition must not be null!");
 
         CriteriaDefinition existing = this.criteria.get(criteriaDefinition.getKey());
         String key = criteriaDefinition.getKey();
@@ -219,7 +220,7 @@ public class Query {
 
     public Query withProjection(IProjection projection) {
 
-        Precondition.notNull(projection, "projection must not be empty or null!");
+        Assert.notNull(projection, "projection must not be empty or null!");
         this.projectionSpec = projection;
         return this;
     }
@@ -277,7 +278,7 @@ public class Query {
      */
     public Query with(ISort sort) {
 
-        Precondition.notNull(sort, "Sort must not be null!");
+        Assert.notNull(sort, "Sort must not be null!");
 
         if (sort.isUnsorted()) {
             return this;
@@ -297,7 +298,7 @@ public class Query {
      */
     public Query withHint(String hint) {
 
-        Precondition.hasText(hint, "Hint must not be empty or null!");
+        Assert.hasText(hint, "Hint must not be empty or null!");
         this.hint = hint;
         return this;
     }
@@ -310,7 +311,7 @@ public class Query {
      */
     public Query withHint(Document hint) {
 
-        Precondition.notNull(hint, "Hint must not be null!");
+        Assert.notNull(hint, "Hint must not be null!");
         this.hint = hint.toJson();
         return this;
     }
@@ -324,7 +325,7 @@ public class Query {
      */
     public Query with(ISort... sort) {
 
-        Precondition.notNull(sort, "Sort must not be null!");
+        Assert.notNull(sort, "Sort must not be null!");
 
         if (sort.length == 0) {
             return this;
@@ -527,7 +528,7 @@ public class Query {
      */
     public void setMeta(Meta meta) {
 
-        Precondition.notNull(meta, "Query meta might be empty but must not be null.");
+        Assert.notNull(meta, "Query meta might be empty but must not be null.");
         this.meta = meta;
     }
 

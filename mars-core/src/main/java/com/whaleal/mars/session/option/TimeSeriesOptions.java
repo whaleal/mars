@@ -7,8 +7,9 @@ package com.whaleal.mars.session.option;
  **/
 
 import com.mongodb.client.model.TimeSeriesGranularity;
-import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.StrUtil;
+import com.whaleal.mars.util.Assert;
+import com.whaleal.mars.util.StrUtil;
+
 
 import javax.annotation.Nullable;
 
@@ -35,7 +36,7 @@ public class TimeSeriesOptions {
 
     private TimeSeriesOptions(String timeField, @Nullable String metaField, TimeSeriesGranularity granularity,boolean enableExpire,long expireAfterSeconds) {
 
-        Precondition.hasText(timeField, "Time field must not be empty or null!");
+        Assert.hasText(timeField, "Time field must not be empty or null!");
 
         this.timeField = timeField;
         this.metaField = metaField;

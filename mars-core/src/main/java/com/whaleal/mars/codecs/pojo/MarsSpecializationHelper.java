@@ -31,6 +31,7 @@ package com.whaleal.mars.codecs.pojo;
 
 import com.whaleal.icefrog.core.lang.Pair;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,22 +46,22 @@ final class MarsSpecializationHelper {
             return typeData;
         }
 
-        Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap = typeParameterMap.getPropertyToClassParamIndexMap();
-        Pair<Integer, TypeParameterMap> classTypeParamRepresentsWholeField = propertyToClassParamIndexMap.get(-1);
+        Map<Integer, AbstractMap.SimpleEntry<Integer, TypeParameterMap> > propertyToClassParamIndexMap = typeParameterMap.getPropertyToClassParamIndexMap();
+        AbstractMap.SimpleEntry<Integer, TypeParameterMap> classTypeParamRepresentsWholeField = propertyToClassParamIndexMap.get(-1);
         if (classTypeParamRepresentsWholeField != null) {
 
-            if(classTypeParamRepresentsWholeField.left() ==null){
+            if(classTypeParamRepresentsWholeField.getKey() ==null){
                 throw new IllegalStateException("Invalid state, the whole class cannot be represented by a subtype.");
             }
 
-            return (TypeData<V>) typeParameters.get(classTypeParamRepresentsWholeField.left());
+            return (TypeData<V>) typeParameters.get(classTypeParamRepresentsWholeField.getKey());
         } else {
             return getTypeData(typeData, typeParameters, propertyToClassParamIndexMap);
         }
     }
 
     private static <V> TypeData<V> getTypeData(final TypeData<V> typeData, final List<TypeData<?>> specializedTypeParameters,
-                                               final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap) {
+                                               final Map<Integer, AbstractMap.SimpleEntry<Integer, TypeParameterMap> > propertyToClassParamIndexMap) {
         List<TypeData<?>> subTypeParameters = new ArrayList<>(typeData.getTypeParameters());
         for (int i = 0; i < typeData.getTypeParameters().size(); i++) {
             subTypeParameters.set(i, getTypeData(subTypeParameters.get(i), specializedTypeParameters, propertyToClassParamIndexMap, i));
@@ -69,25 +70,25 @@ final class MarsSpecializationHelper {
     }
 
     private static TypeData<?> getTypeData(final TypeData<?> typeData, final List<TypeData<?>> specializedTypeParameters,
-                                           final Map<Integer, Pair<Integer, TypeParameterMap> > propertyToClassParamIndexMap,
+                                           final Map<Integer, AbstractMap.SimpleEntry<Integer, TypeParameterMap> > propertyToClassParamIndexMap,
                                            final int index) {
         if (!propertyToClassParamIndexMap.containsKey(index)) {
             return typeData;
         }
 
-        Pair< Integer, TypeParameterMap > integerTypeParameterMapPair = propertyToClassParamIndexMap.get(index);
+        AbstractMap.SimpleEntry< Integer, TypeParameterMap > integerTypeParameterMapPair = propertyToClassParamIndexMap.get(index);
 
         Function<Integer,TypeData<?>> function = new Function<Integer, TypeData<?>>() {
             @Override
             public TypeData<?> apply( Integer num ) {
                 if (typeData.getTypeParameters().isEmpty()) {
                     // Represents the whole typeData
-                    return specializedTypeParameters.get(integerTypeParameterMapPair.left());
+                    return specializedTypeParameters.get(integerTypeParameterMapPair.getKey());
                 } else {
                     // Represents a single nested type parameter within this typeData
                     TypeData.Builder<?> builder = TypeData.builder(typeData.getType());
                     List<TypeData<?>> typeParameters = new ArrayList<>(typeData.getTypeParameters());
-                    typeParameters.set(index, specializedTypeParameters.get(integerTypeParameterMapPair.left()));
+                    typeParameters.set(index, specializedTypeParameters.get(integerTypeParameterMapPair.getKey()));
                     builder.addTypeParameters(typeParameters);
                     return builder.build();
                 }
@@ -103,7 +104,7 @@ final class MarsSpecializationHelper {
             }
         };
 
-        return integerTypeParameterMapPair.left() !=null ? function.apply(integerTypeParameterMapPair.left()):function1.apply(integerTypeParameterMapPair.right());
+        return integerTypeParameterMapPair.getKey() !=null ? function.apply(integerTypeParameterMapPair.getKey()):function1.apply(integerTypeParameterMapPair.getValue());
     }
 
     private MarsSpecializationHelper() {

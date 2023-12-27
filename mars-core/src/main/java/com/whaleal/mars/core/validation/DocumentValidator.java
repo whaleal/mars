@@ -29,8 +29,9 @@
  */
 package com.whaleal.mars.core.validation;
 
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 
 
@@ -50,7 +51,7 @@ class DocumentValidator implements Validator {
      */
     static DocumentValidator of(Document validatorObject) {
 
-        Precondition.notNull(validatorObject, "ValidatorObject must not be null!");
+        Assert.notNull(validatorObject, "ValidatorObject must not be null!");
 
         return new DocumentValidator(new Document(validatorObject));
     }

@@ -38,6 +38,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.CodeWithScope;
 
 
+@Deprecated
 public class CodeWithScopeCodec implements Codec<CodeWithScope> {
     private final Codec<Document> documentCodec;
 

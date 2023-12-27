@@ -30,7 +30,9 @@
 package com.whaleal.mars.core.gridfs;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
+
+
+import com.whaleal.mars.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +62,7 @@ public class InputStreamResource extends AbstractResource {
      * @param description where the InputStream comes from
      */
     public InputStreamResource( InputStream inputStream, String description ) {
-        Precondition.notNull(inputStream, "InputStream must not be null");
+        Assert.notNull(inputStream, "InputStream must not be null");
         this.inputStream = inputStream;
         this.description = (description != null ? description : "");
     }

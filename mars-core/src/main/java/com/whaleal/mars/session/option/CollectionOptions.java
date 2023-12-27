@@ -32,9 +32,10 @@ package com.whaleal.mars.session.option;
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.mars.core.validation.Validator;
+import com.whaleal.mars.util.Assert;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class CollectionOptions {
      */
     public static CollectionOptions just(Collation collation) {
 
-        Precondition.notNull(collation, "Collation must not be null!");
+        Assert.notNull(collation, "Collation must not be null!");
 
         return new CollectionOptions(null, null, null, collation, ValidationOptions.none(), null);
     }
@@ -236,7 +237,7 @@ public class CollectionOptions {
      */
     public CollectionOptions schemaValidationLevel(ValidationLevel validationLevel) {
 
-        Precondition.notNull(validationLevel, "ValidationLevel must not be null!");
+        Assert.notNull(validationLevel, "ValidationLevel must not be null!");
         return validation(validationOptions.validationLevel(validationLevel));
     }
 
@@ -250,7 +251,7 @@ public class CollectionOptions {
      */
     public CollectionOptions schemaValidationAction(ValidationAction validationAction) {
 
-        Precondition.notNull(validationAction, "ValidationAction must not be null!");
+        Assert.notNull(validationAction, "ValidationAction must not be null!");
         return validation(validationOptions.validationAction(validationAction));
     }
 
@@ -263,7 +264,7 @@ public class CollectionOptions {
      */
     public CollectionOptions validation(ValidationOptions validationOptions) {
 
-        Precondition.notNull(validationOptions, "ValidationOptions must not be null!");
+        Assert.notNull(validationOptions, "ValidationOptions must not be null!");
         return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions, timeSeriesOptions);
     }
 
@@ -276,7 +277,7 @@ public class CollectionOptions {
      */
     public CollectionOptions timeSeries(TimeSeriesOptions timeSeriesOptions) {
 
-        Precondition.notNull(timeSeriesOptions, "TimeSeriesOptions must not be null!");
+        Assert.notNull(timeSeriesOptions, "TimeSeriesOptions must not be null!");
         return new CollectionOptions(size, maxDocuments, capped, collation, validationOptions, timeSeriesOptions);
     }
 

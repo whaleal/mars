@@ -35,7 +35,7 @@ import org.bson.codecs.pojo.TypeWithTypeParameters;
 import java.lang.reflect.*;
 import java.util.*;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+import static com.whaleal.mars.util.Assert.notNull;
 import static java.lang.String.format;
 
 
@@ -45,7 +45,7 @@ public final class TypeData< T > implements TypeWithTypeParameters< T > {
 
 
     public static < T > Builder< T > builder( final Class< T > type ) {
-        return new Builder< T >(notNull("type", type));
+        return new Builder< T >(notNull( type));
     }
 
     public static TypeData< ? > newInstance( final Method method ) {
@@ -114,13 +114,13 @@ public final class TypeData< T > implements TypeWithTypeParameters< T > {
 
 
         public < S > Builder< T > addTypeParameter( final TypeData< S > typeParameter ) {
-            typeParameters.add(notNull("typeParameter", typeParameter));
+            typeParameters.add(notNull( typeParameter));
             return this;
         }
 
 
         public Builder< T > addTypeParameters( final List< TypeData< ? > > typeParameters ) {
-            notNull("typeParameters", typeParameters);
+            notNull(typeParameters);
             for (TypeData< ? > typeParameter : typeParameters) {
                 addTypeParameter(typeParameter);
             }
