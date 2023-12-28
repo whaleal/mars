@@ -50,7 +50,7 @@ public class FloatCodec implements Codec<Float>, RepresentationConfigurable<Floa
     private BsonType representation;
 
     public FloatCodec() {
-        this.representation = INT64;
+        this.representation = DOUBLE;
     }
 
 
@@ -62,14 +62,14 @@ public class FloatCodec implements Codec<Float>, RepresentationConfigurable<Floa
     @Override
     public void encode(final BsonWriter writer, final Float value, final EncoderContext encoderContext) {
         switch (representation) {
+            case DOUBLE:
+                writer.writeDouble(value.doubleValue());
+                break;
             case INT32:
                 writer.writeInt32(value.intValue());
                 break;
             case INT64:
                 writer.writeInt64(value.longValue());
-                break;
-            case DOUBLE:
-                writer.writeDouble(value.doubleValue());
                 break;
             case DECIMAL128:
                 writer.writeDecimal128(Decimal128.parse(value.toString()));
