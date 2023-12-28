@@ -44,6 +44,10 @@ import static java.lang.String.format;
 import static org.bson.BsonType.*;
 
 
+/**
+ * @author wh
+ * @see org.bson.codecs.ShortCodec ;
+ */
 public class ShortCodec implements Codec<Short>, RepresentationConfigurable<Short> {
 
     private BsonType representation;

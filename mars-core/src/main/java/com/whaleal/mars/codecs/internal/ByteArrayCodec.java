@@ -37,6 +37,7 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
 
+@Deprecated
 public class ByteArrayCodec implements Codec<byte[]> {
     @Override
     public void encode(final BsonWriter writer, final byte[] value, final EncoderContext encoderContext) {

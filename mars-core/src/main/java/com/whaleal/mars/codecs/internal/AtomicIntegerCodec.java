@@ -45,6 +45,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.bson.BsonType.*;
 
 
+/**
+ *
+ * 用于实现 AtomicIntegerCodec 类的编码
+ * @author wh
+ *
+ * @see  com.whaleal.mars.codecs.internal.IntegerCodec ;
+ *
+ */
 public class AtomicIntegerCodec implements Codec<AtomicInteger>, RepresentationConfigurable<AtomicInteger> {
 
     private BsonType representation;

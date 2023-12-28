@@ -37,6 +37,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
 
 
+@Deprecated
 public class ObjectIdCodec implements Codec<ObjectId> {
     @Override
     public void encode(final BsonWriter writer, final ObjectId value, final EncoderContext encoderContext) {

@@ -39,6 +39,7 @@ import org.bson.codecs.EncoderContext;
 import static java.lang.String.format;
 
 
+@Deprecated
 public class ByteCodec implements Codec<Byte> {
 
     @Override

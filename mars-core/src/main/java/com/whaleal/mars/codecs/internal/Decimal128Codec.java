@@ -37,6 +37,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.Decimal128;
 
 
+@Deprecated
 public final class Decimal128Codec implements Codec<Decimal128> {
 
     @Override

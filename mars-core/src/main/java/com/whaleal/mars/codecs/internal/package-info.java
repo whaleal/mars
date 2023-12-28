@@ -27,4 +27,21 @@
  * exception statement from all source files in the program, then also delete
  * it in the license file.
  */
+
+
+/**
+ * @author wh
+ * 该包的作用用于 MongoDB 原生编码的拓展及优化 。
+ * 覆盖原生的编码的一些逻辑
+ *
+ * 比如  Double  与 其他类型的转换 这种拓展放在这里
+ * 反之  例如 boolean  这种 类型的转换  没有什么拓展可言
+ *
+ *
+ * 目前 已经支持的基本类型
+ * int ,long   ,double   , float  , short    , String
+ *
+ *
+ *
+ */
 package com.whaleal.mars.codecs.internal;

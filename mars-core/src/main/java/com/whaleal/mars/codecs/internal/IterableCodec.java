@@ -42,7 +42,7 @@ import java.util.UUID;
 import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 
-@SuppressWarnings("rawtypes")
+@Deprecated
 public class IterableCodec implements Codec<Iterable>, OverridableUuidRepresentationCodec<Iterable> {
 
     private final CodecRegistry registry;

@@ -33,6 +33,7 @@ import org.bson.BsonType;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecConfigurationException;
 
+@Deprecated
 public interface RepresentationConfigurable<T> {
 
     /**

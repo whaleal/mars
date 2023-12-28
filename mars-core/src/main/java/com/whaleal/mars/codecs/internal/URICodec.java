@@ -40,6 +40,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 
 
+/**
+ * @author wh
+ */
+
+
+@Deprecated
 public class URICodec implements Codec<URI> {
     @Override
     public URI decode(BsonReader reader, DecoderContext decoderContext) {

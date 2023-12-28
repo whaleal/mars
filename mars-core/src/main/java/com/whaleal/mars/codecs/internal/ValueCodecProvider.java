@@ -37,7 +37,10 @@ import org.bson.codecs.configuration.CodecRegistry;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * @author wh
+ * @see org.bson.codecs.ValueCodecProvider ;
+ */
 public class ValueCodecProvider implements CodecProvider {
     private final Map<Class<?>, Codec<?>> codecs = new HashMap<Class<?>, Codec<?>>();
 

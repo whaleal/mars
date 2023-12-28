@@ -36,6 +36,15 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
 
+/**
+ *
+ * 用于实现 AtomicBoolean 类的编码
+ * @author wh
+ * @see  com.whaleal.mars.codecs.internal.BooleanCodec ;
+ *
+ */
+
+@Deprecated
 public class BooleanCodec implements Codec<Boolean> {
     @Override
     public void encode(final BsonWriter writer, final Boolean value, final EncoderContext encoderContext) {

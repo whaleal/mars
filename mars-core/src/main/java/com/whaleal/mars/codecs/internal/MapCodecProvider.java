@@ -38,6 +38,7 @@ import java.util.Map;
 
 import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
+@Deprecated
 public class MapCodecProvider implements CodecProvider {
     private final BsonTypeClassMap bsonTypeClassMap;
     private final Transformer valueTransformer;

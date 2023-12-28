@@ -44,6 +44,11 @@ import org.bson.types.ObjectId;
 import static org.bson.BsonType.*;
 
 
+/**
+ * @author wh
+ *
+ * @see org.bson.codecs.StringCodec ;
+ */
 public class StringCodec implements Codec<String>, RepresentationConfigurable<String> {
     private BsonType representation;
 

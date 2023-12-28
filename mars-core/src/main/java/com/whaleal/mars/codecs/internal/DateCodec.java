@@ -37,6 +37,7 @@ import org.bson.codecs.EncoderContext;
 import java.util.Date;
 
 
+@Deprecated
 public class DateCodec implements Codec<Date> {
     @Override
     public void encode(final BsonWriter writer, final Date value, final EncoderContext encoderContext) {

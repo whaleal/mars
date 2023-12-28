@@ -39,10 +39,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
+ *
  * 用于实现 AtomicBoolean 类的编码
  * @author wh
+ * @see  com.whaleal.mars.codecs.internal.BooleanCodec ;
  *
  */
+@Deprecated
 public class AtomicBooleanCodec implements Codec<AtomicBoolean> {
     @Override
     public void encode(final BsonWriter writer, final AtomicBoolean value, final EncoderContext encoderContext) {

@@ -37,6 +37,7 @@ import org.bson.codecs.UuidCodec;
 import java.util.UUID;
 
 
+@Deprecated
 public class OverridableUuidRepresentationUuidCodec extends UuidCodec implements OverridableUuidRepresentationCodec<UUID> {
 
     public OverridableUuidRepresentationUuidCodec() {

@@ -38,6 +38,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.Binary;
 
 
+@Deprecated
 public class BinaryCodec implements Codec<Binary> {
     @Override
     public void encode(final BsonWriter writer, final Binary value, final EncoderContext encoderContext) {

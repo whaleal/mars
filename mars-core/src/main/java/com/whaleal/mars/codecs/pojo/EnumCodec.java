@@ -36,6 +36,7 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
 
+@Deprecated
 public class EnumCodec<T extends Enum<T>> implements Codec<T> {
     private final Class<T> type;
 

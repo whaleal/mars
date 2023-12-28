@@ -37,6 +37,7 @@ import org.bson.io.BasicOutputBuffer;
 import org.bson.io.ByteBufferBsonInput;
 
 
+@Deprecated
 public class RawBsonDocumentCodec implements Codec<RawBsonDocument> {
 
     public RawBsonDocumentCodec() {

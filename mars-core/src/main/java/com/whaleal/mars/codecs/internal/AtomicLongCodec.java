@@ -45,6 +45,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.bson.BsonType.*;
 
 
+/**
+ * @author wh
+ *
+ * @see com.whaleal.mars.codecs.internal.LongCodec ;
+ *
+ */
 public class AtomicLongCodec implements Codec<AtomicLong>, RepresentationConfigurable<AtomicLong> {
 
     private BsonType representation;

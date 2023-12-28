@@ -40,6 +40,8 @@ import org.bson.types.Symbol;
  * 用于 Symbol 类的编码
  * @author wh
  */
+
+@Deprecated
 public class SymbolCodec implements Codec<Symbol> {
     @Override
     public Symbol decode(final BsonReader reader, final DecoderContext decoderContext) {

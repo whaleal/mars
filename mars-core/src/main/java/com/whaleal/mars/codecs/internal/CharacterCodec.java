@@ -40,6 +40,7 @@ import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.lang.String.format;
 
 
+@Deprecated
 public class CharacterCodec implements Codec<Character> {
     @Override
     public void encode(final BsonWriter writer, final Character value, final EncoderContext encoderContext) {

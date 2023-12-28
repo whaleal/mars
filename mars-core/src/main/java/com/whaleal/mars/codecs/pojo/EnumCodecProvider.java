@@ -34,6 +34,7 @@ import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 
 
+@Deprecated
 public class EnumCodecProvider implements CodecProvider {
 
     @Override

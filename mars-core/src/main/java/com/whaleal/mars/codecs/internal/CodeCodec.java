@@ -37,6 +37,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.Code;
 
 
+@Deprecated
 public class CodeCodec implements Codec<Code> {
 
     @Override

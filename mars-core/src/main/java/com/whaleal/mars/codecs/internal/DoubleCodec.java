@@ -43,6 +43,7 @@ import org.bson.types.Decimal128;
 import static org.bson.BsonType.*;
 
 
+
 public class DoubleCodec implements Codec<Double>, RepresentationConfigurable<Double> {
 
     private BsonType representation;

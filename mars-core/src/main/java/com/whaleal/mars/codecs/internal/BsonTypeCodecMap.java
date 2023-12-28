@@ -42,7 +42,7 @@ public class BsonTypeCodecMap {
     private final Codec<?>[] codecs = new Codec[256];
 
     public BsonTypeCodecMap(BsonTypeClassMap bsonTypeClassMap, CodecRegistry codecRegistry) {
-        this.bsonTypeClassMap = (BsonTypeClassMap) Assert.notNull(bsonTypeClassMap);
+        this.bsonTypeClassMap =  Assert.notNull(bsonTypeClassMap);
         Assert.notNull(codecRegistry,"codecRegistry");
         Iterator var3 = bsonTypeClassMap.keys().iterator();
 

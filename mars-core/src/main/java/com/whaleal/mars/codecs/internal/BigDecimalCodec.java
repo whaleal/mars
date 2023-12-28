@@ -39,6 +39,7 @@ import org.bson.types.Decimal128;
 import java.math.BigDecimal;
 
 
+@Deprecated
 public final class BigDecimalCodec implements Codec<BigDecimal> {
 
     @Override

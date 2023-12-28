@@ -47,6 +47,7 @@ import java.util.regex.Pattern;
  * @author wh
  *
  */
+@Deprecated
 public class PatternCodec implements Codec<Pattern> {
     @Override
     public void encode(final BsonWriter writer, final Pattern value, final EncoderContext encoderContext) {
