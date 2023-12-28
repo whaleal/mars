@@ -59,11 +59,11 @@ public class LongCodec implements Codec<Long>, RepresentationConfigurable<Long> 
     @Override
     public void encode(final BsonWriter writer, final Long value, final EncoderContext encoderContext) {
         switch (representation) {
-            case INT32:
-                writer.writeInt32(value.intValue());
-                break;
             case INT64:
                 writer.writeInt64(value.longValue());
+                break;
+            case INT32:
+                writer.writeInt32(value.intValue());
                 break;
             case DOUBLE:
                 writer.writeDouble(value.doubleValue());
