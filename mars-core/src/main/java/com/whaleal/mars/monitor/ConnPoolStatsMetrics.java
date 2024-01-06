@@ -51,7 +51,7 @@ public class ConnPoolStatsMetrics extends AbstractMonitor{
 
     public Document getPoolsGlobal(){
         Document pools = connPoolStats.get("pools", Document.class);
-        if(ObjectUtil.isEmpty(pools)){
+        if(pools == null ||  pools.isEmpty()){
             return null;
         }
         return pools.get("global",Document.class);

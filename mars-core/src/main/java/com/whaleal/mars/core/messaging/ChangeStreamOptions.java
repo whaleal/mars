@@ -32,7 +32,7 @@ package com.whaleal.mars.core.messaging;
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.changestream.FullDocument;
 import com.whaleal.mars.util.Assert;
-import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.util.ObjectUtil;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import org.bson.BsonTimestamp;
 import org.bson.BsonValue;
@@ -42,7 +42,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.whaleal.icefrog.core.util.ClassUtil.isAssignable;
+import static com.whaleal.mars.util.ClassUtil.isAssignable;
 
 /**
  * 改变流选项

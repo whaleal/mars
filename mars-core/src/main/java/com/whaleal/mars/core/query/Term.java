@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.query;
 
 
-import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.util.ObjectUtil;
 
 /**
  * A {@link Term} defines one or multiple words {@link Type#WORD} or phrases {@link Type#PHRASE} to be used in the

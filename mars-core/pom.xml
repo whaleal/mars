@@ -13,11 +13,11 @@
     <artifactId>mars-core</artifactId>
 
     <dependencies>
-        <dependency>
+       <dependency>
             <groupId>com.whaleal.icefrog</groupId>
             <artifactId>icefrog-core</artifactId>
             <version>${icefrog.version}</version>
-            <optional>true</optional>
+
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>

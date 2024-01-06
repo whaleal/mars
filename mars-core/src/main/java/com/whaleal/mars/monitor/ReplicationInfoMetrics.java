@@ -3,12 +3,12 @@ package com.whaleal.mars.monitor;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.whaleal.icefrog.core.collection.CollUtil;
+
+import com.mongodb.lang.Nullable;
 import com.whaleal.mars.util.ObjectUtil;
 import org.bson.BsonTimestamp;
 import org.bson.Document;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,14 +39,14 @@ public class ReplicationInfoMetrics{
 
         List<String> into = db.listCollectionNames().into(new ArrayList<>());
 
-        if (!CollUtil.safeContains(into, "oplog.rs")) {
+        if (!into.contains( "oplog.rs")) {
             throw new RuntimeException("neither master/slave nor replica set replication detected");
         }
         MongoCollection<Document> opLog = db.getCollection("oplog.rs");
         Document ol = db.runCommand(new Document("collStats", "oplog.rs"));
 
         Long maxSize = ol.getLong("maxSize");
-        if (ObjectUtil.isNotEmpty(maxSize) && maxSize > 0) {
+        if (maxSize != null && maxSize > 0) {
             //计算configured oplog size
             Long logSizeMB = maxSize / (1024 * 1024);
             document.put("size", logSizeMB);
@@ -60,10 +60,10 @@ public class ReplicationInfoMetrics{
             Document first = opLog.find().sort(new Document("$natural", 1)).limit(1).first();
             Document last = opLog.find().sort(new Document("$natural", -1)).limit(1).first();
 
-            if (ObjectUtil.isAllNotEmpty(first, last)) {
+            if (first !=null && last !=null  && !first.isEmpty() && !last.isEmpty()) {
                 BsonTimestamp tfirst = first.get("ts", BsonTimestamp.class);
                 BsonTimestamp tlast = last.get("ts", BsonTimestamp.class);
-                if (ObjectUtil.isAllNotEmpty(tfirst, tlast)) {
+                if (tfirst!= null && tlast!=null) {
                     long timeDiff = tlast.getTime() - tfirst.getTime();
 
                     document.put("log length", timeDiff);

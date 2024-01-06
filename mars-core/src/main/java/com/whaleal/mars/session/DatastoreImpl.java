@@ -77,10 +77,9 @@ import com.whaleal.mars.session.option.InsertOneOptions;
 import com.whaleal.mars.session.option.TimeSeriesOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.option.*;
+import com.whaleal.icefrog.core.util.ObjectUtil;
 import com.whaleal.mars.session.transactions.MarsTransaction;
-import com.whaleal.mars.util.Assert;
-import com.whaleal.mars.util.ObjectUtil;
-import com.whaleal.mars.util.StrUtil;
+import com.whaleal.mars.util.*;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
@@ -214,7 +213,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
     public < T > MongoCollection< T > getCollection( Class< T > type, String collectionName ) {
-        if (ObjectUtil.isEmpty(type)) {
+        if (type ==null) {
             type = (Class< T >) Document.class;
         }
         //集合名不为空，则有优先使用集合名
@@ -373,7 +372,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         }
         //获取写偏好
         WriteConcern writeConcernToUse = query.getWriteConcern();
-        if (ObjectUtil.isNotEmpty(writeConcernToUse)) {
+        if (writeConcernToUse!=null) {
             collection.withWriteConcern(writeConcernToUse);
         }
 
@@ -400,7 +399,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
         //FindIterable< T > findIterable = collection.find(session, query.getQueryObject());
 
-        if (ObjectUtil.isNotEmpty(query.getFieldsObject())) {
+        if (!query.getFieldsObject().isEmpty()) {
             findIterable = findIterable.projection(query.getFieldsObject());
         }
 
@@ -408,15 +407,15 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             findIterable = findIterable.hint(Document.parse(query.getHint()));
         }
 
-        if (ObjectUtil.isNotEmpty(query.getSortObject())) {
+        if (!query.getSortObject().isEmpty()) {
             findIterable = findIterable.sort(query.getSortObject());
         }
 
-        if (ObjectUtil.isNotEmpty(query.getSkip()) && query.getSkip() > 0) {
+        if ( query.getSkip() > 0) {
             findIterable = findIterable.skip((int) (query.getSkip()));
         }
 
-        if (ObjectUtil.isNotEmpty(query.getLimit()) && query.getLimit() > 0) {
+        if ( query.getLimit() > 0) {
             findIterable = findIterable.limit(query.getLimit());
         }
 
@@ -424,18 +423,18 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             findIterable =  findIterable.collation(query.getCollation().get());
         }
 
-        if (ObjectUtil.isNotEmpty(query.getMeta())) {
+        if (query.getMeta() !=null) {
             Meta meta = query.getMeta();
-            if (ObjectUtil.isNotEmpty(meta.getComment())) {
+            if (StrUtil.isEmptyIfStr(meta.getComment())) {
                 findIterable = findIterable.comment(meta.getComment());
             }
-            if (ObjectUtil.isNotEmpty(meta.getAllowDiskUse())) {
+            if (meta.getAllowDiskUse()) {
                 findIterable = findIterable.allowDiskUse(meta.getAllowDiskUse());
             }
-            if (ObjectUtil.isNotEmpty(meta.getCursorBatchSize())) {
+            if (meta.getCursorBatchSize() !=null  && meta.getCursorBatchSize()  >0) {
                 findIterable = findIterable.batchSize(meta.getCursorBatchSize());
             }
-            if (ObjectUtil.isNotEmpty(meta.getMaxTimeMsec())) {
+            if (meta.getMaxTimeMsec()!=null  &&meta.getMaxTimeMsec() >0) {
                 findIterable = findIterable.maxAwaitTime(query.getMeta().getMaxTimeMsec(), TimeUnit.MICROSECONDS);
             }
 
@@ -468,7 +467,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public < T > Optional< T > findOne( Query query, @Nullable Class< T > entityClass, String collectionName ) {
-        if (ObjectUtil.isEmpty(query.getSortObject())) {
+        if (query.isSorted()) {
             return doFindOne(query, entityClass, collectionName);
         } else {
             MongoCursor< T > iterator = doFind(query, entityClass, collectionName).limit(1).iterator();
@@ -605,12 +604,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         List< UpdateDefinition.ArrayFilter > arrayFilters1 = options.getArrayFilters();
         //最终的arraylist
         List< Document > arrayFilterList = new ArrayList<>();
-        if (ObjectUtil.isNotEmpty(arrayFilters)) {
+        if (ListUtil.isNotEmpty(arrayFilters)) {
             for (int i = 0; i < arrayFilters.size(); i++) {
                 Document document = arrayFilters.get(i).toData();
                 arrayFilterList.add(document);
             }
-            if (ObjectUtil.isNotEmpty(arrayFilters1)) {
+            if (ListUtil.isNotEmpty(arrayFilters1)) {
                 //保存arrayFilter
                 for (int i = 0; i < arrayFilters1.size(); i++) {
                     Document document = arrayFilters1.get(i).toData();

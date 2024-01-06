@@ -44,6 +44,11 @@ import java.util.HashSet;
 import static java.lang.String.format;
 
 
+/**
+ * @author wh
+ *
+ *
+ */
 public class CollectionCodec<T> implements Codec<Collection<T>> {
     private final Class<Collection<T>> encoderClass;
     private final Codec<T> codec;

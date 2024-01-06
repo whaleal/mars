@@ -30,7 +30,6 @@
 package com.whaleal.mars.core.gridfs;
 
 
-import com.whaleal.icefrog.core.util.URLUtil;
 
 
 interface ResourceLoader {
@@ -38,7 +37,7 @@ interface ResourceLoader {
     /**
      * Pseudo URL prefix for loading from the class path: "classpath:".
      */
-    String CLASSPATH_URL_PREFIX = URLUtil.CLASSPATH_URL_PREFIX;
+    String CLASSPATH_URL_PREFIX = "classpath:";
 
 
     /**

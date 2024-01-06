@@ -7,11 +7,11 @@ package com.whaleal.mars.session.option;
  **/
 
 import com.mongodb.client.model.TimeSeriesGranularity;
+import com.mongodb.lang.Nullable;
 import com.whaleal.mars.util.Assert;
 import com.whaleal.mars.util.StrUtil;
 
 
-import javax.annotation.Nullable;
 
 /**
  * Options applicable to Time Series collections.
@@ -26,7 +26,8 @@ public class TimeSeriesOptions {
 
     private final String timeField;
 
-    private @Nullable final String metaField;
+    private @Nullable
+    final String metaField;
 
     private final TimeSeriesGranularity granularity;
 

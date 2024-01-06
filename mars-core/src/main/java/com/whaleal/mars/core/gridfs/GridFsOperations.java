@@ -32,11 +32,10 @@ package com.whaleal.mars.core.gridfs;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 
-import com.whaleal.icefrog.core.util.ReUtil;
-
 import com.whaleal.mars.core.query.Criteria;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.util.ObjectUtil;
+import com.whaleal.mars.util.ReUtil;
 import com.whaleal.mars.util.StrUtil;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -93,7 +92,7 @@ public interface GridFsOperations extends ResourcePatternResolver {
         if (StrUtil.hasText(filename)) {
             uploadBuilder.filename(filename);
         }
-        if (!ObjectUtil.isEmpty(metadata)) {
+        if (metadata !=null  &&   !metadata.isEmpty()) {
             uploadBuilder.metadata(metadata);
         }
         if (StrUtil.hasText(contentType)) {
@@ -159,9 +158,7 @@ public interface GridFsOperations extends ResourcePatternResolver {
             return new GridFsResource[0];
         }
 
-        ReUtil reUtil = new ReUtil();
-
-        if (reUtil.isPattern(filenamePattern)) {
+        if (ReUtil.isPattern(filenamePattern)) {
 
             GridFSFindIterable files = findGridFs(Query.query(Criteria.where("filename").regex(ReUtil.toRegex(filenamePattern))));
             List<GridFsResource> resources = new ArrayList<>();

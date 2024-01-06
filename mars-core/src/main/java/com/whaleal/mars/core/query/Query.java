@@ -389,7 +389,7 @@ public class Query {
      * @return {@literal true} if sorted.
      */
     public boolean isSorted() {
-        return ObjectUtil.isNotEmpty(sorts);
+        return  sorts.isSorted();
     }
 
     /**

@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.codecs.internal;
 
+import com.whaleal.mars.util.Assert;
 import org.bson.Transformer;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
@@ -36,7 +37,6 @@ import org.bson.codecs.configuration.CodecRegistry;
 
 import java.util.Map;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 @Deprecated
 public class MapCodecProvider implements CodecProvider {
@@ -56,7 +56,7 @@ public class MapCodecProvider implements CodecProvider {
     }
 
     public MapCodecProvider(final BsonTypeClassMap bsonTypeClassMap, final Transformer valueTransformer) {
-        this.bsonTypeClassMap = notNull("bsonTypeClassMap", bsonTypeClassMap);
+        this.bsonTypeClassMap = Assert.notNull( bsonTypeClassMap);
         this.valueTransformer = valueTransformer;
     }
 

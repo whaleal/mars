@@ -76,7 +76,7 @@ public class CollTimeSeriesMetrics extends CollStatsMetrics{
 
     protected  <T> T getTimeSeriesData(String key,Class<T> targetClass){
         Document timeSeries = getCollStats("timeseries",Document.class);
-        if(ObjectUtil.isEmpty(timeSeries)){
+        if(timeSeries == null  || timeSeries.isEmpty()){
             return null;
         }
         return (T)timeSeries.get(key,targetClass);

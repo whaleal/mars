@@ -31,12 +31,12 @@ public class TTLMetrics extends AbstractMonitor{
 
     private <T> T getTTL(String key,Class<T> clazz){
         Document metrics = serverStatus.get("metrics", Document.class);
-        if(ObjectUtil.isEmpty(metrics)){
+        if(metrics ==null ||  metrics.isEmpty() ){
             return null;
         }
 
         Document ttl = metrics.get("ttl", Document.class);
-        if(ObjectUtil.isEmpty(ttl)){
+        if(ttl ==null ||  ttl.isEmpty() ){
             return null;
         }
 

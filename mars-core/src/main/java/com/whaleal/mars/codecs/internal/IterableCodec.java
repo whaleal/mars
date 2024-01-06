@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.codecs.internal;
 
+import com.whaleal.mars.util.Assert;
 import org.bson.*;
 import org.bson.codecs.BsonTypeClassMap;
 import org.bson.codecs.BsonTypeCodecMap;
@@ -39,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 
 
 @Deprecated
@@ -55,13 +55,13 @@ public class IterableCodec implements Codec<Iterable>, OverridableUuidRepresenta
     }
 
     public IterableCodec(final CodecRegistry registry, final BsonTypeClassMap bsonTypeClassMap, final Transformer valueTransformer) {
-        this(registry, new BsonTypeCodecMap(notNull("bsonTypeClassMap", bsonTypeClassMap), registry), valueTransformer,
+        this(registry, new BsonTypeCodecMap(Assert.notNull(bsonTypeClassMap), registry), valueTransformer,
                 UuidRepresentation.UNSPECIFIED);
     }
 
     private IterableCodec(final CodecRegistry registry, final BsonTypeCodecMap bsonTypeCodecMap, final Transformer valueTransformer,
                           final UuidRepresentation uuidRepresentation) {
-        this.registry = notNull("registry", registry);
+        this.registry = Assert.notNull(registry);
         this.bsonTypeCodecMap = bsonTypeCodecMap;
         this.valueTransformer = valueTransformer != null ? valueTransformer : new Transformer() {
             @Override

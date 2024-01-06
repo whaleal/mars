@@ -30,14 +30,16 @@
 package com.whaleal.mars.core.messaging;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ObjectUtil;
+
+
 
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.ErrorHandler;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
 import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
+import com.whaleal.mars.util.Assert;
+import com.whaleal.mars.util.ObjectUtil;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
@@ -74,8 +76,8 @@ public class DefaultMessageListenerContainer implements MessageListenerContainer
 
     public DefaultMessageListenerContainer( Mars mars, Executor taskExecutor,
                                             ErrorHandler errorHandler ) {
-        Precondition.notNull(mars, "Mars must not be null!");
-        Precondition.notNull(taskExecutor, "TaskExecutor must not be null!");
+        Assert.notNull(mars, "Mars must not be null!");
+        Assert.notNull(taskExecutor, "TaskExecutor must not be null!");
 
         this.taskExecutor = taskExecutor;
         this.taskFactory = new TaskFactory(mars);

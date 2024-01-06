@@ -42,7 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+
+import static com.whaleal.mars.util.Assert.notNull;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
@@ -82,13 +83,13 @@ public class MapCodec implements Codec<Map<String, Object>>, OverridableUuidRepr
      * 举例中的DBref 相关内容已删除
      */
     public MapCodec(final CodecRegistry registry, final BsonTypeClassMap bsonTypeClassMap, final Transformer valueTransformer) {
-        this(registry, new BsonTypeCodecMap(notNull("bsonTypeClassMap", bsonTypeClassMap), registry), valueTransformer,
+        this(registry, new BsonTypeCodecMap(notNull( bsonTypeClassMap), registry), valueTransformer,
                 UuidRepresentation.UNSPECIFIED);
     }
 
     private MapCodec(final CodecRegistry registry, final BsonTypeCodecMap bsonTypeCodecMap, final Transformer valueTransformer,
                      final UuidRepresentation uuidRepresentation) {
-        this.registry = notNull("registry", registry);
+        this.registry = notNull( registry);
         this.bsonTypeCodecMap = bsonTypeCodecMap;
         this.valueTransformer = valueTransformer != null ? valueTransformer : new Transformer() {
             @Override

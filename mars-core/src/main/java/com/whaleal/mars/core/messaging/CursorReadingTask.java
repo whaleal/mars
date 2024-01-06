@@ -34,7 +34,7 @@ import com.whaleal.mars.util.Assert;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.internal.ErrorHandler;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
-import com.whaleal.mars.core.internal.MongoNamespace;
+import com.whaleal.mars.core.MongoNamespace;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;

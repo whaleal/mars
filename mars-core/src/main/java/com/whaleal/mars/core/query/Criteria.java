@@ -35,10 +35,9 @@ import com.mongodb.client.model.geojson.MultiPoint;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 import com.whaleal.icefrog.core.codec.Base64;
-import com.whaleal.icefrog.core.collection.CollectionUtil;
-import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
+
+import com.whaleal.mars.util.* ;
+
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
@@ -48,7 +47,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
 
 /**
  * 创建查询语句的基本类，它遵循流畅的 API 风格，可以轻松地将多个查询连在一起。使用Criteria.where方法创建此类对象可以提高可读性
@@ -445,7 +443,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria regex(Pattern pattern) {
 
-        Precondition.notNull(pattern, "Pattern must not be null!");
+        Assert.notNull(pattern, "Pattern must not be null!");
 
         if (lastOperatorWasNot()) {
             return not(pattern);
@@ -473,7 +471,7 @@ public class Criteria implements CriteriaDefinition {
 
     private Pattern toPattern( String regex, String options ) {
 
-        Precondition.notNull(regex, "Regex string must not be null!");
+        Assert.notNull(regex, "Regex string must not be null!");
 
         return Pattern.compile(regex, regexFlags(options));
     }
@@ -491,7 +489,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria withinSphere(Point point,Double radius) {
 
-        Precondition.notNull(point, "Point must not be null!");
+        Assert.notNull(point, "Point must not be null!");
 
         criteria.put("$geoWithin", new Document(centerSphere,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
         return this;
@@ -499,7 +497,7 @@ public class Criteria implements CriteriaDefinition {
 
     public Criteria withinCenter(Point point,Double radius) {
 
-        Precondition.notNull(point, "Point must not be null!");
+        Assert.notNull(point, "Point must not be null!");
 
         criteria.put("$geoWithin", new Document(center,new Object[]{new Double[]{point.getPosition().getValues().get(0),point.getPosition().getValues().get(1)},radius}));
         return this;
@@ -507,7 +505,7 @@ public class Criteria implements CriteriaDefinition {
 
     public Criteria withinPolygon(MultiPoint multiPoint) {
 
-        Precondition.notNull(multiPoint, "multiPoint must not be null!");
+        Assert.notNull(multiPoint, "multiPoint must not be null!");
 
         List<Position> coordinates = multiPoint.getCoordinates();
 
@@ -535,7 +533,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria geowithin(Geometry geometry) {
 
-        Precondition.notNull(geometry, "geometry must not be null!");
+        Assert.notNull(geometry, "geometry must not be null!");
 
         criteria.put("$geoWithin", geometry);
         return this;
@@ -554,7 +552,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria near(Point point) {
 
-        Precondition.notNull(point, "Point must not be null!");
+        Assert.notNull(point, "Point must not be null!");
 
         criteria.put("$near", point);
         return this;
@@ -571,7 +569,7 @@ public class Criteria implements CriteriaDefinition {
      */
     public Criteria nearSphere( Point point) {
 
-        Precondition.notNull(point, "Point must not be null!");
+        Assert.notNull(point, "Point must not be null!");
 
         criteria.put("$nearSphere", point);
         return this;
@@ -586,7 +584,7 @@ public class Criteria implements CriteriaDefinition {
     @SuppressWarnings("rawtypes")
     public Criteria geointersects( Geometry geometry) {
 
-        Precondition.notNull(geometry, "geometry must not be null!");
+        Assert.notNull(geometry, "geometry must not be null!");
         criteria.put("$geoIntersects", geometry);
         return this;
     }
@@ -741,7 +739,7 @@ public class Criteria implements CriteriaDefinition {
 
         if (this.criteriaChain.size() == 1) {
             return criteriaChain.get(0).getSingleCriteriaObject();
-        } else if (CollectionUtil.isEmpty(this.criteriaChain) && !CollectionUtil.isEmpty(this.criteria)) {
+        } else if (this.criteriaChain.size()==0 && this.criteria.size()>0) {
             return getSingleCriteriaObject();
         } else {
 
@@ -955,9 +953,9 @@ public class Criteria implements CriteriaDefinition {
 
         int result = 17;
 
-        result += nullSafeHashCode(key);
+        result += ObjectUtil.nullSafeHashCode(key);
         result += criteria.hashCode();
-        result += nullSafeHashCode(isValue);
+        result += ObjectUtil.nullSafeHashCode(isValue);
 
         return result;
     }
@@ -1241,8 +1239,8 @@ public class Criteria implements CriteriaDefinition {
 
         private Criteria positions(String operator, List<Integer> positions) {
 
-            Precondition.notNull(positions, "Positions must not be null!");
-            Precondition.noNullElements(positions.toArray(), "Positions must not contain null values.");
+            Assert.notNull(positions, "Positions must not be null!");
+            Assert.noNullElements(positions.toArray(), "Positions must not contain null values.");
 
             target.criteria.put(operator, positions);
             return target;
@@ -1250,7 +1248,7 @@ public class Criteria implements CriteriaDefinition {
 
         private Criteria stringBitmask(String operator, String bitmask) {
 
-            Precondition.hasText(bitmask, "Bitmask must not be null!");
+            Assert.hasText(bitmask, "Bitmask must not be null!");
 
             target.criteria.put(operator, new Binary(Base64.decode(bitmask)));
             return target;

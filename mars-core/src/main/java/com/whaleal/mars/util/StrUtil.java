@@ -1,8 +1,5 @@
 package com.whaleal.mars.util;
 
-import com.whaleal.icefrog.core.collection.CollectionUtil;
-import com.whaleal.icefrog.core.text.*;
-import com.whaleal.icefrog.core.util.*;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -12,16 +9,16 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
+
 
 
 /**
  * 字符串工具类
  *
- * @author Looly
+ *
  * @author wh
  */
-public class StrUtil extends CharSequenceUtil implements StrPool {
+public class StrUtil  {
     private static final String[] EMPTY_STRING_ARRAY = {};
 
     // ------------------------------------------------------------------------ Blank
@@ -34,39 +31,6 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
     private static final String CURRENT_PATH = ".";
     private static final char EXTENSION_SEPARATOR = '.';
 
-
-    /**
-     * <p>如果对象是字符串是否为空白，空白的定义如下：</p>
-     * <ol>
-     *     <li>{@code null}</li>
-     *     <li>空字符串：{@code ""}</li>
-     *     <li>空格、全角空格、制表符、换行符，等不可见字符</li>
-     * </ol>
-     *
-     * <p>例：</p>
-     * <ul>
-     *     <li>{@code StrUtil.isBlankIfStr(null)     // true}</li>
-     *     <li>{@code StrUtil.isBlankIfStr("")       // true}</li>
-     *     <li>{@code StrUtil.isBlankIfStr(" \t\n")  // true}</li>
-     *     <li>{@code StrUtil.isBlankIfStr("abc")    // false}</li>
-     * </ul>
-     *
-     * <p>注意：该方法与 {@link #isEmptyIfStr(Object)} 的区别是：
-     * 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfStr(Object)} 略慢。</p>
-     *
-     * @param obj 对象
-     * @return 如果为字符串是否为空串
-     * @see com.whaleal.icefrog.core.util.StrUtil#isBlank(CharSequence)
-     * @since 1.0.0
-     */
-    public static boolean isBlankIfStr(Object obj) {
-        if (null == obj) {
-            return true;
-        } else if (obj instanceof CharSequence) {
-            return isBlank((CharSequence) obj);
-        }
-        return false;
-    }
 
     /**
      * <p>如果对象是字符串是否为空串，空的定义如下：</p><br>
@@ -83,7 +47,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
      *     <li>{@code StrUtil.isEmptyIfStr("abc")    // false}</li>
      * </ul>
      *
-     * <p>注意：该方法与 {@link #isBlankIfStr(Object)} 的区别是：该方法不校验空白字符。</p>
+     *
      *
      * @param obj 对象
      * @return 如果为字符串是否为空串
@@ -96,39 +60,6 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
             return 0 == ((CharSequence) obj).length();
         }
         return false;
-    }
-
-    /**
-     * 给定字符串数组全部做去首尾空格
-     *
-     * @param strs 字符串数组
-     */
-    public static void trim(String[] strs) {
-        if (null == strs) {
-            return;
-        }
-        String str;
-        for (int i = 0; i < strs.length; i++) {
-            str = strs[i];
-            if (null != str) {
-                strs[i] = trim(str);
-            }
-        }
-    }
-
-    /**
-     * 将对象转为字符串<br>
-     *
-     * <pre>
-     * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
-     * 2、对象数组会调用Arrays.toString方法
-     * </pre>
-     *
-     * @param obj 对象
-     * @return 字符串
-     */
-    public static String utf8Str(Object obj) {
-        return str(obj, CharsetUtil.CHARSET_UTF_8);
     }
 
 
@@ -163,16 +94,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
         return obj.toString();
     }
 
-    /**
-     * 将byte数组转为字符串
-     *
-     * @param bytes   byte数组
-     * @param charset 字符集
-     * @return 字符串
-     */
-    public static String str(byte[] bytes, String charset) {
-        return str(bytes, isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset));
-    }
+   
 
     /**
      * Constructs a new {@code String} by decoding the specified array of bytes using the given charset.
@@ -186,7 +108,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
      * @return 解码后的字符串  A new {@code String} decoded from the specified array of bytes using the given charset,
      * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen for a
      *                               required charset name.
-     * @see CharEncoding
+     * @see 
      * @see String#String(byte[], String)
      * <p>
      * 解码字节码
@@ -204,16 +126,6 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
     }
 
 
-    /**
-     * 将Byte数组转为字符串
-     *
-     * @param bytes   byte数组
-     * @param charset 字符集
-     * @return 字符串
-     */
-    public static String str(Byte[] bytes, String charset) {
-        return str(bytes, isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset));
-    }
 
     /**
      * 解码字节码
@@ -289,15 +201,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
 
     // ------------------------------------------------------------------------ fill
 
-    /**
-     * 创建StrBuilder对象
-     *
-     * @return StrBuilder对象
-     * @since 1.0.0
-     */
-    public static StrBuilder strBuilder() {
-        return StrBuilder.create();
-    }
+
 
     /**
      * 创建StringBuilder对象
@@ -309,16 +213,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
         return new StringBuilder(capacity);
     }
 
-    /**
-     * 创建StrBuilder对象
-     *
-     * @param capacity 初始大小
-     * @return StrBuilder对象
-     * @since 1.0.0
-     */
-    public static StrBuilder strBuilder(int capacity) {
-        return StrBuilder.create(capacity);
-    }
+
 
     /**
      * 获得StringReader
@@ -345,130 +240,6 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
         return new StringWriter();
     }
 
-    /**
-     * 反转字符串<br>
-     * 例如：abcd =》dcba
-     *
-     * @param str 被反转的字符串
-     * @return 反转后的字符串
-     * @since 1.0.0
-     */
-    public static String reverse(String str) {
-        notNull(str, "the input String to reverse can't be null ");
-        return new String(ArrayUtil.reverse(str.toCharArray()));
-    }
-
-    /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串<br>
-     * 字符填充于字符串前
-     *
-     * @param str        被填充的字符串
-     * @param filledChar 填充的字符
-     * @param len        填充长度
-     * @return 填充后的字符串
-     * @since 1.0.0
-     */
-    public static String fillBefore(String str, char filledChar, int len) {
-        return fill(str, filledChar, len, true);
-    }
-
-    /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串<br>
-     * 字符填充于字符串后
-     *
-     * @param str        被填充的字符串
-     * @param filledChar 填充的字符
-     * @param len        填充长度
-     * @return 填充后的字符串
-     * @since 1.0.0
-     */
-    public static String fillAfter(String str, char filledChar, int len) {
-        return fill(str, filledChar, len, false);
-    }
-
-
-    /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
-     *
-     * @param str        被填充的字符串
-     * @param filledChar 填充的字符
-     * @param len        填充长度
-     * @param isPre      是否填充在前
-     * @return 填充后的字符串
-     * @since 1.0.0
-     */
-    public static String fill(String str, char filledChar, int len, boolean isPre) {
-        final int strLen = str.length();
-        if (strLen > len) {
-            return str;
-        }
-
-        // 生成待填充的字符串 ，然后补充在首部或者尾部
-        String filledStr = repeat(filledChar, len - strLen);
-        return isPre ? filledStr.concat(str) : str.concat(filledStr);
-    }
-
-    /**
-     * 计算两个字符串的相似度
-     *
-     * @param str1 字符串1
-     * @param str2 字符串2
-     * @return 相似度
-     * @since 1.0.0
-     */
-    public static double similar(String str1, String str2) {
-        return TextSimilarity.similar(str1, str2);
-    }
-
-    /**
-     * 计算两个字符串的相似度百分比
-     *
-     * @param str1  字符串1
-     * @param str2  字符串2
-     * @param scale 相似度
-     * @return 相似度百分比
-     * @since 1.0.0
-     */
-    public static String similar(String str1, String str2, int scale) {
-        return TextSimilarity.similar(str1, str2, scale);
-    }
-
-    /**
-     * 生成随机UUID
-     *
-     * @return UUID字符串
-     * @see IdUtil#randomUUID()
-     * @since 1.0.0
-     */
-    public static String uuid() {
-        return IdUtil.randomUUID();
-    }
-
-    /**
-     * 格式化文本，使用 {varName} 占位<br>
-     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) ---=》 aValue and bValue
-     *
-     * @param template 文本模板，被替换的部分用 {key} 表示
-     * @param map      参数值对
-     * @return 格式化后的文本
-     */
-    public static String format(CharSequence template, Map<?, ?> map) {
-        return format(template, map, true);
-    }
-
-    /**
-     * 格式化文本，使用 {varName} 占位<br>
-     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) ---=》 aValue and bValue
-     *
-     * @param template   文本模板，被替换的部分用 {key} 表示
-     * @param map        参数值对
-     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
-     * @return 格式化后的文本
-     * @since 1.0.0
-     */
-    public static String format(CharSequence template, Map<?, ?> map, boolean ignoreNull) {
-        return StrFormatter.format(template, map, ignoreNull);
-    }
 
 
     /**
@@ -503,7 +274,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
      * this method is made for; it instead generates a best-effort string with all supplied argument
      * values present. This method is also useful in environments such as GWT where {@code
      * String.format} is not available. As an example, method implementations of the {@link
-     * Precondition} class use this formatter, for both of the reasons just discussed.
+     * Assert} class use this formatter, for both of the reasons just discussed.
      *
      * <p><b>Warning:</b> Only the exact two-character placeholder sequence {@code "%s"} is
      * recognized.
@@ -631,7 +402,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
      * @return encoded bytes, or {@code null} if the input string was {@code null}
      * @throws IllegalStateException Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen for a
      *                               required charset name.
-     * @see CharEncoding
+     *
      * @see String#getBytes(String)
      */
     public static byte[] getBytesUnchecked(final String string, final String charsetName) {
@@ -1577,7 +1348,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
      * @return the resulting {@code String} array
      */
     public static String[] toStringArray(Collection<String> collection) {
-        return (!CollectionUtil.isEmpty(collection) ? collection.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
+        return (!ListUtil.isEmpty(collection) ? collection.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -1881,7 +1652,7 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
     public static String collectionToDelimitedString(
             Collection<?> coll, String delim, String prefix, String suffix) {
 
-        if (CollectionUtil.isEmpty(coll)) {
+        if (ListUtil.isEmpty(coll)) {
             return "";
         }
 
@@ -1919,33 +1690,26 @@ public class StrUtil extends CharSequenceUtil implements StrPool {
         return collectionToDelimitedString(coll, ",");
     }
 
-    /**
-     * Convert a {@code String} array into a comma delimited {@code String}
-     * (i.e., CSV).
-     * <p>Useful for {@code toString()} implementations.
-     *
-     * @param arr the array to display (potentially {@code null} or empty)
-     * @return the delimited {@code String}
-     */
-    public static String arrayToCommaDelimitedString(Object[] arr) {
-        return ArrayUtil.join(arr, ",");
-    }
+
 
     /**
-     * 除去集合中的空字符串
-     *
-     * @param labels 字符串集合
-     * @return the list
+     * An implementation of {@link Map#toString}.
      */
-    public static List<String> sanitizeLabels(List<String> labels) {
-        if (labels == null || labels.isEmpty()) {
-            return null;
+    public static String mapToString( Map<?, ?> map ) {
+        StringBuilder sb = builder(map.size()).append('{');
+        boolean first = true;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append(entry.getKey()).append('=').append(entry.getValue());
         }
-        labels.removeIf(com.whaleal.icefrog.core.util.StrUtil::isEmptyIfStr);
-        if (labels.isEmpty()) {
-            return null;
-        }
-        return labels;
+        return sb.append('}').toString();
     }
+
+
+
+
 }
 

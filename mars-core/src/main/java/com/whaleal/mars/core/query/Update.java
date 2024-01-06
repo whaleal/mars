@@ -31,12 +31,12 @@ package com.whaleal.mars.core.query;
 
 
 import com.whaleal.mars.util.Assert;
-import com.whaleal.icefrog.core.map.MapUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
+
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.util.StrUtil;
 import org.bson.Document;
 
 import java.util.*;
@@ -498,7 +498,7 @@ public class Update implements UpdateDefinition {
             return doc.toJson().replaceAll("\":", "\" :").replaceAll("\\{\"", "{ \"");
         }catch (Exception e){
 
-           return MapUtil.toString((Map<?, ?>) doc);
+           return StrUtil.mapToString((Map<?, ?>) doc);
 
         }
 

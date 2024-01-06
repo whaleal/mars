@@ -30,6 +30,7 @@
 package com.whaleal.mars.codecs.pojo;
 
 
+
 import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.util.Assert;
 

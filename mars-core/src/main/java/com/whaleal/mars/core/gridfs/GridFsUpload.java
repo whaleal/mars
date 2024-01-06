@@ -30,7 +30,9 @@
 package com.whaleal.mars.core.gridfs;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.whaleal.icefrog.core.lang.loader.Lazy;
+
+
+import com.whaleal.mars.util.Lazy;
 import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -96,7 +98,8 @@ public class GridFsUpload<ID> implements GridFsObject<ID, InputStream> {
      */
     @Override
     public InputStream getContent() {
-        return dataStream.orElse(new ByteArrayInputStream(new byte[0]));
+        return  dataStream.get() == null? new ByteArrayInputStream(new byte[0]) : dataStream.get() ;
+
     }
 
 

@@ -1,8 +1,9 @@
 package com.whaleal.mars.monitor;
 
 import com.mongodb.client.MongoClient;
-import com.whaleal.mars.util.ObjectUtil;
 import org.bson.Document;
+
+import javax.annotation.Nullable;
 
 /**
  * @author lyz
@@ -33,10 +34,11 @@ public class TransactionMetrics extends AbstractMonitor{
         return getTransaction("totalAborted");
     }
 
+    @Nullable
     private Long getTransaction(String key){
         Document transactions = serverStatus.get("transactions", Document.class);
 
-        if(ObjectUtil.isEmpty(transactions)){
+        if(transactions ==null || transactions.isEmpty()){
             return null;
         }
 

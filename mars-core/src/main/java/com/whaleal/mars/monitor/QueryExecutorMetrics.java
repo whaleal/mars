@@ -35,10 +35,16 @@ public class QueryExecutorMetrics extends AbstractMonitor{
     }
 
     public Long getScanAndOrder(){
-        if(ObjectUtil.isEmpty(getQueryExecutorData("operation",Document.class))){
+        Document operation = getQueryExecutorData("operation", Document.class);
+        if(operation ==null ||  operation.isEmpty()){
             return 0L;
         }
-        return getQueryExecutorData("operation",Document.class).get("scanAndOrder",Long.class);
+
+        if(operation.containsKey("scanAndOrder")){
+            return operation.get("scanAndOrder",Long.class);
+        }
+
+        return 0L;
     }
 
     private <T> T getQueryExecutorData(String key,Class<T> targetClass) {

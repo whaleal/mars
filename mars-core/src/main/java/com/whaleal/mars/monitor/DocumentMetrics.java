@@ -33,12 +33,12 @@ public class DocumentMetrics extends AbstractMonitor{
 
     private <T> T getDocument(String key,Class<T> clazz){
         Document metrics = serverStatus.get("metrics", Document.class);
-        if(ObjectUtil.isEmpty(metrics)){
+        if(metrics ==null  || metrics.isEmpty()){
             return null;
         }
 
         Document document = metrics.get("document", Document.class);
-        if(ObjectUtil.isEmpty(document)){
+        if(document ==null  ||  document.isEmpty()){
             return null;
         }
 

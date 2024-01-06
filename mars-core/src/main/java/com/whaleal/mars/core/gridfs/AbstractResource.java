@@ -30,17 +30,16 @@
 package com.whaleal.mars.core.gridfs;
 
 
-import com.whaleal.icefrog.core.exceptions.UtilException;
-import com.whaleal.icefrog.core.util.URLUtil;
 import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
 import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
+
 
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -60,7 +59,7 @@ public abstract class AbstractResource implements Resource {
         if (isFile()) {
             try {
                 return getFile().exists();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Could not retrieve File for existence check of " + getDescription(), ex);
                 }
@@ -103,28 +102,7 @@ public abstract class AbstractResource implements Resource {
         return false;
     }
 
-    /**
-     * This implementation throws a FileNotFoundException, assuming
-     * that the resource cannot be resolved to a URL.
-     */
-    @Override
-    public URL getURL() throws IOException {
-        throw new FileNotFoundException(getDescription() + " cannot be resolved to URL");
-    }
 
-    /**
-     * This implementation builds a URI based on the URL returned
-     * by {@link #getURL()}.
-     */
-    @Override
-    public URI getURI() throws IOException {
-        URL url = getURL();
-        try {
-            return URLUtil.toURI(url);
-        } catch (UtilException ex) {
-            throw new IOException("Invalid URI [" + url + "]", ex);
-        }
-    }
 
     /**
      * This implementation throws a FileNotFoundException, assuming

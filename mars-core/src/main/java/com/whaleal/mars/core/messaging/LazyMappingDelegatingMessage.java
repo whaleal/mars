@@ -29,9 +29,10 @@
  */
 package com.whaleal.mars.core.messaging;
 
-import com.whaleal.icefrog.core.util.ClassUtil;
+
 import com.whaleal.mars.codecs.Conversions;
-import com.whaleal.mars.core.internal.MongoNamespace;
+import com.whaleal.mars.core.MongoNamespace;
+import com.whaleal.mars.util.ClassUtil;
 import org.bson.Document;
 
 class LazyMappingDelegatingMessage<S, T> implements Message<S, T> {

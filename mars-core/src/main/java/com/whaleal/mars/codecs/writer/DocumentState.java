@@ -30,7 +30,8 @@
 package com.whaleal.mars.codecs.writer;
 
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.collection.ListUtil;
+
+import com.whaleal.mars.util.ListUtil;
 import org.bson.Document;
 
 import java.util.ArrayList;

@@ -30,11 +30,10 @@
 package com.whaleal.mars.core.query;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
-import org.bson.Document;
 
-import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeEquals;
-import static com.whaleal.icefrog.core.util.ObjectUtil.nullSafeHashCode;
+import com.whaleal.mars.util.Assert;
+import com.whaleal.mars.util.ObjectUtil;
+import org.bson.Document;
 
 
 /**
@@ -81,8 +80,8 @@ public class BasicQuery extends Query {
      */
     public BasicQuery(Document queryObject, Document fieldsObject) {
 
-        Precondition.notNull(queryObject, "Query document must not be null");
-        Precondition.notNull(fieldsObject, "Projection document must not be null");
+        Assert.notNull(queryObject, "Query document must not be null");
+        Assert.notNull(fieldsObject, "Projection document must not be null");
 
         this.queryObject = queryObject;
         this.fieldsObject = fieldsObject;
@@ -123,7 +122,7 @@ public class BasicQuery extends Query {
      */
     protected void setFieldsObject(Document fieldsObject) {
 
-        Precondition.notNull(sortObject, "Projection document must not be null");
+        Assert.notNull(sortObject, "Projection document must not be null");
 
         this.fieldsObject = fieldsObject;
     }
@@ -149,7 +148,7 @@ public class BasicQuery extends Query {
      */
     public void setSortObject(Document sortObject) {
 
-        Precondition.notNull(sortObject, "Sort document must not be null");
+        Assert.notNull(sortObject, "Sort document must not be null");
 
         this.sortObject = sortObject;
     }
@@ -157,7 +156,7 @@ public class BasicQuery extends Query {
 
     public void setSortObject(String sortObject) {
 
-        Precondition.notNull(sortObject, "Sort String must not be null");
+        Assert.notNull(sortObject, "Sort String must not be null");
 
         this.sortObject = Document.parse(sortObject);
     }
@@ -183,9 +182,9 @@ public class BasicQuery extends Query {
         BasicQuery that = (BasicQuery) o;
 
         return querySettingsEquals(that) && //
-                nullSafeEquals(fieldsObject, that.fieldsObject) && //
-                nullSafeEquals(queryObject, that.queryObject) && //
-                nullSafeEquals(sortObject, that.sortObject);
+                ObjectUtil.nullSafeEquals(fieldsObject, that.fieldsObject) && //
+                ObjectUtil.nullSafeEquals(queryObject, that.queryObject) && //
+                ObjectUtil.nullSafeEquals(sortObject, that.sortObject);
     }
 
 
@@ -193,9 +192,9 @@ public class BasicQuery extends Query {
     public int hashCode() {
 
         int result = super.hashCode();
-        result = 31 * result + nullSafeHashCode(queryObject);
-        result = 31 * result + nullSafeHashCode(fieldsObject);
-        result = 31 * result + nullSafeHashCode(sortObject);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(queryObject);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(fieldsObject);
+        result = 31 * result + ObjectUtil.nullSafeHashCode(sortObject);
 
         return result;
     }

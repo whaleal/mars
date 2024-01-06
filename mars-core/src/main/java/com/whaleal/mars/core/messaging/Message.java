@@ -30,7 +30,7 @@
 package com.whaleal.mars.core.messaging;
 
 
-import com.whaleal.mars.core.internal.MongoNamespace;
+import com.whaleal.mars.core.MongoNamespace;
 
 public interface Message<S, T> {
 

@@ -1,9 +1,14 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
 
-import com.whaleal.icefrog.core.collection.ListUtil;
+
+
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.expressions.impls.ExpressionList;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Defines helper methods for the trigonometry expressions
@@ -79,7 +84,11 @@ public final class TrigonometryExpressions {
      * @aggregation.expression $atan2
      */
     public static Expression atan2(Expression yValue, Expression xValue) {
-        return new Expression("$atan2", new ExpressionList(ListUtil.of(yValue, xValue)));
+
+        List< Expression > arrayList  = new ArrayList();
+        arrayList.add(yValue);
+        arrayList.add(xValue);
+        return new Expression("$atan2", new ExpressionList(arrayList));
     }
 
     /**

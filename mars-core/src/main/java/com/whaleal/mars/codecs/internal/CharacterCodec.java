@@ -29,6 +29,7 @@
  */
 package com.whaleal.mars.codecs.internal;
 
+import com.whaleal.mars.util.Assert;
 import org.bson.BsonInvalidOperationException;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
@@ -36,7 +37,6 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
-import static com.whaleal.icefrog.core.lang.Precondition.notNull;
 import static java.lang.String.format;
 
 
@@ -44,7 +44,7 @@ import static java.lang.String.format;
 public class CharacterCodec implements Codec<Character> {
     @Override
     public void encode(final BsonWriter writer, final Character value, final EncoderContext encoderContext) {
-        notNull("value", value);
+        Assert.notNull( value);
 
         writer.writeString(value.toString());
     }

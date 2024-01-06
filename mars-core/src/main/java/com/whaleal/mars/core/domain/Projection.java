@@ -1,7 +1,8 @@
 package com.whaleal.mars.core.domain;
 
-import com.whaleal.icefrog.core.lang.Precondition;
+
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
+import com.whaleal.mars.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ public abstract class Projection implements IProjection{
     @Override
     public Projection include(String field) {
 
-        Precondition.notNull(field, "Key must not be null!");
+        Assert.notNull(field, "Key must not be null!");
 
         criteria.put(field, 1);
 
@@ -58,7 +59,7 @@ public abstract class Projection implements IProjection{
     @Override
     public Projection include(String field, Expression expression) {
 
-        Precondition.notNull(field, "Keys must not be null!");
+        Assert.notNull(field, "Keys must not be null!");
 
         criteria.put(field, expression);
 
@@ -74,7 +75,7 @@ public abstract class Projection implements IProjection{
     @Override
     public Projection exclude(String field) {
 
-        Precondition.notNull(field, "Key must not be null!");
+        Assert.notNull(field, "Key must not be null!");
 
         criteria.put(field, 0);
 

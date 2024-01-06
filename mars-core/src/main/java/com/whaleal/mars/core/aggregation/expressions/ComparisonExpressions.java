@@ -1,9 +1,13 @@
 package com.whaleal.mars.core.aggregation.expressions;
 
 
-import com.whaleal.icefrog.core.collection.ListUtil;
+
 import com.whaleal.mars.core.aggregation.expressions.impls.Expression;
 import com.whaleal.mars.core.aggregation.expressions.impls.ExpressionList;
+import com.whaleal.mars.util.ListUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Defines helper methods for the comparison expressions
@@ -22,7 +26,10 @@ public final class ComparisonExpressions {
      * @aggregation.expression $cmp
      */
     public static Expression cmp(Expression first, Expression second) {
-        return new Expression("$cmp", ListUtil.of(first, second));
+        List<Expression> arrayList = new ArrayList<>();
+        arrayList.add(first);
+        arrayList.add(second);
+        return new Expression("$cmp", arrayList);
     }
 
     /**
@@ -105,5 +112,8 @@ public final class ComparisonExpressions {
     public static Expression ne(Expression first, Expression second) {
         return new Expression("$ne", ListUtil.of(first, second));
     }
+
+
+
 
 }

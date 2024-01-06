@@ -33,11 +33,12 @@ import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 
+import com.mongodb.lang.Nullable;
 import com.whaleal.icefrog.core.util.OptionalUtil;
 import com.whaleal.mars.core.validation.Validator;
 import com.whaleal.mars.util.Assert;
 
-import javax.annotation.Nullable;
+
 import java.util.Optional;
 
 @Deprecated
@@ -431,6 +432,7 @@ public class CollectionOptions {
          * @return {@literal true} if no arguments set.
          */
         boolean isEmpty() {
+
             return !OptionalUtil.isAnyPresent(getValidator(), getValidationAction(), getValidationLevel());
         }
     }

@@ -31,8 +31,9 @@ package com.whaleal.mars.core.query;
 
 
 import com.whaleal.mars.util.Assert;
-import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.icefrog.core.util.StrUtil;
+
+import com.whaleal.mars.util.ObjectUtil;
+import com.whaleal.mars.util.StrUtil;
 import org.bson.Document;
 
 import java.util.ArrayList;

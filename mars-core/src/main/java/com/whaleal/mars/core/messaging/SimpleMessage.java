@@ -30,16 +30,15 @@
 package com.whaleal.mars.core.messaging;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ObjectUtil;
-import com.whaleal.mars.core.internal.MongoNamespace;
+
+import com.whaleal.mars.util.ObjectUtil;
+import com.whaleal.mars.core.MongoNamespace;
+import com.whaleal.mars.util.Assert;
 
 class SimpleMessage<S, T> implements Message<S, T> {
 
-    private
-    final S raw;
-    private
-    final T body;
+    private final S raw;
+    private final T body;
     private final MongoNamespace namespace;
 
     /**
@@ -49,7 +48,7 @@ class SimpleMessage<S, T> implements Message<S, T> {
      */
     SimpleMessage( S raw,  T body, MongoNamespace namespace) {
 
-        Precondition.notNull(namespace, "Properties must not be null! Use MessageProperties.empty() instead.");
+        Assert.notNull(namespace, "MongoNamespace must not be null ! ");
 
         this.raw = raw;
         this.body = body;

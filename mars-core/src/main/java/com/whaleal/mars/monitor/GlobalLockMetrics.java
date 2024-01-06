@@ -31,7 +31,8 @@ package com.whaleal.mars.monitor;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
-import com.whaleal.icefrog.core.util.ObjectUtil;
+
+import com.whaleal.mars.util.ObjectUtil;
 import org.bson.Document;
 
 /**
@@ -82,11 +83,11 @@ public class GlobalLockMetrics extends AbstractMonitor {
 
     private Integer getCurrentQueue(String key) {
         Document globalLock = serverStatus.get("globalLock",Document.class);
-        if(ObjectUtil.isEmpty(globalLock)){
+        if(globalLock == null  || globalLock.isEmpty()){
             return 0;
         }
         Document currentQueue =  globalLock.get("currentQueue",Document.class);
-        if(ObjectUtil.isEmpty(currentQueue)){
+        if(currentQueue == null  ||  currentQueue.isEmpty()){
             return 0;
         }
         return (Integer) currentQueue.get(key);
@@ -94,11 +95,11 @@ public class GlobalLockMetrics extends AbstractMonitor {
 
     private Integer getaActiveClients(String key) {
         Document globalLock = serverStatus.get("globalLock",Document.class);
-        if(ObjectUtil.isEmpty(globalLock)){
+        if(globalLock==null ||  globalLock.isEmpty()){
             return 0;
         }
         Document currentQueue = globalLock.get("activeClients",Document.class);
-        if(ObjectUtil.isEmpty(currentQueue)){
+        if(currentQueue ==null ||  currentQueue.isEmpty()){
             return 0;
         }
         return (Integer) currentQueue.get(key);

@@ -87,7 +87,7 @@ public class CollStatsMetrics extends AbstractMonitor{
     }
 
     protected <T> T getCollStats(String key,Class<T> targetClass){
-        if(ObjectUtil.isEmpty(collStats)){
+        if(collStats== null || collStats .isEmpty()  ){
             return null;
         }
         return (T) collStats.get(key,targetClass);

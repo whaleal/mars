@@ -30,8 +30,8 @@
 package com.whaleal.mars.core.query;
 
 
-import com.whaleal.icefrog.core.lang.Precondition;
-import com.whaleal.icefrog.core.util.ObjectUtil;
+import com.whaleal.mars.util.ObjectUtil;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 
 import java.util.HashMap;
@@ -88,7 +88,7 @@ public class Projection extends com.whaleal.mars.core.domain.Projection {
 
     public Projection include(String... fields) {
 
-        Precondition.notNull(fields, "Keys must not be null!");
+        Assert.notNull(fields, "Keys must not be null!");
 
         for (String key : fields) {
             criteria.put(key, 1);
@@ -105,7 +105,7 @@ public class Projection extends com.whaleal.mars.core.domain.Projection {
      */
     public Projection exclude(String... fields) {
 
-        Precondition.notNull(fields, "Keys must not be null!");
+        Assert.notNull(fields, "Keys must not be null!");
 
         for (String key : fields) {
             criteria.put(key, 0);
@@ -124,7 +124,7 @@ public class Projection extends com.whaleal.mars.core.domain.Projection {
      */
     public Projection slice(String field, int size) {
 
-        Precondition.notNull(field, "Key must not be null!");
+        Assert.notNull(field, "Key must not be null!");
 
         slices.put(field, size);
 
@@ -162,7 +162,7 @@ public class Projection extends com.whaleal.mars.core.domain.Projection {
      */
     public Projection position(String field, int value) {
 
-        Precondition.hasText(field, "DocumentField must not be null or empty!");
+        Assert.hasText(field, "DocumentField must not be null or empty!");
 
         positionKey = field;
         positionValue = value;

@@ -86,22 +86,8 @@ interface Resource extends InputStreamSource {
         return false;
     }
 
-    /**
-     * Return a URL handle for this resource.
-     *
-     * @throws IOException if the resource cannot be resolved as URL,
-     *                     i.e. if the resource is not available as descriptor
-     */
-    URL getURL() throws IOException;
 
-    /**
-     * Return a URI handle for this resource.
-     *
-     * @throws IOException if the resource cannot be resolved as URI,
-     *                     i.e. if the resource is not available as descriptor
-     *  2.5
-     */
-    URI getURI() throws IOException;
+
 
     /**
      * Return a File handle for this resource.
