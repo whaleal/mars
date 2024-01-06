@@ -40,6 +40,9 @@ import java.util.Map;
 /**
  * @author wh
  * @see org.bson.codecs.ValueCodecProvider ;
+ * 在原生驱动之前生效即可 覆盖原生驱动的相关编码逻辑
+ *
+ *
  */
 public class ValueCodecProvider implements CodecProvider {
     private final Map<Class<?>, Codec<?>> codecs = new HashMap<Class<?>, Codec<?>>();

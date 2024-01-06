@@ -2,6 +2,7 @@ package com.whaleal.mars.base;
 
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CreateCollectionOptions;
 import com.whaleal.icefrog.core.util.StrUtil;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.NumberBean;
@@ -42,7 +43,9 @@ public class CollationTest {
     @Test
     public void CollationForCreation() {
 
-        mars.createCollection("student", CollectionOptions.just(Collation.builder().locale("zh").build()));
+        CreateCollectionOptions zh = new CreateCollectionOptions().collation(Collation.builder().locale("zh").build());
+
+        mars.createCollection("student", zh);
         List< Document > list = CreateDataUtil.parseString("{\"name\" : \"张七\" }\n" +
                 "{\"name\" : \"张三\" }\n" +
                 "{\"name\" : \"李四\" }\n" +

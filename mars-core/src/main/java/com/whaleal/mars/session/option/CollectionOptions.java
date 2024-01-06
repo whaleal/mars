@@ -41,6 +41,17 @@ import com.whaleal.mars.util.Assert;
 
 import java.util.Optional;
 
+/**
+ * @author wh
+ *
+ *
+ * @see  com.mongodb.client.model.CreateCollectionOptions
+ *
+ * todo
+ * 后续调整为builder 模式 。作为 原生 option  的增强功能
+ * 同时与既有功能强化
+ *
+ */
 @Deprecated
 public class CollectionOptions {
 

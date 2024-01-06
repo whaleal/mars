@@ -67,8 +67,8 @@ public class AssertMetrics extends AbstractMonitor {
     }
 
     private Integer getBtree(String key) {
-        Document Preconditions = (Document) serverStatus.get("asserts");
-        return Preconditions.getInteger(key);
+        Document asserts = (Document) serverStatus.get("asserts");
+        return asserts.getInteger(key);
     }
 
 }

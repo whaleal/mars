@@ -1424,6 +1424,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     }
 
+
+    @Deprecated
     protected Document convertToDocument( CollectionOptions collectionOptions ) {
         Document document = new Document();
         if (collectionOptions != null) {
@@ -1462,6 +1464,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         }
         return document;
     }
+
 
     protected Document convertToDocument( CreateCollectionOptions collectionOptions ) {
         Document document = new Document();

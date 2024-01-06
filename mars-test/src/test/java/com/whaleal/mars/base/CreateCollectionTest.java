@@ -2,6 +2,7 @@ package com.whaleal.mars.base;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CreateCollectionOptions;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.bean.NumberBean;
@@ -64,7 +65,8 @@ public class CreateCollectionTest {
 
     @Test
     public void testForCreateByCapped(){
-        mars.createCollection("person",new CollectionOptions(1024L,1000L,true));
+        CreateCollectionOptions options = new CreateCollectionOptions().capped(true).sizeInBytes(1024L).maxDocuments(1000L);
+        mars.createCollection("person",options);
 
         CollStatsMetrics book = new CollStatsMetrics(mars.getMongoClient(), mars.getDatabase(), "person");
 

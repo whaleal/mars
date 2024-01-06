@@ -1,5 +1,7 @@
 package com.whaleal.mars.core.command;
 
+import com.mongodb.client.model.CreateCollectionOptions;
+import com.mongodb.client.model.ValidationOptions;
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Criteria;
@@ -98,7 +100,8 @@ public class InsertCommandTest {
     @Test
     public void testForCreateCollection(){
         Criteria in = Criteria.where("status").in("Unknown", "Incomplete");
-        mars.createCollection("users", CollectionOptions.empty().validation(CollectionOptions.ValidationOptions.none().validator(Validator.criteria(in))));
+        CreateCollectionOptions options = new CreateCollectionOptions().validationOptions(new ValidationOptions().validator(new Document("status", new Document("$in", new String[]{"Unknown", "Incomplete"}))));
+        mars.createCollection("users", options);
 
         Document document = mars.executeCommand(Document.parse("{\n" +
                 "      insert: \"users\",\n" +

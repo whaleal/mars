@@ -49,6 +49,9 @@ public class FloatCodec implements Codec<Float>, RepresentationConfigurable<Floa
 
     private BsonType representation;
 
+    /**
+     *  float  类型默认为 double
+     */
     public FloatCodec() {
         this.representation = DOUBLE;
     }
