@@ -30,7 +30,7 @@
 package com.whaleal.mars.codecs.internal;
 
 
-import org.bson.codecs.Codec;
+import org.bson.codecs.*;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 
@@ -41,6 +41,39 @@ import java.util.Map;
  * @author wh
  * @see org.bson.codecs.ValueCodecProvider ;
  * 在原生驱动之前生效即可 覆盖原生驱动的相关编码逻辑
+ * <ul>
+ *     <li>{@link org.bson.codecs.BinaryCodec}</li>
+ *     <li>{@link org.bson.codecs.BooleanCodec}</li>
+ *     <li>{@link org.bson.codecs.DateCodec}</li>
+ *     <li>{@link org.bson.codecs.DoubleCodec}</li>
+ *     <li>{@link org.bson.codecs.IntegerCodec}</li>
+ *     <li>{@link org.bson.codecs.LongCodec}</li>
+ *     <li>{@link org.bson.codecs.Decimal128Codec}</li>
+ *     <li>{@link org.bson.codecs.MinKeyCodec}</li>
+ *     <li>{@link org.bson.codecs.MaxKeyCodec}</li>
+ *     <li>{@link org.bson.codecs.CodeCodec}</li>
+ *     <li>{@link org.bson.codecs.ObjectIdCodec}</li>
+ *     <li>{@link org.bson.codecs.CharacterCodec}</li>
+ *     <li>{@link org.bson.codecs.StringCodec}</li>
+ *     <li>{@link org.bson.codecs.SymbolCodec}</li>
+ *     <li>{@link org.bson.codecs.UuidCodec}</li>
+ *     <li>{@link org.bson.codecs.ByteCodec}</li>
+ *     <li>{@link org.bson.codecs.ShortCodec}</li>
+ *     <li>{@link org.bson.codecs.ByteArrayCodec}</li>
+ *     <li>{@link org.bson.codecs.FloatCodec}</li>
+ *     <li>{@link org.bson.codecs.AtomicBooleanCodec}</li>
+ *     <li>{@link org.bson.codecs.AtomicIntegerCodec}</li>
+ *     <li>{@link org.bson.codecs.AtomicLongCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.AtomicIntegerCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.AtomicLongCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.FloatCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.DoubleCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.ShortCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.IntegerCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.LongCodec}</li>
+ *     <li>{@link com.whaleal.mars.codecs.internal.StringCodec}</li>
+ * </ul>
+ *
  *
  *
  */

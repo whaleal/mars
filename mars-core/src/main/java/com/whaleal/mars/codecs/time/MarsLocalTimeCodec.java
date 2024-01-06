@@ -27,40 +27,34 @@
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
  */
-package com.whaleal.mars.codecs.internal;
+package com.whaleal.mars.codecs.time;
 
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
-import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
-import org.bson.types.CodeWithScope;
+
+import java.time.LocalTime;
 
 
-@Deprecated
-public class CodeWithScopeCodec implements Codec<CodeWithScope> {
-    private final Codec<Document> documentCodec;
+public class MarsLocalTimeCodec implements Codec<LocalTime> {
 
-    public CodeWithScopeCodec(final Codec<Document> documentCodec) {
-        this.documentCodec = documentCodec;
+    private static final int MILLI_MODULO = 1000000;
+
+    @Override
+    public LocalTime decode(BsonReader reader, DecoderContext decoderContext) {
+        return LocalTime.ofNanoOfDay(reader.readInt64() * MILLI_MODULO);
     }
 
     @Override
-    public CodeWithScope decode(final BsonReader bsonReader, final DecoderContext decoderContext) {
-        String code = bsonReader.readJavaScriptWithScope();
-        Document scope = documentCodec.decode(bsonReader, decoderContext);
-        return new CodeWithScope(code, scope);
+    public void encode(BsonWriter writer, LocalTime value, EncoderContext encoderContext) {
+        writer.writeInt64(value.toNanoOfDay() / MILLI_MODULO);
     }
 
     @Override
-    public void encode(final BsonWriter writer, final CodeWithScope codeWithScope, final EncoderContext encoderContext) {
-        writer.writeJavaScriptWithScope(codeWithScope.getCode());
-        documentCodec.encode(writer, codeWithScope.getScope(), encoderContext);
+    public Class<LocalTime> getEncoderClass() {
+        return LocalTime.class;
     }
 
-    @Override
-    public Class<CodeWithScope> getEncoderClass() {
-        return CodeWithScope.class;
-    }
 }

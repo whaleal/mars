@@ -29,7 +29,6 @@
  */
 package com.whaleal.mars.codecs.internal;
 
-import com.whaleal.mars.codecs.RepresentationConfigurable;
 import org.bson.BsonInvalidOperationException;
 import org.bson.BsonReader;
 import org.bson.BsonType;
@@ -42,7 +41,7 @@ import org.bson.types.Decimal128;
 
 import static java.lang.String.format;
 import static org.bson.BsonType.*;
-
+import org.bson.codecs.RepresentationConfigurable;
 
 /**
  * @author wh

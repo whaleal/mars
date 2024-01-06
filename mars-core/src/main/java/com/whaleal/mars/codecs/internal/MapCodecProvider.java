@@ -31,6 +31,7 @@ package com.whaleal.mars.codecs.internal;
 
 import com.whaleal.mars.util.Assert;
 import org.bson.Transformer;
+import org.bson.codecs.BsonTypeClassMap;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -44,7 +45,7 @@ public class MapCodecProvider implements CodecProvider {
     private final Transformer valueTransformer;
 
     public MapCodecProvider() {
-        this(BsonTypeClassMap.DEFAULT_BSON_TYPE_CLASS_MAP);
+        this(new BsonTypeClassMap());
     }
 
     public MapCodecProvider(final BsonTypeClassMap bsonTypeClassMap) {
@@ -52,7 +53,7 @@ public class MapCodecProvider implements CodecProvider {
     }
 
     public MapCodecProvider(final Transformer valueTransformer) {
-        this(BsonTypeClassMap.DEFAULT_BSON_TYPE_CLASS_MAP, valueTransformer);
+        this(new BsonTypeClassMap(), valueTransformer);
     }
 
     public MapCodecProvider(final BsonTypeClassMap bsonTypeClassMap, final Transformer valueTransformer) {

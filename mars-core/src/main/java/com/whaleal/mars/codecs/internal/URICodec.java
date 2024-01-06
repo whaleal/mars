@@ -42,10 +42,11 @@ import java.net.URI;
 
 /**
  * @author wh
+ *
+ *
+ * 将 URI 对象 主动转为 字段串存到数据库中
  */
 
-
-@Deprecated
 public class URICodec implements Codec<URI> {
     @Override
     public URI decode(BsonReader reader, DecoderContext decoderContext) {

@@ -39,7 +39,12 @@
  *
  *
  * 目前 已经支持的基本类型
- * int ,long   ,double   , float  , short    , String
+ * int ,
+ * long
+ * double
+ * float  ,
+ * short    ,
+ * String
  *
  *
  *

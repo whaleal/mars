@@ -31,6 +31,7 @@ package com.whaleal.mars.codecs;
 
 import com.whaleal.mars.codecs.internal.MapCodec;
 import com.whaleal.mars.codecs.internal.URICodec;
+import com.whaleal.mars.codecs.time.MarsLocalTimeCodec;
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
