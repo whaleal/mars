@@ -56,6 +56,15 @@ public class SetWindowFieldsCodec extends StageCodec< SetWindowFields > {
                     });
                 }
             });
+
+/*            document(writer,"output",()->{
+                document(writer,"cumulativeQuantityForState", ()->{
+
+                        writer.writeName("$sum");
+                        writer.writeString("$quantity");
+
+                });
+            });*/
         });
     }
 
@@ -73,7 +82,8 @@ public class SetWindowFieldsCodec extends StageCodec< SetWindowFields > {
     @SuppressWarnings("rawtypes")
     private void operator(BsonWriter writer, EncoderContext encoderContext, @Nullable Expression operator) {
         if (operator != null) {
-            expression(getMapper(), writer, operator, encoderContext);
+            Codec codec = getCodecRegistry().get(operator.getClass());
+            codec.encode(writer, operator, encoderContext);
         }
     }
 

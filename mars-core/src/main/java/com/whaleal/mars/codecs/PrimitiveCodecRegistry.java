@@ -36,6 +36,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * @author wh
+ *
+ * 基本类型注册器
+ *
+ */
 public class PrimitiveCodecRegistry implements CodecRegistry {
     private final Map<Class, Codec> primitiveCodecs = new HashMap<>();
 

@@ -35,15 +35,16 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecConfigurationException;
+import org.bson.codecs.configuration.CodecRegistry;
 
 
 public class ObjectCodec implements Codec<Object> {
 
-    private final MongoMappingContext mapper;
+    private final CodecRegistry codecRegistry;
     private final BsonTypeClassMap bsonTypeClassMap = new BsonTypeClassMap();
 
-    public ObjectCodec(MongoMappingContext mapper) {
-        this.mapper = mapper;
+    public ObjectCodec(CodecRegistry codecRegistry) {
+        this.codecRegistry = codecRegistry;
     }
 
     @Override
@@ -73,14 +74,14 @@ public class ObjectCodec implements Codec<Object> {
         } else {
             clazz = bsonTypeClassMap.get(bsonType);
         }
-        return mapper.getCodecRegistry()
+        return codecRegistry
                 .get(clazz)
                 .decode(reader, decoderContext);
     }
 
     @Override
     public void encode(BsonWriter writer, Object value, EncoderContext encoderContext) {
-        final Codec codec = mapper.getCodecRegistry().get(value.getClass());
+        final Codec codec = codecRegistry.get(value.getClass());
         codec.encode(writer, value, encoderContext);
     }
 

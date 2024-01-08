@@ -35,6 +35,7 @@ import org.bson.BsonReader;
 import org.bson.BsonType;
 import org.bson.BsonWriter;
 import org.bson.codecs.*;
+import org.bson.codecs.configuration.CodecRegistry;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -44,11 +45,11 @@ import java.util.UUID;
 class ArrayCodec implements Codec<Object> {
 
     private final Class type;
-    private final MongoMappingContext mapper;
+    private final CodecRegistry codecRegistry;
     private BsonTypeCodecMap bsonTypeCodecMap;
 
-    <T> ArrayCodec(MongoMappingContext mapper, Class type) {
-        this.mapper = mapper;
+    <T> ArrayCodec(CodecRegistry codecRegistry, Class type) {
+        this.codecRegistry = codecRegistry;
         this.type = type;
     }
 
@@ -96,14 +97,14 @@ class ArrayCodec implements Codec<Object> {
             reader.readNull();
             return null;
         } else if (bsonType == BsonType.BINARY && BsonBinarySubType.isUuid(reader.peekBinarySubType()) && reader.peekBinarySize() == 16) {
-            return mapper.getCodecRegistry().get(UUID.class).decode(reader, decoderContext);
+            return codecRegistry.get(UUID.class).decode(reader, decoderContext);
         }
-        return mapper.getCodecRegistry().get(type.getComponentType()).decode(reader, decoderContext);
+        return codecRegistry.get(type.getComponentType()).decode(reader, decoderContext);
     }
 
     private BsonTypeCodecMap getBsonTypeCodecMap() {
         if (bsonTypeCodecMap == null) {
-            this.bsonTypeCodecMap = new BsonTypeCodecMap(new BsonTypeClassMap(), mapper.getCodecRegistry());
+            this.bsonTypeCodecMap = new BsonTypeCodecMap(new BsonTypeClassMap(), codecRegistry);
         }
         return bsonTypeCodecMap;
     }
@@ -114,7 +115,7 @@ class ArrayCodec implements Codec<Object> {
         if (value == null) {
             writer.writeNull();
         } else {
-            Codec codec = mapper.getCodecRegistry().get(value.getClass());
+            Codec codec = codecRegistry.get(value.getClass());
             codec.encode(writer, value, encoderContext);
         }
     }

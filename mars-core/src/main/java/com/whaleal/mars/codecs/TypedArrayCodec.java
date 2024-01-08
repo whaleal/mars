@@ -35,6 +35,7 @@ import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
+import org.bson.codecs.configuration.CodecRegistry;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -44,12 +45,12 @@ import static java.lang.String.format;
 
 class TypedArrayCodec implements Codec {
     private final Class type;
-    private final MongoMappingContext mapper;
+    private final CodecRegistry registry ;
     private Codec codec;
 
-    TypedArrayCodec(Class type, MongoMappingContext mapper) {
+    TypedArrayCodec(Class type, CodecRegistry registry) {
         this.type = type;
-        this.mapper = mapper;
+        this.registry = registry;
     }
 
     @Override
@@ -69,7 +70,7 @@ class TypedArrayCodec implements Codec {
 
     private Codec getCodec() {
         if (codec == null) {
-            codec = mapper.getCodecRegistry().get(type);
+            codec = registry.get(type);
         }
         return codec;
     }
