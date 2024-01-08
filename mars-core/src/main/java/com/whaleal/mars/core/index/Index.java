@@ -56,7 +56,7 @@ public class Index {
 
     private final Map< String, IndexDirection > key = new LinkedHashMap< String, IndexDirection >();
 
-    private IndexOptions options;
+    private IndexOptions options = new IndexOptions();
 
     public Index() {
     }
