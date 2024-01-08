@@ -89,7 +89,6 @@ public class SetWindowFields extends Stage {
          * @return the operator
          */
         @Nullable
-
         public Expression operator() {
             return operator;
         }
@@ -152,7 +151,6 @@ public class SetWindowFields extends Stage {
          * @return the range
          */
         @Nullable
-
         public List<Object> range() {
             return range;
         }
