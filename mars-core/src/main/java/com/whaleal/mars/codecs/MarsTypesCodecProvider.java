@@ -44,11 +44,19 @@ public class MarsTypesCodecProvider implements CodecProvider {
 
     private final MongoMappingContext mapper;
     private final Map<Class<?>, Codec<?>> codecs = new HashMap<>();
+    private boolean init = true  ;
 
 
     public MarsTypesCodecProvider(MongoMappingContext mapper) {
         this.mapper = mapper;
 
+    }
+
+    protected <T> void addCodec(Codec<T> codec) {
+        codecs.put(codec.getEncoderClass(), codec);
+    }
+
+    private void init(){
         //addCodec(new MarsDateCodec(mapper));
         //addCodec(new MarsLocalDateTimeCodec(mapper));
         addCodec(new MarsLocalTimeCodec());
@@ -57,12 +65,16 @@ public class MarsTypesCodecProvider implements CodecProvider {
         addCodec(new HashMapCodec());
         //addCodec(new KeyCodec(mapper));
         addCodec(new LocaleCodec());
-        addCodec(new ObjectCodec(mapper));
+        addCodec(new ObjectCodec(this.mapper.getCodecRegistry()));
         //addCodec(new ShapeCodec());
         //addCodec(new LegacyQueryCodec(mapper));
         //addCodec(new MarsQueryCodec(mapper));
         addCodec(new URICodec());
 
+        /**
+         * 常见类型的数组类型处理
+         * 全部交给 TypedArrayCodec
+         */
         Arrays.asList(boolean.class, Boolean.class,
                 byte.class, Byte.class,
                 char.class, Character.class,
@@ -70,20 +82,24 @@ public class MarsTypesCodecProvider implements CodecProvider {
                 float.class, Float.class,
                 int.class, Integer.class,
                 long.class, Long.class,
-                short.class, Short.class).forEach(c -> addCodec(new TypedArrayCodec(c, mapper)));
-    }
+                short.class, Short.class).forEach(c -> addCodec(new TypedArrayCodec(c, this.mapper.getCodecRegistry())));
 
-    protected <T> void addCodec(Codec<T> codec) {
-        codecs.put(codec.getEncoderClass(), codec);
     }
 
     @Override
     public <T> Codec<T> get(Class<T> clazz, CodecRegistry registry) {
+
+        if(init){
+            init();
+            init = false ;
+        }
+
         final Codec<T> codec = (Codec<T>) codecs.get(clazz);
         if (codec != null) {
             return codec;
         } else if (clazz.isArray() && !clazz.getComponentType().equals(byte.class)) {
-            return (Codec<T>) new ArrayCodec(mapper, clazz);
+
+            return (Codec<T>) new ArrayCodec(this.mapper.getCodecRegistry(), clazz);
         } else {
             return null;
         }

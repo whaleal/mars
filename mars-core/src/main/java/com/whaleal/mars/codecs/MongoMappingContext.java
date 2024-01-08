@@ -130,11 +130,10 @@ public class MongoMappingContext {
         marsCodecProvider = new MarsCodecProvider(this);
         this.codecRegistry = fromProviders(
 
-                new MarsTypesCodecProvider(this),
-                new PrimitiveCodecRegistry(codecRegistry),
                 new EnumCodecProvider(),
+                new PrimitiveCodecRegistry(codecRegistry),
+                new MarsTypesCodecProvider(this),
                 new AggregationCodecProvider(this),
-
                 codecRegistry,
                 marsCodecProvider
 
