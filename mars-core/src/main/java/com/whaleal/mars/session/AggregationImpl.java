@@ -40,6 +40,7 @@ import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Stage;
 import com.whaleal.mars.session.option.AggregationOptions;
+import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.EncoderContext;
@@ -90,7 +91,7 @@ public abstract class AggregationImpl {
     public <T> QueryCursor<T> aggregate(AggregationPipeline<T> pipeline) {
 
 
-        return this.aggregate(pipeline, null, null);
+        return this.aggregate(pipeline, null, new AggregationOptions());
     }
 
     public <T> QueryCursor<T> aggregate(AggregationPipeline<T> pipeline, AggregationOptions options) {
@@ -124,6 +125,8 @@ public abstract class AggregationImpl {
 
     public <T> QueryCursor<T> execute(AggregationPipeline<T> pipeline, String collectionName, AggregationOptions options) {
 
+        Assert.notNull(options ,"aggregationOptions can't  be null ") ;
+
         Class< T > resultType = pipeline.getOutputType();
 
         MongoCollection<T> collection;
@@ -144,6 +147,8 @@ public abstract class AggregationImpl {
 
         if (options != null) {
             collection = options.prepare(collection);
+        }else {
+            throw  new IllegalArgumentException("aggregationOptions can't  be null ");
         }
 
         MongoCursor<T> cursor = options.apply(getDocuments(pipeline.getInnerStage()), collection, resultType).iterator();
