@@ -15,7 +15,9 @@ import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.session.option.InsertManyOptions;
 import com.whaleal.mars.util.StudentGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -27,36 +29,47 @@ import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressio
 import static com.whaleal.mars.core.aggregation.expressions.AccumulatorExpressions.sum;
 import static com.whaleal.mars.core.aggregation.expressions.Expressions.field;
 
+
 @Slf4j
 public class StudentCrudTest {
 
-    private static final Mars mars = new Mars(Constant.connectionStr);
-    private static final Integer defStuNo = 1000;
-    private static final Integer initStuCount = 10;
-    private static final Integer initClsCount = 10;
-    private static final List<Student> stuList = new LinkedList<>();
+    private  final Mars mars = new Mars(Constant.connectionStr);
+    private  final Integer defStuNo = 1000;
+    private  final Integer initStuCount = 10;
+    private  final Integer initClsCount = 10;
+    private  final List<Student> stuList = new LinkedList<>();
 
-//    @BeforeMethod
-//    public void init() {
-//
-//        for (int i = 1; i < initClsCount; i++) {
-//            for (int j = 0; j < initStuCount; j++) {
-//                Student student = StudentGenerator.getInstance(i * defStuNo + j);
-//                stuList.add(student);
-//            }
-//        }
-//        try {
-//            mars.dropCollection(Student.class);
-//        } catch (Exception e) {
-//        }
-//    }
+    @Before
+     public void init() {
+
+          for (int i = 1; i < initClsCount; i++) {
+              for (int j = 0; j < initStuCount; j++) {
+                    Student student = StudentGenerator.getInstance(i * defStuNo + j);
+                   stuList.add(student);
+               }
+           }
+
+       }
+
+
+   @After
+   public void drop(){
+
+       try {
+           mars.dropCollection(Student.class);
+       } catch (Exception e) {
+       }
+
+   }
 
 
     @Test
     public void test01del() {
 
+
         mars.insert(stuList, Student.class, new InsertManyOptions().ordered(false));
-        com.mongodb.client.result.DeleteResult deleteResult = mars.delete(new Query(), Student.class);
+
+        com.mongodb.client.result.DeleteResult deleteResult = mars.deleteMulti(new Query(), Student.class);
 
         Assert.assertEquals(stuList.size(), deleteResult.getDeletedCount());
 

@@ -23,10 +23,8 @@ public class UpdateTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
-    public static void main( String[] args ) {
 
 
-    }
 
     @Before
     public void createCollection(){
