@@ -32,7 +32,7 @@ package com.whaleal.mars.core.gridfs;
 import com.mongodb.client.gridfs.model.GridFSFile;
 
 
-import com.whaleal.mars.util.Lazy;
+import com.whaleal.mars.core.internal.Lazy;
 import com.whaleal.mars.util.Assert;
 import org.bson.Document;
 import org.bson.types.ObjectId;
