@@ -1,4 +1,4 @@
-package com.whaleal.mars.util;
+package com.whaleal.mars.core.internal;
 
 
 import java.io.Serializable;
