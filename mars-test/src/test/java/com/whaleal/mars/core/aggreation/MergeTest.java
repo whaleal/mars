@@ -35,7 +35,7 @@ public class MergeTest {
 
     Mars mars = new Mars(Constant.connectionStr);
 
-    AggregationPipeline pipeline = AggregationPipeline.create();
+    AggregationPipeline<Document> pipeline = AggregationPipeline.create();
 
     @Before
     public void createData(){
@@ -152,7 +152,7 @@ public class MergeTest {
                 .field("employees",push(field("employee"))));
         pipeline.project(Projection.of().exclude("_id")
                 .include("dept",field("_id.dept"))
-                .include("fiscal_year",field("fiscal_year"))
+                .include("fiscal_year",field("_id.fiscal_year"))
                 .include("employees"));
         pipeline.merge(Merge.into("orgArchive")
                 .on("dept","fiscal_year")

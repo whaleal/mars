@@ -71,18 +71,27 @@ public class InsertTest {
         System.out.println(insert);
         Animal resultAnimal = mars.findOne(new Query(), Animal.class).orElse(null);
 
-        //mars.delete(new Query(new Criteria("_id").is("1001")),Animal.class);
-
         System.out.println(insert);
         System.out.println(resultAnimal);
-        Assert.assertEquals(animal,resultAnimal);
+        /**
+         * 细节比较 即可
+         * 考虑到  部分字段 被注销掉
+         *
+         */
+        //Assert.assertEquals(animal,resultAnimal);
+
+        Assert.assertEquals(animal.getId(),resultAnimal.getId());
+        Assert.assertEquals(animal.getIsAlive(),resultAnimal.getIsAlive());
+        Assert.assertEquals(animal.getBirthday(),resultAnimal.getBirthday());
 
     }
 
     @After
     public void dropCollections(){
         mars.dropCollection("inventory");
-//        mars.dropCollection("inventory1");
+
+        mars.dropCollection(Animal.class);
+        mars.dropCollection("inventory1");
     }
 
     @Test

@@ -79,7 +79,7 @@ public class SaveTest {
 
         System.out.println("==============");
 
-        Animal insert = mars.insert(animal,"animal");
+         Animal insert = mars.save(animal,"animal");
         System.out.println(insert);
 
 
@@ -92,10 +92,10 @@ public class SaveTest {
         List<Object> list = new ArrayList();
         list.add(animal);
 
-        mars.insert(animal,"animal");
+        mars.save(animal,"animal");
 
 //        mars.insert(list,options,"animal");
-        mars.insert(list,"animal",optionsMany);
+        mars.save(list,"animal");
 
 
 

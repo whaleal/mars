@@ -43,8 +43,9 @@ public class CrudTest {
 
         Assert.assertNotNull(this.mars);
 
-        System.out.println(this.mars);
-        student = StudentGenerator.getInstance(10000);
+
+
+
     }
 
     @After
@@ -58,7 +59,7 @@ public class CrudTest {
 
         Query query = new Query();
 
-        QueryCursor< Student > result = mars.findAll(query, Student.class);
+        QueryCursor< Student > result = mars.find(query, Student.class);
 
         while (result.hasNext()) {
             System.out.println(result.next());
@@ -69,7 +70,11 @@ public class CrudTest {
     @Test
     public void findOne() {
 
-        Query query = Query.query(Criteria.where("_id").is(new ObjectId("6034c9c9e73be70704731635")));
+        student = StudentGenerator.getInstance(10000);
+
+        mars.insert(student);
+
+        Query query = new Query();
         Optional< Student > one = mars.findOne(query, Student.class);
         Student student = one.get();
 
@@ -83,7 +88,6 @@ public class CrudTest {
 
         mars.dropCollection(Student.class);
         mars.insert(student);
-//        mars.dropCollection(Student.class);
 
     }
 

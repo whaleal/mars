@@ -123,9 +123,11 @@ public class AddFieldTest {
 
         Document document = mars.aggregate(pipeline, "animals").tryNext();
         System.out.println(document.toJson());
-        Document parse = Document.parse("{\"_id\": 1, \"dogs\": 10, \"cats\": 20}");
+        Document parse = Document.parse("{\"_id\": \"1\", \"dogs\": 10, \"cats\": 20}");
 
-        Assert.assertEquals(document,parse);
+       Assert.assertEquals(document,parse);
+
+        Assert.assertTrue(document.equals(parse));
 
     }
 

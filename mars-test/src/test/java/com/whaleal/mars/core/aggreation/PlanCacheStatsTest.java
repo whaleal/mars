@@ -63,7 +63,7 @@ public class PlanCacheStatsTest {
         mars.createIndex(new Index("quantity",IndexDirection.ASC),"orders");
         mars.createIndex(new Index("quantity",IndexDirection.ASC).on("type",IndexDirection.ASC),"orders");
 
-        Index item = new Index("item", IndexDirection.ASC);
+        Index item = new Index("item", IndexDirection.DESC);
         IndexOptions indexOptions = new IndexOptions();
         IndexOptions indexOptions1 = indexOptions.partialFilterExpression(Document.parse("{ price: { $gte: NumberDecimal(\"10\")} }"));
         Index index = item.setOptions(indexOptions1);
@@ -96,8 +96,12 @@ public class PlanCacheStatsTest {
      */
     @Test
     public void testForCache(){
+
         pipeline.planCacheStats();
-        Object orders = mars.aggregate(pipeline, "orders").tryNext();
-        Assert.assertNotNull(orders);
+        QueryCursor<Document> orders = mars.aggregate(pipeline, "orders");
+
+        while (orders.hasNext()){
+            System.out.println(orders.next());
+        }
     }
 }

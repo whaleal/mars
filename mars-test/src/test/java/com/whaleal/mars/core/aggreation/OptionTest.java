@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class OptionTest {
 
-//    private Mars mars = new Mars("mongodb://192.168.3.200:47018/ops20220621");
+
     private Mars mars = new Mars(Constant.connectionStr);
 
 

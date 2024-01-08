@@ -29,12 +29,6 @@ public class ParentTest {
 
     Mars mars = new Mars(Constant.connectionStr);
 
-    @Before
-    public void init() {
-
-
-    }
-
 
     @After
     public void destory() {
@@ -146,8 +140,8 @@ public class ParentTest {
         p.setId("15");
         mars.insert(p);
 
-        Criteria id = Criteria.where("age").is(18);
-        com.mongodb.client.result.DeleteResult delete = mars.delete(new Query(id), Parent.class);
+        Criteria age = Criteria.where("age").is(18);
+        com.mongodb.client.result.DeleteResult delete = mars.deleteMulti(new Query(age), Parent.class);
         Assert.assertEquals(2, delete.getDeletedCount());
 
     }

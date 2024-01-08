@@ -1,6 +1,7 @@
 package com.whaleal.mars.core.command;
 
 import com.whaleal.icefrog.core.collection.ListUtil;
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.bean.Book;
 import com.whaleal.mars.bean.Contacts;
 import com.whaleal.mars.bean.Status;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class CollModTest {
 
-    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/mars?authSource=admin");
+    private Mars mars = new Mars(Constant.connectionStr);
 
 
     @Before
@@ -61,7 +62,7 @@ public class CollModTest {
         Document document1 = mars.executeCommand(document);
         Document result = Document.parse("{expireAfterSeconds_old:40, expireAfterSeconds_new:20, ok:1.0}");
         //todo 对比结果看上去一致却爆出错误
-        Assert.assertEquals(document1,result);
+        Assert.assertEquals(document1.toString(),result.toString());
     }
 
     //todo ModifyView

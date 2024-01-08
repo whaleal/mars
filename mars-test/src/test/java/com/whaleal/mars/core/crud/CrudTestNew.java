@@ -99,19 +99,24 @@ public class CrudTestNew {
         Articles articles2 = mars.findAll(Articles.class).tryNext();
         Assert.assertEquals(insert,articles2);
 
-        Object articles11 = mars.findAll(null, "articles1").tryNext();
+        Object articles11 = mars.findAll(Articles.class, "articles1").tryNext();
         Assert.assertEquals(articles1,articles11);
     }
 
     @Test
     public void testForInsertMany(){
 
-        ArrayList<Object> objects = new ArrayList<>();
+        ArrayList<Articles> objects = new ArrayList<>();
         for(int i = 0; i < 3 ; i++ ){
 
             Articles articles = new Articles(i,"ceshi","lyz",5);
             objects.add(articles);
         }
+
+
+        List<Articles> insert = mars.insert(objects, Articles.class);
+
+        Assert.assertEquals(insert,objects);
 
         ArrayList<Object> objects1 = new ArrayList<>();
         for(int i = 3; i < 6 ; i++ ){
@@ -119,19 +124,13 @@ public class CrudTestNew {
             Articles articles = new Articles(i,"ceshi","lyz",5);
             objects1.add(articles);
         }
-        Collection<Object> insert = mars.insert(objects, Articles.class);
-        for (Object o : insert){
-            System.out.println(o);
-        }
-        Assert.assertEquals(insert,objects);
-
         Collection<Object> insert1 = mars.insert(objects1, Articles.class,new InsertManyOptions());
         for (Object o : insert1){
             System.out.println(o);
         }
-        Assert.assertEquals(insert1,objects);
+        Assert.assertEquals(insert1,objects1);
 
-        Collection<Object> articles1 = mars.insert(objects, "articles1");
+        Collection<Articles> articles1 = mars.insert(objects, "articles1");
         for (Object o : articles1) {
             System.out.println(o);
         }
@@ -141,7 +140,7 @@ public class CrudTestNew {
         for (Object o : articles11) {
             System.out.println(o);
         }
-        Assert.assertEquals(articles11,objects);
+        Assert.assertEquals(articles11,objects1);
 
     }
 
@@ -180,7 +179,7 @@ public class CrudTestNew {
         Articles tryNext = mars.findAll(Articles.class).tryNext();
         Assert.assertEquals(save,tryNext);
 
-        Object next = mars.findAll(null, "articles_chen").tryNext();
+        Object next = mars.findAll(Articles.class ,"articles_chen").tryNext();
         Assert.assertEquals(articles_chen,next);
 
     }

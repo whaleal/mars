@@ -1,5 +1,6 @@
 package com.whaleal.mars.core.aggreation;
 
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.*;
@@ -27,7 +28,7 @@ import static com.whaleal.mars.core.aggregation.expressions.MathExpressions.roun
  **/
 public class AggregateOptionTest {
 
-    private Mars mars = new Mars("mongodb://192.168.3.200:47018/ops20220621");
+    private Mars mars = new Mars(Constant.connectionStr);
 
     @Test
     public void test(){

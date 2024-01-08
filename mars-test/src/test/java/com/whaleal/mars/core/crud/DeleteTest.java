@@ -105,7 +105,7 @@ public class DeleteTest {
     @Test
     public void deleteQueryCollection(){
 
-        DeleteResult delete = mars.delete(new Query(new Criteria("_id").is("1001")),"cc");
+        DeleteResult delete = mars.delete(new Query(new Criteria("_id").is("1001")),Animal.class);
 
         Assert.assertEquals(delete.getDeletedCount(),1);
     }

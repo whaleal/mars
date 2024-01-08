@@ -7,6 +7,7 @@ import com.whaleal.mars.bean.Person;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,14 +37,14 @@ public class CrudWithExtend {
             people.add(EntityGenerater.getPerson());
         }
 
-        mars.insert(people);
+        mars.insert(people,Person.class);
     }
 
     @Test
     public void test01() {
 
-        Query query = new Query();
-        QueryCursor< Person > all = mars.findAll(query, Person.class);
+
+        QueryCursor< Person > all = mars.findAll( Person.class);
 
         while (all.hasNext()) {
             Person p = all.next();
@@ -52,5 +53,10 @@ public class CrudWithExtend {
         mars.dropCollection(Person.class);
     }
 
+
+    @After
+    public void drop(){
+        mars.dropCollection(Person.class);
+    }
 
 }

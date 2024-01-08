@@ -52,8 +52,15 @@ public class ChangeExpirationValueTest {
                 "      expireAfterSeconds: 3600\n" +
                 "   }\n" +
                 "}");
+
+
+        Document expected = new Document();
+                expected.append("expireAfterSeconds_old",document.get("expireAfterSeconds_old"));
+
+                expected.append("expireAfterSeconds_new",document.get("expireAfterSeconds_new"));
+                expected.append("ok",document.get("ok"));
         Document result = Document.parse("{ \"expireAfterSeconds_old\" : 1800, \"expireAfterSeconds_new\" : 3600, \"ok\" : 1.0 }");
-        Assert.assertEquals(document,result);
+        Assert.assertEquals(result.toString(),expected.toString());
     }
 
     @After

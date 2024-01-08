@@ -11,7 +11,7 @@ import org.junit.Test;
 public class ReadPreference {
 
 
-//    private Mars mars = new Mars(Constant.connectionStrReplication);
+
     private Mars mars = new Mars(Constant.connectionStr);
 
 

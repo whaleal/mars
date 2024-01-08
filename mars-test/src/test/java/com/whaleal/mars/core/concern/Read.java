@@ -12,7 +12,6 @@ import org.junit.Test;
 public class Read {
 
 
-//    private Mars mars = new Mars(Constant.connectionStrReplication);
     private Mars mars = new Mars(Constant.connectionStr);
 
     @Test

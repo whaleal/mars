@@ -428,7 +428,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
             if (StrUtil.isEmptyIfStr(meta.getComment())) {
                 findIterable = findIterable.comment(meta.getComment());
             }
-            if (meta.getAllowDiskUse()) {
+            if (meta.getAllowDiskUse() !=null  && meta.getAllowDiskUse()) {
                 findIterable = findIterable.allowDiskUse(meta.getAllowDiskUse());
             }
             if (meta.getCursorBatchSize() !=null  && meta.getCursorBatchSize()  >0) {
@@ -577,6 +577,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         if (entityDoc == null) {
             throw new IllegalArgumentException();
         }
+        entityDoc = new Document("$set",entityDoc);
 
         MongoCollection< ? > collection = this.getCollection(entity.getClass(), collectionName);
 
