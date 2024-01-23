@@ -37,7 +37,6 @@ import com.whaleal.mars.core.aggregation.AggregationPipeline;
 import com.whaleal.mars.core.aggregation.stages.Stage;
 import com.whaleal.mars.core.gridfs.GridFsOperations;
 import com.whaleal.mars.core.query.Query;
-import com.whaleal.mars.session.option.CountOptions;
 import org.bson.Document;
 
 import java.util.Arrays;
@@ -306,7 +305,5 @@ interface MongoOperations extends GridFsOperations {
 
     long count(  MarsSession session ,Query query, Class< ? > entityClass, String collectionName );
 
-    @Deprecated
-    long count( Query query, Class< ? > entityClass, CountOptions countOptions, String collectionName );
 
 }

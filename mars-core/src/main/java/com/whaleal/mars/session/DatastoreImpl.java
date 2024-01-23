@@ -67,7 +67,6 @@ import com.whaleal.mars.core.index.IndexUtil;
 import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
 import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 import com.whaleal.mars.core.query.*;
-import com.whaleal.mars.session.option.CountOptions;
 import com.whaleal.mars.session.option.FindOneAndDeleteOptions;
 import com.whaleal.mars.session.option.FindOneAndReplaceOptions;
 import com.whaleal.mars.session.option.FindOneAndUpdateOptions;
@@ -77,7 +76,6 @@ import com.whaleal.mars.session.option.InsertOneOptions;
 import com.whaleal.mars.session.option.TimeSeriesOptions;
 import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.option.*;
-import com.whaleal.mars.util.ObjectUtil ;
 import com.whaleal.mars.session.transactions.MarsTransaction;
 import com.whaleal.mars.util.*;
 import org.bson.Document;
@@ -804,6 +802,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     @Override
+    @Deprecated
     public < T > T findAndModify( Query query, UpdateDefinition update, FindOneAndUpdateOptions options, Class< T > entityClass, String collectionName ) {
         Assert.notNull(query, "Query must not be null!");
         Assert.notNull(update, "Update must not be null!");
@@ -823,6 +822,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     @Override
+    @Deprecated
     public < S, T > T findAndReplace( Query query, S replacement, FindOneAndReplaceOptions options, Class< S > entityType, String collectionName, Class< T > resultType ) {
         Assert.notNull(query, "Query must not be null!");
         Assert.notNull(replacement, "Replacement must not be null!");
@@ -876,17 +876,14 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     @Override
+    @Deprecated
     public < T > T findAndDelete( Query query, Class< T > entityClass, String collectionName, FindOneAndDeleteOptions options ) {
         Assert.notNull(query, "Query must not be null!");
         Assert.notNull(entityClass, "EntityClass must not be null!");
         Assert.notNull(collectionName, "CollectionName must not be null!");
 
-
-
         MongoCollection< T > collection = this.database.getCollection(collectionName, entityClass);
         T oneAndDelete = this.operations.findOneAndDelete(collection, query.getQueryObject(), options.getOriginOptions());
-
-
 
         return oneAndDelete;
     }
@@ -1221,15 +1218,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         }
         return this.database.getCollection(collectionName).estimatedDocumentCount();
 
-    }
-
-    @Override
-    @Deprecated
-    public long count( Query query, Class< ? > entityClass, CountOptions countOptions, String collectionName ) {
-
-        String s = this.mapper.determineCollectionName(entityClass, collectionName);
-        //return this.database.getCollection(s).countDocuments(query.getQueryObject(), countOptions.getOriginOptions());
-        return this.operations.countDocuments(this.database.getCollection(s),query.getQueryObject(),countOptions.getOriginOptions());
     }
 
     @Override

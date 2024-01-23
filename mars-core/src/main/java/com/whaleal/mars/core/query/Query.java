@@ -36,6 +36,7 @@ import com.mongodb.WriteConcern;
 
 
 import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CountOptions;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.domain.IProjection;
@@ -56,6 +57,16 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * MongoDB Query object representing criteria, projection, sorting and query hints.
+ *
+ *
+ * count  模块
+ * @see  CountOptions#getLimit()
+ * @see CountOptions#getSkip() 
+ * @see CountOptions#getHint() 
+ * @see CountOptions#getMaxTime(TimeUnit)
+ * 等其他的细节
+ *
+ *
  */
 public class Query {
 
