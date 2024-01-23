@@ -1205,18 +1205,21 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
 
+    /**
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     @Override
     public < T > long estimatedCount( Class< T > clazz ) {
-
-        com.mongodb.client.model.EstimatedDocumentCountOptions escountOptions = new com.mongodb.client.model.EstimatedDocumentCountOptions();
-
 
         String collectionName = this.mapper.determineCollectionName(clazz, null);
         if (LOGGER.isDebugEnabled()) {
 
             LOGGER.debug(String.format("Executing count: %s in collection %s ", "{}", collectionName));
         }
-        return this.database.getCollection(collectionName).estimatedDocumentCount(escountOptions);
+        return this.database.getCollection(collectionName).estimatedDocumentCount();
 
     }
 
