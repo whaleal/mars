@@ -2,7 +2,6 @@ package com.whaleal.mars.core.command;
 
 import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
-import com.whaleal.mars.core.query.Collation;
 import com.whaleal.mars.core.query.Query;
 import com.whaleal.mars.session.QueryCursor;
 import com.whaleal.mars.util.CreateDataUtil;
@@ -49,7 +48,7 @@ public class DropTest {
             System.out.println(person.next());
         }
 
-        Collation person1 = Collation.parse("test1");
+       /* Collation person1 = Collation.parse("test1");
         System.out.println(person1.toDocument());
         System.out.println("===========================================");
         Document document = mars.executeCommand("{\n" +
@@ -58,15 +57,15 @@ public class DropTest {
                 "      writeConcern: { w: \"majority\"}\n" +
                 "   }");
         System.out.println(document);
-        Query query1 = new Query();
+        Query query1 = new Query();*/
 //        query.with(Sort.on().ascending("name"));
 
-        QueryCursor<Document> person2 = mars.findAll(query1, Document.class, "test1");
+       /* QueryCursor<Document> person2 = mars.findAll(query1, Document.class, "test1");
         while (person2.hasNext()){
             System.out.println(person2.next());
-        }
+        }*/
 
-        Collation person3 = Collation.parse("test1");
-        System.out.println(person3.toDocument());
+      /*  Collation person3 = Collation.parse("test1");
+        System.out.println(person3.toDocument());*/
     }
 }

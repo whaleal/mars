@@ -35,6 +35,7 @@ import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 
 
+import com.mongodb.client.model.Collation;
 import com.whaleal.mars.codecs.writer.DocumentWriter;
 import com.whaleal.mars.core.aggregation.codecs.ExpressionHelper;
 import com.whaleal.mars.core.domain.IProjection;
@@ -533,20 +534,6 @@ public class Query {
     }
 
 
-    /**
-     * Set the {@link Collation} applying language-specific rules for string comparison.
-     *
-     * @param collation can be {@literal null}.
-     * @return this.
-     *
-     */
-    @Deprecated
-    public Query collation(Collation collation ) {
-
-        this.collation = Optional.ofNullable(collation.toMongoCollation());
-        return this;
-    }
-
 
     /**
      * Set the {@link Collation} applying language-specific rules for string comparison.
@@ -554,7 +541,7 @@ public class Query {
      * @param collation can be {@literal null}.
      * @return this.
      */
-    public Query collation(com.mongodb.client.model.Collation collation ) {
+    public Query collation( Collation collation ) {
 
         this.collation = Optional.ofNullable(collation);
         return this;
@@ -579,8 +566,8 @@ public class Query {
      */
     @Override
     public String toString() {
-        return String.format("Query: %s, Fields: %s, Sort: %s", getQueryObject() ==null ? "null": getQueryObject().toJson(),
-                getFieldsObject()== null ? "null":getFieldsObject().toJson(), getSortObject()==null ? "null":getSortObject().toJson() );
+        return String.format("Query: %s, Fields: %s, Sort: %s", getQueryObject().toJson(),
+                getFieldsObject().toJson(), getSortObject().toJson());
     }
 
     /*

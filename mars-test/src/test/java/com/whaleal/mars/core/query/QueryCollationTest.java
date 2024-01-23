@@ -37,14 +37,14 @@ public class QueryCollationTest {
 
     @Test
     public void testFor(){
-        Query query = new Query();
+       /* Query query = new Query();
 
 
-        /**
+        *//**
          * Document{{_id=1, x=a}}
          * Document{{_id=2, x=A}}
          * Document{{_id=3, x=á}}
-         */
+         *//*
         query.collation(Collation.of("zh"));
 
         QueryCursor<Document> foo = mars.findAll(query, Document.class, "foo");
@@ -57,7 +57,7 @@ public class QueryCollationTest {
         QueryCursor<Document> foo1 = mars.findAll(query, Document.class, "foo");
         while (foo.hasNext()){
             System.out.println(foo1.next());
-        }
+        }*/
 
 
     }
@@ -77,7 +77,7 @@ public class QueryCollationTest {
      */
     @Test
     public void testForNumber(){
-        Query query = new Query();
+      /*  Query query = new Query();
 
         query.with(Sort.ascending("n"));
         query.collation(Collation.of(Locale.ENGLISH).numericOrdering(true));
@@ -85,6 +85,6 @@ public class QueryCollationTest {
         QueryCursor<Document> c = mars.findAll(query, Document.class, "c");
         while (c.hasNext()){
             System.out.println(c.next());
-        }
+        }*/
     }
 }

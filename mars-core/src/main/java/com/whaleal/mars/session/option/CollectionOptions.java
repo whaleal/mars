@@ -34,11 +34,12 @@ import com.mongodb.client.model.ValidationAction;
 import com.mongodb.client.model.ValidationLevel;
 
 import com.mongodb.lang.Nullable;
-import com.whaleal.icefrog.core.util.OptionalUtil;
+
 import com.whaleal.mars.core.validation.Validator;
 import com.whaleal.mars.util.Assert;
 
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -444,7 +445,14 @@ public class CollectionOptions {
          */
         boolean isEmpty() {
 
-            return !OptionalUtil.isAnyPresent(getValidator(), getValidationAction(), getValidationLevel());
+            return isAnyPresent(getValidator(), getValidationAction(), getValidationLevel());
+        }
+
+        public boolean isAnyPresent(Optional<?>... optionals) {
+
+            Assert.notNull(optionals, "Optionals must not be null!");
+
+            return Arrays.stream(optionals).anyMatch(Optional::isPresent);
         }
     }
 

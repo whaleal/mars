@@ -26,7 +26,8 @@
  *    delete this exception statement from your version. If you delete this
  *    exception statement from all source files in the program, then also delete
  *    it in the license file.
- */
+ *//*
+
 package com.whaleal.mars.core.query;
 
 import com.mongodb.client.model.Collation.Builder;
@@ -43,6 +44,7 @@ import org.bson.Document;
 import java.util.Locale;
 import java.util.Optional;
 
+*/
 /**
  * @see com.mongodb.client.model.Collation
  *
@@ -55,7 +57,8 @@ import java.util.Optional;
  * <p/>
  * <strong>NOTE:</strong> Please keep in mind that queries will only make use of an index with collation settings if the
  * query itself specifies the same collation.
- */
+ *//*
+
 
 @Deprecated
 public class Collation {
@@ -65,13 +68,17 @@ public class Collation {
     private final CollationLocale locale;
 
 
-    /**
+    */
+/**
      * contains  caseLevel  caseFirst  strength
      *
-     */
+     *//*
+
     private Optional<ComparisonLevel> strength = Optional.empty();
     private Optional<Boolean> numericOrdering = Optional.empty();
-    /**  contains alternate  maxVariable */
+    */
+/**  contains alternate  maxVariable *//*
+
     private Optional<Alternate> alternate = Optional.empty();
     private Optional<Boolean> backwards = Optional.empty();
     private Optional<Boolean> normalization = Optional.empty();
@@ -84,22 +91,26 @@ public class Collation {
         this.locale = locale;
     }
 
-    /**
+    */
+/**
      * Create a {@link Collation} using {@literal simple} binary comparison.
      *
      * @return a {@link Collation} for {@literal simple} binary comparison.
-     */
+     *//*
+
     public static Collation simple() {
         return SIMPLE;
     }
 
-    /**
+    */
+/**
      * Create new {@link Collation} with locale set to {{@link Locale#getLanguage()}} and
      * {@link Locale#getVariant()}.
      *
      * @param locale must not be {@literal null}.
      * @return new instance of {@link Collation}.
-     */
+     *//*
+
 
     public static Collation of(Locale locale) {
 
@@ -116,34 +127,40 @@ public class Collation {
         return of(CollationLocale.of(format).variant(locale.getVariant()));
     }
 
-    /**
+    */
+/**
      * Create new {@link Collation} with locale set to the given ICU language.
      *
      * @param language must not be {@literal null}.
      * @return new instance of {@link Collation}.
-     */
+     *//*
+
     public static Collation of(String language) {
         return of(CollationLocale.of(language));
     }
 
-    /**
+    */
+/**
      * Create new {@link Collation} with locale set to the given {@link CollationLocale}.
      *
      * @param locale must not be {@literal null}.
      * @return new instance of {@link Collation}.
-     */
+     *//*
+
     public static Collation of(CollationLocale locale) {
         return new Collation(locale);
     }
 
-    /**
+    */
+/**
      * Parse the given {@code collation} string into a {@link Collation}.
      *
      * @param collation the collation to parse. Can be a simple string like {@code en_US} or a
      *                  {@link Document#parse(String) parsable} document like <code>&#123; 'locale' : '?0' &#125;</code> .
      * @return never {@literal null}.
      * @throws IllegalArgumentException if {@literal collation} is null.
-     */
+     *//*
+
     public static Collation parse(String collation) {
 
         Assert.notNull(collation, "Collation must not be null!");
@@ -152,14 +169,16 @@ public class Collation {
                 : of(collation);
     }
 
-    /**
+    */
+/**
      * Create new {@link Collation} from values in {@link Document}.
      *
      * @param source must not be {@literal null}.
      * @return new instance of {@link Collation}.
      * @see <a href="https://docs.mongodb.com/manual/reference/collation/#collation-document">MongoDB Reference -
      * Collation Entity</a>
-     */
+     *//*
+
     public static Collation from(Document source) {
 
         Assert.notNull(source, "Source must not be null!");
@@ -257,24 +276,28 @@ public class Collation {
         };
     }
 
-    /**
+    */
+/**
      * Set the level of comparison to perform.
      *
      * @param strength comparison level.
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation strength(int strength) {
 
         ComparisonLevel current = this.strength.orElseGet(() -> new ICUComparisonLevel(strength));
         return strength(new ICUComparisonLevel(strength, current.getCaseFirst(), current.getCaseLevel()));
     }
 
-    /**
+    */
+/**
      * Set the level of comparison to perform.
      *
      * @param comparisonLevel must not be {@literal null}.
      * @return new {@link Collation}
-     */
+     *//*
+
     public Collation strength(ComparisonLevel comparisonLevel) {
 
         Collation newInstance = copy();
@@ -282,12 +305,14 @@ public class Collation {
         return newInstance;
     }
 
-    /**
+    */
+/**
      * Set whether to include {@code caseLevel} comparison. <br />
      *
      * @param caseLevel use {@literal true} to enable {@code caseLevel} comparison.
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation caseLevel(boolean caseLevel) {
 
         ComparisonLevel strengthValue = strength.orElseGet(ComparisonLevel::primary);
@@ -295,51 +320,61 @@ public class Collation {
                 new ICUComparisonLevel(strengthValue.getLevel(), strengthValue.getCaseFirst(), Optional.of(caseLevel)));
     }
 
-    /**
+    */
+/**
      * Set the flag that determines sort order of case differences during tertiary level comparisons.
      *
      * @param caseFirst must not be {@literal null}.
      * @return new instance of {@link Collation}.
-     */
+     *//*
+
     public Collation caseFirst(String caseFirst) {
         return caseFirst(new CaseFirst(caseFirst));
     }
 
-    /**
+    */
+/**
      * Set the flag that determines sort order of case differences during tertiary level comparisons.
      *
      * @param sort must not be {@literal null}.
      * @return new instance of {@link Collation}.
-     */
+     *//*
+
     public Collation caseFirst(CaseFirst sort) {
 
         ComparisonLevel strengthValue = strength.orElseGet(ComparisonLevel::tertiary);
         return strength(new ICUComparisonLevel(strengthValue.getLevel(), Optional.of(sort), strengthValue.getCaseLevel()));
     }
 
-    /**
+    */
+/**
      * Treat numeric strings as numbers for comparison.
      *
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation numericOrderingEnabled() {
         return numericOrdering(true);
     }
 
-    /**
+    */
+/**
      * Treat numeric strings as string for comparison.
      *
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation numericOrderingDisabled() {
         return numericOrdering(false);
     }
 
-    /**
+    */
+/**
      * Set the flag that determines whether to compare numeric strings as numbers or as strings.
      *
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation numericOrdering(boolean flag) {
 
         Collation newInstance = copy();
@@ -347,26 +382,30 @@ public class Collation {
         return newInstance;
     }
 
-    /**
+    */
+/**
      * Set the Projection that determines whether collation should consider whitespace and punctuation as base characters for
      * purposes of comparison.
      *
      * @param alternate must not be {@literal null}.
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation alternate(String alternate) {
 
         Alternate instance = this.alternate.orElseGet(() -> new Alternate(alternate, Optional.empty()));
         return alternate(new Alternate(alternate, instance.maxVariable));
     }
 
-    /**
+    */
+/**
      * Set the Projection that determines whether collation should consider whitespace and punctuation as base characters for
      * purposes of comparison.
      *
      * @param alternate must not be {@literal null}.
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation alternate(Alternate alternate) {
 
         Collation newInstance = copy();
@@ -374,30 +413,36 @@ public class Collation {
         return newInstance;
     }
 
-    /**
+    */
+/**
      * Sort string with diacritics sort from back of the string.
      *
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation backwardDiacriticSort() {
         return backwards(true);
     }
 
-    /**
+    */
+/**
      * Do not sort string with diacritics sort from back of the string.
      *
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation forwardDiacriticSort() {
         return backwards(false);
     }
 
-    /**
+    */
+/**
      * Set the flag that determines whether strings with diacritics sort from back of the string.
      *
      * @param backwards must not be {@literal null}.
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation backwards(boolean backwards) {
 
         Collation newInstance = copy();
@@ -405,30 +450,36 @@ public class Collation {
         return newInstance;
     }
 
-    /**
+    */
+/**
      * Enable text normalization.
      *
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation normalizationEnabled() {
         return normalization(true);
     }
 
-    /**
+    */
+/**
      * Disable text normalization.
      *
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation normalizationDisabled() {
         return normalization(false);
     }
 
-    /**
+    */
+/**
      * Set the flag that determines whether to check if text require normalization and to perform normalization.
      *
      * @param normalization must not be {@literal null}.
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation normalization(boolean normalization) {
 
         Collation newInstance = copy();
@@ -436,43 +487,51 @@ public class Collation {
         return newInstance;
     }
 
-    /**
+    */
+/**
      * Set the field that determines up to which characters are considered ignorable when alternate is {@code shifted}.
      *
      * @param maxVariable must not be {@literal null}.
      * @return new {@link Collation}.
-     */
+     *//*
+
     public Collation maxVariable(String maxVariable) {
 
         Alternate alternateValue = alternate.orElseGet(Alternate::shifted);
         return alternate(new AlternateWithMaxVariable(alternateValue.alternate, maxVariable));
     }
 
-    /**
+    */
+/**
      * Get the {@link Document} representation of the {@link Collation}.
      *
      * @return the native MongoDB {@link Document} representation of the {@link Collation}.
-     */
+     *//*
+
     public Document toDocument() {
         return map(toMongoDocumentConverter());
     }
 
-    /**
+    */
+/**
      * Get the {@link com.mongodb.client.model.Collation} representation of the {@link Collation}.
      *
      * @return he native MongoDB representation of the {@link Collation}.
-     */
+     *//*
+
     public com.mongodb.client.model.Collation toMongoCollation() {
         return map(toMongoCollationConverter());
     }
 
-    /**
+    */
+/**
      * Transform {@code this} {@link Collation} by applying a {@link Converter2}.
      *
      * @param mapper must not be {@literal null}.
      * @param <R>
      * @return the converted result.
-     */
+     *//*
+
     public <R> R map( Converter2<? super Collation, ? extends R> mapper) {
         return mapper.convert(this);
     }
@@ -513,9 +572,11 @@ public class Collation {
         return collation;
     }
 
-    /**
+    */
+/**
      * Simple comparison levels.
-     */
+     *//*
+
     enum ComparisonLevels implements ComparisonLevel {
 
         QUATERNARY(4), IDENTICAL(5);
@@ -532,69 +593,83 @@ public class Collation {
         }
     }
 
-    /**
+    */
+/**
      * Abstraction for the ICU Comparison Levels.
-     */
+     *//*
+
     public interface ComparisonLevel {
 
-        /**
+        */
+/**
          * Primary level of comparison. Collation performs comparisons of the base characters only, ignoring other
          * differences such as diacritics and case. <br />
          * The {@code caseLevel} can be set via {@link PrimaryICUComparisonLevel#includeCase()} and
          * {@link PrimaryICUComparisonLevel#excludeCase()}.
          *
          * @return new {@link SecondaryICUComparisonLevel}.
-         */
+         *//*
+
         static PrimaryICUComparisonLevel primary() {
             return PrimaryICUComparisonLevel.DEFAULT;
         }
 
-        /**
+        */
+/**
          * Secondary level of comparison. Collation performs comparisons up to secondary differences, such as
          * diacritics.<br />
          * The {@code caseLevel} can be set via {@link SecondaryICUComparisonLevel#includeCase()} and
          * {@link SecondaryICUComparisonLevel#excludeCase()}.
          *
          * @return new {@link SecondaryICUComparisonLevel}.
-         */
+         *//*
+
         static SecondaryICUComparisonLevel secondary() {
             return SecondaryICUComparisonLevel.DEFAULT;
         }
 
-        /**
+        */
+/**
          * Tertiary level of comparison. Collation performs comparisons up to tertiary differences, such as case and letter
          * variants. <br />
          * The {@code caseLevel} cannot be set for {@link ICUComparisonLevel} above {@code secondary}.
          *
          * @return new {@link ICUComparisonLevel}.
-         */
+         *//*
+
         static TertiaryICUComparisonLevel tertiary() {
             return TertiaryICUComparisonLevel.DEFAULT;
         }
 
-        /**
+        */
+/**
          * Quaternary Level. Limited for specific use case to consider punctuation. <br />
          * The {@code caseLevel} cannot be set for {@link ICUComparisonLevel} above {@code secondary}.
          *
          * @return new {@link ComparisonLevel}.
-         */
+         *//*
+
         static ComparisonLevel quaternary() {
             return ComparisonLevels.QUATERNARY;
         }
 
-        /**
+        */
+/**
          * Identical Level. Limited for specific use case of tie breaker. <br />
          * The {@code caseLevel} cannot be set for {@link ICUComparisonLevel} above {@code secondary}.
          *
          * @return new {@link ComparisonLevel}.
-         */
+         *//*
+
         static ComparisonLevel identical() {
             return ComparisonLevels.IDENTICAL;
         }
 
-        /**
+        */
+/**
          * @return collation strength, {@literal 1} for primary, {@literal 2} for secondary and so on.
-         */
+         *//*
+
         int getLevel();
 
         default Optional<CaseFirst> getCaseFirst() {
@@ -606,9 +681,11 @@ public class Collation {
         }
     }
 
-    /**
+    */
+/**
      * Abstraction for the ICU Comparison Levels.
-     */
+     *//*
+
     static class ICUComparisonLevel implements ComparisonLevel {
 
         private final int level;
@@ -638,9 +715,11 @@ public class Collation {
         }
     }
 
-    /**
+    */
+/**
      * Primary-strength {@link ICUComparisonLevel}.
-     */
+     *//*
+
     public static class PrimaryICUComparisonLevel extends ICUComparisonLevel {
 
         static final PrimaryICUComparisonLevel DEFAULT = new PrimaryICUComparisonLevel();
@@ -655,28 +734,34 @@ public class Collation {
             super(1, Optional.empty(), Optional.of(caseLevel));
         }
 
-        /**
+        */
+/**
          * Include case comparison.
          *
          * @return new {@link ICUComparisonLevel}
-         */
+         *//*
+
         public ComparisonLevel includeCase() {
             return WITH_CASE_LEVEL;
         }
 
-        /**
+        */
+/**
          * Exclude case comparison.
          *
          * @return new {@link ICUComparisonLevel}
-         */
+         *//*
+
         public ComparisonLevel excludeCase() {
             return WITHOUT_CASE_LEVEL;
         }
     }
 
-    /**
+    */
+/**
      * Secondary-strength {@link ICUComparisonLevel}.
-     */
+     *//*
+
     public static class SecondaryICUComparisonLevel extends ICUComparisonLevel {
 
         static final SecondaryICUComparisonLevel DEFAULT = new SecondaryICUComparisonLevel();
@@ -691,28 +776,34 @@ public class Collation {
             super(2, Optional.empty(), Optional.of(caseLevel));
         }
 
-        /**
+        */
+/**
          * Include case comparison.
          *
          * @return new {@link SecondaryICUComparisonLevel}
-         */
+         *//*
+
         public ComparisonLevel includeCase() {
             return WITH_CASE_LEVEL;
         }
 
-        /**
+        */
+/**
          * Exclude case comparison.
          *
          * @return new {@link SecondaryICUComparisonLevel}
-         */
+         *//*
+
         public ComparisonLevel excludeCase() {
             return WITHOUT_CASE_LEVEL;
         }
     }
 
-    /**
+    */
+/**
      * Tertiary-strength {@link ICUComparisonLevel}.
-     */
+     *//*
+
     public static class TertiaryICUComparisonLevel extends ICUComparisonLevel {
 
         static final TertiaryICUComparisonLevel DEFAULT = new TertiaryICUComparisonLevel();
@@ -725,12 +816,14 @@ public class Collation {
             super(3, Optional.of(caseFirst), Optional.empty());
         }
 
-        /**
+        */
+/**
          * Set the flag that determines sort order of case differences.
          *
          * @param caseFirst must not be {@literal null}.
          * @return new {@link ICUComparisonLevel}
-         */
+         *//*
+
         public ComparisonLevel caseFirst(CaseFirst caseFirst) {
 
             Assert.notNull(caseFirst, "CaseFirst must not be null!");
@@ -751,29 +844,35 @@ public class Collation {
             this.state = state;
         }
 
-        /**
+        */
+/**
          * Sort uppercase before lowercase.
          *
          * @return new {@link CaseFirst}.
-         */
+         *//*
+
         public static CaseFirst upper() {
             return UPPER;
         }
 
-        /**
+        */
+/**
          * Sort lowercase before uppercase.
          *
          * @return new {@link CaseFirst}.
-         */
+         *//*
+
         public static CaseFirst lower() {
             return LOWER;
         }
 
-        /**
+        */
+/**
          * Use the default.
          *
          * @return new {@link CaseFirst}.
-         */
+         *//*
+
         public static CaseFirst off() {
             return OFF;
         }
@@ -792,22 +891,26 @@ public class Collation {
             this.maxVariable = maxVariable;
         }
 
-        /**
+        */
+/**
          * Consider Whitespace and punctuation as base characters.
          *
          * @return new {@link Alternate}.
-         */
+         *//*
+
         public static Alternate nonIgnorable() {
             return NON_IGNORABLE;
         }
 
-        /**
+        */
+/**
          * Whitespace and punctuation are <strong>not</strong> considered base characters and are only distinguished at
          * strength. <br />
          * <strong>NOTE:</strong> Only works for {@link ICUComparisonLevel} above {@link ComparisonLevel#tertiary()}.
          *
          * @return new {@link AlternateWithMaxVariable}.
-         */
+         *//*
+
         public static AlternateWithMaxVariable shifted() {
             return AlternateWithMaxVariable.DEFAULT;
         }
@@ -828,30 +931,36 @@ public class Collation {
             super(alternate, Optional.of(maxVariable));
         }
 
-        /**
+        */
+/**
          * Consider both whitespaces and punctuation as ignorable.
          *
          * @return new {@link AlternateWithMaxVariable}.
-         */
+         *//*
+
         public Alternate punct() {
             return SHIFTED_PUNCT;
         }
 
-        /**
+        */
+/**
          * Only consider whitespaces as ignorable.
          *
          * @return new {@link AlternateWithMaxVariable}.
-         */
+         *//*
+
         public Alternate space() {
             return SHIFTED_SPACE;
         }
     }
 
-    /**
+    */
+/**
      * ICU locale abstraction for usage with MongoDB {@link Collation}.
      *
      * @see <a href="http://site.icu-project.org">ICU - International Components for Unicode</a>
-     */
+     *//*
+
     public static class CollationLocale {
 
         private final String language;
@@ -863,35 +972,41 @@ public class Collation {
             this.variant = variant;
         }
 
-        /**
+        */
+/**
          * Create new {@link CollationLocale} for given language.
          *
          * @param language must not be {@literal null}.
          * @return new instance of {@link CollationLocale}.
-         */
+         *//*
+
         public static CollationLocale of(String language) {
 
             Assert.notNull(language, "Code must not be null!");
             return new CollationLocale(language, Optional.empty());
         }
 
-        /**
+        */
+/**
          * Define language variant.
          *
          * @param variant must not be {@literal null}.
          * @return new {@link CollationLocale}.
-         */
+         *//*
+
         public CollationLocale variant(String variant) {
 
             Assert.notNull(variant, "Variant must not be null!");
             return new CollationLocale(language, Optional.of(variant));
         }
 
-        /**
+        */
+/**
          * Get the string representation.
          *
          * @return the collation {@link String} in Mongo ICU format.
-         */
+         *//*
+
         public String asString() {
 
             StringBuilder sb = new StringBuilder(language);
@@ -906,3 +1021,4 @@ public class Collation {
         }
     }
 }
+*/

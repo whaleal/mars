@@ -55,19 +55,19 @@ public class TestCollation {
     @Test
     public void testForFind(){
         //构建collation
-        Query query = new Query();
+       /* Query query = new Query();
         query.with(Sort.ascending("name"));
         query.collation(Collation.of("zh"));
         QueryCursor<Book> cursor = mars.findAll(query, Book.class);
         while(cursor.hasNext()){
             System.out.println(cursor.next());
-        }
+        }*/
     }
 
     @Test
     public void testForFindAndModify(){
         //查询所需
-        Query query = new Query();
+       /* Query query = new Query();
         query.with(Sort.ascending("name"));
         query.collation(Collation.from(new Document().append("locale","zh").append("numericOrdering",true)));
 
@@ -86,7 +86,7 @@ public class TestCollation {
         QueryCursor<Book> cursor = mars.findAll(query, Book.class);
         while(cursor.hasNext()){
             System.out.println(cursor.next());
-        }
+        }*/
     }
 
     //集合值去重，并使用Collation排序

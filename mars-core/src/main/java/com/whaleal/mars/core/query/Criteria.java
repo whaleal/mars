@@ -34,7 +34,6 @@ import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.MultiPoint;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
-import com.whaleal.icefrog.core.codec.Base64;
 
 import com.whaleal.mars.util.* ;
 
@@ -1250,7 +1249,7 @@ public class Criteria implements CriteriaDefinition {
 
             Assert.hasText(bitmask, "Bitmask must not be null!");
 
-            target.criteria.put(operator, new Binary(Base64.decode(bitmask)));
+            target.criteria.put(operator, new Binary(Base64Decoder.decode(bitmask)));
             return target;
         }
 

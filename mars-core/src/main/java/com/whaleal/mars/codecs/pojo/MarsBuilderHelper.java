@@ -31,7 +31,6 @@ package com.whaleal.mars.codecs.pojo;
 
 
 
-import com.whaleal.icefrog.core.util.ClassUtil;
 import com.whaleal.mars.util.Assert;
 
 import java.lang.annotation.Annotation;
@@ -78,7 +77,8 @@ final class MarsBuilderHelper {
         Map<String, TypeParameterMap> propertyTypeParameterMap = new HashMap<String, TypeParameterMap>();
         // 针对当前类赋值
         Class<? super T> currentClass = clazz;
-        String declaringClassName = ClassUtil.getSimpleClassName(clazz);
+
+        String declaringClassName = clazz ==null ? "null" :clazz.getName();
         TypeData<?> parentClassTypeData = null;
 
         Map<String, PropertyMetadata<?>> propertyNameMap = new HashMap<String, PropertyMetadata<?>>();
