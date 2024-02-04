@@ -67,15 +67,15 @@ public abstract class AggregationImpl {
         this.mapper = mapper ;
     }
 
-    public void setWriteConcern( WriteConcern writeConcern ) {
+    protected void setWriteConcern( WriteConcern writeConcern ) {
         this.database = database.withWriteConcern(writeConcern);
     }
 
-    public void setReadConcern( ReadConcern readConcern ) {
+    protected void setReadConcern( ReadConcern readConcern ) {
         this.database = database.withReadConcern(readConcern);
     }
 
-    public void setReadPreference( ReadPreference readPerference ) {
+    protected void setReadPreference( ReadPreference readPerference ) {
         this.database = database.withReadPreference(readPerference);
     }
 

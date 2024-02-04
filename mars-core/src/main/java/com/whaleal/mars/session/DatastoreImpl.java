@@ -107,22 +107,28 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     private final MongoClient mongoClient;
 
     private final GridFSBucket defaultGridFSBucket;
-    //缓存 collectionName
-    private final Map< Class< ? >, String > collectionNameCache = new HashMap< Class< ? >, String >();
+    //缓存 collectionName weak reference
+    private final Map< Class< ? >, String > collectionNameCache = new WeakHashMap< Class< ? >, String >();
+    //  Operations
     private DatastoreOperations operations;
 
     protected DatastoreImpl( DatastoreImpl datastore ) {
         super(datastore.database, datastore.mapper);
         this.mongoClient = datastore.mongoClient;
         this.defaultGridFSBucket = datastore.defaultGridFSBucket;
+        this.operations = new CollectionOperations();
+
+        automatic();
+
 
     }
 
     protected DatastoreImpl( MongoClient mongoClient, String databaseName ) {
         super(mongoClient.getDatabase(databaseName));
         this.mongoClient = mongoClient;
-        defaultGridFSBucket = GridFSBuckets.create(super.database);
+        this.defaultGridFSBucket = GridFSBuckets.create(super.database);
         this.operations = new CollectionOperations();
+        automatic();
     }
 
     protected DatastoreImpl( MongoClient mongoClient, MongoMappingContext mapper ) {
@@ -131,8 +137,12 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
         this.defaultGridFSBucket = GridFSBuckets.create(super.database);
         this.operations = new CollectionOperations();
 
-        for (Class< ? > entity : mapper.getInitialEntitySet()) {
+        automatic();
+    }
 
+
+    private void automatic(){
+        for (Class< ? > entity : mapper.getInitialEntitySet()) {
             if (mapper.isAutoIndexCreation()) {
                 lock.lock();
                 try {
@@ -151,6 +161,10 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     public MongoDatabase getDatabase() {
         return super.database;
+    }
+
+    public String getDatabaseName(){
+        return getDatabase().getName();
     }
 
     public MongoDatabase getDatabase( String databaseName ) {
