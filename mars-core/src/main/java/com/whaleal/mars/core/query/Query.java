@@ -230,7 +230,17 @@ public class Query {
         return this.projectionSpec;
     }
 
+    @Deprecated
     public Query withProjection(IProjection projection) {
+
+        Assert.notNull(projection, "projection must not be empty or null!");
+        this.projectionSpec = projection;
+        return this;
+    }
+
+
+
+    public Query projection(IProjection projection) {
 
         Assert.notNull(projection, "projection must not be empty or null!");
         this.projectionSpec = projection;
@@ -267,7 +277,30 @@ public class Query {
      * @param pageable must not be {@literal null}.
      * @return this.
      */
+    @Deprecated
     public Query with( Pageable pageable) {
+
+        if (pageable.isUnpaged()) {
+            return this;
+        }
+
+        this.limit = pageable.getPageSize();
+        this.skip = pageable.getOffset();
+
+
+        return with(pageable.getSort());
+
+    }
+
+
+    /**
+     * Sets the given pagination information on the {@link Query} instance. Will transparently set {@code skip} and
+     * {@code limit} as well as applying the {@link Sort} instance defined with the {@link Pageable}.
+     *
+     * @param pageable must not be {@literal null}.
+     * @return this.
+     */
+    public Query page( Pageable pageable) {
 
         if (pageable.isUnpaged()) {
             return this;
@@ -288,6 +321,7 @@ public class Query {
      * @param sort must not be {@literal null}.
      * @return this.
      */
+    @Deprecated
     public Query with(ISort sort) {
 
         Assert.notNull(sort, "Sort must not be null!");
@@ -302,12 +336,33 @@ public class Query {
     }
 
     /**
+     * Adds a {@link Sort} to the {@link Query} instance.
+     *
+     * @param sort must not be {@literal null}.
+     * @return this.
+     */
+    public Query sort(ISort sort) {
+
+        Assert.notNull(sort, "Sort must not be null!");
+
+        if (sort.isUnsorted()) {
+            return this;
+        }
+
+        this.sorts = this.sorts.and(sort);
+
+        return this;
+    }
+
+
+    /**
      * Configures the query to use the given hint when being executed. The {@code hint} can either be an index name or a
      * json {@link Document} representation.
      *
      * @param hint must not be {@literal null} or empty.
      * @return this.
      */
+    @Deprecated
     public Query withHint(String hint) {
 
         Assert.hasText(hint, "Hint must not be empty or null!");
@@ -321,12 +376,44 @@ public class Query {
      * @param hint must not be {@literal null}.
      * @return this.
      */
+    @Deprecated
     public Query withHint(Document hint) {
 
         Assert.notNull(hint, "Hint must not be null!");
         this.hint = hint.toJson();
         return this;
     }
+
+
+
+
+    /**
+     * Configures the query to use the given hint when being executed. The {@code hint} can either be an index name or a
+     * json {@link Document} representation.
+     *
+     * @param hint must not be {@literal null} or empty.
+     * @return this.
+     */
+    public Query hint(String hint) {
+
+        Assert.hasText(hint, "Hint must not be empty or null!");
+        this.hint = hint;
+        return this;
+    }
+
+    /**
+     * Configures the query to use the given {@link Document hint} when being executed.
+     *
+     * @param hint must not be {@literal null}.
+     * @return this.
+     */
+    public Query hint(Document hint) {
+
+        Assert.notNull(hint, "Hint must not be null!");
+        this.hint = hint.toJson();
+        return this;
+    }
+
 
 
     /**
@@ -346,6 +433,30 @@ public class Query {
         for(ISort isort :sort) {
             if (isort.isUnsorted()) {
                continue;
+            }
+            sorts.and(isort);
+        }
+        return this;
+    }
+
+
+    /**
+     * Adds a {@link Sort} to the {@link Query} instance.
+     *
+     * @param sort must not be {@literal null}.
+     * @return this.
+     */
+    public Query sort(ISort... sort) {
+
+        Assert.notNull(sort, "Sort must not be null!");
+
+        if (sort.length == 0) {
+            return this;
+        }
+
+        for(ISort isort :sort) {
+            if (isort.isUnsorted()) {
+                continue;
             }
             sorts.and(isort);
         }

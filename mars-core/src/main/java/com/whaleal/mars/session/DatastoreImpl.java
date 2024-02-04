@@ -193,6 +193,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     @Override
     public boolean collectionExists( String collectionName ) {
         Assert.notNull(collectionName, "CollectionName must not be null");
+
         for (String name : this.getDatabase().listCollectionNames()) {
             if (collectionName.equals(name)) {
                 return true;
@@ -1693,6 +1694,7 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     }
 
+    @Deprecated
     private CollectionOptions getCollectionOptions( Class< ? > entity ) {
 
         EntityModel entityModel = this.mapper.getEntityModel(entity);

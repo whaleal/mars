@@ -89,6 +89,8 @@ public final class EntityModel<T> {
     private final List<EntityModel> subtypes = new ArrayList<>();
 
 
+
+
     EntityModel(EntityModelBuilder<T> entityModelBuilder) {
 
 

@@ -82,9 +82,9 @@ public class Mars extends DatastoreImpl {
        if(that.getReadPreference()!=null){
            this.setReadPreference(that.getReadPreference());
        }
-        if(that.getWriteConcern()!=null){
-            this.setWriteConcern(that.getWriteConcern());
-        }
+       if(that.getWriteConcern()!=null){
+           this.setWriteConcern(that.getWriteConcern());
+       }
 
     }
 

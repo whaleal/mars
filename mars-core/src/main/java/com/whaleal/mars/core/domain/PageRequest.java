@@ -105,7 +105,7 @@ public class PageRequest extends AbstractPageRequest {
 		return getPageNumber() == 0 ? this : new PageRequest(getPageNumber() - 1, getPageSize(), getSort());
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
 	 * @see Pageable#first()
 	 */
