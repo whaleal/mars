@@ -290,7 +290,7 @@ public class Query {
         }
 
         if(pageable.getSort().isSorted() &&  sorts.isSorted()){
-            LOGGER.warn(" Sorts are  conflct in Query and Pageable , will use Page sorts first ");
+            LOGGER.warn(" Sorts are  conflict in Query and Pageable , will use Page sorts first ");
         }
 
         if( pageable.getSort().isSorted() ){
@@ -320,7 +320,7 @@ public class Query {
         }
 
         if(pageable.getSort().isSorted() &&  sorts.isSorted()){
-            LOGGER.warn(" Sorts are  conflct in Query and Pageable , will use Page sorts first ");
+            LOGGER.warn(" Sorts are  conflict in Query and Pageable , will use Page sorts first ");
         }
 
         if( pageable.getSort().isSorted() ){
