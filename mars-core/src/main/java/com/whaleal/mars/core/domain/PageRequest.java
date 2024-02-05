@@ -14,7 +14,7 @@ public class PageRequest extends AbstractPageRequest {
 
 	private static final long serialVersionUID = -4541509938956089562L;
 
-	private final ISort sort;
+	private ISort sort = Sort.unsorted();
 
 	/**
 	 * Creates a new {@link PageRequest} with sort parameters applied.

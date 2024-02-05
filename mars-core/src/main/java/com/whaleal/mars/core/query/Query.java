@@ -44,6 +44,8 @@ import com.whaleal.mars.core.domain.ISort;
 import com.whaleal.mars.core.domain.Pageable;
 import com.whaleal.mars.core.domain.SortType;
 import com.whaleal.mars.core.internal.InvalidMongoDbApiUsageException;
+import com.whaleal.mars.core.internal.diagnostics.logging.LogFactory;
+import com.whaleal.mars.core.internal.diagnostics.logging.Logger;
 import com.whaleal.mars.util.Assert;
 import com.whaleal.mars.util.ObjectUtil;
 import org.bson.Document;
@@ -70,6 +72,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class Query {
 
+
+    private static Logger  LOGGER = LogFactory.getLogger(Query.class);
+
     // 主要查询 criteria 可以拼接多个,这里是有序存储 。
     private final Map<String, CriteriaDefinition> criteria = new LinkedHashMap<>();
     // projection
@@ -90,7 +95,7 @@ public class Query {
 
     private Meta meta = new Meta();
     // collation
-    private Optional<com.mongodb.client.model.Collation> collation = Optional.empty();
+    private Optional<Collation> collation = Optional.empty();
 
     public ReadConcern getReadConcern() {
         return readConcern;
@@ -284,6 +289,14 @@ public class Query {
             return this;
         }
 
+        if(pageable.getSort().isSorted() &&  sorts.isSorted()){
+            LOGGER.warn(" Sorts are  conflct in Query and Pageable , will use Page sorts first ");
+        }
+
+        if( pageable.getSort().isSorted() ){
+            this.sorts = pageable.getSort() ;
+        }
+
         this.limit = pageable.getPageSize();
         this.skip = pageable.getOffset();
 
@@ -305,6 +318,15 @@ public class Query {
         if (pageable.isUnpaged()) {
             return this;
         }
+
+        if(pageable.getSort().isSorted() &&  sorts.isSorted()){
+            LOGGER.warn(" Sorts are  conflct in Query and Pageable , will use Page sorts first ");
+        }
+
+        if( pageable.getSort().isSorted() ){
+            this.sorts = pageable.getSort() ;
+        }
+
 
         this.limit = pageable.getPageSize();
         this.skip = pageable.getOffset();
