@@ -39,5 +39,5 @@ import com.mongodb.client.ClientSession;
  * 本质就是一个client  Session
  * 是对外使用的一个开放的 session
  */
-public interface MarsSession extends Datastore, ClientSession, AutoCloseable {
+public interface MarsSession extends Datastore ,ClientSession, AutoCloseable {
 }

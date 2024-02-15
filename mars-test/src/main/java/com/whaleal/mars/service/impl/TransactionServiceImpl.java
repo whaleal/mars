@@ -20,9 +20,10 @@ public class TransactionServiceImpl implements ITransactionService {
     @Autowired
     private Mars mars;
 
+
     @Override
     @Transactional
-    public void  save(){
+    public void save(){
 
         int id = 2001;
         Articles articles = new Articles(id, "test", "lyz", 1);

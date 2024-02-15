@@ -34,6 +34,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.annotations.Entity;
+import com.whaleal.mars.config.transaction.MongoTransactionManager;
 import com.whaleal.mars.core.Mars;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -75,6 +76,11 @@ import java.util.stream.Collectors;
 @AutoConfigureBefore(MongoAutoConfiguration.class)
 @ConditionalOnMissingBean(Mars.class)
 public class MarsAutoConfiguration {
+
+    @Bean
+    MongoTransactionManager transactionManager( Mars dbFactory) {
+        return new MongoTransactionManager(dbFactory);
+    }
 
     //生成mars对象,交给spring管理
     @Bean

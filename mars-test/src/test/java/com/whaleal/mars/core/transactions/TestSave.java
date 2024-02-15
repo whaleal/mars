@@ -24,9 +24,9 @@ public class TestSave {
         Student instance = StudentGenerator.getInstance(1004);
         Student  instance2 = StudentGenerator.getInstance(1005);
         List< Student > of = ListUtil.of(instance, instance2);
-        marsSession.save(of);
+        //marsSession.save(of);
 
 
-        mars.getDatabase().drop();
+        //mars.getDatabase().drop();
     }
 }

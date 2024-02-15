@@ -46,8 +46,10 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
+import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 
+import com.mongodb.session.ServerSession;
 import com.whaleal.mars.codecs.MarsOrmException;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.codecs.pojo.EntityModel;
@@ -78,6 +80,8 @@ import com.whaleal.mars.session.option.UpdateOptions;
 import com.whaleal.mars.session.option.*;
 import com.whaleal.mars.session.transactions.MarsTransaction;
 import com.whaleal.mars.util.*;
+import org.bson.BsonDocument;
+import org.bson.BsonTimestamp;
 import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
@@ -98,7 +102,7 @@ import static com.whaleal.mars.util.Assert.*;
  *
  * @Date 2020-12-03
  */
-public class DatastoreImpl extends AggregationImpl implements Datastore {
+public abstract class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
     private static  final Logger  LOGGER = LogFactory.getLogger(DatastoreImpl.class);
@@ -499,31 +503,31 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     //    @Override
-    private < T > T doInsertOne( T entity, InsertOneOptions options, String collectionName ) {
-        Assert.notNull(entity, "entity must not be null");
+    private < T > T doInsertOne( T objectToInsert, InsertOneOptions options, String collectionName ) {
+        Assert.notNull(objectToInsert, "entity must not be null");
         hasText(collectionName, "collectionName must not be null");
 
 
 
         //根据传入的集合名和实体类获取对应的MongoCollection对象
-        MongoCollection< T > collection = this.getCollection((Class< T >) entity.getClass(), collectionName);
+        MongoCollection< T > collection = this.getCollection((Class< T >) objectToInsert.getClass(), collectionName);
 
         collection = prepareConcern(collection, options);
-        this.operations.insertOne(collection, entity, options.getOriginOptions());
+        this.operations.insertOne(collection, objectToInsert, options.getOriginOptions());
         //InsertOneResult result = insertOneExecute(session, collection, options, entity);
 
-        return entity;
+        return objectToInsert;
     }
 
     @Override
-    public < T > List< T > insert( List< T > batchToSave, Class< ? > entityClass ) {
+    public < T > List< T > insert( List< T > entities, Class< ? > entityClass ) {
         String collectionName = this.mapper.determineCollectionName(entityClass, null);
-        return doInsertMany(batchToSave, new InsertManyOptions(), collectionName);
+        return doInsertMany(entities, new InsertManyOptions(), collectionName);
     }
 
     @Override
-    public < T > List< T > insert( List< T > batchToSave, String collectionName ) {
-        return doInsertMany(batchToSave, new InsertManyOptions(), collectionName);
+    public < T > List< T > insert( List< T > entities, String collectionName ) {
+        return doInsertMany(entities, new InsertManyOptions(), collectionName);
     }
 
     @Override
@@ -549,8 +553,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     @Override
-    public < T > T insert( T objectToSave, String collectionName ) {
-        return doInsertOne(objectToSave, new InsertOneOptions(), collectionName);
+    public < T > T insert( T objectToInsert, String collectionName ) {
+        return doInsertOne(objectToInsert, new InsertOneOptions(), collectionName);
     }
 
 
@@ -742,8 +746,8 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
     @Override
-    public < T > T save( T entity, String collectionName ) {
-        return doSave(entity, new InsertOneOptions(), collectionName);
+    public < T > T save( T objectToSave, String collectionName ) {
+        return doSave(objectToSave, new InsertOneOptions(), collectionName);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -799,17 +803,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
     }
 
 
-    @Override
-    public MarsSessionImpl startSession() {
-        return new MarsSessionImpl(this, mongoClient.startSession());
-    }
-
-
-    @Override
-    public MarsSessionImpl startSession( ClientSessionOptions options ) {
-
-        return new MarsSessionImpl(this, mongoClient.startSession(options));
-    }
 
     @Override
     public MongoMappingContext getMapper() {
@@ -1263,16 +1256,19 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
 
     @Override
+    @Deprecated
     public < T > long count( MarsSession session, Query query, Class< T > entityClass ) {
         return count(session, query, entityClass, null);
     }
 
     @Override
+    @Deprecated
     public < T > long count( MarsSession session, Query query, String collectionName ) {
         return count(session, query, null, collectionName);
     }
 
     @Override
+    @Deprecated
     public long count( MarsSession session, Query query, Class< ? > entityClass, String collectionName ) {
         String s = this.mapper.determineCollectionName(entityClass, collectionName);
         com.mongodb.client.model.CountOptions countOptions = decorateCountOption(query);
@@ -1281,7 +1277,6 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
 
     @Override
     public < T > long estimatedCount( String collectionName ) {
-
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(String.format("Executing estimatedCount: %s in collection: %s", "{}", collectionName));
@@ -2565,6 +2560,303 @@ public class DatastoreImpl extends AggregationImpl implements Datastore {
                                              com.mongodb.client.model.UpdateOptions options ) {
             return collection.updateOne(queryObject, updateOperations, options);
         }
+    }
+
+
+
+    /**
+     * @see  com.whaleal.mars.session.DatastoreImpl
+     *
+     * 只是简单的 转发  并执行 内置 一个  session
+     *
+     */
+    private class TransactionalOperations extends DatastoreOperations  implements ClientSession  {
+
+        private ClientSession session ;
+
+        public TransactionalOperations(ClientSession session ){
+            this.session = session ;
+        }
+
+
+
+        @Override
+        @Nullable
+        public ServerAddress getPinnedServerAddress() {
+            return session.getPinnedServerAddress();
+        }
+
+        @Override
+        public Object getTransactionContext() {
+            return this.session.getTransactionContext();
+        }
+
+        @Override
+        public void setTransactionContext( ServerAddress serverAddress, Object o ) {
+
+            this.session.setTransactionContext(serverAddress,o);
+        }
+
+        @Override
+        public void clearTransactionContext() {
+            this.session.clearTransactionContext();
+        }
+
+
+        @Override
+        public boolean hasActiveTransaction() {
+            return session.hasActiveTransaction();
+        }
+
+        @Override
+        public boolean notifyMessageSent() {
+            return session.notifyMessageSent();
+        }
+
+        @Override
+        public void notifyOperationInitiated( Object o ) {
+
+            this.session.notifyOperationInitiated(o);
+        }
+
+        @Override
+        public TransactionOptions getTransactionOptions() {
+            return session.getTransactionOptions();
+        }
+
+        @Override
+        public void startTransaction() {
+            session.startTransaction();
+        }
+
+        @Override
+        public void startTransaction(TransactionOptions transactionOptions) {
+            session.startTransaction(transactionOptions);
+        }
+
+        @Override
+        public void commitTransaction() {
+            session.commitTransaction();
+        }
+
+        @Override
+        public void abortTransaction() {
+            session.abortTransaction();
+        }
+
+        @Override
+        public <T> T withTransaction( TransactionBody<T> transactionBody) {
+            return session.withTransaction(transactionBody);
+        }
+
+        @Override
+        public <T> T withTransaction(TransactionBody<T> transactionBody, TransactionOptions options) {
+            return session.withTransaction(transactionBody, options);
+        }
+
+        @Override
+        @Nullable
+        public BsonDocument getRecoveryToken() {
+            return session.getRecoveryToken();
+        }
+
+        @Override
+        public void setRecoveryToken(BsonDocument recoveryToken) {
+            session.setRecoveryToken(recoveryToken);
+        }
+
+        @Override
+        public ClientSessionOptions getOptions() {
+            return session.getOptions();
+        }
+
+        @Override
+        public boolean isCausallyConsistent() {
+            return session.isCausallyConsistent();
+        }
+
+        @Override
+        public Object getOriginator() {
+            return session.getOriginator();
+        }
+
+        @Override
+        public ServerSession getServerSession() {
+            return session.getServerSession();
+        }
+
+        @Override
+        public BsonTimestamp getOperationTime() {
+            return session.getOperationTime();
+        }
+
+        @Override
+        public void advanceOperationTime(BsonTimestamp operationTime) {
+            session.advanceOperationTime(operationTime);
+        }
+
+        @Override
+        public void advanceClusterTime(BsonDocument clusterTime) {
+            session.advanceClusterTime(clusterTime);
+        }
+
+        @Override
+        public void setSnapshotTimestamp( BsonTimestamp bsonTimestamp ) {
+
+            this.session.setSnapshotTimestamp(bsonTimestamp);
+        }
+
+        @Override
+        public BsonTimestamp getSnapshotTimestamp() {
+            return this.session.getSnapshotTimestamp();
+        }
+
+        @Override
+        public BsonDocument getClusterTime() {
+            return session.getClusterTime();
+        }
+
+        @Override
+        public void close() {
+            session.close();
+        }
+
+        /**
+         * @return the session
+         */
+        @NonNull
+        public ClientSession getSession() {
+            return session;
+        }
+
+
+
+
+
+
+        @Override
+        public < T > String createIndex( MongoCollection< T > collection, IndexModel index ) {
+            return collection.createIndex(session,index.getKeys() ,index.getOptions());
+        }
+
+        @Override
+        public < T > void dropIndex( MongoCollection< T > collection, Document bsonkey  ) {
+            collection.dropIndex(session,bsonkey);
+        }
+
+        @Override
+        public < T > List< String > createIndexes( MongoCollection< T > collection, List< IndexModel > indexes ) {
+            return collection.createIndexes(session,indexes);
+        }
+
+        @Override
+        public < T > void dropIndexes( MongoCollection< T > collection ) {
+            collection.dropIndexes(session);
+        }
+
+        @Override
+        public < T > ListIndexesIterable< Document > getIndexes( MongoCollection< T > collection ) {
+            return null;
+        }
+
+        @Override
+        public <T> long countDocuments( MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.CountOptions options) {
+            return collection.countDocuments(session, queryDocument, options);
+        }
+
+        @Override
+        public <T> DeleteResult deleteMany( MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options) {
+            return collection.deleteMany(session, queryDocument, options);
+        }
+
+        @Override
+        public <T> DeleteResult deleteOne(MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options) {
+            return collection.deleteOne(session, queryDocument, options);
+        }
+
+        @Override
+        public <E> FindIterable<E> find(MongoCollection<E> collection, Document queryDocument) {
+            return collection.find(session, queryDocument);
+        }
+
+        @Override
+        public < E > DistinctIterable< E > distinct( MongoCollection< E > collection, Document query, String fieldName, Class< E > resultClass ) {
+            return collection.distinct(session , fieldName,query,resultClass);
+        }
+
+        @Override
+        public <T> T findOneAndDelete(MongoCollection<T> mongoCollection, Document queryDocument, com.mongodb.client.model.FindOneAndDeleteOptions options) {
+            return mongoCollection.findOneAndDelete(session, queryDocument, options);
+        }
+
+        @Override
+        public <T> T findOneAndUpdate(MongoCollection<T> collection, Document queryDocument, Document updateOperations, com.mongodb.client.model.FindOneAndUpdateOptions options) {
+            return collection.findOneAndUpdate(session, queryDocument, updateOperations, options);
+        }
+
+        @Override
+        public < T > T findOneAndReplace( MongoCollection< T > collection, Document queryDocument, T entity, com.mongodb.client.model.FindOneAndReplaceOptions options ) {
+            return collection.findOneAndReplace(session,queryDocument,entity,options);
+        }
+
+        @Override
+        public <T> InsertManyResult insertMany( MongoCollection<T> collection, List<T> list, com.mongodb.client.model.InsertManyOptions options) {
+            return collection.insertMany(session, list, options);
+        }
+
+        @Override
+        public <T> InsertOneResult insertOne( MongoCollection<T> collection, T entity, com.mongodb.client.model.InsertOneOptions options) {
+            return collection.insertOne(session, entity, options);
+        }
+
+        @Override
+        public <T> UpdateResult replaceOne( MongoCollection<T> collection, T entity, Document queryDocument, com.mongodb.client.model.ReplaceOptions options) {
+            return collection.replaceOne(session, queryDocument, entity, options);
+        }
+
+        @Override
+        public Document runCommand(Document command) {
+            return getMongoClient()
+                    .getDatabase("admin")
+                    .runCommand(session, command);
+        }
+
+        @Override
+        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryDocument, Document updateOperations,
+                                           com.mongodb.client.model.UpdateOptions options) {
+            return collection.updateMany(session, queryDocument, updateOperations, options);
+        }
+
+        @Override
+        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryDocument, List<Document> updateOperations,
+                                           com.mongodb.client.model.UpdateOptions options) {
+            return collection.updateMany(session, queryDocument, updateOperations, options);
+        }
+
+        @Override
+        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryDocument, Document updateOperations,
+                                          com.mongodb.client.model.UpdateOptions options) {
+            return collection.updateOne(session, queryDocument, updateOperations, options);
+        }
+
+        @Override
+        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryDocument, List<Document> updateOperations,
+                                          com.mongodb.client.model.UpdateOptions options) {
+            return collection.updateOne(session, queryDocument, updateOperations, options);
+        }
+    }
+
+
+    @Override
+    public MarsSessionImpl startSession() {
+        return new MarsSessionImpl(this, mongoClient.startSession());
+    }
+
+
+    @Override
+    public MarsSessionImpl startSession( ClientSessionOptions options ) {
+
+        return new MarsSessionImpl(this, mongoClient.startSession(options));
     }
 
 

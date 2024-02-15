@@ -292,17 +292,23 @@ interface MongoOperations extends GridFsOperations {
 
 
     /**
-     * 基于 session  模式新增的几种count  methos
+     * 基于 session  模式新增的几种count  method
+     * 后续全部转移到 operation  中
      * @param session
      * @param query
      * @param entityClass
      * @param <T>
      * @return
+     *
+     *
      */
+    @Deprecated
     < T > long count( MarsSession session , Query query, Class< T > entityClass );
 
+    @Deprecated
     < T > long count(  MarsSession session ,Query query, String collectionName );
 
+    @Deprecated
     long count(  MarsSession session ,Query query, Class< ? > entityClass, String collectionName );
 
 

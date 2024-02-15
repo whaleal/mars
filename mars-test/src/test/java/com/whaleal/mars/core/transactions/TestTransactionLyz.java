@@ -1,6 +1,7 @@
 package com.whaleal.mars.core.transactions;
 
 import com.whaleal.mars.Application;
+import com.whaleal.mars.config.transaction.MongoTransactionManager;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.service.ITransactionService;
 
@@ -27,13 +28,25 @@ public class TestTransactionLyz {
     @Autowired
     private Mars mars;
 
+    @Autowired
+    private MongoTransactionManager mongoTransactionManager ;
+
     @Test
     public void test(){
 
-
-//        MarsSessionImpl marsSession = mars.startSession();
+        System.out.println(mars);
+        System.out.println(mongoTransactionManager);
 
         transactionService.save();
+
+    }
+
+
+
+    @Test
+    public void  other(){
+
+        System.out.println(mongoTransactionManager);
 
     }
 }

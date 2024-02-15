@@ -42,6 +42,7 @@ import com.mongodb.client.result.UpdateResult;
 import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 import com.mongodb.session.ServerSession;
+import com.whaleal.mars.core.Mars;
 import org.bson.BsonDocument;
 import org.bson.BsonTimestamp;
 import org.bson.Document;
@@ -55,19 +56,25 @@ import java.util.List;
  * 本类暴露出去的方法 为 实际执行的方法
  *
  */
-public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
+
+@Deprecated
+public class MarsSessionImpl  extends DatastoreImpl implements MarsSession{
 
     /**
      * Creates a new session.
      */
     public MarsSessionImpl(DatastoreImpl datastore, ClientSession session) {
+
         super(datastore);
-        operations(new TransactionalOperations());
+        this.datastore = datastore ;
         this.session = session;
+        //operations(new TransactionalOperations());
     }
 
     //  内部封装了一个 clientSession
     private final ClientSession session;
+    private final DatastoreImpl datastore ;
+
 
 
     @Override
@@ -219,124 +226,5 @@ public class MarsSessionImpl extends DatastoreImpl implements MarsSession {
         return session;
     }
 
-
-    /**
-     * @see  com.whaleal.mars.session.DatastoreImpl
-     *
-     * 只是简单的 转发  并执行 内置 一个  session
-     *
-     */
-    private class TransactionalOperations extends DatastoreOperations {
-        @Override
-        public < T > String createIndex( MongoCollection< T > collection, IndexModel index ) {
-            return collection.createIndex(session,index.getKeys() ,index.getOptions());
-        }
-
-        @Override
-        public < T > void dropIndex( MongoCollection< T > collection, Document bsonkey  ) {
-            collection.dropIndex(session,bsonkey);
-        }
-
-        @Override
-        public < T > List< String > createIndexes( MongoCollection< T > collection, List< IndexModel > indexes ) {
-            return collection.createIndexes(session,indexes);
-        }
-
-        @Override
-        public < T > void dropIndexes( MongoCollection< T > collection ) {
-            collection.dropIndexes(session);
-        }
-
-        @Override
-        public < T > ListIndexesIterable< Document > getIndexes( MongoCollection< T > collection ) {
-            return null;
-        }
-
-        @Override
-        public <T> long countDocuments( MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.CountOptions options) {
-            return collection.countDocuments(session, queryDocument, options);
-        }
-
-        @Override
-        public <T> DeleteResult deleteMany( MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options) {
-            return collection.deleteMany(session, queryDocument, options);
-        }
-
-        @Override
-        public <T> DeleteResult deleteOne(MongoCollection<T> collection, Document queryDocument, com.mongodb.client.model.DeleteOptions options) {
-            return collection.deleteOne(session, queryDocument, options);
-        }
-
-        @Override
-        public <E> FindIterable<E> find(MongoCollection<E> collection, Document queryDocument) {
-            return collection.find(session, queryDocument);
-        }
-
-        @Override
-        public < E > DistinctIterable< E > distinct( MongoCollection< E > collection, Document query, String fieldName, Class< E > resultClass ) {
-            return collection.distinct(session , fieldName,query,resultClass);
-        }
-
-        @Override
-        public <T> T findOneAndDelete(MongoCollection<T> mongoCollection, Document queryDocument, com.mongodb.client.model.FindOneAndDeleteOptions options) {
-            return mongoCollection.findOneAndDelete(session, queryDocument, options);
-        }
-
-        @Override
-        public <T> T findOneAndUpdate(MongoCollection<T> collection, Document queryDocument, Document updateOperations, com.mongodb.client.model.FindOneAndUpdateOptions options) {
-            return collection.findOneAndUpdate(session, queryDocument, updateOperations, options);
-        }
-
-        @Override
-        public < T > T findOneAndReplace( MongoCollection< T > collection, Document queryDocument, T entity, FindOneAndReplaceOptions options ) {
-            return collection.findOneAndReplace(session,queryDocument,entity,options);
-        }
-
-        @Override
-        public <T> InsertManyResult insertMany( MongoCollection<T> collection, List<T> list, com.mongodb.client.model.InsertManyOptions options) {
-            return collection.insertMany(session, list, options);
-        }
-
-        @Override
-        public <T> InsertOneResult insertOne( MongoCollection<T> collection, T entity, com.mongodb.client.model.InsertOneOptions options) {
-            return collection.insertOne(session, entity, options);
-        }
-
-        @Override
-        public <T> UpdateResult replaceOne( MongoCollection<T> collection, T entity, Document queryDocument, com.mongodb.client.model.ReplaceOptions options) {
-            return collection.replaceOne(session, queryDocument, entity, options);
-        }
-
-        @Override
-        public Document runCommand(Document command) {
-            return getMongoClient()
-                    .getDatabase("admin")
-                    .runCommand(session, command);
-        }
-
-        @Override
-        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryDocument, Document updateOperations,
-                                           com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateMany(session, queryDocument, updateOperations, options);
-        }
-
-        @Override
-        public <T> UpdateResult updateMany(MongoCollection<T> collection, Document queryDocument, List<Document> updateOperations,
-                                           com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateMany(session, queryDocument, updateOperations, options);
-        }
-
-        @Override
-        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryDocument, Document updateOperations,
-                                          com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateOne(session, queryDocument, updateOperations, options);
-        }
-
-        @Override
-        public <T> UpdateResult updateOne(MongoCollection<T> collection, Document queryDocument, List<Document> updateOperations,
-                                          com.mongodb.client.model.UpdateOptions options) {
-            return collection.updateOne(session, queryDocument, updateOperations, options);
-        }
-    }
 
 }

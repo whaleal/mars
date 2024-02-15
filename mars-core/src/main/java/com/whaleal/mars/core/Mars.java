@@ -30,10 +30,12 @@
 package com.whaleal.mars.core;
 
 import com.mongodb.*;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.session.DatastoreImpl;
+import com.whaleal.mars.session.MarsSessionImpl;
 
 /**
  * @author wh
@@ -87,6 +89,14 @@ public class Mars extends DatastoreImpl {
        }
 
     }
+
+
+    public Mars( Mars that ){
+        this(that,that.getDatabaseName());
+    }
+
+
+
 
     public Mars( ConnectionString connectionString ) {
         this(MongoClients.create(connectionString), connectionString.getDatabase());

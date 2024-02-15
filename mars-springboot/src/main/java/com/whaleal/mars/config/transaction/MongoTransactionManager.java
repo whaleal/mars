@@ -1,269 +1,426 @@
-/*
+
 package com.whaleal.mars.config.transaction;
 
-import com.mongodb.MongoException;
-import com.mongodb.TransactionOptions;
-import com.mongodb.client.ClientSession;
-
-import com.whaleal.mars.codecs.MongoMappingContext;
 import com.whaleal.mars.core.Mars;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.support.*;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionStatus;
+import org.springframework.transaction.support.ResourceTransactionManager;
+import org.springframework.transaction.support.SmartTransactionObject;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionSynchronizationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-*/
+import com.mongodb.ClientSessionOptions;
+import com.mongodb.MongoException;
+import com.mongodb.TransactionOptions;
+import com.mongodb.client.ClientSession;
+
 /**
- * @author lyz
- * @desc
- * @create: 2022-10-31 14:24
- **//*
+ * A {@link org.springframework.transaction.PlatformTransactionManager} implementation that manages
+ * {@link ClientSession} based transactions for a single {@link Mars}.
+ * <br />
+ * Binds a {@link ClientSession} from the specified {@link Mars} to the thread.
+ * <br />
+ * {@link TransactionDefinition#isReadOnly() Readonly} transactions operate on a {@link ClientSession} and enable causal
+ * consistency, and also {@link ClientSession#startTransaction() start}, {@link ClientSession#commitTransaction()
+ * commit} or {@link ClientSession#abortTransaction() abort} a transaction.
+ * <br />
+ * Application code is required to retrieve the {@link com.mongodb.client.MongoDatabase} via
+ * {@link Mars#getDatabase()} call. Spring classes such as
+ * {@link com.whaleal.mars.core.Mars} use this strategy implicitly.
+ * <br />
+ * By default failure of a {@literal commit} operation raises a {@link TransactionSystemException}. One may override
+ * {@link #doCommit(MongoTransactionObject)} to implement the
+ * <a href="https://docs.mongodb.com/manual/core/transactions/#retry-commit-operation">Retry Commit Operation</a>
+ * behavior as outlined in the MongoDB reference manual.
+ *
+ *
+ * @see <a href="https://www.mongodb.com/transactions">MongoDB Transaction Documentation</a>
+ *
+ */
+public class MongoTransactionManager extends AbstractPlatformTransactionManager
+        implements ResourceTransactionManager, InitializingBean {
 
+    private @Nullable Mars dbFactory;
+    private @Nullable TransactionOptions options;
 
+    /**
+     * Create a new {@link MongoTransactionManager} for bean-style usage.
+     * <br />
+     * <strong>Note:</strong>The {@link Mars db factory} has to be
+     * {@link #setDbFactory(Mars) set} before using the instance. Use this constructor to prepare a
+     * {@link MongoTransactionManager} via a {@link org.springframework.beans.factory.BeanFactory}.
+     * <br />
+     * Optionally it is possible to set default {@link TransactionOptions transaction options} defining
+     * {@link com.mongodb.ReadConcern} and {@link com.mongodb.WriteConcern}.
+     *
+     * @see #setDbFactory(Mars)
+     * @see #setTransactionSynchronization(int)
+     */
+    public MongoTransactionManager() {}
 
-public class MongoTransactionManager extends AbstractPlatformTransactionManager implements ResourceTransactionManager, InitializingBean {
-
-    private Mars mars;
-
-    @Nullable
-    private TransactionOptions options;
-
-
-
-    public MongoTransactionManager() {
-
+    /**
+     * Create a new {@link MongoTransactionManager} obtaining sessions from the given {@link Mars}.
+     *
+     * @param dbFactory must not be {@literal null}.
+     */
+    public MongoTransactionManager(Mars dbFactory) {
+        this(dbFactory, null);
     }
 
-    public MongoTransactionManager(Mars mars) {
-        this(mars, (TransactionOptions)null);
-    }
+    /**
+     * Create a new {@link MongoTransactionManager} obtaining sessions from the given {@link Mars}
+     * applying the given {@link TransactionOptions options}, if present, when starting a new transaction.
+     *
+     * @param dbFactory must not be {@literal null}.
+     * @param options can be {@literal null}.
+     */
+    public MongoTransactionManager(Mars dbFactory, @Nullable TransactionOptions options) {
 
-    //@Autowired
-    public MongoTransactionManager(Mars mars, @Nullable TransactionOptions options) {
-        //Assert.notNull(dbFactory, "DbFactory must not be null!");
-        //this.dbFactory = mars.getMapper();
+        Assert.notNull(dbFactory, "DbFactory must not be null");
+
+        this.dbFactory = dbFactory;
         this.options = options;
-        this.mars = mars ;
-
     }
 
-
+    @Override
     protected Object doGetTransaction() throws TransactionException {
-        MongoResourceHolder resourceHolder = (MongoResourceHolder)TransactionSynchronizationManager.getResource(mars);
+
+        MongoResourceHolder resourceHolder = (MongoResourceHolder) TransactionSynchronizationManager
+                .getResource(getRequiredDbFactory());
         return new MongoTransactionObject(resourceHolder);
-//        return new MongoTransactionObject(this.mars);
     }
 
+    @Override
     protected boolean isExistingTransaction(Object transaction) throws TransactionException {
         return extractMongoTransaction(transaction).hasResourceHolder();
     }
 
+    @Override
     protected void doBegin(Object transaction, TransactionDefinition definition) throws TransactionException {
+
         MongoTransactionObject mongoTransactionObject = extractMongoTransaction(transaction);
 
-//        MongoResourceHolder resourceHolder = mongoTransactionObject.getRequiredResourceHolder();
-        MongoResourceHolder resourceHolder = this.newResourceHolder(definition);
+        MongoResourceHolder resourceHolder = newResourceHolder(definition,
+                ClientSessionOptions.builder().causallyConsistent(true).build());
         mongoTransactionObject.setResourceHolder(resourceHolder);
-        if (this.logger.isDebugEnabled()) {
-//            this.logger.debug(String.format("About to start transaction for session %s.", debugString(resourceHolder.getSession())));
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("About to start transaction for session %s.", debugString(resourceHolder.getSession())));
         }
 
         try {
-            mongoTransactionObject.startTransaction();
-        } catch (MongoException var6) {
-            throw new TransactionSystemException(String.format("Could not start Mongo transaction for session %s.", debugString(mongoTransactionObject.getSession())), var6);
+            mongoTransactionObject.startTransaction(options);
+        } catch (MongoException ex) {
+            throw new TransactionSystemException(String.format("Could not start Mongo transaction for session %s.",
+                    debugString(mongoTransactionObject.getSession())), ex);
         }
 
-        if (this.logger.isDebugEnabled()) {
-//            this.logger.debug(String.format("Started transaction for session %s.", debugString(resourceHolder.getSession())));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Started transaction for session %s.", debugString(resourceHolder.getSession())));
         }
 
         resourceHolder.setSynchronizedWithTransaction(true);
-        TransactionSynchronizationManager.bindResource(this.getRequiredDbFactory(), resourceHolder);
+        TransactionSynchronizationManager.bindResource(getRequiredDbFactory(), resourceHolder);
     }
 
+    @Override
     protected Object doSuspend(Object transaction) throws TransactionException {
+
         MongoTransactionObject mongoTransactionObject = extractMongoTransaction(transaction);
-        mongoTransactionObject.setResourceHolder((MongoResourceHolder)null);
-        return TransactionSynchronizationManager.unbindResource(this.getRequiredDbFactory());
+        mongoTransactionObject.setResourceHolder(null);
+
+        return TransactionSynchronizationManager.unbindResource(getRequiredDbFactory());
     }
 
+    @Override
     protected void doResume(@Nullable Object transaction, Object suspendedResources) {
-        TransactionSynchronizationManager.bindResource(this.getRequiredDbFactory(), suspendedResources);
+        TransactionSynchronizationManager.bindResource(getRequiredDbFactory(), suspendedResources);
     }
 
+    @Override
     protected final void doCommit(DefaultTransactionStatus status) throws TransactionException {
+
         MongoTransactionObject mongoTransactionObject = extractMongoTransaction(status);
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug(String.format("About to commit transaction for session %s.", debugString(mongoTransactionObject.getSession())));
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("About to commit transaction for session %s.",
+                    debugString(mongoTransactionObject.getSession())));
         }
 
         try {
-            this.doCommit(mongoTransactionObject);
-        } catch (Exception var4) {
-            throw new TransactionSystemException(String.format("Could not commit Mongo transaction for session %s.", debugString(mongoTransactionObject.getSession())), var4);
+            doCommit(mongoTransactionObject);
+        } catch (Exception ex) {
+
+            throw new TransactionSystemException(String.format("Could not commit Mongo transaction for session %s.",
+                    debugString(mongoTransactionObject.getSession())), ex);
         }
     }
 
+    /**
+     * Customization hook to perform an actual commit of the given transaction.<br />
+     * If a commit operation encounters an error, the MongoDB driver throws a {@link MongoException} holding
+     * {@literal error labels}. <br />
+     * By default those labels are ignored, nevertheless one might check for
+     * {@link MongoException#UNKNOWN_TRANSACTION_COMMIT_RESULT_LABEL transient commit errors labels} and retry the the
+     * commit. <br />
+     * <pre>
+     * <code>
+     * int retries = 3;
+     * do {
+     *     try {
+     *         transactionObject.commitTransaction();
+     *         break;
+     *     } catch (MongoException ex) {
+     *         if (!ex.hasErrorLabel(MongoException.UNKNOWN_TRANSACTION_COMMIT_RESULT_LABEL)) {
+     *             throw ex;
+     *         }
+     *     }
+     *     Thread.sleep(500);
+     * } while (--retries > 0);
+     * </code>
+     * </pre>
+     *
+     * @param transactionObject never {@literal null}.
+     * @throws Exception in case of transaction errors.
+     */
     protected void doCommit(MongoTransactionObject transactionObject) throws Exception {
         transactionObject.commitTransaction();
     }
 
+    @Override
     protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
+
         MongoTransactionObject mongoTransactionObject = extractMongoTransaction(status);
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug(String.format("About to abort transaction for session %s.", debugString(mongoTransactionObject.getSession())));
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("About to abort transaction for session %s.",
+                    debugString(mongoTransactionObject.getSession())));
         }
 
         try {
             mongoTransactionObject.abortTransaction();
-        } catch (MongoException var4) {
-            throw new TransactionSystemException(String.format("Could not abort Mongo transaction for session %s.", debugString(mongoTransactionObject.getSession())), var4);
+        } catch (MongoException ex) {
+
+            throw new TransactionSystemException(String.format("Could not abort Mongo transaction for session %s.",
+                    debugString(mongoTransactionObject.getSession())), ex);
         }
     }
 
+    @Override
     protected void doSetRollbackOnly(DefaultTransactionStatus status) throws TransactionException {
+
         MongoTransactionObject transactionObject = extractMongoTransaction(status);
         transactionObject.getRequiredResourceHolder().setRollbackOnly();
     }
 
+    @Override
     protected void doCleanupAfterCompletion(Object transaction) {
-        Assert.isInstanceOf(MongoTransactionObject.class, transaction, () -> {
-            return String.format("Expected to find a %s but it turned out to be %s.", MongoTransactionObject.class, transaction.getClass());
-        });
-        MongoTransactionObject mongoTransactionObject = (MongoTransactionObject)transaction;
-        TransactionSynchronizationManager.unbindResource(this.getRequiredDbFactory());
+
+        Assert.isInstanceOf(MongoTransactionObject.class, transaction,
+                () -> String.format("Expected to find a %s but it turned out to be %s.", MongoTransactionObject.class,
+                        transaction.getClass()));
+
+        MongoTransactionObject mongoTransactionObject = (MongoTransactionObject) transaction;
+
+        // Remove the connection holder from the thread.
+        TransactionSynchronizationManager.unbindResource(getRequiredDbFactory());
         mongoTransactionObject.getRequiredResourceHolder().clear();
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug(String.format("About to release Session %s after transaction.", debugString(mongoTransactionObject.getSession())));
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("About to release Session %s after transaction.",
+                    debugString(mongoTransactionObject.getSession())));
         }
 
         mongoTransactionObject.closeSession();
     }
-*/
-/*
 
-    public void setDbFactory(MongoMappingContext dbFactory) {
-        Assert.notNull(dbFactory, "DbFactory must not be null!");
+    /**
+     * Set the {@link Mars} that this instance should manage transactions for.
+     *
+     * @param dbFactory must not be {@literal null}.
+     */
+    public void setDbFactory(Mars dbFactory) {
+
+        Assert.notNull(dbFactory, "DbFactory must not be null");
         this.dbFactory = dbFactory;
     }
-*//*
 
-
+    /**
+     * Set the {@link TransactionOptions} to be applied when starting transactions.
+     *
+     * @param options can be {@literal null}.
+     */
     public void setOptions(@Nullable TransactionOptions options) {
         this.options = options;
     }
 
-   */
-/* @Nullable
-    public MongoMappingContext getDbFactory() {
-        return this.dbFactory;
-    }*//*
-
-
-    public MongoMappingContext getResourceFactory() {
-        return this.getRequiredDbFactory();
+    /**
+     * Get the {@link Mars} that this instance manages transactions for.
+     *
+     * @return can be {@literal null}.
+     */
+    @Nullable
+    public Mars getDbFactory() {
+        return dbFactory;
     }
 
+    @Override
+    public Mars getResourceFactory() {
+        return getRequiredDbFactory();
+    }
+
+    @Override
     public void afterPropertiesSet() {
-//        this.getRequiredDbFactory();
+        getRequiredDbFactory();
     }
 
-    private MongoResourceHolder newResourceHolder(TransactionDefinition definition) {
+    private MongoResourceHolder newResourceHolder(TransactionDefinition definition, ClientSessionOptions options) {
 
-        MongoResourceHolder resourceHolder = new MongoResourceHolder(mars);
-        resourceHolder.setTimeoutIfNotDefaulted(this.determineTimeout(definition));
+        Mars dbFactory = getResourceFactory();
+
+        MongoResourceHolder resourceHolder = new
+                MongoResourceHolder(dbFactory.startSession(options), dbFactory);
+        resourceHolder.setTimeoutIfNotDefaulted(determineTimeout(definition));
+
         return resourceHolder;
     }
 
-    private MongoMappingContext getRequiredDbFactory() {
-//        Assert.state(this.dbFactory != null, "MongoTransactionManager operates upon a MongoDbFactory. Did you forget to provide one? It's required.");
-        return mars.getMapper();
+    /**
+     * @throws IllegalStateException if {@link #dbFactory} is {@literal null}.
+     */
+    private Mars getRequiredDbFactory() {
+
+        Assert.state(dbFactory != null,
+                "MongoTransactionManager operates upon a MongoDbFactory; Did you forget to provide one; It's required");
+
+        return dbFactory;
     }
 
     private static MongoTransactionObject extractMongoTransaction(Object transaction) {
-        Assert.isInstanceOf(MongoTransactionObject.class, transaction, () -> {
-            return String.format("Expected to find a %s but it turned out to be %s.", MongoTransactionObject.class, transaction.getClass());
-        });
-        return (MongoTransactionObject)transaction;
+
+        Assert.isInstanceOf(MongoTransactionObject.class, transaction,
+                () -> String.format("Expected to find a %s but it turned out to be %s.", MongoTransactionObject.class,
+                        transaction.getClass()));
+
+        return (MongoTransactionObject) transaction;
     }
 
     private static MongoTransactionObject extractMongoTransaction(DefaultTransactionStatus status) {
-        Assert.isInstanceOf(MongoTransactionObject.class, status.getTransaction(), () -> {
-            return String.format("Expected to find a %s but it turned out to be %s.", MongoTransactionObject.class, status.getTransaction().getClass());
-        });
-        return (MongoTransactionObject)status.getTransaction();
+
+        Assert.isInstanceOf(MongoTransactionObject.class, status.getTransaction(),
+                () -> String.format("Expected to find a %s but it turned out to be %s.", MongoTransactionObject.class,
+                        status.getTransaction().getClass()));
+
+        return (MongoTransactionObject) status.getTransaction();
     }
 
     private static String debugString(@Nullable ClientSession session) {
+
         if (session == null) {
             return "null";
-        } else {
-            String debugString = String.format("[%s@%s ", ClassUtils.getShortName(session.getClass()), Integer.toHexString(session.hashCode()));
-
-            try {
-                if (session.getServerSession() != null) {
-                    debugString = debugString + String.format("id = %s, ", session.getServerSession().getIdentifier());
-                    debugString = debugString + String.format("causallyConsistent = %s, ", session.isCausallyConsistent());
-                    debugString = debugString + String.format("txActive = %s, ", session.hasActiveTransaction());
-                    debugString = debugString + String.format("txNumber = %d, ", session.getServerSession().getTransactionNumber());
-                    debugString = debugString + String.format("closed = %d, ", session.getServerSession().isClosed());
-                    debugString = debugString + String.format("clusterTime = %s", session.getClusterTime());
-                } else {
-                    debugString = debugString + "id = n/a";
-                    debugString = debugString + String.format("causallyConsistent = %s, ", session.isCausallyConsistent());
-                    debugString = debugString + String.format("txActive = %s, ", session.hasActiveTransaction());
-                    debugString = debugString + String.format("clusterTime = %s", session.getClusterTime());
-                }
-            } catch (RuntimeException var3) {
-                debugString = debugString + String.format("error = %s", var3.getMessage());
-            }
-
-            debugString = debugString + "]";
-            return debugString;
         }
+
+        String debugString = String.format("[%s@%s ", ClassUtils.getShortName(session.getClass()),
+                Integer.toHexString(session.hashCode()));
+
+        try {
+            if (session.getServerSession() != null) {
+                debugString += String.format("id = %s, ", session.getServerSession().getIdentifier());
+                debugString += String.format("causallyConsistent = %s, ", session.isCausallyConsistent());
+                debugString += String.format("txActive = %s, ", session.hasActiveTransaction());
+                debugString += String.format("txNumber = %d, ", session.getServerSession().getTransactionNumber());
+                debugString += String.format("closed = %d, ", session.getServerSession().isClosed());
+                debugString += String.format("clusterTime = %s", session.getClusterTime());
+            } else {
+                debugString += "id = n/a";
+                debugString += String.format("causallyConsistent = %s, ", session.isCausallyConsistent());
+                debugString += String.format("txActive = %s, ", session.hasActiveTransaction());
+                debugString += String.format("clusterTime = %s", session.getClusterTime());
+            }
+        } catch (RuntimeException e) {
+            debugString += String.format("error = %s", e.getMessage());
+        }
+
+        debugString += "]";
+
+        return debugString;
     }
 
+    /**
+     * MongoDB specific transaction object, representing a {@link MongoResourceHolder}. Used as transaction object by
+     * {@link MongoTransactionManager}.
+     *
+     * @author Christoph Strobl
+     * @author Mark Paluch
+     * @since 2.1
+     * @see MongoResourceHolder
+     */
     protected static class MongoTransactionObject implements SmartTransactionObject {
-        @Nullable
-        private MongoResourceHolder resourceHolder;
+
+        private @Nullable MongoResourceHolder resourceHolder;
 
         MongoTransactionObject(@Nullable MongoResourceHolder resourceHolder) {
             this.resourceHolder = resourceHolder;
         }
 
-        MongoTransactionObject(@Nullable Mars mars) {
-            this.resourceHolder = new MongoResourceHolder(mars);
-        }
-
+        /**
+         * Set the {@link MongoResourceHolder}.
+         *
+         * @param resourceHolder can be {@literal null}.
+         */
         void setResourceHolder(@Nullable MongoResourceHolder resourceHolder) {
             this.resourceHolder = resourceHolder;
         }
 
+        /**
+         * @return {@literal true} if a {@link MongoResourceHolder} is set.
+         */
         final boolean hasResourceHolder() {
-            return this.resourceHolder != null;
+            return resourceHolder != null;
         }
 
-        void startTransaction() {
-            ClientSession session = this.getRequiredSession();
-            session.startTransaction();
+        /**
+         * Start a MongoDB transaction optionally given {@link TransactionOptions}.
+         *
+         * @param options can be {@literal null}
+         */
+        void startTransaction(@Nullable TransactionOptions options) {
 
+            ClientSession session = getRequiredSession();
+            if (options != null) {
+                session.startTransaction(options);
+            } else {
+                session.startTransaction();
+            }
         }
 
+        /**
+         * Commit the transaction.
+         */
         public void commitTransaction() {
-            this.getRequiredSession().commitTransaction();
+            getRequiredSession().commitTransaction();
         }
 
+        /**
+         * Rollback (abort) the transaction.
+         */
         public void abortTransaction() {
-            this.getRequiredSession().abortTransaction();
+            getRequiredSession().abortTransaction();
         }
 
+        /**
+         * Close a {@link ClientSession} without regard to its transactional state.
+         */
         void closeSession() {
-            ClientSession session = this.getRequiredSession();
+
+            ClientSession session = getRequiredSession();
             if (session.getServerSession() != null && !session.getServerSession().isClosed()) {
                 session.close();
             }
@@ -271,28 +428,31 @@ public class MongoTransactionManager extends AbstractPlatformTransactionManager 
 
         @Nullable
         public ClientSession getSession() {
-            return this.resourceHolder != null ? this.resourceHolder.getSession() : null;
+            return resourceHolder != null ? resourceHolder.getSession() : null;
         }
 
         private MongoResourceHolder getRequiredResourceHolder() {
-            Assert.state(this.resourceHolder != null, "MongoResourceHolder is required but not present. o_O");
-            return this.resourceHolder;
+
+            Assert.state(resourceHolder != null, "MongoResourceHolder is required but not present; o_O");
+            return resourceHolder;
         }
 
         private ClientSession getRequiredSession() {
-            ClientSession session = this.getSession();
-            Assert.state(session != null, "A Session is required but it turned out to be null.");
+
+            ClientSession session = getSession();
+            Assert.state(session != null, "A Session is required but it turned out to be null");
             return session;
         }
 
+        @Override
         public boolean isRollbackOnly() {
             return this.resourceHolder != null && this.resourceHolder.isRollbackOnly();
         }
 
+        @Override
         public void flush() {
             TransactionSynchronizationUtils.triggerFlush();
         }
+
     }
 }
-
-*/
