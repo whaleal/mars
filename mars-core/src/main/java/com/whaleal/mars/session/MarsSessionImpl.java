@@ -68,7 +68,7 @@ public class MarsSessionImpl  extends DatastoreImpl implements MarsSession{
         super(datastore);
         this.datastore = datastore ;
         this.session = session;
-        //operations(new TransactionalOperations());
+        operations(new TransactionalOperations(session));
     }
 
     //  内部封装了一个 clientSession

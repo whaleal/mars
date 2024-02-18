@@ -2444,7 +2444,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
      * @see Datastore
      * @see com.whaleal.mars.session.MarsSessionImpl
      */
-    private class CollectionOperations extends DatastoreOperations {
+     class CollectionOperations extends DatastoreOperations {
 
         @Override
         public String createIndex( MongoCollection collection, IndexModel index ) {
@@ -2570,7 +2570,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
      * 只是简单的 转发  并执行 内置 一个  session
      *
      */
-    private class TransactionalOperations extends DatastoreOperations  implements ClientSession  {
+     class TransactionalOperations extends DatastoreOperations  implements ClientSession  {
 
         private ClientSession session ;
 
