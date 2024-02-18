@@ -109,7 +109,7 @@ implementation 'com.whaleal.mars:mars-core:x.x.x'
 
 点击以下链接，下载`mars-core-X.X.X.jar`即可：
 
-- [Maven中央库](https://repo1.maven.org/maven2/cn/mars/mars-core/)
+- [Maven中央库](https://repo1.maven.org/maven2/com/whaleal/mars/mars-core/)
 
 > 🔔️注意
 > 所有版本编译起始均为JDK8+
