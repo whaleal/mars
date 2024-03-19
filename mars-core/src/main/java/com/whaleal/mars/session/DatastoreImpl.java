@@ -132,6 +132,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
         this.mongoClient = mongoClient;
         this.defaultGridFSBucket = GridFSBuckets.create(super.database);
         this.operations = new CollectionOperations();
+
         automatic();
     }
 
@@ -146,11 +147,20 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
 
 
     private void automatic(){
-        for (Class< ? > entity : mapper.getInitialEntitySet()) {
+        for (Class< ? > clazz : mapper.getInitialEntitySet()) {
             if (mapper.isAutoIndexCreation()) {
                 lock.lock();
+                // do  CreateCollection First
+
+                try{
+                    createCollection(clazz);
+                }catch (Exception e){
+                    LOGGER.warn(" create collection error in the current database , Please ignore this message for other creations");
+                }
+
+
                 try {
-                    ensureIndexes(entity);
+                    ensureIndexes(clazz);
                 } finally {
                     lock.unlock();
                 }
@@ -2345,6 +2355,7 @@ public abstract class DatastoreImpl extends AggregationImpl implements Datastore
             if (marsSession == null) {
                 throw new IllegalStateException("No session could be found for the transaction.");
             }
+
             return marsSession.withTransaction(() -> body.execute(marsSession));
         } catch (Exception e) {
             LOGGER.error(e.getMessage());

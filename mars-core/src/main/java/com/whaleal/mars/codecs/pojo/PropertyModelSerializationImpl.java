@@ -39,4 +39,14 @@ class PropertyModelSerializationImpl<T> implements PropertySerialization<T> {
     public boolean shouldSerialize(final T value) {
         return value != null;
     }
+
+    @Override
+    public T serialize( T value ) {
+        return value;
+    }
+
+    @Override
+    public T deserialize( T value ) {
+        return value;
+    }
 }

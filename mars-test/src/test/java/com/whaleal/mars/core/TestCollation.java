@@ -10,6 +10,8 @@ import com.whaleal.mars.session.option.FindOneAndUpdateOptions;
 
 import com.whaleal.mars.util.CreateDataUtil;
 import org.bson.Document;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -24,6 +26,18 @@ import java.util.List;
 public class TestCollation {
 
     private Mars mars = new Mars(Constant.connectionStr);
+
+
+    @After
+    public void delete(){
+        mars.getDatabase().drop();
+    }
+
+    @Before
+    public void delete1(){
+        mars.getDatabase().drop();
+    }
+
 
     //创建集合
     @Test

@@ -53,7 +53,7 @@ public class CreateUserTest {
                 "} ");
         Document document1 = mars.executeCommand(document);
         Document result = Document.parse("{ \"ok\" : 1.0 }\n");
-        Assert.assertEquals(document1,result);
+        Assert.assertEquals(document1.get("ok"),result.get("ok"));
         Document document2 = mars.executeCommand(new Document().append("usersInfo", "testUser"));
         Document result1 = Document.parse("{\n" +
                 "\t\"users\" : [\n" +

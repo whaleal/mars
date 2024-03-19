@@ -7,6 +7,7 @@ import com.whaleal.mars.core.index.IndexDirection;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -18,9 +19,9 @@ import org.junit.Test;
 public class DropMultipleIndexesTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
-    @Test
+    @Before
     public void createData(){
-        mars.createCollection(Document.class);
+        mars.createCollection("document");
         mars.insert(new Document().append("name","test").append("age",11).append("test","aa"));
         Index index = new Index("name", IndexDirection.ASC);
         mars.createIndex(index,"document");

@@ -27,6 +27,13 @@ public class MarsAggregationTest {
     @Autowired
     Mars mars;
 
+    @After
+    public void  after(){
+        mars.getDatabase().drop();
+    }
+
+
+
     @Test
     public void testAggFilters() {
         Student instance = StudentGenerator.getInstance(1001);

@@ -64,7 +64,7 @@ public class ChangeExpirationValueTest {
     }
 
     @After
-    public void dropCollection(){
-        mars.dropCollection("book");
+    public void  after(){
+        mars.getDatabase().drop();
     }
 }

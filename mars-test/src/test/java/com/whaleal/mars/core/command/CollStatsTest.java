@@ -52,7 +52,11 @@ public class CollStatsTest {
                 "\t\"scaleFactor\" : 1,\n" +
                 "\t\"ok\" : 1.0\n" +
                 "}\n");
-        Assert.assertEquals(document1,result);
+        result.put("ns",mars.getDatabase().getName()+".nonExistentCollection");
+        Assert.assertEquals(document1.get("ns"),result.get("ns"));
+        Assert.assertEquals(document1.get("size"),result.get("size"));
+        Assert.assertEquals(document1.get("count"),result.get("count"));
+        Assert.assertEquals(document1.get("storageSize"),result.get("storageSize"));
     }
 
 

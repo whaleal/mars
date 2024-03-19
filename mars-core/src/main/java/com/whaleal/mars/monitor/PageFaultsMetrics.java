@@ -20,8 +20,8 @@ public class PageFaultsMetrics extends AbstractMonitor{
         return getOpLatenciesData("page_faults");
     }
 
-    private Long getOpLatenciesData(String key) {
+    private Integer getOpLatenciesData(String key) {
 
-        return serverStatus.get("extra_info",Document.class).get(key,Long.class);
+        return serverStatus.get("extra_info",Document.class).get(key,Integer.class);
     }
 }

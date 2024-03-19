@@ -109,7 +109,7 @@ public final class PropertyModelBuilder<T> {
     }
 
 
-    public PropertyModelBuilder<T> propertySerialization(final PropertySerialization<T> propertySerialization) {
+    public PropertyModelBuilder<T> propertySerialization(final PropertySerialization propertySerialization) {
         this.propertySerialization = notNull(propertySerialization);
         return this;
     }

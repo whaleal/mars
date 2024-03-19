@@ -43,10 +43,10 @@ public class ReplicationInfoMetrics{
         MongoCollection<Document> opLog = db.getCollection("oplog.rs");
         Document ol = db.runCommand(new Document("collStats", "oplog.rs"));
 
-        Long maxSize = ol.getLong("maxSize");
+        Integer maxSize = ol.getInteger("maxSize");
         if (maxSize != null && maxSize > 0) {
             //计算configured oplog size
-            Long logSizeMB = maxSize / (1024 * 1024);
+            Integer logSizeMB = maxSize / (1024 * 1024);
             document.put("size", logSizeMB);
 
             double size = ol.getInteger("size");

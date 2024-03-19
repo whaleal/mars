@@ -36,7 +36,10 @@ public class DataSizeTest {
     public void testForDataSize(){
         Document document = mars.executeCommand(Document.parse("{ dataSize: \"mars.book\", keyPattern: { price: 1 }, min: { price: 10 }, max: { price: 100 } }"));
         Document result = Document.parse("{ \"size\" : 0, \"numObjects\" : 0, \"millis\" : 0, \"ok\" : 1.0 }\n");
-        Assert.assertEquals(result,document);
+        Assert.assertEquals(result.get("size"),document.get("size"));
+        Assert.assertEquals(result.get("numObjects"),document.get("numObjects"));
+        Assert.assertEquals(result.get("millis"),document.get("millis"));
+        Assert.assertEquals(result.get("ok"),document.get("ok"));
     }
 
     @After

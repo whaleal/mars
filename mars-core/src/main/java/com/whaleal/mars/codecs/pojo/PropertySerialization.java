@@ -32,4 +32,8 @@ package com.whaleal.mars.codecs.pojo;
 public interface PropertySerialization<T> {
 
     boolean shouldSerialize(T value);
+
+    T  serialize(T value );
+
+    T deserialize(T value);
 }

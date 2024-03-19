@@ -748,16 +748,6 @@ public class StrUtil  {
         return str.substring(0, endIdx + 1);
     }
 
-    /**
-     * Test if the given {@code String} matches the given single character.
-     *
-     * @param str             the {@code String} to check
-     * @param singleCharacter the character to compare to
-     * @return boolean
-     */
-    public static boolean matchesCharacter(String str, char singleCharacter) {
-        return (str != null && str.length() == 1 && str.charAt(0) == singleCharacter);
-    }
 
     /**
      * Test if the given {@code String} starts with the specified prefix,
@@ -773,62 +763,6 @@ public class StrUtil  {
                 str.regionMatches(true, 0, prefix, 0, prefix.length()));
     }
 
-    /**
-     * Test if the given {@code String} ends with the specified suffix,
-     * ignoring upper/lower case.
-     *
-     * @param str    the {@code String} to check
-     * @param suffix the suffix to look for
-     * @return boolean
-     * @see String#endsWith
-     */
-    public static boolean endsWithIgnoreCase(String str, String suffix) {
-        return (str != null && suffix != null && str.length() >= suffix.length() &&
-                str.regionMatches(true, str.length() - suffix.length(), suffix, 0, suffix.length()));
-    }
-
-    /**
-     * Test whether the given string matches the given substring
-     * at the given index.
-     *
-     * @param str       the original string (or StringBuilder)
-     * @param index     the index in the original string to start matching against
-     * @param substring the substring to match at the given index
-     * @return boolean
-     */
-    public static boolean substringMatch(CharSequence str, int index, CharSequence substring) {
-        if (index + substring.length() > str.length()) {
-            return false;
-        }
-        for (int i = 0; i < substring.length(); i++) {
-            if (str.charAt(index + i) != substring.charAt(i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Count the occurrences of the substring {@code sub} in string {@code str}.
-     *
-     * @param str string to search in
-     * @param sub string to search for
-     * @return int
-     */
-    public static int countOccurrencesOf(String str, String sub) {
-        if (!hasLength(str) || !hasLength(sub)) {
-            return 0;
-        }
-
-        int count = 0;
-        int pos = 0;
-        int idx;
-        while ((idx = str.indexOf(sub, pos)) != -1) {
-            ++count;
-            pos = idx + sub.length();
-        }
-        return count;
-    }
 
     /**
      * Replace all occurrences of a substring within a string with another string.
@@ -910,53 +844,7 @@ public class StrUtil  {
     // Convenience methods for working with formatted Strings
     //---------------------------------------------------------------------
 
-    /**
-     * Quote the given {@code String} with single quotes.
-     *
-     * @param str the input {@code String} (e.g. "myString")
-     * @return the quoted {@code String} (e.g. "'myString'"),
-     * or {@code null} if the input was {@code null}
-     */
 
-    public static String quote(String str) {
-        return (str != null ? "'" + str + "'" : null);
-    }
-
-    /**
-     * Turn the given Object into a {@code String} with single quotes
-     * if it is a {@code String}; keeping the Object as-is else.
-     *
-     * @param obj the input Object (e.g. "myString")
-     * @return the quoted {@code String} (e.g. "'myString'"),
-     * or the input object as-is if not a {@code String}
-     */
-
-    public static Object quoteIfString(Object obj) {
-        return (obj instanceof String ? quote((String) obj) : obj);
-    }
-
-    /**
-     * Unqualify a string qualified by a '.' dot character. For example,
-     * "this.name.is.qualified", returns "qualified".
-     *
-     * @param qualifiedName the qualified name
-     * @return String
-     */
-    public static String unqualify(String qualifiedName) {
-        return unqualify(qualifiedName, '.');
-    }
-
-    /**
-     * Unqualify a string qualified by a separator character. For example,
-     * "this:name:is:qualified" returns "qualified" if using a ':' separator.
-     *
-     * @param qualifiedName the qualified name
-     * @param separator     the separator
-     * @return boolean
-     */
-    public static String unqualify(String qualifiedName, char separator) {
-        return qualifiedName.substring(qualifiedName.lastIndexOf(separator) + 1);
-    }
 
     /**
      * Capitalize a {@code String}, changing the first letter to
@@ -1070,73 +958,7 @@ public class StrUtil  {
         return (separatorIndex != -1 ? path.substring(separatorIndex + 1) : path);
     }
 
-    /**
-     * Extract the filename extension from the given Java resource path,
-     * e.g. "mypath/myfile.txt" ~ "txt".
-     *
-     * @param path the file path (may be {@code null})
-     * @return the extracted filename extension, or {@code null} if none
-     */
-    public static String getFilenameExtension(String path) {
-        if (path == null) {
-            return null;
-        }
 
-        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
-        if (extIndex == -1) {
-            return null;
-        }
-
-        int folderIndex = path.lastIndexOf(FOLDER_SEPARATOR);
-        if (folderIndex > extIndex) {
-            return null;
-        }
-
-        return path.substring(extIndex + 1);
-    }
-
-    /**
-     * Strip the filename extension from the given Java resource path,
-     * e.g. "mypath/myfile.txt" - "mypath/myfile".
-     *
-     * @param path the file path
-     * @return the path with stripped filename extension
-     */
-    public static String stripFilenameExtension(String path) {
-        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
-        if (extIndex == -1) {
-            return path;
-        }
-
-        int folderIndex = path.lastIndexOf(FOLDER_SEPARATOR);
-        if (folderIndex > extIndex) {
-            return path;
-        }
-
-        return path.substring(0, extIndex);
-    }
-
-    /**
-     * Apply the given relative path to the given Java resource path,
-     * assuming standard Java folder separation (i.e. "/" separators).
-     *
-     * @param path         the path to start from (usually a full file path)
-     * @param relativePath the relative path to apply
-     *                     (relative to the full file path above)
-     * @return the full file path that results from applying the relative path
-     */
-    public static String applyRelativePath(String path, String relativePath) {
-        int separatorIndex = path.lastIndexOf(FOLDER_SEPARATOR);
-        if (separatorIndex != -1) {
-            String newPath = path.substring(0, separatorIndex);
-            if (!relativePath.startsWith(FOLDER_SEPARATOR)) {
-                newPath += FOLDER_SEPARATOR;
-            }
-            return newPath + relativePath;
-        } else {
-            return relativePath;
-        }
-    }
 
     /**
      * Normalize the path by suppressing sequences like "path/.." and
@@ -1240,7 +1062,7 @@ public class StrUtil  {
      *                    as specified by {@link Locale#forLanguageTag} on Java 7+
      * @return a corresponding {@code Locale} instance, or {@code null} if none
      * @throws IllegalArgumentException in case of an invalid locale specification
-     * @see #parseLocaleString
+     *
      * @see Locale#forLanguageTag
      */
 
@@ -1256,24 +1078,7 @@ public class StrUtil  {
         return parseLocaleTokens(localeValue, tokens);
     }
 
-    /**
-     * Parse the given {@code String} representation into a {@link Locale}.
-     * <p>For many parsing scenarios, this is an inverse operation of
-     * {@link Locale#toString Locale's toString}, in a lenient sense.
-     * This method does not aim for strict {@code Locale} design compliance;
-     * it is rather specifically tailored for typical Spring parsing needs.
-     * <p><b>Note: This delegate does not accept the BCP 47 language tag format.
-     * Please use {@link #parseLocale} for lenient parsing of both formats.</b>
-     *
-     * @param localeString the locale {@code String}: following {@code Locale's}
-     *                     {@code toString()} format ("en", "en_UK", etc), also accepting spaces as
-     *                     separators (as an alternative to underscores)
-     * @return a corresponding {@code Locale} instance, or {@code null} if none
-     * @throws IllegalArgumentException in case of an invalid locale specification
-     */
-    public static Locale parseLocaleString(String localeString) {
-        return parseLocaleTokens(localeString, tokenizeLocaleSource(localeString));
-    }
+
 
     private static String[] tokenizeLocaleSource(String localeSource) {
         return tokenizeToStringArray(localeSource, "_ ", false, false);
@@ -1317,22 +1122,7 @@ public class StrUtil  {
     }
 
 
-    /**
-     * Parse the given {@code timeZoneString} value into a {@link TimeZone}.
-     *
-     * @param timeZoneString the time zone {@code String}, following {@link TimeZone#getTimeZone(String)}
-     *                       but throwing {@link IllegalArgumentException} in case of an invalid time zone specification
-     * @return a corresponding {@link TimeZone} instance
-     * @throws IllegalArgumentException in case of an invalid time zone specification
-     */
-    public static TimeZone parseTimeZoneString(String timeZoneString) {
-        TimeZone timeZone = TimeZone.getTimeZone(timeZoneString);
-        if ("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
-            // We don't want that GMT fallback...
-            throw new IllegalArgumentException("Invalid time zone specification '" + timeZoneString + "'");
-        }
-        return timeZone;
-    }
+
 
 
     //---------------------------------------------------------------------
@@ -1363,25 +1153,6 @@ public class StrUtil  {
         return (enumeration != null ? toStringArray(Collections.list(enumeration)) : EMPTY_STRING_ARRAY);
     }
 
-    /**
-     * Append the given {@code String} to the given {@code String} array,
-     * returning a new array consisting of the input array contents plus
-     * the given {@code String}.
-     *
-     * @param array the array to append to (can be {@code null})
-     * @param str   the {@code String} to append
-     * @return the new array (never {@code null})
-     */
-    public static String[] addStringToArray(String[] array, String str) {
-        if (ObjectUtil.isEmpty(array)) {
-            return new String[]{str};
-        }
-
-        String[] newArr = new String[array.length + 1];
-        System.arraycopy(array, 0, newArr, 0, array.length);
-        newArr[array.length] = str;
-        return newArr;
-    }
 
     /**
      * Concatenate the given {@code String} arrays into one,
@@ -1437,20 +1208,6 @@ public class StrUtil  {
         return toStringArray(result);
     }
 
-    /**
-     * 对给定的字符串数组进行排序
-     *
-     * @param array 原始的数组
-     * @return 返回的重排序的数组
-     */
-    public static String[] sortStringArray(String[] array) {
-        if (ObjectUtil.isEmpty(array)) {
-            return array;
-        }
-
-        Arrays.sort(array);
-        return array;
-    }
 
     /**
      * 对给定的数组的每个非null  元素 进行 trim() 操作
@@ -1488,26 +1245,7 @@ public class StrUtil  {
         return toStringArray(set);
     }
 
-    /**
-     * Tokenize the given {@code String} into a {@code String} array via a
-     * {@link StringTokenizer}.
-     * <p>Trims tokens and omits empty tokens.
-     * <p>The given {@code delimiters} string can consist of any number of
-     * delimiter characters. Each of those characters can be used to separate
-     * tokens. A delimiter is always a single character; for multi-character
-     * delimiters, consider using {@link #delimitedListToStringArray}.
-     *
-     * @param str        the {@code String} to tokenize (potentially {@code null} or empty)
-     * @param delimiters the delimiter characters, assembled as a {@code String}
-     *                   (each of the characters is individually considered as a delimiter)
-     * @return an array of the tokens
-     * @see StringTokenizer
-     * @see String#trim()
-     * @see #delimitedListToStringArray
-     */
-    public static String[] tokenizeToStringArray(String str, String delimiters) {
-        return tokenizeToStringArray(str, delimiters, true, true);
-    }
+
 
     /**
      * Tokenize the given {@code String} into a {@code String} array via a

@@ -80,7 +80,8 @@ public class EntityDecoder implements org.bson.codecs.Decoder<Object> {
                     reader.readNull();
                 } else {
                     Object value = decoderContext.decodeWithChildContext(model.getCachedCodec(), reader);
-                    instanceCreator.set(value, model);
+
+                    instanceCreator.set(model.deserialize(value), model);
                 }
             } catch (BsonInvalidOperationException e) {
                 mark.reset();

@@ -39,7 +39,7 @@ public class ConvertToCappedTest {
                 .append("size", 8192);
         Document document1 = mars.executeCommand(document);
         Document result = Document.parse("{ \"ok\" : 1.0 }\n");
-        Assert.assertEquals(result,document1);
+        Assert.assertEquals(result.get("ok"),document1.get("ok"));
     }
 
     @After

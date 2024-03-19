@@ -292,7 +292,6 @@ final class ConventionDefaultsImpl implements Convention {
                     if(bsonType !=null){
                         propertyModelBuilder.bsonRepresentation(bsonType);
                     }
-
                 }
 
             } else if(annotation instanceof Representation){
@@ -302,7 +301,7 @@ final class ConventionDefaultsImpl implements Convention {
 
                 propertyModelBuilder.readName(null);
 
-            }else {
+            } else {
                 //todo
             }
         }

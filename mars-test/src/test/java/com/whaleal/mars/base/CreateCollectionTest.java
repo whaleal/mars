@@ -88,11 +88,14 @@ public class CreateCollectionTest {
 
     @Test
     public void testForCreateWithCollation(){
-        mars.createCollection("book",CollectionOptions.just(Collation.builder().locale("fr").build()));
+
+        mars.createCollection("book",new CreateCollectionOptions().collation(Collation.builder().locale("fr").build()));
     }
 
     @Test
     public void testForCappedWithAnno(){
+
+
         mars.createCollection(NumberBean.class);
 
         CollStatsMetrics numberBean = new CollStatsMetrics(mars.getMongoClient(), mars.getDatabase(), "numberBean");

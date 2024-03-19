@@ -151,7 +151,6 @@ public class MarsCodec<T> implements CollectibleCodec<T> {
             Codec codec = getPropertyModelCodec(propertyModel);
             if (codec != null) {
                 propertyModel.cachedCodec(codec);
-
             }
         }
     }

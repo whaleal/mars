@@ -145,6 +145,14 @@ public final class PropertyModel<T> {
         return propertySerialization.shouldSerialize(value);
     }
 
+    public T serialize(final T value) {
+        return propertySerialization.serialize(value);
+    }
+
+    public T deserialize(final T value) {
+        return propertySerialization.deserialize(value);
+    }
+
 
     public PropertyAccessor<T> getPropertyAccessor() {
         return propertyAccessor;

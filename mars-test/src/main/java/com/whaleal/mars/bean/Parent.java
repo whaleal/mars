@@ -8,8 +8,7 @@ import lombok.ToString;
 /**
  * @author wh
  */
-
-@Entity()
+@Entity("parent")
 @ToString
 public class Parent {
 

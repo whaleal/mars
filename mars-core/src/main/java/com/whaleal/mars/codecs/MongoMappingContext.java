@@ -94,10 +94,14 @@ public class MongoMappingContext {
 
 
     //所有扫描到的带有@Entity的类的集合
-    private Set<? extends Class<?>> initialEntitySet;
+    private Set<? extends Class<?>> initialEntitySet =new HashSet<>();
 
     public void setInitialEntitySet(Set<? extends Class<?>> initialEntitySet) {
-        this.initialEntitySet = initialEntitySet;
+        //  非空才设置
+        if(initialEntitySet !=null){
+            this.initialEntitySet = initialEntitySet;
+        }
+
     }
 
 
@@ -105,7 +109,7 @@ public class MongoMappingContext {
         return initialEntitySet;
     }
 
-    //是否开启自动创建注解
+    //是否开启自动创建注解 ，默认值为false
     private boolean autoIndexCreation = false;
 
     public MongoMappingContext( MongoDatabase database ) {

@@ -130,8 +130,10 @@ class EntityEncoder implements org.bson.codecs.Encoder<Object> {
                 writer.writeNull();
             } else {
                 Codec<? super Object> cachedCodec = model.getCachedCodec();
-                encoderContext.encodeWithChildContext(cachedCodec, writer, propertyValue);
+                encoderContext.encodeWithChildContext(cachedCodec, writer, model.serialize(propertyValue));
             }
+        }else{
+           //  既然不需要序列化 那么就直接丢弃
         }
     }
 

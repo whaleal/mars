@@ -62,7 +62,11 @@ public class CollModTest {
         Document document1 = mars.executeCommand(document);
         Document result = Document.parse("{expireAfterSeconds_old:40, expireAfterSeconds_new:20, ok:1.0}");
         //todo 对比结果看上去一致却爆出错误
-        Assert.assertEquals(document1.toString(),result.toString());
+        //Expected :Document{{expireAfterSeconds_old=40, expireAfterSeconds_new=20, ok=1.0, $clusterTime=Document{{clusterTime=Timestamp{value=7345286428630188037, seconds=1710207767, inc=5}, signature=Document{{hash=org.bson.types.Binary@c98f581, keyId=0}}}}, operationTime=Timestamp{value=7345286428630188037, seconds=1710207767, inc=5}}}
+        //Actual   :Document{{expireAfterSeconds_old=40, expireAfterSeconds_new=20, ok=1.0}}
+        Assert.assertEquals(document1.get("expireAfterSeconds_old"),result.get("expireAfterSeconds_old"));
+        Assert.assertEquals(document1.get("expireAfterSeconds_new"),result.get("expireAfterSeconds_new"));
+        Assert.assertEquals(document1.get("ok"),result.get("ok"));
     }
 
     //todo ModifyView
@@ -82,7 +86,7 @@ public class CollModTest {
         Document document1 = mars.executeCommand(document);
         System.out.println(document1);
         Document result = Document.parse("{ok:1.0}");
-        Assert.assertEquals(document1,result);
+        Assert.assertEquals(document1.get("ok"),result.get("ok"));
     }
 
     /**

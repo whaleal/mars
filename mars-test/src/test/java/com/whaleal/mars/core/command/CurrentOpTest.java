@@ -1,5 +1,6 @@
 package com.whaleal.mars.core.command;
 
+import com.whaleal.mars.Constant;
 import com.whaleal.mars.core.Mars;
 import com.whaleal.mars.core.index.Index;
 import com.whaleal.mars.core.index.IndexDirection;
@@ -17,12 +18,11 @@ import org.junit.Test;
  */
 public class CurrentOpTest {
 
-    private Mars mars = new Mars("mongodb://root:123456@47.100.1.115:37001/admin?authSource=admin");
+    private Mars mars = new Mars(Constant.connectionStr);
 
     @Before
     public void createData(){
-        mars.createCollection(Document.class);
-        mars.insert(new Document().append("name","test").append("age",12));
+        mars.insert(new Document().append("name","test").append("age",12),"document");
         Index index = new Index("name", IndexDirection.ASC);
         mars.createIndex(index,"document");
     }

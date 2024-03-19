@@ -19,6 +19,13 @@ public class ProjectionTest {
 
     private Mars mars = new Mars(Constant.connectionStr);
 
+
+    @After
+    public void  after(){
+        mars.getDatabase().drop();
+    }
+
+
     @Before
     public void createData(){
         String s = "{\n" +
@@ -32,10 +39,6 @@ public class ProjectionTest {
         mars.insert(Document.parse(s),"test");
     }
 
-    @After
-    public void testFor(){
-        mars.dropCollection("test");
-    }
 
     @Test
     public void testForProjection(){

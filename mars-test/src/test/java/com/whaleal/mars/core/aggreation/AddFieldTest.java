@@ -58,10 +58,7 @@ public class AddFieldTest {
 
     @After
     public void dropCollection(){
-        mars.dropCollection("vehicles");
-        mars.dropCollection("scores");
-        mars.dropCollection("animals");
-        mars.dropCollection("fruit");
+        mars.getDatabase().drop();
     }
 
     @Test
@@ -97,7 +94,7 @@ public class AddFieldTest {
 
         Document document = mars.aggregate(pipeline, "scores").tryNext();
         Document parse = Document.parse("{\"_id\": 1, \"extraCredit\": 0, \"homework\": [10, 5, 10], \"quiz\": [10, 8], \"student\": \"Maya\", \"totalHomework\": 25, \"totalQuiz\": 18, \"totalScore\": 43}");
-        Assert.assertEquals(document,parse);
+        Assert.assertEquals(document.toString(),parse.toString());
 
     }
 
@@ -111,7 +108,7 @@ public class AddFieldTest {
         Document document = mars.aggregate(pipeline, "vehicles").tryNext();
         Document parse = Document.parse("{\"_id\": 1, \"specs\": {\"doors\": 4, \"wheels\": 4, \"fuel_type\": \"unleaded\"}, \"type\": \"car\"}");
 
-        Assert.assertEquals(document,parse);
+        Assert.assertEquals(document.toString(),parse.toString());
     }
 
     @Test
@@ -125,7 +122,7 @@ public class AddFieldTest {
         System.out.println(document.toJson());
         Document parse = Document.parse("{\"_id\": \"1\", \"dogs\": 10, \"cats\": 20}");
 
-       Assert.assertEquals(document,parse);
+       Assert.assertEquals(document.toString(),parse.toString());
 
         Assert.assertTrue(document.equals(parse));
 

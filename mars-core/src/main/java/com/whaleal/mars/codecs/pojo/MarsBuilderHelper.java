@@ -31,6 +31,7 @@ package com.whaleal.mars.codecs.pojo;
 
 
 
+import com.whaleal.mars.codecs.pojo.annotations.PropEncrypt;
 import com.whaleal.mars.util.Assert;
 
 import java.lang.annotation.Annotation;
@@ -175,7 +176,8 @@ final class MarsBuilderHelper {
             }
         }
 
-        reverse(annotations);
+
+        //reverse(annotations);  不需要翻转 ，翻转会出发顺序bug
         entityModelBuilder.annotations(annotations);
         entityModelBuilder.propertyNameToTypeParameterMap(propertyTypeParameterMap);
 
@@ -276,6 +278,19 @@ final class MarsBuilderHelper {
             propertyModelBuilder.typeData(MarsSpecializationHelper.specializeTypeData(propertyModelBuilder.getTypeData(), propertyMetadata.getTypeParameters(),
                     propertyMetadata.getTypeParameterMap()));
         }
+
+        List< Annotation > writeAnnotations = propertyMetadata.getWriteAnnotations();
+
+        //  特殊注解 加密注解 及相关实现
+        for (Annotation annotation : writeAnnotations) {
+            if (PropEncrypt.class.equals(annotation.annotationType())) {
+                PropEncrypt propEncrypt = PropEncrypt.class.cast(annotation);
+
+                propertyModelBuilder.propertySerialization(new PropertyModelEncrptySerializationImpl(propEncrypt.value(),propEncrypt.enableDecrypt()));
+            }
+        }
+
+
 
         return propertyModelBuilder;
     }
